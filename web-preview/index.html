@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<title>Liquid Motion UI · 交互预览</title>
+<style>
+  :root {
+    --bg: #0e1720;
+    --night: #101418;
+    --night-container: #1d252d;
+    --paper: #f8f9fc;
+    --blue: #9dccff;
+    --blue-container: #164a70;
+    --mint: #4fd1a5;
+    --violet: #9d8cff;
+    --amber: #ffd28a;
+    --rose: #ff8fa3;
+    --text: #e8edf4;
+    --text-soft: rgba(232, 237, 244, 0.62);
+    --stroke: rgba(255, 255, 255, 0.42);
+    --r-lg: 22px;
+    --r-pill: 999px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html, body { height: 100%; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+      "HarmonyOS Sans SC", "Microsoft YaHei", sans-serif;
+    background: var(--night);
+    color: var(--text);
+    overflow: hidden;
+    user-select: none;
+  }
+
+  /* ---------- aurora background ---------- */
+  .stage { position: relative; width: 100%; height: 100%; overflow: hidden; background: var(--bg); }
+  .aurora { position: absolute; inset: 0; }
+  .blob {
+    position: absolute; border-radius: 50%;
+    filter: blur(70px); opacity: 0.5;
+    will-change: transform;
+    animation: drift 28s linear infinite;
+  }
+  .blob:nth-child(1) { width: 60vmax; height: 60vmax; top: -12vmax; left: -10vmax; background: radial-gradient(circle, rgba(29,74,115,0.9), transparent 70%); }
+  .blob:nth-child(2) { width: 52vmax; height: 52vmax; top: -6vmax; right: -14vmax; background: radial-gradient(circle, rgba(88,61,180,0.75), transparent 70%); animation: drift 34s linear infinite reverse; }
+  .blob:nth-child(3) { width: 62vmax; height: 62vmax; bottom: -20vmax; left: -6vmax; background: radial-gradient(circle, rgba(23,110,88,0.8), transparent 70%); animation: drift 40s linear infinite; }
+  .blob:nth-child(4) { width: 44vmax; height: 44vmax; bottom: -10vmax; right: -6vmax; background: radial-gradient(circle, rgba(29,74,115,0.85), transparent 70%); animation: drift 26s linear infinite reverse; }
+  @keyframes drift {
+    from { transform: translate3d(0,0,0) scale(1); }
+    to   { transform: translate3d(4vmax,-3vmax,0) scale(1.12); }
+  }
+
+  /* ---------- glass surface ---------- */
+  .glass {
+    position: relative; color: var(--text);
+    background: linear-gradient(180deg, rgba(255,255,255,0.055), rgba(255,255,255,0.018));
+    border: 1px solid rgba(255,255,255,0.16);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.32);
+    border-radius: var(--r-lg);
+  }
+  @supports (backdrop-filter: blur(24px)) or (-webkit-backdrop-filter: blur(24px)) {
+    .glass { -webkit-backdrop-filter: blur(24px) saturate(1.5) brightness(1.05); backdrop-filter: blur(24px) saturate(1.5) brightness(1.05); }
+  }
+  /* normal layout: master switch off → solid panels, no blur */
+  body.normal .glass {
+    -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
+    background: var(--night-container); border-color: rgba(255,255,255,0.08);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.28);
+  }
+  /* palette swaps */
+  body[data-palette="mint"]   { --blue: #5fdba8; --blue-container: #0b4d3a; }
+  body[data-palette="sunset"] { --blue: #ffb77a; --blue-container: #6c3600; }
+  body[data-palette="mono"]   { --blue: #a5c8dd; --blue-container: #293e4d; }
+  .dot { width: 22px; height: 22px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: border-color 200ms, transform 160ms; }
+  .dot.on { border-color: var(--text); transform: scale(1.12); }
+  .dot-aurora  { background: #9dccff; }
+  .dot-mint    { background: #5fdba8; }
+  .dot-sunset  { background: #ffb77a; }
+  .dot-mono    { background: #a5c8dd; }
+  .ref { font-size: 12px; color: var(--text-soft); padding: 2px 0; }
+  .ref b { color: var(--blue); font-weight: 600; }
+
+  /* ---------- layout ---------- */
+  .app {
+    position: relative; height: 100%; max-width: 460px; margin: 0 auto;
+    display: flex; flex-direction: column;
+    padding: calc(env(safe-area-inset-top, 0px) + 20px) 16px 0;
+  }
+  .app::before { content: ""; position: absolute; inset: 0; pointer-events: none; }
+
+  .scroll {
+    flex: 1; overflow-y: auto; overflow-x: hidden;
+    padding-bottom: 120px; scrollbar-width: none;
+  }
+  .scroll::-webkit-scrollbar { display: none; }
+
+  /* ---------- top bar ---------- */
+  .topbar { display: flex; align-items: center; justify-content: space-between; padding: 4px 2px 16px; }
+  .topbar h1 { font-size: 26px; font-weight: 700; letter-spacing: 0.5px; }
+  .topbar .chip {
+    font-size: 12px; color: var(--text-soft); padding: 6px 12px;
+    border: 1px solid rgba(255,255,255,0.18); border-radius: var(--r-pill);
+  }
+
+  .section-title {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13px; font-weight: 600; color: var(--text-soft);
+    margin: 22px 2px 12px; letter-spacing: 0.5px;
+  }
+  .section-title::before { content: ""; width: 10px; height: 10px; border-radius: 3px; background: var(--blue); box-shadow: 0 0 12px var(--blue); }
+
+  /* ---------- scatter of interactive stool ---------- */
+  .hero {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  }
+  .tile {
+    padding: 16px 14px; min-height: 108px;
+    transition: transform 160ms cubic-bezier(0.2, 0.9, 0.3, 1.4);
+    will-change: transform;
+  }
+  .tile.tall { grid-column: 1 / -1; min-height: 148px; display: flex; flex-direction: column; justify-content: flex-end; }
+  .tile .k { font-size: 22px; line-height: 1; }
+  .tile .v { font-size: 12px; color: var(--text-soft); margin-top: 8px; }
+  .tile:active { transform: scale(0.95); }
+
+  /* ---------- bar (motion 4) ---------- */
+  .bar-grid { display: flex; gap: 10px; align-items: flex-end; height: 150px; padding: 14px; }
+  .bar {
+    flex: 1; border-radius: 8px; height: 20%;
+    background: linear-gradient(180deg, rgba(157,204,255,0.55), rgba(157,204,255,0.15));
+    transform-origin: bottom;
+    animation: breathe 5.6s ease-in-out infinite;
+  }
+  .bar:nth-child(2n) { animation-duration: 6.6s; animation-delay: 0.7s; }
+  .bar:nth-child(3n) { animation-duration: 5.0s; animation-delay: 1.3s; }
+  .bar:nth-child(4n) { background: linear-gradient(180deg, rgba(157,140,255,0.5), rgba(157,140,255,0.15)); }
+  .bar:nth-child(5n) { background: linear-gradient(180deg, rgba(79,209,165,0.5), rgba(79,209,165,0.15)); }
+  @keyframes breathe {
+    0%,100% { transform: scaleY(1); }
+    50% { transform: scaleY(1.3); }
+  }
+
+  /* ---------- motion playground ---------- */
+  .track { position: relative; height: 84px; margin: 4px 0; }
+  .track-line { position: absolute; left: 8px; right: 8px; top: 50%; height: 2px; background: rgba(255,255,255,0.12); }
+  .knob {
+    position: absolute; top: 50%; width: 48px; height: 48px; border-radius: 50%;
+    margin: -24px 0 0 -24px;
+    background: radial-gradient(circle at 30% 25%, rgba(255,255,255,0.95), rgba(157,204,255,0.85) 45%, rgba(22,74,112,0.9));
+    box-shadow: 0 8px 24px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.6);
+    touch-action: none;
+    will-change: transform, left;
+  }
+  .presets { display: flex; gap: 8px; flex-wrap: wrap; }
+  .preset {
+    font-size: 12px; padding: 6px 14px; border-radius: var(--r-pill);
+    border: 1px solid rgba(255,255,255,0.18); color: var(--text-soft); cursor: pointer;
+    transition: background 200ms, color 200ms, border 200ms;
+  }
+  .preset.on { background: rgba(157,204,255,0.18); color: var(--blue); border-color: rgba(157,204,255,0.5); }
+
+  .shake-box {
+    text-align: center; padding: 26px 16px; border-radius: var(--r-lg);
+    background: rgba(157,140,255,0.11); border: 1px solid rgba(157,140,255,0.25);
+    animation: impact 3.2s ease-in-out infinite;
+  }
+  @keyframes impact {
+    0%, 100% { transform: translate(0,0); }
+    8% { transform: translate(-6px, -2px); }
+    16% { transform: translate(4px, 2px); }
+    24% { transform: translate(-3px, 1px); }
+    32% { transform: translate(2px, -1px); }
+    40% { transform: translate(-1px, 0); }
+    48% { transform: translate(0, 0); }
+  }
+
+  /* ---------- component gallery ---------- */
+  .comp { padding: 14px; margin-bottom: 12px; }
+  .comp .row { display: flex; align-items: center; gap: 10px; padding: 8px 2px; }
+  .row .lbl { flex: 1; font-size: 14px; }
+  .row .hint { font-size: 12px; color: var(--text-soft); }
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 14px; padding: 10px 18px; border-radius: var(--r-pill);
+    cursor: pointer; transition: transform 160ms cubic-bezier(0.2,0.9,0.3,1.4), background 200ms;
+  }
+  .btn.primary { background: radial-gradient(120% 160% at 15% 0%, rgba(255,255,255,0.25), rgba(157,204,255,0.35)), var(--blue-container); color: #eaf4ff; }
+  .btn.ghost { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.22); color: var(--text); }
+  .btn:active { transform: scale(0.95); }
+  .switch { position: relative; width: 48px; height: 28px; border-radius: var(--r-pill); background: rgba(255,255,255,0.14); cursor: pointer; transition: background 220ms; }
+  .switch::after { content: ""; position: absolute; top: 3px; left: 3px; width: 22px; height: 22px; border-radius: 50%; background: #fff; transition: left 220ms cubic-bezier(0.2,0.9,0.3,1.4), background 220ms; }
+  .switch.on { background: var(--blue-container); }
+  .switch.on::after { left: 23px; }
+  .tag { font-size: 11px; padding: 3px 10px; border-radius: 6px; background: rgba(157,204,255,0.16); color: var(--blue); }
+
+  .slider { -webkit-appearance: none; width: 100%; height: 4px; border-radius: 2px; background: rgba(255,255,255,0.14); }
+  .slider::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; border-radius: 50%; background: radial-gradient(circle at 30% 25%, #fff, var(--blue)); box-shadow: 0 3px 10px rgba(0,0,0,0.4); cursor: pointer; }
+
+  /* ---------- glass tab bar ---------- */
+  .tabs {
+    position: absolute; left: 16px; right: 16px; bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
+    height: 72px; display: flex; align-items: center; justify-content: space-around;
+    padding: 0 6px; z-index: 10;
+  }
+  .tab { position: relative; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 11px; color: var(--text-soft); cursor: pointer; padding: 8px 0; border-radius: 999px; }
+  .tab.active { color: var(--text); }
+  .tab .ico { font-size: 20px; line-height: 1; }
+  .tab.active .ico { transform: translateY(-1px); }
+  .tab-pill {
+    position: absolute; bottom: 6px; height: 34px; border-radius: 999px;
+    background: rgba(255,255,255,0.10); border: 1px solid rgba(255,255,255,0.16);
+    transition: width 420ms cubic-bezier(0.3, 0.9, 0.3, 1.12), transform 420ms cubic-bezier(0.3, 0.9, 0.3, 1.12);
+  }
+
+  /* ---------- entrance ---------- */
+  .stagger { opacity: 0; transform: translateY(18px); animation: rise 560ms cubic-bezier(0.2, 0.8, 0.3, 1.05) forwards; }
+  @keyframes rise { to { opacity: 1; transform: translateY(0); } }
+  .stagger:nth-child(1) { animation-delay: 0.06s; }
+  .stagger:nth-child(2) { animation-delay: 0.12s; }
+  .stagger:nth-child(3) { animation-delay: 0.18s; }
+  .stagger:nth-child(4) { animation-delay: 0.24s; }
+  .stagger:nth-child(5) { animation-delay: 0.30s; }
+  .stagger:nth-child(6) { animation-delay: 0.36s; }
+  .stagger:nth-child(7) { animation-delay: 0.42s; }
+  .stagger:nth-child(8) { animation-delay: 0.48s; }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="aurora">
+    <div class="blob"></div><div class="blob"></div><div class="blob"></div><div class="blob"></div>
+  </div>
+
+  <div class="app">
+    <div class="scroll" id="scroll">
+      <header class="topbar">
+        <h1>液态动效</h1>
+        <span class="chip">模板预览</span>
+      </header>
+
+      <!-- hero -->
+      <section id="panel-hero"></section>
+
+      <div class="section-title">弹簧阻尼 · 拖动后释放</div>
+      <section class="glass" id="panel-spring"></section>
+
+      <div class="section-title">组件语言</div>
+      <section id="panel-components"></section>
+
+      <div class="section-title">常态呼吸 · 画面永不静止</div>
+      <section class="glass bar-grid" id="panel-breathe"></section>
+    </div>
+
+    <!-- glass tab bar -->
+    <nav class="glass tabs" id="tabs">
+      <div class="tab-pill" id="tabPill"></div>
+      <div class="tab active" data-i="0"><span class="ico">⌂</span>首页</div>
+      <div class="tab" data-i="1"><span class="ico">▣</span>组件</div>
+      <div class="tab" data-i="2"><span class="ico">≈</span>动效</div>
+      <div class="tab" data-i="3"><span class="ico">⚙</span>设置</div>
+    </nav>
+  </div>
+</div>
+
+<script>
+  const $ = (s) => document.querySelector(s);
+  const barsHtml = [0,1,2,3,4,5,6,7].map((_, i) => `<div class="bar" style="animation-delay:${i * 0.28}s"></div>`).join("");
+
+  function heroHtml() {
+    const tiles = [
+      { cls: "tile tall", k: "液态玻璃", v: "半透明霜化面板以极简色绘制在每个可操作系统之上" },
+      { cls: "tile", k: "4×Δ", v: "帧级物理动效，源自 motion 动力学模型" },
+      { cls: "tile", k: "36", v: "compileSdk 36 · minSdk 26" },
+    ];
+    return `<div class="hero">${tiles.map(t =>
+      `<div class="tile glass ${t.cls}"><div class="k">${t.k}</div><div class="v">${t.v}</div></div>`).join("")}</div>`
+      .replace("<div class=\"tile glass tile tall\">", "<div class=\"tile glass tile tall\" style=\"background:linear-gradient(150deg, rgba(22,74,112,0.45), rgba(29,37,45,0.10));border-color:rgba(157,204,255,0.35)\">");
+  }
+
+  function springHtml() {
+    return `
+      <div class="presets" id="springPresets">
+        ${["临界", "标准", "弹跳", "柔和"].map((p, i) =>
+          `<div class="preset ${i === 2 ? "on" : ""}" data-s="${i}">${p}</div>`).join("")}
+      </div>
+      <div class="track" id="track">
+        <div class="track-line"></div>
+        <div class="knob" id="knob"></div>
+      </div>`;
+  }
+
+  function compsHtml() {
+    return `
+      <div class="comp glass stagger">
+        <div class="row"><span class="lbl">默认开关</span><div class="switch" data-on="0"></div></div>
+        <div class="row"><span class="lbl">玻璃开关</span><div class="switch on"></div></div>
+        <div class="row">
+          <div class="btn primary">主要按钮</div>
+          <div class="btn ghost">次要</div>
+          <span class="tag">Miuix</span>
+        </div>
+        <div class="row" style="padding-top:14px">
+          <div class="lbl hint">透明度</div>
+          <input class="slider" type="range" min="0" max="100" value="55" style="margin-top:18px" />
+        </div>
+      </div>`;
+  }
+
+  function paint() {
+    const panels = {
+      0: {
+        hero: heroHtml(),
+        spring: springHtml(),
+        comps: `<div class="section-title">组件语言</div><section id="panel-components">${compsHtml()}</section>`,
+        breathe: `<div class="section-title">常态呼吸 · 画面永不静止</div><section class="glass bar-grid">${barsHtml}</section>`,
+      },
+      1: {
+        hero: compsHtml(),
+        spring: `<div class="glass hero">${compsHtml()}</div>`,
+        comps: "",
+        breathe: "",
+      },
+      2: {
+        hero: springHtml(),
+        spring: `
+          <div class="section-title">冲击反馈 · 屏幕轻微抖动</div>
+          <section class="glass"><div class="shake-box">碰撞命中</div></section>`,
+        comps: `<div class="section-title">常态呼吸 · 画面永不静止</div><section class="glass bar-grid" style="margin-left:-16px"></section>`,
+        breathe: "",
+      },
+      3: {
+        hero: `<div class="glass comp">
+          <div class="row"><span class="lbl">液态玻璃风格</span><div class="switch on" data-master="1"></div></div>
+          <div class="row"><span class="hint">关闭后回到普通 Material 布局：实心卡片、标准底栏、无折射</span></div>
+        </div>`,
+        spring: `<div class="glass comp">
+          <div class="row"><span class="lbl">主题配色</span></div>
+          <div class="row" style="justify-content:space-around">
+            <div class="dot dot-aurora on" data-palette="aurora" title="冰蓝"></div>
+            <div class="dot dot-mint" data-palette="mint" title="薄荷"></div>
+            <div class="dot dot-sunset" data-palette="sunset" title="落日"></div>
+            <div class="dot dot-mono" data-palette="mono" title="素灰"></div>
+          </div>
+          <div class="row" style="padding-top:10px"><span class="lbl">桌面壁纸背景</span><div class="switch"></div></div>
+          <div class="row"><span class="lbl">动效阻尼</span><input class="slider" type="range" min="0" max="100" value="50" style="width:64%" /></div>
+          <div class="row"><span class="lbl">透明度</span><input class="slider" type="range" min="0" max="100" value="55" style="width:64%" /></div>
+          <div class="row"><span class="lbl">折射率</span><input class="slider" type="range" min="0" max="100" value="100" style="width:64%" /></div>
+        </div>`,
+        comps: `<div class="section-title">设计参考 · 开源仓库</div><section class="glass comp">
+          <div class="ref"><b>dyparse</b> · github.com/kd64i/dyparse</div>
+          <div class="ref"><b>Miuix</b> · github.com/chibatching/Miuix</div>
+          <div class="ref"><b>motion</b> · github.com/motiondivision/motion</div>
+          <div class="row" style="padding-top:12px"><span class="lbl">恢复默认</span></div>
+          <div class="btn primary" style="width:100%;justify-content:center">恢复默认</div>
+        </section>`,
+        breathe: "",
+      },
+    };
+    const p = panels[state.tab];
+    $("#panel-hero").innerHTML = p.hero;
+    $("#panel-spring").innerHTML = p.spring;
+    $("#panel-breathe").parentElement.style.display = p.breathe || state.tab !== 0 ? "" : "none";
+    wire();
+  }
+
+  /* ---------- springs (stiffness-driven rebound) ---------- */
+  const springs = {
+    0: { mass: 1, damping: 1.5, stiffness: 260, label: "临界" },
+    1: { mass: 1, damping: 1.0, stiffness: 200, label: "标准" },
+    2: { mass: 1, damping: 0.55, stiffness: 190, label: "弹跳" },
+    3: { mass: 1, damping: 0.8, stiffness: 130, label: "柔和" },
+  };
+
+  function runSpring(which) {
+    const track = $("#track"); if (!track) return;
+    const knob = $("#knob");
+    const rect = track.getBoundingClientRect();
+    const w = rect.width - 48;
+    const s = springs[which];
+    const from = w * 0.08;
+    const to = w * 0.86;
+    const start = performance.now();
+    const T = 1400;
+    function frame(now) {
+      let t = (now - start) / 1000;
+      const x = springPos(s, t, from, to);
+      knob.style.left = x + "px";
+      if (t < 2.4) requestAnimationFrame(frame);
+      else { knob.style.left = to + "px"; }
+    }
+    requestAnimationFrame(frame);
+  }
+
+  function springPos(s, t, from, to) {
+    // damped harmonic oscillator, exact
+    const c = s.damping * 2 * Math.sqrt(s.stiffness * s.mass);
+    const w = Math.sqrt(s.stiffness / s.mass - (c / (2 * s.mass)) ** 2);
+    const w0 = Math.sqrt(s.stiffness / s.mass);
+    const zeta = c / (2 * s.mass * w0);
+    let v;
+    if (zeta < 1) {
+      const A = from - to;
+      v = to + A * Math.exp(-zeta * w0 * t) * (Math.cos(w * t) + (zeta * w0 / w) * Math.sin(w * t));
+    } else {
+      v = to + (from - to) * Math.exp(-w0 * t) * (1 + w0 * t);
+    }
+    return v;
+  }
+
+  /* ---------- wiring ---------- */
+  function wire() {
+    const knob = $("#knob");
+    if (knob) knob.parentElement.addEventListener("pointerdown", () => {
+      const on = [...document.querySelectorAll("#springPresets .preset")].findIndex(el => el.classList.contains("on"));
+      runSpring(on < 0 ? 2 : on);
+    });
+    document.querySelectorAll("#springPresets .preset").forEach(el => {
+      el.addEventListener("click", () => {
+        document.querySelectorAll("#springPresets .preset").forEach(x => x.classList.remove("on"));
+        el.classList.add("on");
+        runSpring(+el.dataset.s);
+      });
+    });
+    document.querySelectorAll(".switch").forEach(s => s.addEventListener("click", () => {
+      s.classList.toggle("on");
+      if (s.dataset.master) document.body.classList.toggle("normal", !s.classList.contains("on"));
+    }));
+    document.querySelectorAll(".dot").forEach(d => d.addEventListener("click", () => {
+      document.querySelectorAll(".dot").forEach(x => x.classList.remove("on"));
+      d.classList.add("on");
+      document.body.dataset.palette = d.dataset.palette;
+    }));
+    document.querySelectorAll(".btn").forEach(b => b.addEventListener("pointerdown", () => b.style.transform = "scale(0.93)"));
+    document.querySelectorAll(".btn").forEach(b => b.addEventListener("pointerup", () => b.style.transform = "scale(1)"));
+  }
+
+  /* ---------- tab bar ---------- */
+  const state = { tab: 0 };
+  function positionPill(target) {
+    const tabs = [...document.querySelectorAll("#tabs .tab")];
+    const el = tabs[target];
+    const pill = $("#tabPill");
+    pill.style.width = (el.offsetWidth - 16) + "px";
+    pill.style.transform = `translateX(${el.offsetLeft}px)`;
+  }
+  function selectTab(i) {
+    state.tab = i;
+    document.querySelectorAll("#tabs .tab").forEach((t, idx) => t.classList.toggle("active", idx === i));
+    positionPill(i);
+    paint();
+  }
+  document.querySelectorAll("#tabs .tab").forEach((t, i) => t.addEventListener("click", () => selectTab(i)));
+
+  /* autoplay: bounce the spring once, then let users touch it */
+  setTimeout(() => { if (state.tab === 0) runSpring(2); }, 900);
+  window.addEventListener("resize", () => positionPill(state.tab));
+
+  paint();
+  positionPill(0);
+</script>
+</body>
+</html>
