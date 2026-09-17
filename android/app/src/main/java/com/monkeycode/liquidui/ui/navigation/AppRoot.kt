@@ -2,6 +2,14 @@ package com.monkeycode.liquidui.ui.navigation
 
 import android.app.WallpaperManager
 import android.graphics.drawable.Drawable
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ContentTransform
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -40,6 +48,7 @@ import com.monkeycode.liquidui.ui.components.LiquidBottomTabs
 import com.monkeycode.liquidui.ui.components.LocalGlassBackdrop
 import com.monkeycode.liquidui.ui.components.LocalGlassContentBackdrop
 import com.monkeycode.liquidui.ui.components.LocalGlassDialogHost
+import com.monkeycode.liquidui.ui.motion.Motion
 import com.monkeycode.liquidui.ui.screens.AppSettingsState
 import com.monkeycode.liquidui.ui.screens.ComponentsScreen
 import com.monkeycode.liquidui.ui.screens.HomeScreen
@@ -99,15 +108,32 @@ fun AppRoot(settings: AppSettingsState) {
     val dialogHost = remember { GlassDialogHost() }
 
     val screenContent: @Composable () -> Unit = {
-        when (screens[selectedIndex]) {
-            Screen.Home -> HomeScreen(
-                settings = settings,
-                onOpenComponents = { selectedIndex = Screen.Components.ordinal },
-                onOpenMotion = { selectedIndex = Screen.Motion.ordinal }
-            )
-            Screen.Components -> ComponentsScreen()
-            Screen.Motion -> MotionScreen(settings = settings)
-            Screen.Settings -> SettingsScreen(settings = settings)
+        val currentChrome = LocalAppChrome.current
+        val bounceSpec = if (currentChrome.reducedMotion) {
+            tween<Float>(Motion.Duration.Fast)
+        } else {
+            Motion.bouncy(0.001f)
+        }
+        AnimatedContent(
+            targetState = selectedIndex,
+            transitionSpec = {
+                (scaleIn(initialScale = 0.94f, animationSpec = bounceSpec) +
+                    fadeIn(animationSpec = tween(Motion.Duration.Fast))) togetherWith
+                    (scaleOut(targetScale = 0.97f, animationSpec = tween(Motion.Duration.Fast)) +
+                        fadeOut(animationSpec = tween(Motion.Duration.Fast)))
+            },
+            label = "screenSwitch"
+        ) { index ->
+            when (screens[index]) {
+                Screen.Home -> HomeScreen(
+                    settings = settings,
+                    onOpenComponents = { selectedIndex = Screen.Components.ordinal },
+                    onOpenMotion = { selectedIndex = Screen.Motion.ordinal }
+                )
+                Screen.Components -> ComponentsScreen()
+                Screen.Motion -> MotionScreen(settings = settings)
+                Screen.Settings -> SettingsScreen(settings = settings)
+            }
         }
     }
 

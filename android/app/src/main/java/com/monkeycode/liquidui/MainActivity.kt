@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.Color
 import com.monkeycode.liquidui.ui.motion.Motion
 import com.monkeycode.liquidui.ui.navigation.AppRoot
 import com.monkeycode.liquidui.ui.screens.rememberAppSettingsState
@@ -22,6 +23,8 @@ class MainActivity : ComponentActivity() {
                 themeMode = settings.themeMode,
                 visualMode = settings.visualMode,
                 palette = settings.palette,
+                customSeed = Color(settings.customSeed),
+                customShade = settings.customShade,
                 chrome = AppChrome(
                     visualMode = settings.visualMode,
                     glassOpacity = settings.glassOpacity,

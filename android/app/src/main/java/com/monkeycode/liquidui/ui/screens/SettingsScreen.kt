@@ -1,8 +1,11 @@
 package com.monkeycode.liquidui.ui.screens
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -30,16 +33,23 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import com.monkeycode.liquidui.ui.components.CompactSwitch
 import com.monkeycode.liquidui.ui.components.GlassCard
+import com.monkeycode.liquidui.ui.components.GradientBar
 import com.monkeycode.liquidui.ui.components.InfoBanner
 import com.monkeycode.liquidui.ui.components.PreferenceCard
 import com.monkeycode.liquidui.ui.components.PreferenceRow
@@ -132,6 +142,10 @@ fun SettingsScreen(settings: AppSettingsState) {
                     )
                     Spacer(Modifier.height(12.dp))
                     PaletteChips(settings)
+                    if (settings.palette == PaletteId.Custom) {
+                        Spacer(Modifier.height(14.dp))
+                        CustomPalettePicker(settings)
+                    }
                 }
             }
         }
@@ -239,6 +253,28 @@ fun SettingsScreen(settings: AppSettingsState) {
             }
         }
 
+        item { SectionTitle("通知") }
+        item {
+            PreferenceCard {
+                Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp)) {
+                    Text(
+                        text = "发送测试通知",
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Medium,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Spacer(Modifier.height(4.dp))
+                    Text(
+                        text = "向系统发一条即时通知作为预览，正文使用当前主题主色着色（Android 13+ 首次需授权）",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(Modifier.height(12.dp))
+                    NotificationPreviewButton(Modifier.fillMaxWidth())
+                }
+            }
+        }
+
         item { SectionTitle("关于") }
         item {
             GlassCard(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
@@ -250,7 +286,7 @@ fun SettingsScreen(settings: AppSettingsState) {
                     )
                     Spacer(Modifier.weight(1f))
                     Text(
-                        text = "v1.1.3",
+                        text = "v1.2.0",
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -416,4 +452,128 @@ private fun SliderCard(
             )
         )
     }
+}
+
+/** HSV wheel for the free seed colour, plus a depth slider. */
+@Composable
+private fun CustomPalettePicker(settings: AppSettingsState) {
+    var hue by remember { mutableFloatStateOf(0f) }
+    var saturation by remember { mutableFloatStateOf(0.5f) }
+    var value by remember { mutableFloatStateOf(1f) }
+    LaunchedEffect(settings.customSeed) {
+        val hsv = FloatArray(3)
+        android.graphics.Color.colorToHSV(settings.customSeed, hsv)
+        hue = hsv[0]
+        saturation = hsv[1]
+        value = hsv[2]
+    }
+
+    fun commit() {
+        settings.updateCustomSeed(
+            Color(android.graphics.Color.HSVToColor(floatArrayOf(hue, saturation, value)))
+        )
+    }
+
+    Column {
+        Text(
+            text = "种子色",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Spacer(Modifier.height(8.dp))
+        GradientBar(
+            colors = (0..24).map {
+                Color(android.graphics.Color.HSVToColor(floatArrayOf(it * 15f, 1f, 1f)))
+            },
+            fraction = hue / 360f,
+            onFractionChange = { hue = it * 360f; commit() }
+        )
+        Spacer(Modifier.height(6.dp))
+        GradientBar(
+            colors = listOf(
+                Color.White,
+                Color(android.graphics.Color.HSVToColor(floatArrayOf(hue, 1f, value)))
+            ),
+            fraction = saturation,
+            onFractionChange = { saturation = it; commit() }
+        )
+        Spacer(Modifier.height(6.dp))
+        GradientBar(
+            colors = listOf(
+                Color.Black,
+                Color(android.graphics.Color.HSVToColor(floatArrayOf(hue, saturation, 1f)))
+            ),
+            fraction = value,
+            onFractionChange = { value = it; commit() }
+        )
+        Spacer(Modifier.height(14.dp))
+        Text(
+            text = "背景深浅",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Spacer(Modifier.height(4.dp))
+        Slider(
+            value = settings.customShade,
+            onValueChange = settings::updateCustomShade,
+            valueRange = 0f..1f,
+            colors = SliderDefaults.colors(
+                thumbColor = MaterialTheme.colorScheme.primary,
+                activeTrackColor = MaterialTheme.colorScheme.primary,
+                inactiveTrackColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
+            )
+        )
+    }
+}
+
+/** Fires a themed preview notification. Ensures a channel exists first. */
+@Composable
+private fun NotificationPreviewButton(modifier: Modifier = Modifier) {
+    val context = LocalContext.current
+    val primary = MaterialTheme.colorScheme.primary
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        if (granted) sendNotificationPreview(context, primary)
+    }
+    PrimaryButton(
+        onClick = {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                val granted = ContextCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) == PackageManager.PERMISSION_GRANTED
+                if (granted) sendNotificationPreview(context, primary)
+                else permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            } else {
+                sendNotificationPreview(context, primary)
+            }
+        },
+        modifier = modifier
+    ) {
+        Text("发送")
+    }
+}
+
+/** Fires a themed preview notification. Ensures a channel exists first. */
+private fun sendNotificationPreview(context: Context, accent: Color) {
+    val channelId = "liquid_preview"
+    val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        val channel = NotificationChannel(
+            channelId,
+            "即时预览",
+            NotificationManager.IMPORTANCE_DEFAULT
+        )
+        channel.description = "Liquid Motion UI 主题预览通知"
+        manager.createNotificationChannel(channel)
+    }
+    val builder = android.app.Notification.Builder(context, channelId)
+        .setContentTitle("Liquid Motion UI")
+        .setContentText("当前主题的即时预览 · 玻璃质感")
+        .setAutoCancel(true)
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        builder.setColor(accent.toArgb())
+    }
+    manager.notify(1001, builder.build())
 }

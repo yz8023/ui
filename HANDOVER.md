@@ -260,6 +260,33 @@ release 变体（含 backdrop-android，不依赖 `material-icons-extended`）�
   MainActivity/设置页「生效中的 chrome」文案全部改判 `VisualMode`）；版本
   versionCode=3 / versionName=1.1.3。
 
+## 13.4. v1.2.0 控件可拖拽 + 平滑换肤 + 自定义取色 + 通知预览 + 切屏动效
+
+- **开关与分段控件可拖拽（需求①）**：`CompactSwitch` 拇指可水平拖动（`Animatable` +
+  `detectHorizontalDragGestures`，拖动中实时跟随并屏蔽回弹，松手按 0.5 阈值弹簧吸附并反写
+  状态）；`SegmentedTabs` 支持全轨拖动（`onSizeChanged` 取宽、dragAmount/step 换算
+  fraction、松手吸附最近段）。两者容器统一走 `liquidGlass`，随 `visualMode` 三态自动
+  降级为实心 Material（Glass.kt:169），「玻璃模式用玻璃材质」天然成立，无需逐控件加开关。
+- **日夜模式平滑过渡（需求②）**：`Theme.kt` 新增 `rememberAnimatedColorScheme`——用
+  `animateColorAsState` + `tween(Standard)` 对 ColorScheme 全部 37 个角色逐项交叉淡化，
+  `LiquidUITheme` 的 MaterialTheme/状态栏/导航栏/侧栏背景全部改用动画后的 scheme，
+  避免模式切换瞬间闪烁刺眼；reducedMotion 时直接取终态无色。
+
+- **自定义背景配色（需求④）**：`PaletteId` 新增 `Custom("自定义")`；`AppSettingsState`
+  增加 `customSeed`（KEY_CUSTOM_SEED，默认 #3E8FE0）与 `customShade`（KEY_CUSTOM_SHADE，
+  默认 0.5）及 update/reset；`Theme.kt` 新增 `seedSchemeFor`——HSV 色相旋转生成
+  secondary/tertiary（±40°）、按亮度判 onColor、背景与表面容器向种子色按 shade 偏移，
+  自由取色即时生效；`LiquidUITheme` 新增 `customSeed/customShade` 参数并透传。
+  设置页外观区选中「自定义」色卡后展开 HSV 取色区：三根 `GradientBar`（色相/饱和/明度）
+  + 深浅滑块，自绘实现、零新依赖。
+- **通知预览（需求③）**：Manifest 加 `POST_NOTIFICATIONS`；设置页新增「通知」区
+  「发送测试通知」按钮（API 33+ 先运行时授权），创建 `liquid_preview` 即时通道并发送，
+  通知着色取当前主题主色。
+- **切屏弹性动效（需求⑤）**：AppRoot 用 `AnimatedContent` 包住当前屏，入场
+  `scaleIn(0.94)+fadeIn` 走 `Motion.bouncy` 弹簧（还原 motion-web 的弹性），退场轻缩淡出，
+  reducedMotion 退化为时长 180ms 的 tween。
+- **版本**：versionCode=4 / versionName=1.2.0。
+
 ## 14. 交接推送状态
 
 - [ ] 已推送交接代码到远程（需用户确认并授权）
