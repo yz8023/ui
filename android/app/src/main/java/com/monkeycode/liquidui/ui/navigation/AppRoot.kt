@@ -23,6 +23,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.platform.LocalContext
@@ -117,8 +118,17 @@ fun AppRoot(settings: AppSettingsState) {
         Box(Modifier.fillMaxSize().background(surfaceColor)) {
             if (glassEnabled || wallpaperBackground) {
                 Box(Modifier.matchParentSize().layerBackdrop(auroraBackdrop)) {
-                    if (glassEnabled && wallpaperDrawable == null) {
-                        AuroraBackground(Modifier.matchParentSize()) {}
+                    when {
+                        wallpaperDrawable != null -> {
+                            // Visible wallpaper: draw it as real content so it shows
+                            // on screen AND is captured by the sampled layer above.
+                            Box(
+                                Modifier
+                                    .matchParentSize()
+                                    .drawBehind { drawWallpaperCover(wallpaperDrawable) }
+                            )
+                        }
+                        glassEnabled -> AuroraBackground(Modifier.matchParentSize()) {}
                     }
                 }
                 Box(Modifier.matchParentSize().layerBackdrop(contentBackdrop)) {

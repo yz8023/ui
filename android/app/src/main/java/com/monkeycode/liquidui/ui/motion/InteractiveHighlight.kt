@@ -27,8 +27,9 @@ class InteractiveHighlight(
     private val animationScope: CoroutineScope,
     private val position: (size: Size, offset: Offset) -> Offset = { _, offset -> offset }
 ) {
-    private val pressProgressAnimationSpec = spring(0.5f, 300f, 0.001f)
-    private val positionAnimationSpec = spring(0.5f, 300f, Offset.VisibilityThreshold)
+    private val pressProgressAnimationSpec = spring(Motion.DampedRatio(0.5f), 300f, 0.001f)
+    private val positionAnimationSpec =
+        spring(Motion.DampedRatio(0.5f), 300f, Offset.VisibilityThreshold)
     private val pressProgressAnimation = Animatable(0f, 0.001f)
     private val positionAnimation =
         Animatable(Offset.Zero, Offset.VectorConverter, Offset.VisibilityThreshold)

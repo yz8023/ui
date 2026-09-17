@@ -61,6 +61,7 @@ import com.kyant.shapes.Capsule
 import com.monkeycode.liquidui.ui.motion.DampedDragAnimation
 import com.monkeycode.liquidui.ui.motion.InteractiveHighlight
 import com.monkeycode.liquidui.ui.motion.Motion
+import com.monkeycode.liquidui.ui.theme.LocalAppChrome
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
@@ -92,7 +93,10 @@ fun LiquidBottomTabs(
     content: @Composable RowScope.() -> Unit
 ) {
     val isLightTheme = !isSystemInDarkTheme()
-    val containerColor = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.4f)
+    val chrome = LocalAppChrome.current
+    val opacity = chrome.glassOpacity.coerceIn(0f, 1f)
+    val refraction = chrome.glassRefraction.coerceIn(0f, 1f)
+    val containerColor = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.10f + opacity * 0.55f)
     val accentColor = MaterialTheme.colorScheme.primary
     val contentColor = MaterialTheme.colorScheme.onSurface
     val tabsBackdrop = rememberLayerBackdrop()
@@ -123,7 +127,8 @@ fun LiquidBottomTabs(
         var instance: DampedDragAnimation? = null
     }
     val animationHolder = remember { DampedDragAnimationHolder() }
-    val dampedDragAnimation = remember(animationScope, tabsCount, density, isLtr) {
+    val damping = Motion.motionDamping.floatValue
+    val dampedDragAnimation = remember(animationScope, tabsCount, density, isLtr, damping) {
         DampedDragAnimation(
             animationScope = animationScope,
             initialValue = selectedTabIndex().toFloat(),
@@ -183,7 +188,7 @@ fun LiquidBottomTabs(
             }
     }
 
-    val interactiveHighlight = remember(animationScope, tabWidthPx) {
+    val interactiveHighlight = remember(animationScope, tabWidthPx, damping) {
         InteractiveHighlight(
             animationScope = animationScope,
             position = { size, _ ->
@@ -225,7 +230,9 @@ fun LiquidBottomTabs(
                         effects = {
                             vibrancy()
                             blur(4f.dp.toPx())
-                            lens(24f.dp.toPx(), 24f.dp.toPx())
+                            if (refraction > 0.01f) {
+                                lens(24f.dp.toPx() * refraction, 24f.dp.toPx() * refraction)
+                            }
                         },
                         highlight = {
                             Highlight.Default.copy(alpha = 0.75f)
@@ -277,7 +284,9 @@ fun LiquidBottomTabs(
                             effects = {
                                 vibrancy()
                                 blur(4f.dp.toPx())
-                                lens(24f.dp.toPx(), 24f.dp.toPx())
+                                if (refraction > 0.01f) {
+                                    lens(24f.dp.toPx() * refraction, 24f.dp.toPx() * refraction)
+                                }
                             },
                             onDrawSurface = { drawRect(containerColor) }
                         )
@@ -309,8 +318,8 @@ fun LiquidBottomTabs(
                             effects = {
                                 val progress = dampedDragAnimation.pressProgress
                                 lens(
-                                    10f.dp.toPx() * progress,
-                                    14f.dp.toPx() * progress,
+                                    10f.dp.toPx() * progress * refraction,
+                                    14f.dp.toPx() * progress * refraction,
                                     depthEffect = true,
                                     chromaticAberration = true
                                 )

@@ -205,7 +205,9 @@ git commit -m "feat: Liquid Motion UI template (glass + motion)"
 git push origin <branch>
 ```
 
-版本信息：`versionCode = 1`，`versionName = "1.1.1"`（`app/build.gradle.kts`）。
+版本信息：`versionCode = 2`，`versionName = "1.1.2"`（`app/build.gradle.kts`）。
+产物：debug APK 约 **11.5 MB**；release APK（R8 压缩）约 **1.4 MB** —— 推荐交付
+release 变体（含 backdrop-android，不依赖 `material-icons-extended`）。
 
 ## 13.1. v1.1.1 修复（真机反馈）
 
@@ -222,6 +224,24 @@ git push origin <branch>
   与 aurora 底色同步细化。
 - **新增三套风格**：珊瑚 / 樱花 / 星夜，`PaletteId` 现有 7 套；设置页配色改为
   自动换行的色卡 chips（FlowRow），不再挤在单行 SegmentedTabs。
+
+## 13.2. v1.1.2 修复（真机反馈二轮）
+
+- **修复壁纸背景不显示**：旧版壁纸只被 `auroraBackdrop` 采样层录制、没画到屏幕
+  （页面玻璃面板能折射到壁纸，但底图始终是纯色 `surfaceColor`）。现在壁纸作为
+  **可见内容**（`drawBehind`）绘制进根 Box，同时仍被采样层捕获 —— 直接可见 + 玻璃折射兼得。
+- **修复底栏不响应玻璃设置**：`LiquidBottomTabs` 的容器胶囊曾硬编码
+  `alpha = 0.4f` 与 `lens(24dp)`，运动胶囊硬编码 `lens(10dp/14dp)`，全部改读
+  `AppChrome.glassOpacity` / `glassRefraction`（与 `GlassCard` 同一套口径，默认值视觉不变）。
+- **修复底栏不响应阻尼旋钮**：`DampedDragAnimation` 与 `InteractiveHighlight`
+  的弹簧阻尼虽已走 `Motion.DampedRatio(...)`，但规格在 `remember` 时冻结（key 不含
+  `motionDamping`）。现在 `LiquidBottomTabs` 两个 `remember` 都加上 `damping` 作为 key，
+  `InteractiveHighlight` 的 `press/position` 两弹簧改用 `Motion.DampedRatio(0.5f)`，
+  阻尼滑块一拖全部弹簧重算。
+- **APK 体积瘦身**：交付变体切到 release（`minifyEnabled + shrinkResources`），
+  R8 将 11.5MB → **1.38MB**；CI 工作流同步改构建并上传 release APK。
+- **构建资源**：release 构建 R8 阶段内存峰值高（本机 OOM 过），需给后台终端
+  分配 ≥45% 内存预算；`-x lintVitalRelease` 可跳过 lint 以提速。
 
 ## 14. 交接推送状态
 
