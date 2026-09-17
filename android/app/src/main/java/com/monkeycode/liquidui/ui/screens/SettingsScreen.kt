@@ -49,6 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import com.monkeycode.liquidui.R
 import com.monkeycode.liquidui.ui.components.CompactSwitch
+import com.monkeycode.liquidui.ui.components.ColorWheel
 import com.monkeycode.liquidui.ui.components.GlassCard
 import com.monkeycode.liquidui.ui.components.GradientBar
 import com.monkeycode.liquidui.ui.components.InfoBanner
@@ -477,37 +478,24 @@ private fun CustomPalettePicker(settings: AppSettingsState) {
 
     Column {
         Text(
-            text = "种子色",
+            text = "种子色 · 在色盘上点击/拖动取色，右侧滑条调深浅",
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
-        Spacer(Modifier.height(8.dp))
-        GradientBar(
-            colors = (0..24).map {
-                Color(android.graphics.Color.HSVToColor(floatArrayOf(it * 15f, 1f, 1f)))
+        Spacer(Modifier.height(10.dp))
+        ColorWheel(
+            hue = hue,
+            saturation = saturation,
+            value = value,
+            onColorChange = { h, s, v ->
+                hue = h
+                saturation = s
+                value = v
+                commit()
             },
-            fraction = hue / 360f,
-            onFractionChange = { hue = it * 360f; commit() }
+            modifier = Modifier.fillMaxWidth()
         )
-        Spacer(Modifier.height(6.dp))
-        GradientBar(
-            colors = listOf(
-                Color.White,
-                Color(android.graphics.Color.HSVToColor(floatArrayOf(hue, 1f, value)))
-            ),
-            fraction = saturation,
-            onFractionChange = { saturation = it; commit() }
-        )
-        Spacer(Modifier.height(6.dp))
-        GradientBar(
-            colors = listOf(
-                Color.Black,
-                Color(android.graphics.Color.HSVToColor(floatArrayOf(hue, saturation, 1f)))
-            ),
-            fraction = value,
-            onFractionChange = { value = it; commit() }
-        )
-        Spacer(Modifier.height(14.dp))
+        Spacer(Modifier.height(16.dp))
         Text(
             text = "背景深浅",
             style = MaterialTheme.typography.bodySmall,

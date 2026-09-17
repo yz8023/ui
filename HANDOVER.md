@@ -277,8 +277,8 @@ release 变体（含 backdrop-android，不依赖 `material-icons-extended`）�
   默认 0.5）及 update/reset；`Theme.kt` 新增 `seedSchemeFor`——HSV 色相旋转生成
   secondary/tertiary（±40°）、按亮度判 onColor、背景与表面容器向种子色按 shade 偏移，
   自由取色即时生效；`LiquidUITheme` 新增 `customSeed/customShade` 参数并透传。
-  设置页外观区选中「自定义」色卡后展开 HSV 取色区：三根 `GradientBar`（色相/饱和/明度）
-  + 深浅滑块，自绘实现、零新依赖。
+  设置页外观区选中「自定义」色卡后展开取色器：圆形 HSV 色盘（色相绕环、饱和沿半径，
+  点击/拖动无极取色）+ 右侧明度滑条，另配背景深浅滑块；自绘实现、零新依赖。
 - **通知预览（需求③）**：Manifest 加 `POST_NOTIFICATIONS`；设置页新增「通知」区
   「发送测试通知」按钮（API 33+ 先运行时授权），创建 `liquid_preview` 即时通道并发送，
   通知着色取当前主题主色。

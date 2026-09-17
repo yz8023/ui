@@ -3,9 +3,11 @@ package com.monkeycode.liquidui.ui.components
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -38,9 +40,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
@@ -52,7 +56,12 @@ import androidx.compose.ui.util.lerp
 import com.monkeycode.liquidui.ui.motion.Motion
 import com.monkeycode.liquidui.ui.motion.pressScale
 import com.monkeycode.liquidui.ui.theme.AppShape
+import kotlin.math.PI
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.hypot
 import kotlin.math.roundToInt
+import kotlin.math.sin
 import kotlinx.coroutines.launch
 
 /** Primary action. Snappy press weight, no ripple. */
@@ -304,6 +313,208 @@ fun GradientBar(
                 .background(Color.White, CircleShape)
                 .border(1.dp, MaterialTheme.colorScheme.outlineVariant, CircleShape)
         )
+    }
+}
+
+/**
+ * A full HSV colour wheel: hue around the circle, saturation along the radius,
+ * plus a vertical brightness (value) slider. Tap or drag anywhere on the disc
+ * for continuous hue/saturation picking; drag the rail for 0..1 value.
+ */
+@Composable
+fun ColorWheel(
+    hue: Float,
+    saturation: Float,
+    value: Float,
+    onColorChange: (hue: Float, saturation: Float, value: Float) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val density = LocalDensity.current
+    val ringInset = with(density) { 6.dp.toPx() }
+    val railWidth = with(density) { 24.dp.toPx() }
+    val thumbAccent = MaterialTheme.colorScheme.primary
+    var discSizePx by remember { mutableIntStateOf(0) }
+
+    fun hueSatFromPos(x: Float, y: Float, cx: Float, cy: Float, outerR: Float): Pair<Float, Float> {
+        val dx = x - cx
+        val dy = y - cy
+        val radius = hypot(dx, dy).coerceAtMost(outerR)
+        val angle = (atan2(dy, dx) * 180f / PI.toFloat() + 360f) % 360f
+        return angle to (radius / outerR).coerceIn(0f, 1f)
+    }
+
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .size(200.dp)
+                .onSizeChanged { discSizePx = it.width }
+                .pointerInput(discSizePx) {
+                    detectDragGestures(
+                        onDragStart = { offset ->
+                            val r = discSizePx / 2f - ringInset
+                            val (h, s) = hueSatFromPos(
+                                offset.x, offset.y,
+                                discSizePx / 2f, discSizePx / 2f, r
+                            )
+                            onColorChange(h, s, value)
+                        },
+                        onDrag = { change, _ ->
+                            change.consume()
+                            val r = discSizePx / 2f - ringInset
+                            val (h, s) = hueSatFromPos(
+                                change.position.x, change.position.y,
+                                discSizePx / 2f, discSizePx / 2f, r
+                            )
+                            onColorChange(h, s, value)
+                        }
+                    )
+                }
+                .pointerInput(discSizePx) {
+                    detectTapGestures { offset ->
+                        val r = discSizePx / 2f - ringInset
+                        val (h, s) = hueSatFromPos(
+                            offset.x, offset.y,
+                            discSizePx / 2f, discSizePx / 2f, r
+                        )
+                        onColorChange(h, s, value)
+                    }
+                }
+        ) {
+            Canvas(Modifier.matchParentSize()) {
+                val cx = size.width / 2f
+                val cy = size.height / 2f
+                val outerR = size.minDimension / 2f - ringInset
+
+                // Saturation disc at the current hue, then value overlay.
+                val base = Color(
+                    android.graphics.Color.HSVToColor(floatArrayOf(hue, 1f, value))
+                )
+                drawCircle(
+                    brush = Brush.radialGradient(
+                        colors = listOf(
+                            Color(
+                                android.graphics.Color.HSVToColor(
+                                    floatArrayOf(hue, 0f, value.coerceAtLeast(0.15f))
+                                )
+                            ),
+                            base
+                        ),
+                        center = Offset(cx, cy),
+                        radius = outerR
+                    ),
+                    radius = outerR,
+                    center = Offset(cx, cy)
+                )
+                if (value < 1f) {
+                    drawRect(
+                        brush = Brush.verticalGradient(
+                            listOf(Color.Transparent, Color.Black.copy(alpha = 1f - value))
+                        )
+                    )
+                }
+
+                // Hue ring around the disc.
+                val ringColors = (0..23).map {
+                    Color(
+                        android.graphics.Color.HSVToColor(floatArrayOf(it * 15f, 1f, 1f))
+                    )
+                }
+                drawArc(
+                    brush = Brush.sweepGradient(ringColors, Offset(cx, cy)),
+                    startAngle = -90f,
+                    sweepAngle = 360f,
+                    useCenter = false,
+                    topLeft = Offset(cx - outerR - 4.dp.toPx(), cy - outerR - 4.dp.toPx()),
+                    size = androidx.compose.ui.geometry.Size(
+                        (outerR + 4.dp.toPx()) * 2f,
+                        (outerR + 4.dp.toPx()) * 2f
+                    ),
+                    style = Stroke(width = 8.dp.toPx())
+                )
+
+                // Selection marker on the ring and on the disc.
+                val markerAngle = hue * PI.toFloat() / 180f
+                val markerR = outerR + 8.dp.toPx() / 2f
+                drawCircle(
+                    color = Color.White,
+                    radius = 5.dp.toPx(),
+                    center = Offset(
+                        cx + cos(markerAngle) * markerR,
+                        cy + sin(markerAngle) * markerR
+                    )
+                )
+                val dotR = saturation.coerceIn(0f, 1f) * (outerR - 10.dp.toPx())
+                val dotCenter = Offset(
+                    cx + cos(markerAngle) * dotR,
+                    cy + sin(markerAngle) * dotR
+                )
+                drawCircle(color = Color.Black.copy(alpha = 0.6f), radius = 8.dp.toPx(), center = dotCenter)
+                drawCircle(color = Color.White, radius = 6.dp.toPx(), center = dotCenter)
+            }
+        }
+
+        // Brightness / depth rail.
+        var railHeightPx by remember { mutableIntStateOf(0) }
+        val railHeight = 180.dp
+        Box(
+            modifier = Modifier
+                .width(24.dp)
+                .height(railHeight)
+                .onSizeChanged { railHeightPx = it.height }
+                .pointerInput(railHeightPx) {
+                    detectDragGestures(
+                        onDragStart = { offset ->
+                            onColorChange(
+                                hue, saturation,
+                                1f - (offset.y / railHeightPx).coerceIn(0f, 1f)
+                            )
+                        },
+                        onDrag = { change, _ ->
+                            change.consume()
+                            onColorChange(
+                                hue, saturation,
+                                1f - (change.position.y / railHeightPx).coerceIn(0f, 1f)
+                            )
+                        }
+                    )
+                }
+                .pointerInput(railHeightPx) {
+                    detectTapGestures { offset ->
+                        onColorChange(
+                            hue, saturation,
+                            1f - (offset.y / railHeightPx).coerceIn(0f, 1f)
+                        )
+                    }
+                }
+        ) {
+            Canvas(Modifier.matchParentSize()) {
+                val rail = Brush.verticalGradient(
+                    listOf(
+                        Color(android.graphics.Color.HSVToColor(floatArrayOf(hue, saturation, 1f))),
+                        Color.Black
+                    )
+                )
+                drawRoundRect(
+                    brush = rail,
+                    cornerRadius = androidx.compose.ui.geometry.CornerRadius(railWidth / 2f)
+                )
+                val thumbY = (1f - value) * size.height
+                drawCircle(
+                    color = Color.White,
+                    radius = railWidth / 2f,
+                    center = Offset(size.width / 2f, thumbY)
+                )
+                drawCircle(
+                    color = thumbAccent,
+                    radius = railWidth / 2f - 3.dp.toPx(),
+                    center = Offset(size.width / 2f, thumbY)
+                )
+            }
+        }
     }
 }
 
