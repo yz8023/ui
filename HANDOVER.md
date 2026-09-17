@@ -205,7 +205,23 @@ git commit -m "feat: Liquid Motion UI template (glass + motion)"
 git push origin <branch>
 ```
 
-版本信息：`versionCode = 1`，`versionName = "1.0.0"`（`app/build.gradle.kts`）。
+版本信息：`versionCode = 1`，`versionName = "1.1.1"`（`app/build.gradle.kts`）。
+
+## 13.1. v1.1.1 修复（真机反馈）
+
+- **修复壁纸背景崩溃**：`WallpaperManager.getDrawable()` 在 API 31+ 需媒体权限，
+  AppRoot 已 try/catch 降级到 aurora；Manifest 声明 `READ_MEDIA_IMAGES` +
+  `READ_EXTERNAL_STORAGE(maxSdk 32)`；设置页首次开启前用 ActivityResult 请求权限，
+  授权后才持久化开启。
+- **弹窗真玻璃 + 动效**：新增 `LocalGlassContentBackdrop`（aurora+content 合成层），
+  弹窗卡片改采样该层——折射背后真实页面，幕帘不打进卡片采样；卡片入场缩放+淡入
+  （弹簧 + tween）。
+- **修复开关变形**：`CompactSwitch` 拇指竖直居中（`contentAlignment = CenterStart`），
+  不再顶到上边。
+- **暗色主题美化**：深色中性色 Night 系列转冷调深蓝，`surfaceContainerHigh/Highest`
+  与 aurora 底色同步细化。
+- **新增三套风格**：珊瑚 / 樱花 / 星夜，`PaletteId` 现有 7 套；设置页配色改为
+  自动换行的色卡 chips（FlowRow），不再挤在单行 SegmentedTabs。
 
 ## 14. 交接推送状态
 

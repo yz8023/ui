@@ -75,12 +75,18 @@
   body[data-palette="mint"]   { --blue: #5fdba8; --blue-container: #0b4d3a; }
   body[data-palette="sunset"] { --blue: #ffb77a; --blue-container: #6c3600; }
   body[data-palette="mono"]   { --blue: #a5c8dd; --blue-container: #293e4d; }
-  .dot { width: 22px; height: 22px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: border-color 200ms, transform 160ms; }
+  body[data-palette="coral"]  { --blue: #ffb4a5; --blue-container: #7b2f25; }
+  body[data-palette="sakura"] { --blue: #ffb1c7; --blue-container: #723349; }
+  body[data-palette="galaxy"] { --blue: #b4c5ff; --blue-container: #303d8c; }
+  .dot { width: 20px; height: 20px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: border-color 200ms, transform 160ms; }
   .dot.on { border-color: var(--text); transform: scale(1.12); }
   .dot-aurora  { background: #9dccff; }
   .dot-mint    { background: #5fdba8; }
   .dot-sunset  { background: #ffb77a; }
   .dot-mono    { background: #a5c8dd; }
+  .dot-coral   { background: #ffb4a5; }
+  .dot-sakura  { background: #ffb1c7; }
+  .dot-galaxy  { background: #b4c5ff; }
   .ref { font-size: 12px; color: var(--text-soft); padding: 2px 0; }
   .ref b { color: var(--blue); font-weight: 600; }
 
@@ -344,6 +350,9 @@
             <div class="dot dot-mint" data-palette="mint" title="薄荷"></div>
             <div class="dot dot-sunset" data-palette="sunset" title="落日"></div>
             <div class="dot dot-mono" data-palette="mono" title="素灰"></div>
+            <div class="dot dot-coral" data-palette="coral" title="珊瑚"></div>
+            <div class="dot dot-sakura" data-palette="sakura" title="樱花"></div>
+            <div class="dot dot-galaxy" data-palette="galaxy" title="星夜"></div>
           </div>
           <div class="row" style="padding-top:10px"><span class="lbl">桌面壁纸背景</span><div class="switch"></div></div>
           <div class="row"><span class="lbl">动效阻尼</span><input class="slider" type="range" min="0" max="100" value="50" style="width:64%" /></div>

@@ -21,12 +21,15 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 
-/** The four colour themes the settings page switches between. */
+/** The colour themes the settings page switches between. */
 enum class PaletteId(val label: String) {
     Aurora("冰蓝"),
     Mint("薄荷"),
     Sunset("落日"),
-    Mono("素灰")
+    Mono("素灰"),
+    Coral("珊瑚"),
+    Sakura("樱花"),
+    Galaxy("星夜")
 }
 
 /** Light-mode primary of a palette — used for swatch previews in settings. */
@@ -118,6 +121,60 @@ private val PaletteSeeds = mapOf(
             secondary = MonoDarkSecondary,
             tertiary = MonoDarkTertiary
         )
+    ),
+    PaletteId.Coral to PaletteSeed(
+        light = ColorSchemeSeed(
+            primary = CoralLightPrimary,
+            onPrimary = Color.White,
+            primaryContainer = CoralLightContainer,
+            onPrimaryContainer = Color(0xFF3B0800),
+            secondary = CoralLightSecondary,
+            tertiary = CoralLightTertiary
+        ),
+        dark = ColorSchemeSeed(
+            primary = CoralDarkPrimary,
+            onPrimary = Color(0xFF581007),
+            primaryContainer = CoralDarkContainer,
+            onPrimaryContainer = Color(0xFFFFDAD3),
+            secondary = CoralDarkSecondary,
+            tertiary = CoralDarkTertiary
+        )
+    ),
+    PaletteId.Sakura to PaletteSeed(
+        light = ColorSchemeSeed(
+            primary = SakuraLightPrimary,
+            onPrimary = Color.White,
+            primaryContainer = SakuraLightContainer,
+            onPrimaryContainer = Color(0xFF3A001F),
+            secondary = SakuraLightSecondary,
+            tertiary = SakuraLightTertiary
+        ),
+        dark = ColorSchemeSeed(
+            primary = SakuraDarkPrimary,
+            onPrimary = Color(0xFF551A2D),
+            primaryContainer = SakuraDarkContainer,
+            onPrimaryContainer = Color(0xFFFFD9E2),
+            secondary = SakuraDarkSecondary,
+            tertiary = SakuraDarkTertiary
+        )
+    ),
+    PaletteId.Galaxy to PaletteSeed(
+        light = ColorSchemeSeed(
+            primary = GalaxyLightPrimary,
+            onPrimary = Color.White,
+            primaryContainer = GalaxyLightContainer,
+            onPrimaryContainer = Color(0xFF00196B),
+            secondary = GalaxyLightSecondary,
+            tertiary = GalaxyLightTertiary
+        ),
+        dark = ColorSchemeSeed(
+            primary = GalaxyDarkPrimary,
+            onPrimary = Color(0xFF14237A),
+            primaryContainer = GalaxyDarkContainer,
+            onPrimaryContainer = Color(0xFFDDE1FF),
+            secondary = GalaxyDarkSecondary,
+            tertiary = GalaxyDarkTertiary
+        )
     )
 )
 
@@ -137,9 +194,9 @@ private fun schemeFor(palette: PaletteId, dark: Boolean): ColorScheme {
             onSurface = NightText,
             surfaceContainer = NightContainer,
             surfaceContainerLow = NightContainerLow,
-            surfaceContainerLowest = Color(0xFF0C1013),
-            surfaceContainerHigh = Color(0xFF232C35),
-            surfaceContainerHighest = Color(0xFF2A343E),
+            surfaceContainerLowest = Color(0xFF0A0E14),
+            surfaceContainerHigh = Color(0xFF202934),
+            surfaceContainerHighest = Color(0xFF26313E),
             surfaceVariant = Color(0xFF41484F),
             onSurfaceVariant = Color(0xFFC1C7CE),
             outline = Color(0xFF8B929A),

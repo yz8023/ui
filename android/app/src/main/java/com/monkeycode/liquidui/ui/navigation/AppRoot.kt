@@ -37,6 +37,7 @@ import com.monkeycode.liquidui.ui.components.GlassDialogHost
 import com.monkeycode.liquidui.ui.components.LiquidBottomTab
 import com.monkeycode.liquidui.ui.components.LiquidBottomTabs
 import com.monkeycode.liquidui.ui.components.LocalGlassBackdrop
+import com.monkeycode.liquidui.ui.components.LocalGlassContentBackdrop
 import com.monkeycode.liquidui.ui.components.LocalGlassDialogHost
 import com.monkeycode.liquidui.ui.screens.AppSettingsState
 import com.monkeycode.liquidui.ui.screens.ComponentsScreen
@@ -70,7 +71,15 @@ fun AppRoot(settings: AppSettingsState) {
     val context = LocalContext.current
     val wallpaperDrawable = remember(wallpaperBackground, context) {
         if (wallpaperBackground) {
-            WallpaperManager.getInstance(context).drawable
+            try {
+                // Reading the wallpaper requires a media permission on API 31+;
+                // degrade to the aurora layer when missing or unavailable.
+                WallpaperManager.getInstance(context).drawable
+            } catch (e: SecurityException) {
+                null
+            } catch (e: RuntimeException) {
+                null
+            }
         } else null
     }
 
@@ -82,6 +91,9 @@ fun AppRoot(settings: AppSettingsState) {
         drawContent()
     }
     val contentBackdrop = rememberLayerBackdrop { drawContent() }
+    val fullSceneBackdrop = if (glassEnabled) {
+        rememberCombinedBackdrop(auroraBackdrop, contentBackdrop)
+    } else null
     val dialogHost = remember { GlassDialogHost() }
 
     val screenContent: @Composable () -> Unit = {
@@ -99,6 +111,7 @@ fun AppRoot(settings: AppSettingsState) {
 
     CompositionLocalProvider(
         LocalGlassBackdrop provides (if (glassEnabled) auroraBackdrop else null),
+        LocalGlassContentBackdrop provides fullSceneBackdrop,
         LocalGlassDialogHost provides dialogHost
     ) {
         Box(Modifier.fillMaxSize().background(surfaceColor)) {

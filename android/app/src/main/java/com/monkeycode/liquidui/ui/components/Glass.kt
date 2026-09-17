@@ -129,6 +129,16 @@ private data class Blob(
 val LocalGlassBackdrop = staticCompositionLocalOf<Backdrop?> { null }
 
 /**
+ * Full scene backdrop (aurora + page content combined) for same-window overlays.
+ *
+ * Dialog panels sample this instead of [LocalGlassBackdrop] so they refract the
+ * live pages beneath them; a scrim dims everything else, and the panel reads as
+ * a bright glass patch on the dimmed scene. Null when the shell is in normal
+ * (non-glass) layout.
+ */
+val LocalGlassContentBackdrop = staticCompositionLocalOf<Backdrop?> { null }
+
+/**
  * The liquid-glass surface used by every panel in the template.
  *
  * Real backdrop sampling on top of [LocalGlassBackdrop]:

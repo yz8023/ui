@@ -1,10 +1,19 @@
 package com.monkeycode.liquidui.ui.screens
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -21,10 +30,14 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import com.monkeycode.liquidui.ui.components.CompactSwitch
 import com.monkeycode.liquidui.ui.components.GlassCard
 import com.monkeycode.liquidui.ui.components.InfoBanner
@@ -39,6 +52,14 @@ import com.monkeycode.liquidui.ui.theme.PaletteId
 import com.monkeycode.liquidui.ui.theme.ThemeMode
 import com.monkeycode.liquidui.ui.theme.LocalAppChrome
 import com.monkeycode.liquidui.ui.theme.palettePrimaryLight
+
+/** Permission required to read the home-screen wallpaper for the background layer. */
+private fun wallpaperReadPermission(): String =
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        Manifest.permission.READ_MEDIA_IMAGES
+    } else {
+        Manifest.permission.READ_EXTERNAL_STORAGE
+    }
 
 @Composable
 fun SettingsScreen(settings: AppSettingsState) {
@@ -97,35 +118,7 @@ fun SettingsScreen(settings: AppSettingsState) {
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     Spacer(Modifier.height(12.dp))
-                    SegmentedTabs(
-                        labels = PaletteId.entries.map { it.label },
-                        selectedIndex = settings.palette.ordinal,
-                        onSelected = { settings.updatePalette(PaletteId.entries[it]) },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                    Spacer(Modifier.height(12.dp))
-                    Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                        PaletteId.entries.forEach { palette ->
-                            val selected = settings.palette == palette
-                            Box(
-                                modifier = Modifier
-                                    .size(20.dp)
-                                    .background(
-                                        palettePrimaryLight(palette),
-                                        CircleShape
-                                    )
-                                    .then(
-                                        if (selected) {
-                                            Modifier.border(
-                                                2.dp,
-                                                MaterialTheme.colorScheme.onSurface,
-                                                CircleShape
-                                            )
-                                        } else Modifier
-                                    )
-                            )
-                        }
-                    }
+                    PaletteChips(settings)
                 }
             }
         }
@@ -180,12 +173,9 @@ fun SettingsScreen(settings: AppSettingsState) {
                 PreferenceRow(
                     icon = AppIcons.Image,
                     title = "桌面壁纸背景",
-                    subtitle = "用手机桌面壁纸做背景层，玻璃面板折射其上",
+                    subtitle = "用手机桌面壁纸做背景层，玻璃面板折射其上（首次开启需授权媒体权限）",
                     trailing = {
-                        CompactSwitch(
-                            checked = settings.wallpaperBackground,
-                            onCheckedChange = settings::updateWallpaperBackground
-                        )
+                        WallpaperSwitch(settings)
                     }
                 )
             }
@@ -262,7 +252,7 @@ fun SettingsScreen(settings: AppSettingsState) {
                     )
                     Spacer(Modifier.weight(1f))
                     Text(
-                        text = "v1.1.0",
+                        text = "v1.1.1",
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -305,6 +295,87 @@ fun SettingsScreen(settings: AppSettingsState) {
             }
         }
     }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun PaletteChips(settings: AppSettingsState) {
+    FlowRow(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        PaletteId.entries.forEach { palette ->
+            val selected = settings.palette == palette
+            Row(
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .background(
+                        if (selected) {
+                            MaterialTheme.colorScheme.primaryContainer
+                        } else {
+                            MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f)
+                        }
+                    )
+                    .border(
+                        width = 1.dp,
+                        color = if (selected) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.outlineVariant
+                        },
+                        shape = CircleShape
+                    )
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null
+                    ) { settings.updatePalette(palette) }
+                    .padding(horizontal = 12.dp, vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
+                Box(
+                    Modifier
+                        .size(12.dp)
+                        .background(palettePrimaryLight(palette), CircleShape)
+                )
+                Text(
+                    text = palette.label,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = if (selected) {
+                        MaterialTheme.colorScheme.onPrimaryContainer
+                    } else {
+                        MaterialTheme.colorScheme.onSurfaceVariant
+                    }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun WallpaperSwitch(settings: AppSettingsState) {
+    val context = LocalContext.current
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        if (granted) settings.updateWallpaperBackground(true)
+    }
+    CompactSwitch(
+        checked = settings.wallpaperBackground,
+        onCheckedChange = { checked ->
+            if (!checked) {
+                settings.updateWallpaperBackground(false)
+            } else {
+                val granted = ContextCompat.checkSelfPermission(
+                    context,
+                    wallpaperReadPermission()
+                ) == PackageManager.PERMISSION_GRANTED
+                if (granted) settings.updateWallpaperBackground(true)
+                else permissionLauncher.launch(wallpaperReadPermission())
+            }
+        }
+    )
 }
 
 @Composable

@@ -1,6 +1,9 @@
 package com.monkeycode.liquidui.ui.components
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -20,18 +23,21 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.kyant.backdrop.backdrops.layerBackdrop
-import com.kyant.backdrop.backdrops.rememberCombinedBackdrop
 import com.kyant.backdrop.backdrops.rememberLayerBackdrop
+import com.monkeycode.liquidui.ui.motion.Motion
 import com.monkeycode.liquidui.ui.theme.AppShape
+import kotlinx.coroutines.launch
 
 /**
  * Hoists full-window overlays (dialogs) to the app root.
@@ -107,13 +113,16 @@ private fun DialogOverlay(
 ) {
     BackHandler(onBack = onDismissRequest)
 
-    val aurora = LocalGlassBackdrop.current
-    val scrimBackdrop = if (aurora != null) {
-        rememberLayerBackdrop { drawRect(Color.Black.copy(alpha = 0.42f)) }
-    } else null
-    val combined = if (aurora != null && scrimBackdrop != null) {
-        rememberCombinedBackdrop(aurora, scrimBackdrop)
-    } else null
+    val fullScene = LocalGlassContentBackdrop.current
+
+    val cardScale = remember { Animatable(0.88f) }
+    val cardAlpha = remember { Animatable(0f) }
+    LaunchedEffect(Unit) {
+        launch { cardAlpha.animateTo(1f, tween(Motion.Duration.Fast)) }
+        launch { cardScale.animateTo(1f, spring(Motion.DampedRatio(0.7f), 320f, 0.63f)) }
+    }
+
+    val scrimBackdrop = rememberLayerBackdrop { drawRect(Color.Black.copy(alpha = 0.42f)) }
 
     Box(Modifier.fillMaxSize()) {
         val dismissModifier = Modifier
@@ -123,7 +132,7 @@ private fun DialogOverlay(
                 indication = null,
                 onClick = onDismissRequest
             )
-        if (scrimBackdrop != null) {
+        if (fullScene != null) {
             Box(dismissModifier.layerBackdrop(scrimBackdrop))
         } else {
             Box(dismissModifier.background(Color.Black.copy(alpha = 0.45f)))
@@ -134,6 +143,11 @@ private fun DialogOverlay(
                 modifier = modifier
                     .fillMaxWidth(0.92f)
                     .widthIn(max = 520.dp)
+                    .graphicsLayer {
+                        scaleX = cardScale.value
+                        scaleY = cardScale.value
+                        alpha = cardAlpha.value
+                    }
                     .liquidGlass(shape = AppShape.cardLarge, elevation = 12.dp, borderAlpha = 0.5f)
                     .padding(22.dp),
                 verticalArrangement = Arrangement.spacedBy(14.dp)
@@ -159,8 +173,10 @@ private fun DialogOverlay(
             }
         }
 
-        if (combined != null) {
-            CompositionLocalProvider(LocalGlassBackdrop provides combined) {
+        if (fullScene != null) {
+            // Sample the live pages (aurora + content), NOT the scrim, so the
+            // panel reads as a bright glass patch over the dimmed scene.
+            CompositionLocalProvider(LocalGlassBackdrop provides fullScene) {
                 Box(Modifier.align(Alignment.Center)) { card() }
             }
         } else {

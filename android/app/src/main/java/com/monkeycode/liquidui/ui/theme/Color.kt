@@ -20,10 +20,10 @@ internal val Paper = Color(0xFFF8F9FC)
 internal val PaperContainer = Color(0xFFEFF3F8)
 internal val PaperContainerLow = Color(0xFFF2F5F9)
 
-internal val Night = Color(0xFF101418)
-internal val NightContainer = Color(0xFF1D252D)
-internal val NightContainerLow = Color(0xFF171D23)
-internal val NightText = Color(0xFFE3E7EB)
+internal val Night = Color(0xFF0C1118)
+internal val NightContainer = Color(0xFF1A222C)
+internal val NightContainerLow = Color(0xFF141B24)
+internal val NightText = Color(0xFFE6EAF1)
 
 // ---------------------------------------------------------------------------
 // Accents
@@ -75,6 +75,33 @@ internal val MonoDarkContainer = Color(0xFF293E4D)
 internal val MonoDarkSecondary = Color(0xFFB7C8DA)
 internal val MonoDarkTertiary = Color(0xFFCBD2DC)
 
+internal val CoralLightPrimary = Color(0xFF9C4337)
+internal val CoralLightContainer = Color(0xFFFFDAD3)
+internal val CoralLightSecondary = Color(0xFF77574E)
+internal val CoralLightTertiary = Color(0xFF715C3F)
+internal val CoralDarkPrimary = Color(0xFFFFB4A5)
+internal val CoralDarkContainer = Color(0xFF7B2F25)
+internal val CoralDarkSecondary = Color(0xFFE7BDB4)
+internal val CoralDarkTertiary = Color(0xFFD7C092)
+
+internal val SakuraLightPrimary = Color(0xFF8E4A63)
+internal val SakuraLightContainer = Color(0xFFFFD9E2)
+internal val SakuraLightSecondary = Color(0xFF74565F)
+internal val SakuraLightTertiary = Color(0xFF815D36)
+internal val SakuraDarkPrimary = Color(0xFFFFB1C7)
+internal val SakuraDarkContainer = Color(0xFF723349)
+internal val SakuraDarkSecondary = Color(0xFFE1BDC6)
+internal val SakuraDarkTertiary = Color(0xFFD7C08F)
+
+internal val GalaxyLightPrimary = Color(0xFF4053A8)
+internal val GalaxyLightContainer = Color(0xFFDDE1FF)
+internal val GalaxyLightSecondary = Color(0xFF5B5C72)
+internal val GalaxyLightTertiary = Color(0xFF7A5382)
+internal val GalaxyDarkPrimary = Color(0xFFB4C5FF)
+internal val GalaxyDarkContainer = Color(0xFF303D8C)
+internal val GalaxyDarkSecondary = Color(0xFFC2C4DD)
+internal val GalaxyDarkTertiary = Color(0xFFE2B4EB)
+
 // ---------------------------------------------------------------------------
 // Decorative background (the layer the liquid glass refracts)
 // ---------------------------------------------------------------------------
@@ -86,8 +113,8 @@ internal val AuroraLight = listOf(
 )
 
 internal val AuroraDark = listOf(
-    Color(0xFF0B0F14),
-    Color(0xFF122230),
-    Color(0xFF1B1730),
-    Color(0xFF0D2620),
+    Color(0xFF0A0F16),
+    Color(0xFF102438),
+    Color(0xFF1A1536),
+    Color(0xFF0B2822),
 )

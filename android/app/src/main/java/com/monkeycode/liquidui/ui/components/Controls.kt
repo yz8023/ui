@@ -167,7 +167,8 @@ fun CompactSwitch(
                 enabled = enabled,
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null
-            ) { onCheckedChange(!checked) }
+            ) { onCheckedChange(!checked) },
+        contentAlignment = Alignment.CenterStart
     ) {
         Box(
             modifier = Modifier
