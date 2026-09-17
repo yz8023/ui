@@ -47,6 +47,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import com.monkeycode.liquidui.R
 import com.monkeycode.liquidui.ui.components.CompactSwitch
 import com.monkeycode.liquidui.ui.components.GlassCard
 import com.monkeycode.liquidui.ui.components.GradientBar
@@ -571,6 +572,7 @@ private fun sendNotificationPreview(context: Context, accent: Color) {
     val builder = android.app.Notification.Builder(context, channelId)
         .setContentTitle("Liquid Motion UI")
         .setContentText("当前主题的即时预览 · 玻璃质感")
+        .setSmallIcon(R.drawable.ic_stat_launcher)
         .setAutoCancel(true)
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
         builder.setColor(accent.toArgb())
