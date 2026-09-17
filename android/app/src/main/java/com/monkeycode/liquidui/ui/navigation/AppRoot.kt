@@ -46,6 +46,7 @@ import com.monkeycode.liquidui.ui.screens.HomeScreen
 import com.monkeycode.liquidui.ui.screens.MotionScreen
 import com.monkeycode.liquidui.ui.screens.SettingsScreen
 import com.monkeycode.liquidui.ui.theme.LocalAppChrome
+import com.monkeycode.liquidui.ui.theme.VisualMode
 import kotlin.math.max
 
 /**
@@ -57,15 +58,15 @@ import kotlin.math.max
  *  - `contentBackdrop` records the screens; the liquid tab bar samples a
  *    combined layer so content scrolling beneath it refracts through it.
  *
- * When the master `glassEnabled` chrome knob is off, the shell drops the layer
- * machinery and renders a plain Material layout (solid cards + [NavigationBar]).
+ * When the master chrome knob is off (`Normal` or `Md3`), the shell drops the
+ * layer machinery and renders a plain Material layout (solid cards + [NavigationBar]).
  */
 @Composable
 fun AppRoot(settings: AppSettingsState) {
     var selectedIndex by rememberSaveable { mutableIntStateOf(0) }
     val screens = Screen.entries
     val chrome = LocalAppChrome.current
-    val glassEnabled = chrome.glassEnabled
+    val glassEnabled = chrome.visualMode == VisualMode.Glass
     val wallpaperBackground = chrome.wallpaperBackground
     val surfaceColor = MaterialTheme.colorScheme.background
 
@@ -206,12 +207,15 @@ private fun BoxScope.SolidBottomTabs(
 private fun DrawScope.drawWallpaperCover(drawable: Drawable) {
     val iw = drawable.intrinsicWidth
     val ih = drawable.intrinsicHeight
-    if (iw <= 0 || ih <= 0) return
-    val scale = max(size.width / iw, size.height / ih)
-    val w = iw * scale
-    val h = ih * scale
-    val left = (size.width - w) / 2f
-    val top = (size.height - h) / 2f
-    drawable.setBounds(left.toInt(), top.toInt(), (left + w).toInt(), (top + h).toInt())
+    if (iw > 0 && ih > 0) {
+        val scale = max(size.width / iw, size.height / ih)
+        val w = iw * scale
+        val h = ih * scale
+        val left = (size.width - w) / 2f
+        val top = (size.height - h) / 2f
+        drawable.setBounds(left.toInt(), top.toInt(), (left + w).toInt(), (top + h).toInt())
+    } else {
+        drawable.setBounds(0, 0, size.width.toInt(), size.height.toInt())
+    }
     drawable.draw(drawContext.canvas.nativeCanvas)
 }

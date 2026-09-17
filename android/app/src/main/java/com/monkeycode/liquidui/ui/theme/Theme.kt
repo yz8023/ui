@@ -235,17 +235,30 @@ private fun schemeFor(palette: PaletteId, dark: Boolean): ColorScheme {
 enum class ThemeMode { System, Light, Dark }
 
 /**
+ * The three mutually-exclusive visual styles the settings page offers.
+ * Replaces the old independent `glassEnabled` / `dynamicColor` booleans.
+ */
+enum class VisualMode(val label: String) {
+    /** Liquid-glass look: sampled-backdrop panels, glass bottom bar. */
+    Glass("玻璃"),
+    /** Plain Material surfaces, solid bottom bar, no refraction. */
+    Normal("普通"),
+    /** Material Design 3 dynamic colour scheme sampled from the wallpaper. */
+    Md3("MD3")
+}
+
+/**
  * Presentation knobs that sit on top of the Material colour scheme.
  * Exposed through [LocalAppChrome] so components read one source of truth.
  */
 @Immutable
 data class AppChrome(
     /**
-     * Master switch for the liquid-glass look. When false the whole app falls
-     * back to plain Material surfaces, a solid bottom bar and no refraction —
-     * the "normal layout" the settings page toggles.
+     * Master style switch. `Glass` is the liquid-glass look; `Normal` falls
+     * back to plain Material surfaces, a solid bottom bar and no refraction;
+     * `Md3` uses the system dynamic colour scheme (Material You).
      */
-    val glassEnabled: Boolean = true,
+    val visualMode: VisualMode = VisualMode.Glass,
     /**
      * Glass opacity, 0f..1f. Drives how dense the tint over the refracted
      * backdrop reads — 0 is a barely-there window, 1 is a dense frosted panel.
@@ -280,7 +293,7 @@ val supportsBackdropBlur: Boolean
 @Composable
 fun LiquidUITheme(
     themeMode: ThemeMode = ThemeMode.System,
-    dynamicColor: Boolean = false,
+    visualMode: VisualMode = VisualMode.Glass,
     palette: PaletteId = PaletteId.Aurora,
     chrome: AppChrome = AppChrome(),
     content: @Composable () -> Unit
@@ -292,7 +305,7 @@ fun LiquidUITheme(
     }
 
     val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+        visualMode == VisualMode.Md3 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }

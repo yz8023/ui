@@ -20,10 +20,10 @@ class MainActivity : ComponentActivity() {
             SideEffect { Motion.motionDamping.floatValue = settings.motionDamping }
             LiquidUITheme(
                 themeMode = settings.themeMode,
-                dynamicColor = settings.dynamicColor,
+                visualMode = settings.visualMode,
                 palette = settings.palette,
                 chrome = AppChrome(
-                    glassEnabled = settings.glassEnabled,
+                    visualMode = settings.visualMode,
                     glassOpacity = settings.glassOpacity,
                     glassRefraction = settings.glassRefraction,
                     cornerScale = settings.cornerScale,

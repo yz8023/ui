@@ -38,6 +38,7 @@ import com.monkeycode.liquidui.ui.theme.AppShape
 import com.monkeycode.liquidui.ui.theme.AuroraDark
 import com.monkeycode.liquidui.ui.theme.AuroraLight
 import com.monkeycode.liquidui.ui.theme.LocalAppChrome
+import com.monkeycode.liquidui.ui.theme.VisualMode
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
@@ -165,8 +166,8 @@ fun Modifier.liquidGlass(
     val baseTint = tint ?: MaterialTheme.colorScheme.surfaceContainer
     val isDark = isSystemInDarkTheme()
 
-    // Normal-layout mode: plain Material surface, no backdrop sampling at all.
-    if (!chrome.glassEnabled) {
+    // Normal / MD3 modes: plain Material surface, no backdrop sampling at all.
+    if (chrome.visualMode != VisualMode.Glass) {
         val solidTint = baseTint.copy(alpha = 1f)
         return this
             .shadow(elevation, shape, clip = false)

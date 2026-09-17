@@ -243,6 +243,23 @@ release 变体（含 backdrop-android，不依赖 `material-icons-extended`）�
 - **构建资源**：release 构建 R8 阶段内存峰值高（本机 OOM 过），需给后台终端
   分配 ≥45% 内存预算；`-x lintVitalRelease` 可跳过 lint 以提速。
 
+## 13.3. v1.1.3 壁纸再修复 + 三态视觉风格（真机反馈三轮 / 双开关合一）
+
+- **壁纸仍不显示的候选根因修复**：`drawWallpaperCover` 曾对 `intrinsicWidth/Height <= 0`
+  直接早退（部分设备壁纸 drawable 尺寸上报 -1），导致壁纸既不画到屏幕也不进采样层。
+  现改为 intrinsic 尺寸非法时回退到「铺满整层」（bounds = 容器 size），两种绘制路径
+  （可见内容 + `auroraBackdrop` 采样录制）都复用该兜底，不再静默空白。
+- **三态视觉风格替代双开关**：原「液态玻璃风格」开关与「动态取色」开关合并为
+  单一 `VisualMode` 三态（玻璃 / 普通 / MD3），设置页「风格」区改用 `SegmentedTabs`。
+  迁移逻辑：读旧 `KEY_GLASS_ENABLED` / `KEY_DYNAMIC` 映射到 `KEY_VISUAL_MODE`
+  （dynamicColor=true → Md3，否则 glassEnabled=true → Glass，再否则 Normal）。
+- **MD3 = Material You 动态取色**：`LiquidUITheme` 的 `dynamicColor` 入参改为
+  `visualMode`，`VisualMode.Md3` 且 SDK≥31 时用 `dynamicLightColorScheme/darkColorScheme`
+  （沿用原 dynamic color 基础设施），样式本身仍是普通 Material（无玻璃）。
+- **相关改动**：`AppChrome.glassEnabled` → `AppChrome.visualMode`（AppRoot/Glass.kt/
+  MainActivity/设置页「生效中的 chrome」文案全部改判 `VisualMode`）；版本
+  versionCode=3 / versionName=1.1.3。
+
 ## 14. 交接推送状态
 
 - [ ] 已推送交接代码到远程（需用户确认并授权）

@@ -11,6 +11,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import com.monkeycode.liquidui.ui.theme.PaletteId
 import com.monkeycode.liquidui.ui.theme.ThemeMode
+import com.monkeycode.liquidui.ui.theme.VisualMode
 
 /**
  * Every user-facing knob the template exposes, persisted so a fresh launch
@@ -35,11 +36,22 @@ class AppSettingsState(private val prefs: Context) {
     )
         private set
 
-    var glassEnabled by mutableStateOf(store.getBoolean(KEY_GLASS_ENABLED, true))
+    var visualMode by mutableStateOf(
+        runCatching { VisualMode.valueOf(store.getString(KEY_VISUAL_MODE, legacyVisualMode().name)!!) }
+            .getOrDefault(legacyVisualMode())
+    )
         private set
 
-    var dynamicColor by mutableStateOf(store.getBoolean(KEY_DYNAMIC, false))
-        private set
+    /** True when the old independent knob would have shown the glass look. */
+    private fun legacyVisualMode(): VisualMode {
+        val glass = store.getBoolean(KEY_GLASS_ENABLED, true)
+        val dyn = store.getBoolean(KEY_DYNAMIC, false)
+        return when {
+            dyn -> VisualMode.Md3
+            glass -> VisualMode.Glass
+            else -> VisualMode.Normal
+        }
+    }
 
     var reducedMotion by mutableStateOf(store.getBoolean(KEY_REDUCED, false))
         private set
@@ -72,14 +84,9 @@ class AppSettingsState(private val prefs: Context) {
         store.edit().putString(KEY_PALETTE, value.name).apply()
     }
 
-    fun updateGlassEnabled(value: Boolean) {
-        glassEnabled = value
-        store.edit().putBoolean(KEY_GLASS_ENABLED, value).apply()
-    }
-
-    fun updateDynamicColor(value: Boolean) {
-        dynamicColor = value
-        store.edit().putBoolean(KEY_DYNAMIC, value).apply()
+    fun updateVisualMode(value: VisualMode) {
+        visualMode = value
+        store.edit().putString(KEY_VISUAL_MODE, value.name).apply()
     }
 
     fun updateReducedMotion(value: Boolean) {
@@ -115,8 +122,7 @@ class AppSettingsState(private val prefs: Context) {
     fun reset() {
         updateThemeMode(ThemeMode.System)
         updatePalette(PaletteId.Aurora)
-        updateGlassEnabled(true)
-        updateDynamicColor(false)
+        updateVisualMode(VisualMode.Glass)
         updateReducedMotion(false)
         updateMotionDamping(0.5f)
         updateWallpaperBackground(false)
@@ -128,6 +134,7 @@ class AppSettingsState(private val prefs: Context) {
     private companion object {
         const val KEY_THEME = "themeMode"
         const val KEY_PALETTE = "palette"
+        const val KEY_VISUAL_MODE = "visualMode"
         const val KEY_GLASS_ENABLED = "glassEnabled"
         const val KEY_DYNAMIC = "dynamicColor"
         const val KEY_REDUCED = "reducedMotion"

@@ -51,6 +51,7 @@ import com.monkeycode.liquidui.ui.theme.AppIcons
 import com.monkeycode.liquidui.ui.theme.PaletteId
 import com.monkeycode.liquidui.ui.theme.ThemeMode
 import com.monkeycode.liquidui.ui.theme.LocalAppChrome
+import com.monkeycode.liquidui.ui.theme.VisualMode
 import com.monkeycode.liquidui.ui.theme.palettePrimaryLight
 
 /** Permission required to read the home-screen wallpaper for the background layer. */
@@ -93,17 +94,29 @@ fun SettingsScreen(settings: AppSettingsState) {
         item { SectionTitle("风格") }
         item {
             PreferenceCard {
-                PreferenceRow(
-                    icon = AppIcons.WaterDrop,
-                    title = "液态玻璃风格",
-                    subtitle = "关闭后回到普通 Material 布局：实心卡片、标准底栏、无折射",
-                    trailing = {
-                        CompactSwitch(
-                            checked = settings.glassEnabled,
-                            onCheckedChange = settings::updateGlassEnabled
-                        )
-                    }
-                )
+                Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp)) {
+                    Text(
+                        text = "视觉风格",
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Medium,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Spacer(Modifier.height(4.dp))
+                    Text(
+                        text = "玻璃=液态玻璃面板；普通=实心 Material 布局；MD3=壁纸动态取色（Android 12+）",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(Modifier.height(12.dp))
+                    SegmentedTabs(
+                        labels = VisualMode.entries.map { it.label },
+                        selectedIndex = settings.visualMode.ordinal,
+                        onSelected = { index ->
+                            settings.updateVisualMode(VisualMode.entries[index])
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
             }
         }
 
@@ -151,21 +164,6 @@ fun SettingsScreen(settings: AppSettingsState) {
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
-            }
-        }
-        item {
-            PreferenceCard {
-                PreferenceRow(
-                    icon = AppIcons.Palette,
-                    title = "动态取色",
-                    subtitle = "使用系统壁纸配色（Android 12+，需重启取色项）",
-                    trailing = {
-                        CompactSwitch(
-                            checked = settings.dynamicColor,
-                            onCheckedChange = settings::updateDynamicColor
-                        )
-                    }
-                )
             }
         }
         item {
@@ -252,7 +250,7 @@ fun SettingsScreen(settings: AppSettingsState) {
                     )
                     Spacer(Modifier.weight(1f))
                     Text(
-                        text = "v1.1.1",
+                        text = "v1.1.3",
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -285,7 +283,7 @@ fun SettingsScreen(settings: AppSettingsState) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 InfoBanner(
-                    text = "生效中的 chrome：glass=${if (currentChrome.glassEnabled) "on" else "off"} · " +
+                    text = "生效中的 chrome：mode=${currentChrome.visualMode.label} · " +
                         "opacity=${String.format("%.2f", currentChrome.glassOpacity)} · " +
                         "refraction=${String.format("%.2f", currentChrome.glassRefraction)} · " +
                         "corner=${String.format("%.2f", currentChrome.cornerScale)} · " +
