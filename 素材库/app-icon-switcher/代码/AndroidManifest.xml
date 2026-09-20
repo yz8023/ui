@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  应用图标切换 · Manifest 示例
+  核心思路：
+  1. 真实主界面 MainActivity 不带 launcher intent-filter
+  2. 默认图标 = 一个 enabled=true 的 <activity-alias>
+  3. 每套备选图标 = 一个 enabled=false 的 <activity-alias>
+  4. 运行时用 PackageManager.setComponentEnabledSetting 互斥启用/禁用
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.LiquidUI">
+
+        <!-- 真实主界面：不加 launcher intent-filter，作为所有 alias 的 target -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- ===== 图标 1 · 默认（冰蓝）===== 当前生效 -->
+        <activity-alias
+            android:name=".icon.Default"
+            android:enabled="true"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher"
+            android:roundIcon="@mipmap/ic_launcher_round"
+            android:targetActivity=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <!-- ===== 图标 2 · 星夜 ===== 默认禁用，运行时启用 -->
+        <activity-alias
+            android:name=".icon.Galaxy"
+            android:enabled="false"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher_galaxy"
+            android:roundIcon="@mipmap/ic_launcher_galaxy"
+            android:targetActivity=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <!-- ===== 图标 3 · 珊瑚 ===== 默认禁用，运行时启用 -->
+        <activity-alias
+            android:name=".icon.Coral"
+            android:enabled="false"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher_coral"
+            android:roundIcon="@mipmap/ic_launcher_coral"
+            android:targetActivity=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+    </application>
+
+</manifest>
