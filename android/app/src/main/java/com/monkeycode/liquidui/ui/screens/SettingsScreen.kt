@@ -58,6 +58,7 @@ import com.monkeycode.liquidui.ui.components.PreferenceRow
 import com.monkeycode.liquidui.ui.components.PrimaryButton
 import com.monkeycode.liquidui.ui.components.SectionTitle
 import com.monkeycode.liquidui.ui.components.SegmentedTabs
+import com.monkeycode.liquidui.ui.features.AppIconPicker
 import com.monkeycode.liquidui.ui.theme.AppChrome
 import com.monkeycode.liquidui.ui.theme.AppIcons
 import com.monkeycode.liquidui.ui.theme.PaletteId
@@ -195,6 +196,13 @@ fun SettingsScreen(settings: AppSettingsState) {
             }
         }
 
+        item { SectionTitle("应用图标") }
+        item {
+            PreferenceCard {
+                AppIconPicker(Modifier.padding(horizontal = 16.dp, vertical = 14.dp))
+            }
+        }
+
         item { SectionTitle("动效") }
         item {
             PreferenceCard {
@@ -282,20 +290,20 @@ fun SettingsScreen(settings: AppSettingsState) {
             GlassCard(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
-                        text = "Liquid Motion UI",
+                        text = "Android 素材库示例",
                         style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     Spacer(Modifier.weight(1f))
                     Text(
-                        text = "v1.2.0",
+                        text = "v2.0.0",
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
                 Spacer(Modifier.height(8.dp))
                 Text(
-                    text = "Android 液态玻璃设计模板 · 基于 dyparse 视觉语言与 motion 动效体系",
+                    text = "素材库功能点组合演示 · 选着搭，拼出你的 App",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -310,7 +318,8 @@ fun SettingsScreen(settings: AppSettingsState) {
                 Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
                     ReferenceLine("dyparse", "github.com/kd64i/dyparse")
                     ReferenceLine("Miuix", "github.com/chibatching/Miuix")
-                    ReferenceLine("motion", "github.com/motiondivision/motion")
+                    ReferenceLine("motion-web", "github.com/feitangyuan/motion-web")
+                    ReferenceLine("backdrop-android", "github.com/kyant0/backdrop-android")
                 }
             }
         }
@@ -554,11 +563,11 @@ private fun sendNotificationPreview(context: Context, accent: Color) {
             "即时预览",
             NotificationManager.IMPORTANCE_DEFAULT
         )
-        channel.description = "Liquid Motion UI 主题预览通知"
+        channel.description = "Android 素材库示例主题预览通知"
         manager.createNotificationChannel(channel)
     }
     val builder = android.app.Notification.Builder(context, channelId)
-        .setContentTitle("Liquid Motion UI")
+        .setContentTitle("Android 素材库示例")
         .setContentText("当前主题的即时预览 · 玻璃质感")
         .setSmallIcon(R.drawable.ic_stat_launcher)
         .setAutoCancel(true)

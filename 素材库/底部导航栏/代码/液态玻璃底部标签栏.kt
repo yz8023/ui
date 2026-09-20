@@ -84,7 +84,7 @@ import kotlin.math.sign
  *  - the specular highlight follows the finger (`InteractiveHighlight`)
  */
 @Composable
-fun LiquidBottomTabs(
+fun 液态玻璃底部标签栏(
     selectedTabIndex: () -> Int,
     onTabSelected: (index: Int) -> Unit,
     backdrop: Backdrop,
@@ -361,7 +361,7 @@ internal val LocalLiquidBottomTabOriginalAlpha =
     staticCompositionLocalOf { { _: Int -> 1f } }
 
 @Composable
-fun RowScope.LiquidBottomTab(
+fun RowScope.液态玻璃底部标签(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     index: Int = -1,

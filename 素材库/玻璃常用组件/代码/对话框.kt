@@ -166,9 +166,9 @@ private fun DialogOverlay(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     if (dismissText != null) {
-                        SecondaryButton(onClick = onDismissRequest) { Text(dismissText) }
+                        次要按钮(onClick = onDismissRequest) { Text(dismissText) }
                     }
-                    PrimaryButton(onClick = onConfirm, enabled = confirmEnabled) { Text(confirmText) }
+                    主按钮(onClick = onConfirm, enabled = confirmEnabled) { Text(confirmText) }
                 }
             }
         }

@@ -66,7 +66,7 @@ import kotlinx.coroutines.launch
 
 /** Primary action. Snappy press weight, no ripple. */
 @Composable
-fun PrimaryButton(
+fun 主按钮(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
@@ -91,7 +91,7 @@ fun PrimaryButton(
 
 /** Secondary action. */
 @Composable
-fun SecondaryButton(
+fun 次要按钮(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
@@ -110,7 +110,7 @@ fun SecondaryButton(
 
 /** Circular glass icon button with the same press weight. */
 @Composable
-fun GlassIconButton(
+fun 玻璃图标按钮(
     icon: ImageVector,
     contentDescription: String?,
     onClick: () -> Unit,
@@ -140,7 +140,7 @@ fun GlassIconButton(
  * the track colour cross-fades — so toggling reads as one physical motion.
  */
 @Composable
-fun CompactSwitch(
+fun 紧凑开关(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
@@ -258,7 +258,7 @@ private fun offsetDp(fraction: Float, travelPx: Float, trackWidth: Dp, thumbSize
  * thumb. Tap anywhere or drag the thumb; both translate to a value in 0..1.
  */
 @Composable
-fun GradientBar(
+fun 渐变色条(
     colors: List<Color>,
     fraction: Float,
     onFractionChange: (Float) -> Unit,
@@ -322,7 +322,7 @@ fun GradientBar(
  * for continuous hue/saturation picking; drag the rail for 0..1 value.
  */
 @Composable
-fun ColorWheel(
+fun 颜色选择器(
     hue: Float,
     saturation: Float,
     value: Float,
@@ -526,7 +526,7 @@ fun ColorWheel(
  * segment.
  */
 @Composable
-fun SegmentedTabs(
+fun 分段标签(
     labels: List<String>,
     selectedIndex: Int,
     onSelected: (Int) -> Unit,
@@ -611,7 +611,7 @@ fun SegmentedTabs(
 
 /** Small labelled chip. */
 @Composable
-fun Tag(
+fun 标签(
     text: String,
     accent: Color = MaterialTheme.colorScheme.primary,
     modifier: Modifier = Modifier
@@ -638,7 +638,7 @@ fun Tag(
 
 /** A thin progress meter with a spring-animated fill. */
 @Composable
-fun Meter(
+fun 进度计(
     progress: Float,
     modifier: Modifier = Modifier,
     accent: Color = MaterialTheme.colorScheme.primary

@@ -52,7 +52,7 @@ import com.monkeycode.liquidui.ui.motion.运动
 import com.monkeycode.liquidui.ui.screens.AppSettingsState
 import com.monkeycode.liquidui.ui.screens.ComponentsScreen
 import com.monkeycode.liquidui.ui.screens.HomeScreen
-import com.monkeycode.liquidui.ui.screens.运动屏幕
+import com.monkeycode.liquidui.ui.screens.MotionScreen
 import com.monkeycode.liquidui.ui.screens.SettingsScreen
 import com.monkeycode.liquidui.ui.theme.LocalAppChrome
 import com.monkeycode.liquidui.ui.theme.VisualMode
@@ -71,7 +71,7 @@ import kotlin.math.max
  * layer machinery and renders a plain Material layout (solid cards + [NavigationBar]).
  */
 @Composable
-fun AppRoot(settings: AppSettingsState) {
+fun 应用根组件(settings: AppSettingsState) {
     var selectedIndex by rememberSaveable { mutableIntStateOf(0) }
     val screens = Screen.entries
     val chrome = LocalAppChrome.current
@@ -128,10 +128,10 @@ fun AppRoot(settings: AppSettingsState) {
                 Screen.Home -> HomeScreen(
                     settings = settings,
                     onOpenComponents = { selectedIndex = Screen.Components.ordinal },
-                    onOpenMotion = { selectedIndex = Screen.Motion.ordinal }
+                    onOpenMotion = { selectedIndex = Screen.运动.ordinal }
                 )
                 Screen.Components -> ComponentsScreen()
-                Screen.Motion -> 运动屏幕(settings = settings)
+                Screen.运动 -> MotionScreen(settings = settings)
                 Screen.Settings -> SettingsScreen(settings = settings)
             }
         }

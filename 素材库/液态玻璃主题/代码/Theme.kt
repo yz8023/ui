@@ -39,7 +39,7 @@ enum class PaletteId(val label: String) {
 val CustomPalette = PaletteId.Custom
 
 /** Light-mode primary of a palette — used for swatch previews in settings. */
-fun palettePrimaryLight(palette: PaletteId): Color =
+fun 调色板主色浅色版(palette: PaletteId): Color =
     if (palette == PaletteId.Custom) Color(0xFF3E8FE0)
     else PaletteSeeds.getValue(palette).light.primary
 

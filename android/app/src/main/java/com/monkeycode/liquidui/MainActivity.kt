@@ -6,7 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
-import com.monkeycode.liquidui.ui.motion.Motion
+import com.monkeycode.liquidui.ui.motion.运动
 import com.monkeycode.liquidui.ui.navigation.AppRoot
 import com.monkeycode.liquidui.ui.screens.rememberAppSettingsState
 import com.monkeycode.liquidui.ui.theme.AppChrome
@@ -18,7 +18,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val settings = rememberAppSettingsState()
-            SideEffect { Motion.motionDamping.floatValue = settings.motionDamping }
+            SideEffect { 运动.motionDamping.floatValue = settings.motionDamping }
             LiquidUITheme(
                 themeMode = settings.themeMode,
                 visualMode = settings.visualMode,

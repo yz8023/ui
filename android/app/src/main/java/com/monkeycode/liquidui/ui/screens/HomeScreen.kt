@@ -32,7 +32,7 @@ import com.monkeycode.liquidui.ui.theme.AuroraAmber
 import com.monkeycode.liquidui.ui.theme.AuroraMint
 import com.monkeycode.liquidui.ui.theme.AuroraRose
 import com.monkeycode.liquidui.ui.theme.AuroraViolet
-import com.monkeycode.liquidui.ui.motion.Motion
+import com.monkeycode.liquidui.ui.motion.运动
 import com.monkeycode.liquidui.ui.motion.StaggeredReveal
 import androidx.compose.foundation.layout.statusBarsPadding
 
@@ -93,13 +93,13 @@ fun HomeScreen(
                 ) {
                     Tag(text = "Android · Jetpack Compose")
                     Text(
-                        text = "液态玻璃\n动效设计模板",
+                        text = "功能素材库\n选择式开发",
                         style = MaterialTheme.typography.displayLarge,
                         color = MaterialTheme.colorScheme.onBackground
                     )
                     Text(
-                        text = "一套可直接套用的 APK 设计底座：设计 token、玻璃组件库、" +
-                            "弹簧动效系统与空白功能骨架。改一处主题文件即可换肤。",
+                        text = "把常用功能拆成中文功能点：应用图标切换、液态玻璃主题、" +
+                            "玻璃底栏、动效系统。一个个选着搭，拼出你的 App。",
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -170,7 +170,7 @@ fun HomeScreen(
             StaggeredReveal(
                 index = 3 + index,
                 enabled = staggerEnabled,
-                staggerMs = Motion.Stagger.StandardList
+                staggerMs = 运动.Stagger.StandardList
             ) {
                 GlassCard(
                     modifier = Modifier
