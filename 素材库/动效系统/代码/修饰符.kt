@@ -35,6 +35,12 @@ import kotlin.math.sin
  * Squash on press with the snappy spring. Replaces a plain `clickable`
  * ripple for controls that should read as physical.
  */
+fun Modifier.pressScale(
+    interactionSource: InteractionSource,
+    pressedScale: Float = 0.94f,
+    enabled: Boolean = true
+): Modifier = 按压缩放(interactionSource, pressedScale, enabled)
+
 fun Modifier.按压缩放(
     interactionSource: InteractionSource,
     pressedScale: Float = 0.94f,
@@ -61,6 +67,12 @@ fun Modifier.按压缩放(
  *
  * @param trigger change this value to fire the shake; `null` never fires.
  */
+fun Modifier.impactShake(
+    trigger: Any?,
+    amplitude: Float = 10f,
+    durationMs: Int = 300
+): Modifier = 冲击抖动(trigger, amplitude, durationMs)
+
 fun Modifier.冲击抖动(
     trigger: Any?,
     amplitude: Float = 10f,
@@ -86,6 +98,13 @@ fun Modifier.冲击抖动(
  * still; two slightly different frequencies keep it from pulsing in unison.
  */
 @Composable
+fun Modifier.idleBreathing(
+    periodMs: Int = 5600,
+    amplitudeX: Float = 0.012f,
+    amplitudeY: Float = 0.020f
+): Modifier = 闲置呼吸(periodMs, amplitudeX, amplitudeY)
+
+@Composable
 fun Modifier.闲置呼吸(
     periodMs: Int = 5600,
     amplitudeX: Float = 0.012f,
@@ -109,6 +128,17 @@ fun Modifier.闲置呼吸(
  * 【运动系统】 is disabled, so reduced-motion users never get stuck invisible
  * content.
  */
+@Composable
+fun StaggeredReveal(
+    index: Int,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    staggerMs: Int = 运动.Stagger.StandardList,
+    startDelayMs: Int = 60,
+    translateYDp: Int = 18,
+    content: @Composable () -> Unit
+) = 交错展示(index, modifier, enabled, staggerMs, startDelayMs, translateYDp, content)
+
 @Composable
 fun 交错展示(
     index: Int,

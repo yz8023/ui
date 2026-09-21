@@ -100,22 +100,22 @@ fun 欢迎引导屏幕(
             Spacer(modifier = Modifier.height(36.dp))
 
             // ── 功能列表 ───────────────────────────────────────
-            OnboardingFeature(
+            欢迎引导功能(
                 icon = Icons.Outlined.Link,
                 title = "核心功能一",
                 description = "一句话描述这个功能的亮点和价值"
             )
-            OnboardingFeature(
+            欢迎引导功能(
                 icon = Icons.Outlined.Speed,
                 title = "核心功能二",
                 description = "一句话描述这个功能的亮点和价值"
             )
-            OnboardingFeature(
+            欢迎引导功能(
                 icon = Icons.Outlined.Storage,
                 title = "核心功能三",
                 description = "一句话描述这个功能的亮点和价值"
             )
-            OnboardingFeature(
+            欢迎引导功能(
                 icon = Icons.Outlined.Lock,
                 title = "隐私安全",
                 description = "数据仅存本地，不上传任何服务器"
@@ -124,15 +124,15 @@ fun 欢迎引导屏幕(
             Spacer(modifier = Modifier.height(24.dp))
 
             // ── 免费声明卡 ─────────────────────────────────────
-            FreeCard()
+            免费声明卡()
             Spacer(modifier = Modifier.height(16.dp))
 
             // ── 免责声明卡 ─────────────────────────────────────
-            DisclaimerCard()
+            免责声明卡()
             Spacer(modifier = Modifier.height(16.dp))
 
             // ── 开源仓库卡 ─────────────────────────────────────
-            GitHubCard(
+            开源仓库卡(
                 repoUrl = "https://github.com/your-org/your-repo",
                 context = context
             )
