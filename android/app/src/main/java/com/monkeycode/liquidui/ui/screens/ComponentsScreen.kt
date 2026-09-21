@@ -36,14 +36,18 @@ import com.monkeycode.liquidui.ui.components.CompactSwitch
 import com.monkeycode.liquidui.ui.components.GlassCard
 import com.monkeycode.liquidui.ui.components.GlassDialog
 import com.monkeycode.liquidui.ui.components.GlassIconButton
+import com.monkeycode.liquidui.ui.components.ErrorState
 import com.monkeycode.liquidui.ui.components.GlassTextField
+import com.monkeycode.liquidui.ui.components.LoadingState
 import com.monkeycode.liquidui.ui.components.Meter
+import com.monkeycode.liquidui.ui.components.OfflineBanner
 import com.monkeycode.liquidui.ui.components.PreferenceCard
 import com.monkeycode.liquidui.ui.components.PreferenceRow
 import com.monkeycode.liquidui.ui.components.PrimaryButton
 import com.monkeycode.liquidui.ui.components.SecondaryButton
 import com.monkeycode.liquidui.ui.components.SectionTitle
 import com.monkeycode.liquidui.ui.components.SegmentedTabs
+import com.monkeycode.liquidui.ui.components.SuccessBanner
 import com.monkeycode.liquidui.ui.components.Tag
 import com.monkeycode.liquidui.ui.theme.AppIcons
 import com.monkeycode.liquidui.ui.theme.AuroraAmber
@@ -209,6 +213,30 @@ fun ComponentsScreen() {
                 }
                 Spacer(Modifier.height(12.dp))
                 Meter(progress = meter)
+            }
+        }
+
+        item { SectionTitle("状态反馈 · 加载 / 成功 / 离线 / 错误") }
+        item {
+            GlassCard(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
+                LoadingState(
+                    title = "加载素材清单",
+                    message = "骨架线使用同一套玻璃材质，可直接放到列表、详情页或 WebView 容器里。",
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(Modifier.height(10.dp))
+                SuccessBanner("主题配置已导出，可粘贴给其他设备导入。")
+                Spacer(Modifier.height(8.dp))
+                OfflineBanner(text = "网络断开：更新检测与网页容器会自动降级为本地说明。")
+            }
+        }
+        item {
+            GlassCard(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
+                ErrorState(
+                    title = "加载失败",
+                    message = "错误态保留标题、说明和重试动作，适合网络请求、文件导入和权限失败场景。",
+                    action = { SecondaryButton(onClick = {}) { Text("重试") } }
+                )
             }
         }
 

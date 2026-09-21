@@ -1,5 +1,10 @@
 package com.monkeycode.liquidui.ui.components
 
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -184,4 +189,106 @@ fun StatTile(
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
+}
+
+/** Skeleton line with a subtle breathing opacity, useful while local/network data loads. */
+@Composable
+fun SkeletonLine(
+    modifier: Modifier = Modifier,
+    widthFraction: Float = 1f,
+    height: androidx.compose.ui.unit.Dp = 14.dp
+) {
+    val transition = rememberInfiniteTransition(label = "skeleton")
+    val alpha = transition.animateFloat(
+        initialValue = 0.22f,
+        targetValue = 0.52f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(900),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "skeletonAlpha"
+    ).value
+    Box(
+        modifier = modifier
+            .fillMaxWidth(widthFraction.coerceIn(0.05f, 1f))
+            .height(height)
+            .liquidGlass(
+                shape = MaterialTheme.shapes.small,
+                tint = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = alpha),
+                elevation = 0.dp,
+                borderAlpha = 0.12f
+            )
+    )
+}
+
+/** Standard loading state: title copy + three skeleton lines. */
+@Composable
+fun LoadingState(
+    title: String = "加载中",
+    message: String = "正在准备内容，请稍候。",
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(20.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.onSurface
+        )
+        Text(
+            text = message,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        SkeletonLine(widthFraction = 0.92f)
+        SkeletonLine(widthFraction = 0.72f)
+        SkeletonLine(widthFraction = 0.84f)
+    }
+}
+
+/** Error state with an optional retry action. */
+@Composable
+fun ErrorState(
+    title: String,
+    message: String,
+    modifier: Modifier = Modifier,
+    action: (@Composable () -> Unit)? = null
+) {
+    EmptyState(
+        title = title,
+        message = message,
+        modifier = modifier,
+        action = action
+    )
+}
+
+/** Success feedback banner for completed local operations such as export/import. */
+@Composable
+fun SuccessBanner(
+    text: String,
+    modifier: Modifier = Modifier
+) {
+    InfoBanner(
+        text = text,
+        modifier = modifier,
+        accent = Color(0xFF27AE60)
+    )
+}
+
+/** Offline/network warning banner that can be placed above a list or web view. */
+@Composable
+fun OfflineBanner(
+    modifier: Modifier = Modifier,
+    text: String = "当前网络不可用，内容会在恢复连接后自动刷新。"
+) {
+    InfoBanner(
+        text = text,
+        modifier = modifier,
+        accent = Color(0xFFFFA000)
+    )
 }

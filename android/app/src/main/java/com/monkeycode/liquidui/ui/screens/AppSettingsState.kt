@@ -15,6 +15,7 @@ import androidx.compose.ui.platform.LocalContext
 import com.monkeycode.liquidui.ui.theme.PaletteId
 import com.monkeycode.liquidui.ui.theme.ThemeMode
 import com.monkeycode.liquidui.ui.theme.VisualMode
+import org.json.JSONObject
 
 /**
  * Every user-facing knob the template exposes, persisted so a fresh launch
@@ -56,6 +57,9 @@ class AppSettingsState(private val prefs: Context) {
         }
     }
 
+    var onboardingCompleted by mutableStateOf(store.getBoolean(KEY_ONBOARDING_COMPLETED, false))
+        private set
+
     var reducedMotion by mutableStateOf(store.getBoolean(KEY_REDUCED, false))
         private set
 
@@ -84,6 +88,11 @@ class AppSettingsState(private val prefs: Context) {
     /** 0f..1f — how deep/light the custom background reads. */
     var customShade by mutableFloatStateOf(store.getFloat(KEY_CUSTOM_SHADE, 0.5f))
         private set
+
+    fun updateOnboardingCompleted(value: Boolean) {
+        onboardingCompleted = value
+        store.edit().putBoolean(KEY_ONBOARDING_COMPLETED, value).apply()
+    }
 
     fun updateThemeMode(value: ThemeMode) {
         themeMode = value
@@ -140,6 +149,48 @@ class AppSettingsState(private val prefs: Context) {
         store.edit().putFloat(KEY_CUSTOM_SHADE, value).apply()
     }
 
+
+    fun exportThemeJson(): String = JSONObject().apply {
+        put("schema", 1)
+        put(KEY_THEME, themeMode.name)
+        put(KEY_PALETTE, palette.name)
+        put(KEY_VISUAL_MODE, visualMode.name)
+        put(KEY_REDUCED, reducedMotion)
+        put(KEY_DAMPING, motionDamping)
+        put(KEY_WALLPAPER, wallpaperBackground)
+        put(KEY_OPACITY, glassOpacity)
+        put(KEY_REFRACTION, glassRefraction)
+        put(KEY_CORNER, cornerScale)
+        put(KEY_CUSTOM_SEED, customSeed)
+        put("customSeedHex", "#%08X".format(customSeed.toLong() and 0xFFFFFFFFL))
+        put(KEY_CUSTOM_SHADE, customShade)
+    }.toString(2)
+
+    fun importThemeJson(json: String): Boolean = runCatching {
+        val data = JSONObject(json)
+        updateThemeMode(
+            runCatching { ThemeMode.valueOf(data.optString(KEY_THEME, themeMode.name)) }
+                .getOrDefault(themeMode)
+        )
+        updatePalette(
+            runCatching { PaletteId.valueOf(data.optString(KEY_PALETTE, palette.name)) }
+                .getOrDefault(palette)
+        )
+        updateVisualMode(
+            runCatching { VisualMode.valueOf(data.optString(KEY_VISUAL_MODE, visualMode.name)) }
+                .getOrDefault(visualMode)
+        )
+        updateReducedMotion(data.optBoolean(KEY_REDUCED, reducedMotion))
+        updateMotionDamping(data.optDouble(KEY_DAMPING, motionDamping.toDouble()).toFloat().coerceIn(0f, 1f))
+        updateWallpaperBackground(data.optBoolean(KEY_WALLPAPER, wallpaperBackground))
+        updateGlassOpacity(data.optDouble(KEY_OPACITY, glassOpacity.toDouble()).toFloat().coerceIn(0f, 1f))
+        updateGlassRefraction(data.optDouble(KEY_REFRACTION, glassRefraction.toDouble()).toFloat().coerceIn(0f, 1f))
+        updateCornerScale(data.optDouble(KEY_CORNER, cornerScale.toDouble()).toFloat().coerceIn(0.8f, 1.5f))
+        if (data.has(KEY_CUSTOM_SEED)) updateCustomSeed(Color(data.optInt(KEY_CUSTOM_SEED, customSeed)))
+        updateCustomShade(data.optDouble(KEY_CUSTOM_SHADE, customShade.toDouble()).toFloat().coerceIn(0f, 1f))
+        true
+    }.getOrDefault(false)
+
     fun reset() {
         updateThemeMode(ThemeMode.System)
         updatePalette(PaletteId.Aurora)
@@ -155,6 +206,7 @@ class AppSettingsState(private val prefs: Context) {
     }
 
     private companion object {
+        const val KEY_ONBOARDING_COMPLETED = "onboardingCompleted"
         const val KEY_THEME = "themeMode"
         const val KEY_PALETTE = "palette"
         const val KEY_VISUAL_MODE = "visualMode"

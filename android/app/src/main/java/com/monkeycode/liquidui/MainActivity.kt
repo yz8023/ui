@@ -8,6 +8,7 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
 import com.monkeycode.liquidui.ui.motion.运动
 import com.monkeycode.liquidui.ui.navigation.AppRoot
+import com.monkeycode.liquidui.ui.screens.OnboardingScreen
 import com.monkeycode.liquidui.ui.screens.rememberAppSettingsState
 import com.monkeycode.liquidui.ui.theme.AppChrome
 import com.monkeycode.liquidui.ui.theme.LiquidUITheme
@@ -35,7 +36,13 @@ class MainActivity : ComponentActivity() {
                     wallpaperBackground = settings.wallpaperBackground
                 )
             ) {
-                AppRoot(settings = settings)
+                if (settings.onboardingCompleted) {
+                    AppRoot(settings = settings)
+                } else {
+                    OnboardingScreen(
+                        onFinish = { settings.updateOnboardingCompleted(true) }
+                    )
+                }
             }
         }
     }

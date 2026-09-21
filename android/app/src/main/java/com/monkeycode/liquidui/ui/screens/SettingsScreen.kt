@@ -1,11 +1,16 @@
 package com.monkeycode.liquidui.ui.screens
 
 import android.Manifest
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -36,6 +41,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -51,11 +57,13 @@ import com.monkeycode.liquidui.R
 import com.monkeycode.liquidui.ui.components.CompactSwitch
 import com.monkeycode.liquidui.ui.components.ColorWheel
 import com.monkeycode.liquidui.ui.components.GlassCard
+import com.monkeycode.liquidui.ui.components.GlassDialog
 import com.monkeycode.liquidui.ui.components.GradientBar
 import com.monkeycode.liquidui.ui.components.InfoBanner
 import com.monkeycode.liquidui.ui.components.PreferenceCard
 import com.monkeycode.liquidui.ui.components.PreferenceRow
 import com.monkeycode.liquidui.ui.components.PrimaryButton
+import com.monkeycode.liquidui.ui.components.SecondaryButton
 import com.monkeycode.liquidui.ui.components.SectionTitle
 import com.monkeycode.liquidui.ui.components.SegmentedTabs
 import com.monkeycode.liquidui.ui.features.AppIconPicker
@@ -75,9 +83,13 @@ private fun wallpaperReadPermission(): String =
         Manifest.permission.READ_EXTERNAL_STORAGE
     }
 
+private enum class LegalDialog { Licenses, Privacy }
+
 @Composable
 fun SettingsScreen(settings: AppSettingsState) {
     val currentChrome = LocalAppChrome.current
+    var legalDialog by remember { mutableStateOf<LegalDialog?>(null) }
+    val context = LocalContext.current
 
     LazyColumn(
         modifier = Modifier
@@ -183,6 +195,8 @@ fun SettingsScreen(settings: AppSettingsState) {
                 }
             }
         }
+        item { SectionTitle("主题配置") }
+        item { ThemeConfigTransferCard(settings) }
         item {
             PreferenceCard {
                 PreferenceRow(
@@ -192,6 +206,18 @@ fun SettingsScreen(settings: AppSettingsState) {
                     trailing = {
                         WallpaperSwitch(settings)
                     }
+                )
+            }
+        }
+
+        item { SectionTitle("首次体验") }
+        item {
+            PreferenceCard {
+                PreferenceRow(
+                    icon = AppIcons.BlurOn,
+                    title = "重新查看欢迎引导",
+                    subtitle = "再次打开首次启动说明，适合给使用者演示项目能力",
+                    onClick = { settings.updateOnboardingCompleted(false) }
                 )
             }
         }
@@ -285,6 +311,44 @@ fun SettingsScreen(settings: AppSettingsState) {
             }
         }
 
+        item { SectionTitle("帮助与合规") }
+        item {
+            PreferenceCard {
+                PreferenceRow(
+                    icon = AppIcons.Shield,
+                    title = "开源许可与致谢",
+                    subtitle = "查看项目参考来源、第三方库和许可证说明",
+                    onClick = { legalDialog = LegalDialog.Licenses }
+                )
+            }
+        }
+        item {
+            PreferenceCard {
+                PreferenceRow(
+                    icon = AppIcons.Shield,
+                    title = "隐私说明",
+                    subtitle = "本示例只把主题偏好保存在本地，不上传任何个人数据",
+                    onClick = { legalDialog = LegalDialog.Privacy }
+                )
+            }
+        }
+        item {
+            PreferenceCard {
+                PreferenceRow(
+                    icon = AppIcons.BlurOn,
+                    title = "项目主页",
+                    subtitle = "打开 GitHub 仓库，查看源码、文档和构建记录",
+                    onClick = {
+                        val intent = Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse("https://github.com/yz8023/ui")
+                        ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        runCatching { context.startActivity(intent) }
+                    }
+                )
+            }
+        }
+
         item { SectionTitle("关于") }
         item {
             GlassCard(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
@@ -296,7 +360,7 @@ fun SettingsScreen(settings: AppSettingsState) {
                     )
                     Spacer(Modifier.weight(1f))
                     Text(
-                        text = "v2.0.0",
+                        text = "v2.1.0",
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -338,6 +402,28 @@ fun SettingsScreen(settings: AppSettingsState) {
                     modifier = Modifier.weight(1f)
                 )
             }
+        }
+    }
+
+    legalDialog?.let { dialog ->
+        GlassDialog(
+            onDismissRequest = { legalDialog = null },
+            title = if (dialog == LegalDialog.Licenses) "开源许可与致谢" else "隐私说明",
+            onConfirm = { legalDialog = null },
+            confirmText = "知道了",
+            dismissText = null
+        ) {
+            Text(
+                text = if (dialog == LegalDialog.Licenses) {
+                    "本示例应用基于 Jetpack Compose、Material 3、backdrop-android、shapes-android 与 Material Icons 等开源项目构建。" +
+                        "完整项目来源与许可证请见仓库 CREDITS.md。复制素材到你的项目时，请保留对应上游项目的署名与许可证说明。"
+                } else {
+                    "本示例只在设备本地保存主题、动效、图标与引导页状态等偏好设置。" +
+                        "通知预览仅由用户点击触发；壁纸背景仅在你主动开启并授权后读取。项目不包含账号系统，也不会上传个人数据。"
+                },
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
     }
 }
@@ -462,6 +548,60 @@ private fun SliderCard(
                 inactiveTrackColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
             )
         )
+    }
+}
+
+@Composable
+private fun ThemeConfigTransferCard(settings: AppSettingsState) {
+    val context = LocalContext.current
+    val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+
+    PreferenceCard {
+        Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp)) {
+            Text(
+                text = "导入 / 导出主题",
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Spacer(Modifier.height(4.dp))
+            Text(
+                text = "把当前外观、玻璃参数和动效偏好保存为 JSON；可复制给别人或从剪贴板恢复。",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Spacer(Modifier.height(12.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                SecondaryButton(
+                    onClick = {
+                        val json = settings.exportThemeJson()
+                        clipboard.setPrimaryClip(ClipData.newPlainText("LiquidUI theme", json))
+                        Toast.makeText(context, "主题 JSON 已复制", Toast.LENGTH_SHORT).show()
+                    },
+                    modifier = Modifier.weight(1f)
+                ) { Text("导出") }
+                PrimaryButton(
+                    onClick = {
+                        val json = clipboard.primaryClip
+                            ?.takeIf { it.itemCount > 0 }
+                            ?.getItemAt(0)
+                            ?.coerceToText(context)
+                            ?.toString()
+                            .orEmpty()
+                        val ok = settings.importThemeJson(json)
+                        Toast.makeText(
+                            context,
+                            if (ok) "主题已导入" else "剪贴板不是有效主题 JSON",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    },
+                    modifier = Modifier.weight(1f)
+                ) { Text("导入") }
+            }
+        }
     }
 }
 

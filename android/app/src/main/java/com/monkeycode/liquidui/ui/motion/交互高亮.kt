@@ -15,6 +15,8 @@ import androidx.compose.ui.util.fastCoerceIn
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+typealias InteractiveHighlight = 交互高亮
+
 /**
  * Pointer-following specular highlight for glass surfaces.
  *
