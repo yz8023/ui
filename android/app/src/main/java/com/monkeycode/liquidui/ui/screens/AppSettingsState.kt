@@ -15,6 +15,7 @@ import androidx.compose.ui.platform.LocalContext
 import com.monkeycode.liquidui.ui.theme.PaletteId
 import com.monkeycode.liquidui.ui.theme.ThemeMode
 import com.monkeycode.liquidui.ui.theme.VisualMode
+import androidx.compose.runtime.snapshotFlow
 
 /**
  * Every user-facing knob the template exposes, persisted so a fresh launch
@@ -57,6 +58,10 @@ class AppSettingsState(private val prefs: Context) {
     }
 
     var reducedMotion by mutableStateOf(store.getBoolean(KEY_REDUCED, false))
+        private set
+
+    /** True once the user has completed the first-launch onboarding flow. */
+    var onboardingCompleted by mutableStateOf(store.getBoolean(KEY_ONBOARDING, false))
         private set
 
     var motionDamping by mutableFloatStateOf(store.getFloat(KEY_DAMPING, 0.5f))
@@ -103,6 +108,20 @@ class AppSettingsState(private val prefs: Context) {
     fun updateReducedMotion(value: Boolean) {
         reducedMotion = value
         store.edit().putBoolean(KEY_REDUCED, value).apply()
+    }
+
+    /** Flow that emits the latest onboarding-completed flag whenever it changes. */
+    val onboardingCompletedFlow = snapshotFlow { onboardingCompleted }
+
+    fun completeOnboarding() {
+        onboardingCompleted = true
+        store.edit().putBoolean(KEY_ONBOARDING, true).apply()
+    }
+
+    /** Reset onboarding so the next launch shows the welcome screen again. */
+    fun resetOnboarding() {
+        onboardingCompleted = false
+        store.edit().putBoolean(KEY_ONBOARDING, false).apply()
     }
 
     fun updateMotionDamping(value: Float) {
@@ -152,6 +171,8 @@ class AppSettingsState(private val prefs: Context) {
         updateCornerScale(1f)
         updateCustomSeed(Color(0xFF3E8FE0))
         updateCustomShade(0.5f)
+        onboardingCompleted = false
+        store.edit().putBoolean(KEY_ONBOARDING, false).apply()
     }
 
     private companion object {
@@ -169,6 +190,7 @@ class AppSettingsState(private val prefs: Context) {
         const val KEY_CORNER = "cornerScale"
         const val KEY_CUSTOM_SEED = "customSeed"
         const val KEY_CUSTOM_SHADE = "customShade"
+        const val KEY_ONBOARDING = "onboardingCompleted"
     }
 }
 

@@ -33,7 +33,7 @@ import com.monkeycode.liquidui.ui.theme.AuroraMint
 import com.monkeycode.liquidui.ui.theme.AuroraRose
 import com.monkeycode.liquidui.ui.theme.AuroraViolet
 import com.monkeycode.liquidui.ui.motion.运动
-import com.monkeycode.liquidui.ui.motion.StaggeredReveal
+import com.monkeycode.liquidui.ui.motion.交错展示
 import androidx.compose.foundation.layout.statusBarsPadding
 
 private data class Principle(
@@ -86,7 +86,7 @@ fun HomeScreen(
         verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
         item {
-            StaggeredReveal(index = 0, enabled = staggerEnabled) {
+            交错展示(index = 0, enabled = staggerEnabled) {
                 Column(
                     modifier = Modifier.padding(start = 22.dp, end = 22.dp, top = 20.dp),
                     verticalArrangement = Arrangement.spacedBy(14.dp)
@@ -108,7 +108,7 @@ fun HomeScreen(
         }
 
         item {
-            StaggeredReveal(index = 1, enabled = staggerEnabled) {
+            交错展示(index = 1, enabled = staggerEnabled) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -137,7 +137,7 @@ fun HomeScreen(
         }
 
         item {
-            StaggeredReveal(index = 2, enabled = staggerEnabled) {
+            交错展示(index = 2, enabled = staggerEnabled) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -167,7 +167,7 @@ fun HomeScreen(
         }
 
         itemsIndexed(principles) { index, principle ->
-            StaggeredReveal(
+            交错展示(
                 index = 3 + index,
                 enabled = staggerEnabled,
                 staggerMs = 运动.Stagger.StandardList
@@ -214,7 +214,7 @@ fun HomeScreen(
         }
 
         item {
-            StaggeredReveal(index = 8, enabled = staggerEnabled) {
+            交错展示(index = 8, enabled = staggerEnabled) {
                 GlassCard(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -229,7 +229,7 @@ fun HomeScreen(
         }
 
         item {
-            StaggeredReveal(index = 9, enabled = staggerEnabled) {
+            交错展示(index = 9, enabled = staggerEnabled) {
                 InfoBanner(
                     text = "提示：主题、玻璃强度与圆角倍率都能在「设置」页实时调整。",
                     modifier = Modifier.padding(horizontal = 16.dp)

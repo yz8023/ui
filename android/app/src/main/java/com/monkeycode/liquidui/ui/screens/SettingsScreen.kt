@@ -28,6 +28,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
@@ -286,6 +288,18 @@ fun SettingsScreen(settings: AppSettingsState) {
         }
 
         item { SectionTitle("关于") }
+        item {
+            PreferenceCard {
+                PreferenceRow(
+                    icon = Icons.Default.Info,
+                    title = "重新查看欢迎引导",
+                    subtitle = "下次启动时重新展示首次引导页",
+                    onClick = {
+                        settings.resetOnboarding()
+                    }
+                )
+            }
+        }
         item {
             GlassCard(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {

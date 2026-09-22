@@ -54,6 +54,7 @@ import com.monkeycode.liquidui.ui.screens.ComponentsScreen
 import com.monkeycode.liquidui.ui.screens.HomeScreen
 import com.monkeycode.liquidui.ui.screens.运动屏幕
 import com.monkeycode.liquidui.ui.screens.SettingsScreen
+import com.monkeycode.liquidui.ui.screens.素材浏览器
 import com.monkeycode.liquidui.ui.theme.LocalAppChrome
 import com.monkeycode.liquidui.ui.theme.VisualMode
 import kotlin.math.max
@@ -133,6 +134,7 @@ fun AppRoot(settings: AppSettingsState) {
                 Screen.Components -> ComponentsScreen()
                 Screen.Motion -> 运动屏幕(settings = settings)
                 Screen.Settings -> SettingsScreen(settings = settings)
+                Screen.Gallery -> 素材浏览器()
             }
         }
     }

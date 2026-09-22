@@ -31,5 +31,10 @@ enum class Screen(
         title = "设置",
         subtitle = "主题与偏好",
         icon = AppIcons.Settings
+    ),
+    Gallery(
+        title = "素材",
+        subtitle = "功能点目录",
+        icon = AppIcons.Widgets
     )
 }

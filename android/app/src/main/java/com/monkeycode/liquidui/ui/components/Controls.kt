@@ -54,7 +54,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import com.monkeycode.liquidui.ui.motion.运动
-import com.monkeycode.liquidui.ui.motion.pressScale
+import com.monkeycode.liquidui.ui.motion.按压缩放
 import com.monkeycode.liquidui.ui.theme.AppShape
 import kotlin.math.PI
 import kotlin.math.atan2
@@ -75,7 +75,7 @@ fun PrimaryButton(
     val interaction = remember { MutableInteractionSource() }
     Button(
         onClick = onClick,
-        modifier = modifier.pressScale(interaction, 0.96f, enabled),
+        modifier = modifier.按压缩放(interaction, 0.96f, enabled),
         enabled = enabled,
         shape = AppShape.control,
         interactionSource = interaction,
@@ -100,7 +100,7 @@ fun SecondaryButton(
     val interaction = remember { MutableInteractionSource() }
     OutlinedButton(
         onClick = onClick,
-        modifier = modifier.pressScale(interaction, 0.96f, enabled),
+        modifier = modifier.按压缩放(interaction, 0.96f, enabled),
         enabled = enabled,
         shape = AppShape.control,
         interactionSource = interaction,
@@ -121,7 +121,7 @@ fun GlassIconButton(
     Box(
         modifier = modifier
             .size(44.dp)
-            .pressScale(interaction, 0.90f)
+            .按压缩放(interaction, 0.90f)
             .liquidGlass(shape = CircleShape, elevation = 1.dp, borderAlpha = 0.5f)
             .clickable(
                 interactionSource = interaction,

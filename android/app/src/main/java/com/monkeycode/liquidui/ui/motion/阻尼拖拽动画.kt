@@ -39,9 +39,9 @@ class 阻尼拖拽动画(
     initialScale: Float,
     val pressedScale: Float,
     val canDrag: (Offset) -> Boolean = { true },
-    val onDragStarted: DampedDragAnimation.(position: Offset) -> Unit,
-    val onDragStopped: DampedDragAnimation.() -> Unit,
-    val onDrag: DampedDragAnimation.(size: IntSize, dragAmount: Offset) -> Unit
+    val onDragStarted: 阻尼拖拽动画.(position: Offset) -> Unit,
+    val onDragStopped: 阻尼拖拽动画.() -> Unit,
+    val onDrag: 阻尼拖拽动画.(size: IntSize, dragAmount: Offset) -> Unit
 ) {
     private val valueAnimationSpec = spring(运动.DampedRatio(1f), 1000f, visibilityThreshold)
     private val velocityAnimationSpec = spring(运动.DampedRatio(0.5f), 300f, visibilityThreshold * 10f)

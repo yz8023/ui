@@ -16,14 +16,42 @@ android {
         versionName = "2.0.0"
     }
 
+    signingConfigs {
+        create("release") {
+            // Keystore is read from environment variables or local.properties.
+            // For CI / one-off builds, pass:
+            //   -Dorg.gradle.project.RELEASE_STORE_FILE=... -Dorg.gradle.project.RELEASE_STORE_PASSWORD=... -Dorg.gradle.project.RELEASE_KEY_ALIAS=... -Dorg.gradle.project.RELEASE_KEY_PASSWORD=...
+            val storeFilePath = System.getProperty("org.gradle.project.RELEASE_STORE_FILE")
+                ?: (findProperty("RELEASE_STORE_FILE") as String?)
+                ?: "app/debug.keystore"
+            storeFile = rootProject.file(storeFilePath)
+            storePassword = System.getProperty("org.gradle.project.RELEASE_STORE_PASSWORD")
+                ?: (findProperty("RELEASE_STORE_PASSWORD") as String?)
+                ?: "android"
+            keyAlias = System.getProperty("org.gradle.project.RELEASE_KEY_ALIAS")
+                ?: (findProperty("RELEASE_KEY_ALIAS") as String?)
+                ?: "androiddebugkey"
+            keyPassword = System.getProperty("org.gradle.project.RELEASE_KEY_PASSWORD")
+                ?: (findProperty("RELEASE_KEY_PASSWORD") as String?)
+                ?: "android"
+        }
+    }
     buildTypes {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
+            signingConfig = signingConfigs.getByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            // Lint issues that are not relevant for release builds
+            lint {
+                disable += listOf("NullSafeMutableLiveData")
+            }
+        }
+        debug {
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
 
@@ -51,6 +79,7 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
@@ -59,6 +88,7 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     implementation(libs.kyant.backdrop)
     implementation(libs.kyant.shapes)
+    implementation(libs.material.icons.extended)
 
     debugImplementation(libs.androidx.compose.ui.tooling)
 

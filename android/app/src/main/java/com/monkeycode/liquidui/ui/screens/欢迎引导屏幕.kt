@@ -75,13 +75,14 @@ fun 欢迎引导屏幕(
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_launcher), // 替换为你的 app icon
+                Icon(
+                    imageVector = Icons.Outlined.Star,
                     contentDescription = "应用图标",
+                    tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier
                         .size(96.dp)
-                        .clip(RoundedCornerShape(26.dp)),
-                    contentScale = ContentScale.Crop
+                        .clip(RoundedCornerShape(26.dp))
+                        .padding(20.dp)
                 )
             }
             Spacer(modifier = Modifier.height(18.dp))

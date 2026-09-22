@@ -52,9 +52,8 @@ import com.monkeycode.liquidui.ui.components.SectionTitle
 import com.monkeycode.liquidui.ui.components.SegmentedTabs
 import com.monkeycode.liquidui.ui.components.liquidGlass
 import com.monkeycode.liquidui.ui.motion.运动
-import com.monkeycode.liquidui.ui.motion.idleBreathing
-import com.monkeycode.liquidui.ui.motion.impactShake
-import com.monkeycode.liquidui.ui.motion.pressScale
+import com.monkeycode.liquidui.ui.motion.冲击抖动
+import com.monkeycode.liquidui.ui.motion.闲置呼吸
 import com.monkeycode.liquidui.ui.theme.AuroraAmber
 import com.monkeycode.liquidui.ui.theme.AuroraMint
 import com.monkeycode.liquidui.ui.theme.AuroraRose
@@ -325,7 +324,7 @@ private fun ShakeDemo(reduced: Boolean) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
-            .impactShake(
+            .冲击抖动(
                 trigger = if (reduced) null else trigger,
                 amplitude = amplitude
             )
@@ -388,7 +387,7 @@ private fun BreathingDemo(reduced: Boolean) {
                         .weight(1f)
                         .height(72.dp)
                         .then(
-                            if (reduced) Modifier else Modifier.idleBreathing(
+                            if (reduced) Modifier else Modifier.闲置呼吸(
                                 periodMs = 5200 + index * 900,
                                 amplitudeX = 0.02f + index * 0.01f,
                                 amplitudeY = 0.03f + index * 0.01f
