@@ -50,19 +50,19 @@ object AppIconSwitcher {
             key = "default",
             label = "冰蓝",
             component = ComponentName(PACKAGE, "$PACKAGE.icon.Default"),
-            previewRes = R.mipmap.ic_launcher,
+            previewRes = R.drawable.ic_launcher_foreground,
         ),
         IconOption(
             key = "galaxy",
             label = "星夜",
             component = ComponentName(PACKAGE, "$PACKAGE.icon.Galaxy"),
-            previewRes = R.mipmap.ic_launcher_galaxy,
+            previewRes = R.drawable.ic_launcher_foreground_galaxy,
         ),
         IconOption(
             key = "coral",
             label = "珊瑚",
             component = ComponentName(PACKAGE, "$PACKAGE.icon.Coral"),
-            previewRes = R.mipmap.ic_launcher_coral,
+            previewRes = R.drawable.ic_launcher_foreground_coral,
         ),
     )
 
