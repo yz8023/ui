@@ -12,6 +12,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.graphics.Color
 import com.monkeycode.liquidui.ui.motion.运动
 import com.monkeycode.liquidui.ui.navigation.AppRoot
+import com.monkeycode.liquidui.ui.screens.OnboardingScreen
 import com.monkeycode.liquidui.ui.screens.rememberAppSettingsState
 import com.monkeycode.liquidui.ui.screens.欢迎引导屏幕
 import com.monkeycode.liquidui.ui.theme.AppChrome

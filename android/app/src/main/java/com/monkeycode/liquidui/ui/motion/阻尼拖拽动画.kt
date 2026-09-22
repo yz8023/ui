@@ -19,6 +19,8 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
+typealias DampedDragAnimation = 阻尼拖拽动画
+
 /**
  * The damped, press-scaled drag model used by the liquid tab bar.
  *

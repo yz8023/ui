@@ -43,6 +43,22 @@ private data class Principle(
     val accent: androidx.compose.ui.graphics.Color
 )
 
+
+private data class FeatureMaterial(
+    val name: String,
+    val description: String,
+    val status: String,
+    val accent: androidx.compose.ui.graphics.Color
+)
+
+private val featureMaterials = listOf(
+    FeatureMaterial("液态玻璃主题", "真 backdrop 玻璃、7 套配色、普通 / MD3 降级。", "已接入", AuroraMint),
+    FeatureMaterial("应用欢迎引导", "首次启动说明、免费声明、开源入口，可从设置重新查看。", "新增", AuroraAmber),
+    FeatureMaterial("状态反馈组件", "加载、空态、错误、成功、离线提示与重试骨架。", "新增", AuroraRose),
+    FeatureMaterial("主题导入导出", "外观和动效偏好一键复制为 JSON，可跨设备恢复。", "新增", AuroraViolet),
+    FeatureMaterial("权限请求组件", "通知、媒体、相机、位置权限的解释卡与设置跳转素材。", "素材", AuroraMint)
+)
+
 private val principles = listOf(
     Principle(
         index = "01",
@@ -205,7 +221,7 @@ fun HomeScreen(
 
         item {
             Text(
-                text = "空白功能骨架",
+                text = "功能素材清单",
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onBackground,
@@ -220,10 +236,29 @@ fun HomeScreen(
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)
                 ) {
-                    EmptyState(
-                        title = "还没有接入业务数据",
-                        message = "这里预留了空态组件。接入真实数据后，用同一套玻璃卡片与错峰入场渲染列表即可。"
-                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        Tag(text = material.status, accent = material.accent)
+                        Column(
+                            modifier = Modifier.weight(1f),
+                            verticalArrangement = Arrangement.spacedBy(3.dp)
+                        ) {
+                            Text(
+                                text = material.name,
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.SemiBold,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                            Text(
+                                text = material.description,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -231,7 +266,7 @@ fun HomeScreen(
         item {
             交错展示(index = 9, enabled = staggerEnabled) {
                 InfoBanner(
-                    text = "提示：主题、玻璃强度与圆角倍率都能在「设置」页实时调整。",
+                    text = "提示：主题、玻璃强度、圆角倍率与主题 JSON 都能在「设置」页实时调整。",
                     modifier = Modifier.padding(horizontal = 16.dp)
                 )
             }
