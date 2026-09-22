@@ -229,8 +229,8 @@ fun HomeScreen(
             )
         }
 
-        item {
-            交错展示(index = 8, enabled = staggerEnabled) {
+        itemsIndexed(featureMaterials) { index, material ->
+            交错展示(index = 8 + index, enabled = staggerEnabled) {
                 GlassCard(
                     modifier = Modifier
                         .fillMaxWidth()

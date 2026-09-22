@@ -58,9 +58,6 @@ class AppSettingsState(private val prefs: Context) {
         }
     }
 
-    var onboardingCompleted by mutableStateOf(store.getBoolean(KEY_ONBOARDING_COMPLETED, false))
-        private set
-
     var reducedMotion by mutableStateOf(store.getBoolean(KEY_REDUCED, false))
         private set
 
@@ -96,7 +93,7 @@ class AppSettingsState(private val prefs: Context) {
 
     fun updateOnboardingCompleted(value: Boolean) {
         onboardingCompleted = value
-        store.edit().putBoolean(KEY_ONBOARDING_COMPLETED, value).apply()
+        store.edit().putBoolean(KEY_ONBOARDING, value).apply()
     }
 
     fun updateThemeMode(value: ThemeMode) {
@@ -227,7 +224,6 @@ class AppSettingsState(private val prefs: Context) {
     }
 
     private companion object {
-        const val KEY_ONBOARDING_COMPLETED = "onboardingCompleted"
         const val KEY_THEME = "themeMode"
         const val KEY_PALETTE = "palette"
         const val KEY_VISUAL_MODE = "visualMode"
