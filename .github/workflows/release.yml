@@ -56,16 +56,15 @@ jobs:
           keytool -genkeypair \
             -v \
             -keystore app/release-ci.jks \
-            -storepass "$STORE_PASSWORD" \
-            -keypass "$KEY_PASSWORD" \
+            -storepass "$RELEASE_PASSWORD" \
+            -keypass "$RELEASE_PASSWORD" \
             -alias release \
             -keyalg RSA \
             -keysize 2048 \
             -validity 3650 \
             -dname "CN=LiquidUI,O=MonkeyCode,C=CN"
         env:
-          STORE_PASSWORD: ${{ github.run_id }}-store
-          KEY_PASSWORD: ${{ github.run_id }}-key
+          RELEASE_PASSWORD: ${{ github.run_id }}-release
 
       - name: Build release APK
         working-directory: android
@@ -74,12 +73,11 @@ jobs:
             --no-daemon \
             --console=plain \
             -PRELEASE_STORE_FILE=app/release-ci.jks \
-            -PRELEASE_STORE_PASSWORD="$STORE_PASSWORD" \
+            -PRELEASE_STORE_PASSWORD="$RELEASE_PASSWORD" \
             -PRELEASE_KEY_ALIAS=release \
-            -PRELEASE_KEY_PASSWORD="$KEY_PASSWORD"
+            -PRELEASE_KEY_PASSWORD="$RELEASE_PASSWORD"
         env:
-          STORE_PASSWORD: ${{ github.run_id }}-store
-          KEY_PASSWORD: ${{ github.run_id }}-key
+          RELEASE_PASSWORD: ${{ github.run_id }}-release
 
       - name: Rename release APK
         run: |
