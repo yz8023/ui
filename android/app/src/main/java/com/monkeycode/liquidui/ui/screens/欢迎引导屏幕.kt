@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import android.content.Intent
 import android.net.Uri
+import com.monkeycode.liquidui.ui.theme.AppIcons
 
 // ============================================================
 // 主页面
@@ -344,4 +345,3 @@ private fun 开源仓库卡(
         }
     }
 }
-import com.monkeycode.liquidui.ui.theme.AppIcons
