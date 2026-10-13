@@ -24,8 +24,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 
 
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -58,10 +56,9 @@ import com.monkeycode.liquidui.ui.theme.AppShape
  * 支持搜索和分类筛选，点击卡片可查看接入说明。
  */
 @Composable
-fun 素材浏览器() {
+fun 素材浏览器(onOpenFeature: (FeatureTarget) -> Unit) {
     var query by remember { mutableStateOf("") }
     var selectedCategory by remember { mutableStateOf<FeatureCategory?>(null) }
-    var selectedFeature by remember { mutableStateOf<FeatureItem?>(null) }
 
     val filtered = remember(query, selectedCategory) {
         全部素材().asSequence()
@@ -94,7 +91,7 @@ fun 素材浏览器() {
                     color = MaterialTheme.colorScheme.onBackground
                 )
                 Text(
-                    text = "选择功能模块，复制代码，拼出你的 App",
+                    text = "点击功能模块，直接进入真实可操作的功能；不是介绍弹窗",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -110,7 +107,7 @@ fun 素材浏览器() {
                     .padding(horizontal = 22.dp),
                 placeholder = { Text("搜索功能模块…") },
                 leadingIcon = {
-                    Icon(Icons.Default.Search, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Icon(AppIcons.BlurOn, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
                 },
                 shape = AppShape.control,
                 colors = OutlinedTextFieldDefaults.colors(
@@ -162,18 +159,12 @@ fun 素材浏览器() {
         items(filtered) { feature ->
             功能卡片(
                 feature = feature,
-                onClick = { selectedFeature = feature }
+                onClick = { onOpenFeature(feature.target) }
             )
         }
     }
 
-    // 详情对话框
-    selectedFeature?.let { feature ->
-        FeatureDetailDialog(
-            feature = feature,
-            onDismiss = { selectedFeature = null }
-        )
-    }
+
 }
 
 @Composable
@@ -273,93 +264,9 @@ private fun 功能卡片(
     }
 }
 
-@Composable
-private fun FeatureDetailDialog(
-    feature: FeatureItem,
-    onDismiss: () -> Unit
-) {
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        color = MaterialTheme.colorScheme.background,
-        shadowElevation = 8.dp,
-        shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
-    ) {
-        Column(
-            modifier = Modifier.padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(52.dp)
-                        .background(
-                            MaterialTheme.colorScheme.primaryContainer,
-                            RoundedCornerShape(16.dp)
-                        ),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        imageVector = feature.icon,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                        modifier = Modifier.size(28.dp)
-                    )
-                }
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = feature.name,
-                        style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                    Text(
-                        text = "${feature.category.label} · ${feature.difficulty}",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-            }
-            分隔线()
-            Text(
-                text = feature.description,
-                style = MaterialTheme.typography.bodyLarge
-            )
-            Text(
-                text = "接入说明",
-                style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.SemiBold
-            )
-            Text(
-                text = feature.instructions,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            InfoBanner(
-                text = "需要复制 ${feature.fileCount} 个文件 · 包含在 ${feature.codeDir}"
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-        }
-    }
-}
-
-@Composable
-private fun 分隔线(
-    color: Color = MaterialTheme.colorScheme.outlineVariant,
-    modifier: Modifier = Modifier,
-    thickness: androidx.compose.ui.unit.Dp = 1.dp
-) {
-    Box(
-        modifier
-            .fillMaxWidth()
-            .height(thickness)
-            .background(color)
-    )
-}
-
 // ─── 数据模型 ───────────────────────────────────────────────────────────────
+
+enum class FeatureTarget { Components, Motion, Settings, Permissions, About, Onboarding }
 
 enum class FeatureCategory(val label: String) {
     外观("外观"),
@@ -377,7 +284,8 @@ data class FeatureItem(
     val instructions: String,
     val fileCount: Int,
     val codeDir: String,
-    val icon: ImageVector
+    val icon: ImageVector,
+    val target: FeatureTarget,
 )
 
 /** 扫描素材库，返回所有功能模块。 */
@@ -395,7 +303,8 @@ private fun 全部素材(): List<FeatureItem> = listOf(
         """.trimIndent(),
         fileCount = 5,
         codeDir = "素材库/液态玻璃主题/代码/",
-        icon = AppIcons.Palette
+        icon = AppIcons.Palette,
+        target = FeatureTarget.Settings
     ),
     FeatureItem(
         name = "玻璃常用组件",
@@ -409,7 +318,8 @@ private fun 全部素材(): List<FeatureItem> = listOf(
         """.trimIndent(),
         fileCount = 7,
         codeDir = "素材库/玻璃常用组件/代码/",
-        icon = AppIcons.Widgets
+        icon = AppIcons.Widgets,
+        target = FeatureTarget.Components
     ),
     FeatureItem(
         name = "动效系统",
@@ -424,7 +334,8 @@ private fun 全部素材(): List<FeatureItem> = listOf(
         """.trimIndent(),
         fileCount = 5,
         codeDir = "素材库/动效系统/代码/",
-        icon = AppIcons.Animation
+        icon = AppIcons.Animation,
+        target = FeatureTarget.Motion
     ),
     FeatureItem(
         name = "底部导航栏",
@@ -439,7 +350,8 @@ private fun 全部素材(): List<FeatureItem> = listOf(
         """.trimIndent(),
         fileCount = 2,
         codeDir = "素材库/底部导航栏/代码/",
-        icon = AppIcons.Widgets
+        icon = AppIcons.Widgets,
+        target = FeatureTarget.Components
     ),
     FeatureItem(
         name = "主题色配置与切换",
@@ -453,7 +365,8 @@ private fun 全部素材(): List<FeatureItem> = listOf(
         """.trimIndent(),
         fileCount = 2,
         codeDir = "素材库/主题色配置与切换/代码/",
-        icon = AppIcons.Palette
+        icon = AppIcons.Palette,
+        target = FeatureTarget.Settings
     ),
     FeatureItem(
         name = "应用图标切换",
@@ -467,7 +380,8 @@ private fun 全部素材(): List<FeatureItem> = listOf(
         """.trimIndent(),
         fileCount = 2,
         codeDir = "素材库/应用图标切换/代码/",
-        icon = AppIcons.Settings
+        icon = AppIcons.Settings,
+        target = FeatureTarget.Settings
     ),
     FeatureItem(
         name = "桌面图标动态切换",
@@ -481,7 +395,8 @@ private fun 全部素材(): List<FeatureItem> = listOf(
         """.trimIndent(),
         fileCount = 1,
         codeDir = "素材库/桌面图标动态切换/代码/",
-        icon = AppIcons.Settings
+        icon = AppIcons.Settings,
+        target = FeatureTarget.Settings
     ),
     FeatureItem(
         name = "应用欢迎引导界面",
@@ -496,6 +411,51 @@ private fun 全部素材(): List<FeatureItem> = listOf(
         """.trimIndent(),
         fileCount = 1,
         codeDir = "素材库/应用欢迎引导界面/代码/",
-        icon = AppIcons.Speed
+        icon = AppIcons.Speed,
+        target = FeatureTarget.Onboarding
+    ),
+    FeatureItem(
+        name = "状态反馈组件",
+        description = "加载、骨架屏、空态、错误、成功与离线状态，可在组件页直接操作。",
+        category = FeatureCategory.组件,
+        difficulty = "入门",
+        instructions = "复制状态反馈组件代码并按业务状态切换对应 composable。",
+        fileCount = 1,
+        codeDir = "素材库/状态反馈组件/代码/",
+        icon = AppIcons.Notifications,
+        target = FeatureTarget.Components
+    ),
+    FeatureItem(
+        name = "权限请求组件",
+        description = "真实请求运行时权限、显示授权状态，并支持拒绝后跳转系统设置。",
+        category = FeatureCategory.设置,
+        difficulty = "入门",
+        instructions = "复制 PermissionToolkit，并按权限用途传入 PermissionSpec。",
+        fileCount = 1,
+        codeDir = "素材库/权限请求组件/代码/",
+        icon = AppIcons.Shield,
+        target = FeatureTarget.Permissions
+    ),
+    FeatureItem(
+        name = "主题配置导入导出",
+        description = "把当前主题完整导出为 JSON，并从剪贴板校验、导入和恢复。",
+        category = FeatureCategory.设置,
+        difficulty = "入门",
+        instructions = "复制导入导出代码并连接统一的设置状态类。",
+        fileCount = 1,
+        codeDir = "素材库/主题配置导入导出/代码/",
+        icon = AppIcons.RotateRight,
+        target = FeatureTarget.Settings
+    ),
+    FeatureItem(
+        name = "协议与开源许可页面",
+        description = "完整页面展示隐私说明、全部参考项目、作者、链接和许可证。",
+        category = FeatureCategory.设置,
+        difficulty = "入门",
+        instructions = "复制信息页面并在设置页提供明确入口。",
+        fileCount = 1,
+        codeDir = "素材库/协议与开源许可页面/代码/",
+        icon = AppIcons.Shield,
+        target = FeatureTarget.About
     )
 )

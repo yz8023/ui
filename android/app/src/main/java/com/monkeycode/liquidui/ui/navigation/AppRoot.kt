@@ -2,6 +2,7 @@ package com.monkeycode.liquidui.ui.navigation
 
 import android.app.WallpaperManager
 import android.graphics.drawable.Drawable
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.core.tween
@@ -26,6 +27,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -49,15 +51,21 @@ import com.monkeycode.liquidui.ui.components.LocalGlassBackdrop
 import com.monkeycode.liquidui.ui.components.LocalGlassContentBackdrop
 import com.monkeycode.liquidui.ui.components.LocalGlassDialogHost
 import com.monkeycode.liquidui.ui.motion.运动
+import com.monkeycode.liquidui.ui.screens.AboutScreen
 import com.monkeycode.liquidui.ui.screens.AppSettingsState
+import com.monkeycode.liquidui.ui.screens.PermissionCenterScreen
+import com.monkeycode.liquidui.ui.screens.PrivacyScreen
 import com.monkeycode.liquidui.ui.screens.ComponentsScreen
 import com.monkeycode.liquidui.ui.screens.HomeScreen
+import com.monkeycode.liquidui.ui.screens.FeatureTarget
 import com.monkeycode.liquidui.ui.screens.运动屏幕
 import com.monkeycode.liquidui.ui.screens.SettingsScreen
 import com.monkeycode.liquidui.ui.screens.素材浏览器
 import com.monkeycode.liquidui.ui.theme.LocalAppChrome
 import com.monkeycode.liquidui.ui.theme.VisualMode
 import kotlin.math.max
+
+private enum class InfoDestination { About, Privacy, Permissions }
 
 /**
  * App shell: background layer, one screen, bottom bar, dialog overlay stack.
@@ -74,6 +82,7 @@ import kotlin.math.max
 @Composable
 fun AppRoot(settings: AppSettingsState) {
     var selectedIndex by rememberSaveable { mutableIntStateOf(0) }
+    var infoDestination by remember { mutableStateOf<InfoDestination?>(null) }
     val screens = Screen.entries
     val chrome = LocalAppChrome.current
     val glassEnabled = chrome.visualMode == VisualMode.Glass
@@ -116,7 +125,7 @@ fun AppRoot(settings: AppSettingsState) {
             运动.bouncy(0.001f)
         }
         AnimatedContent(
-            targetState = selectedIndex,
+            targetState = selectedIndex to infoDestination,
             transitionSpec = {
                 (scaleIn(initialScale = 0.94f, animationSpec = bounceSpec) +
                     fadeIn(animationSpec = tween(运动.Duration.Fast))) togetherWith
@@ -124,8 +133,17 @@ fun AppRoot(settings: AppSettingsState) {
                         fadeOut(animationSpec = tween(运动.Duration.Fast)))
             },
             label = "screenSwitch"
-        ) { index ->
-            when (screens[index]) {
+        ) { destination ->
+            val info = destination.second
+            if (info != null) {
+                when (info) {
+                    InfoDestination.About -> AboutScreen { infoDestination = null }
+                    InfoDestination.Privacy -> PrivacyScreen { infoDestination = null }
+                    InfoDestination.Permissions -> PermissionCenterScreen { infoDestination = null }
+                }
+                return@AnimatedContent
+            }
+            when (screens[destination.first]) {
                 Screen.Home -> HomeScreen(
                     settings = settings,
                     onOpenComponents = { selectedIndex = Screen.Components.ordinal },
@@ -133,11 +151,27 @@ fun AppRoot(settings: AppSettingsState) {
                 )
                 Screen.Components -> ComponentsScreen()
                 Screen.Motion -> 运动屏幕(settings = settings)
-                Screen.Settings -> SettingsScreen(settings = settings)
-                Screen.Gallery -> 素材浏览器()
+                Screen.Settings -> SettingsScreen(
+                    settings = settings,
+                    onOpenAbout = { infoDestination = InfoDestination.About },
+                    onOpenPrivacy = { infoDestination = InfoDestination.Privacy },
+                    onOpenPermissions = { infoDestination = InfoDestination.Permissions },
+                )
+                Screen.Gallery -> 素材浏览器 { target ->
+                    when (target) {
+                        FeatureTarget.Components -> selectedIndex = Screen.Components.ordinal
+                        FeatureTarget.Motion -> selectedIndex = Screen.Motion.ordinal
+                        FeatureTarget.Settings -> selectedIndex = Screen.Settings.ordinal
+                        FeatureTarget.Permissions -> infoDestination = InfoDestination.Permissions
+                        FeatureTarget.About -> infoDestination = InfoDestination.About
+                        FeatureTarget.Onboarding -> settings.resetOnboarding()
+                    }
+                }
             }
         }
     }
+
+    BackHandler(enabled = infoDestination != null) { infoDestination = null }
 
     CompositionLocalProvider(
         LocalGlassBackdrop provides (if (glassEnabled) auroraBackdrop else null),
@@ -167,7 +201,7 @@ fun AppRoot(settings: AppSettingsState) {
                 Box(Modifier.matchParentSize()) { screenContent() }
             }
 
-            if (glassEnabled) {
+            if (infoDestination == null && glassEnabled) {
                 LiquidBottomTabs(
                     selectedTabIndex = { selectedIndex },
                     onTabSelected = { selectedIndex = it },
@@ -198,7 +232,7 @@ fun AppRoot(settings: AppSettingsState) {
                         }
                     }
                 }
-            } else {
+            } else if (infoDestination == null) {
                 SolidBottomTabs(
                     selectedIndex = selectedIndex,
                     onTabSelected = { selectedIndex = it },

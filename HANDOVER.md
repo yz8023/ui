@@ -47,7 +47,7 @@
 - 设置页新增主题 JSON 导入 / 导出、合规说明与项目主页入口
 - 组件页新增加载 / 成功 / 离线 / 错误状态反馈演示
 
-版本：`versionCode=6 / versionName=2.1.0`。
+版本：`versionCode=7 / versionName=2.2.0`。
 
 ## 4. 环境要求
 

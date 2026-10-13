@@ -41,7 +41,7 @@ object AppIconSwitcher {
     data class IconOption(
         val key: String,
         val label: String,
-        val component: ComponentName,
+        val className: String,
         val previewRes: Int,
     )
 
@@ -49,44 +49,47 @@ object AppIconSwitcher {
         IconOption(
             key = "default",
             label = "冰蓝",
-            component = ComponentName(PACKAGE, "$PACKAGE.icon.Default"),
+            className = ".icon.Default",
             previewRes = R.drawable.ic_launcher_foreground,
         ),
         IconOption(
             key = "galaxy",
             label = "星夜",
-            component = ComponentName(PACKAGE, "$PACKAGE.icon.Galaxy"),
+            className = ".icon.Galaxy",
             previewRes = R.drawable.ic_launcher_foreground_galaxy,
         ),
         IconOption(
             key = "coral",
             label = "珊瑚",
-            component = ComponentName(PACKAGE, "$PACKAGE.icon.Coral"),
+            className = ".icon.Coral",
             previewRes = R.drawable.ic_launcher_foreground_coral,
         ),
     )
 
-    private const val PACKAGE = "com.monkeycode.liquidui"
+    private fun IconOption.component(context: Context) =
+        ComponentName(context.packageName, context.packageName + className)
 
-    fun apply(context: Context, target: IconOption) {
+    fun apply(context: Context, target: IconOption): Boolean = runCatching {
         val pm = context.packageManager
-        all().forEach { option ->
-            val state = if (option.key == target.key) {
-                PackageManager.COMPONENT_ENABLED_STATE_ENABLED
-            } else {
-                PackageManager.COMPONENT_ENABLED_STATE_DISABLED
-            }
+        // Enable the new launcher entry first so there is never a moment with no launcher icon.
+        pm.setComponentEnabledSetting(
+            target.component(context),
+            PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+            PackageManager.DONT_KILL_APP,
+        )
+        all().filterNot { it.key == target.key }.forEach { option ->
             pm.setComponentEnabledSetting(
-                option.component,
-                state,
+                option.component(context),
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
                 PackageManager.DONT_KILL_APP,
             )
         }
-    }
+        true
+    }.getOrDefault(false)
 
     fun current(context: Context): IconOption =
         all().firstOrNull {
-            context.packageManager.getComponentEnabledSetting(it.component) ==
+            context.packageManager.getComponentEnabledSetting(it.component(context)) ==
                 PackageManager.COMPONENT_ENABLED_STATE_ENABLED
         } ?: all().first()
 }
@@ -125,8 +128,9 @@ fun AppIconPicker(modifier: Modifier = Modifier) {
                     modifier = Modifier
                         .clip(CircleShape)
                         .clickable {
-                            selectedKey = option.key
-                            AppIconSwitcher.apply(context, option)
+                            if (AppIconSwitcher.apply(context, option)) {
+                                selectedKey = option.key
+                            }
                         }
                         .border(
                             width = if (selected) 3.dp else 1.dp,

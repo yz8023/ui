@@ -33,8 +33,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
@@ -85,12 +83,14 @@ private fun wallpaperReadPermission(): String =
         Manifest.permission.READ_EXTERNAL_STORAGE
     }
 
-private enum class LegalDialog { Licenses, Privacy }
-
 @Composable
-fun SettingsScreen(settings: AppSettingsState) {
+fun SettingsScreen(
+    settings: AppSettingsState,
+    onOpenAbout: () -> Unit,
+    onOpenPrivacy: () -> Unit,
+    onOpenPermissions: () -> Unit,
+) {
     val currentChrome = LocalAppChrome.current
-    var legalDialog by remember { mutableStateOf<LegalDialog?>(null) }
     val context = LocalContext.current
 
     LazyColumn(
@@ -318,9 +318,9 @@ fun SettingsScreen(settings: AppSettingsState) {
             PreferenceCard {
                 PreferenceRow(
                     icon = AppIcons.Shield,
-                    title = "开源许可与致谢",
-                    subtitle = "查看项目参考来源、第三方库和许可证说明",
-                    onClick = { legalDialog = LegalDialog.Licenses }
+                    title = "关于与开源致谢",
+                    subtitle = "完整查看参考项目、作者、用途、链接与许可证",
+                    onClick = onOpenAbout
                 )
             }
         }
@@ -329,8 +329,18 @@ fun SettingsScreen(settings: AppSettingsState) {
                 PreferenceRow(
                     icon = AppIcons.Shield,
                     title = "隐私说明",
-                    subtitle = "本示例只把主题偏好保存在本地，不上传任何个人数据",
-                    onClick = { legalDialog = LegalDialog.Privacy }
+                    subtitle = "查看本地数据、权限用途和网络行为的完整说明",
+                    onClick = onOpenPrivacy
+                )
+            }
+        }
+        item {
+            PreferenceCard {
+                PreferenceRow(
+                    icon = AppIcons.Shield,
+                    title = "权限管理",
+                    subtitle = "真实请求权限、检查状态，拒绝后可进入系统设置恢复",
+                    onClick = onOpenPermissions
                 )
             }
         }
@@ -351,57 +361,6 @@ fun SettingsScreen(settings: AppSettingsState) {
             }
         }
 
-        item { SectionTitle("关于") }
-        item {
-            PreferenceCard {
-                PreferenceRow(
-                    icon = Icons.Default.Info,
-                    title = "重新查看欢迎引导",
-                    subtitle = "下次启动时重新展示首次引导页",
-                    onClick = {
-                        settings.resetOnboarding()
-                    }
-                )
-            }
-        }
-        item {
-            GlassCard(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        text = "Android 素材库示例",
-                        style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                    Spacer(Modifier.weight(1f))
-                    Text(
-                        text = "v2.1.0",
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-                Spacer(Modifier.height(8.dp))
-                Text(
-                    text = "素材库功能点组合演示 · 选着搭，拼出你的 App",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Spacer(Modifier.height(14.dp))
-                Text(
-                    text = "设计参考 · 开源仓库",
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.SemiBold
-                )
-                Spacer(Modifier.height(6.dp))
-                Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
-                    ReferenceLine("dyparse", "github.com/kd64i/dyparse")
-                    ReferenceLine("Miuix", "github.com/chibatching/Miuix")
-                    ReferenceLine("motion-web", "github.com/feitangyuan/motion-web")
-                    ReferenceLine("backdrop-android", "github.com/kyant0/backdrop-android")
-                }
-            }
-        }
-
         item {
             Row(
                 modifier = Modifier.padding(horizontal = 16.dp),
@@ -419,27 +378,7 @@ fun SettingsScreen(settings: AppSettingsState) {
         }
     }
 
-    legalDialog?.let { dialog ->
-        GlassDialog(
-            onDismissRequest = { legalDialog = null },
-            title = if (dialog == LegalDialog.Licenses) "开源许可与致谢" else "隐私说明",
-            onConfirm = { legalDialog = null },
-            confirmText = "知道了",
-            dismissText = null
-        ) {
-            Text(
-                text = if (dialog == LegalDialog.Licenses) {
-                    "本示例应用基于 Jetpack Compose、Material 3、backdrop-android、shapes-android 与 Material Icons 等开源项目构建。" +
-                        "完整项目来源与许可证请见仓库 CREDITS.md。复制素材到你的项目时，请保留对应上游项目的署名与许可证说明。"
-                } else {
-                    "本示例只在设备本地保存主题、动效、图标与引导页状态等偏好设置。" +
-                        "通知预览仅由用户点击触发；壁纸背景仅在你主动开启并授权后读取。项目不包含账号系统，也不会上传个人数据。"
-                },
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
-    }
+
 }
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -520,15 +459,6 @@ private fun WallpaperSwitch(settings: AppSettingsState) {
                 else permissionLauncher.launch(wallpaperReadPermission())
             }
         }
-    )
-}
-
-@Composable
-private fun ReferenceLine(name: String, repo: String) {
-    Text(
-        text = "$name  ·  $repo",
-        style = MaterialTheme.typography.bodySmall,
-        color = MaterialTheme.colorScheme.onSurfaceVariant
     )
 }
 

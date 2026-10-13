@@ -12,8 +12,8 @@ android {
         applicationId = "com.monkeycode.liquidui"
         minSdk = 26
         targetSdk = 35
-        versionCode = 6
-        versionName = "2.1.0"
+        versionCode = 7
+        versionName = "2.2.0"
     }
 
     signingConfigs {
@@ -62,6 +62,7 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     packaging {
@@ -88,7 +89,6 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     implementation(libs.kyant.backdrop)
     implementation(libs.kyant.shapes)
-    implementation(libs.material.icons.extended)
 
     debugImplementation(libs.androidx.compose.ui.tooling)
 

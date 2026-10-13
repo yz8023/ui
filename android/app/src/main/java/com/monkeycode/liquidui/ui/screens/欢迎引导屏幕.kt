@@ -15,8 +15,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -76,7 +74,7 @@ fun 欢迎引导屏幕(
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    imageVector = Icons.Outlined.Star,
+                    imageVector = AppIcons.WaterDrop,
                     contentDescription = "应用图标",
                     tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier
@@ -102,22 +100,22 @@ fun 欢迎引导屏幕(
 
             // ── 功能列表 ───────────────────────────────────────
             欢迎引导功能(
-                icon = Icons.Outlined.Link,
+                icon = AppIcons.Widgets,
                 title = "核心功能一",
                 description = "一句话描述这个功能的亮点和价值"
             )
             欢迎引导功能(
-                icon = Icons.Outlined.Speed,
+                icon = AppIcons.Speed,
                 title = "核心功能二",
                 description = "一句话描述这个功能的亮点和价值"
             )
             欢迎引导功能(
-                icon = Icons.Outlined.Storage,
+                icon = AppIcons.Widgets,
                 title = "核心功能三",
                 description = "一句话描述这个功能的亮点和价值"
             )
             欢迎引导功能(
-                icon = Icons.Outlined.Lock,
+                icon = AppIcons.Shield,
                 title = "隐私安全",
                 description = "数据仅存本地，不上传任何服务器"
             )
@@ -231,7 +229,7 @@ private fun 免费声明卡() {
             ) {
                 Box(contentAlignment = Alignment.Center) {
                     Icon(
-                        imageVector = Icons.Outlined.Favorite,
+                        imageVector = AppIcons.WaterDrop,
                         contentDescription = null,
                         modifier = Modifier.size(20.dp),
                         tint = MaterialTheme.colorScheme.onTertiaryContainer
@@ -271,7 +269,7 @@ private fun 免责声明卡() {
             verticalAlignment = Alignment.Top
         ) {
             Icon(
-                imageVector = Icons.Outlined.Shield,
+                imageVector = AppIcons.Shield,
                 contentDescription = null,
                 modifier = Modifier.size(20.dp),
                 tint = MaterialTheme.colorScheme.onSurfaceVariant
@@ -317,7 +315,7 @@ private fun 开源仓库卡(
             ) {
                 Box(contentAlignment = Alignment.Center) {
                     Icon(
-                        imageVector = Icons.Outlined.Code,
+                        imageVector = AppIcons.Settings,
                         contentDescription = null,
                         modifier = Modifier.size(20.dp),
                         tint = MaterialTheme.colorScheme.onPrimaryContainer
@@ -338,7 +336,7 @@ private fun 开源仓库卡(
                 )
             }
             Icon(
-                imageVector = Icons.Outlined.OpenInNew,
+                imageVector = AppIcons.Widgets,
                 contentDescription = null,
                 modifier = Modifier.size(18.dp),
                 tint = MaterialTheme.colorScheme.outline
@@ -346,3 +344,4 @@ private fun 开源仓库卡(
         }
     }
 }
+import com.monkeycode.liquidui.ui.theme.AppIcons
