@@ -161,7 +161,9 @@ fun Modifier.liquidGlass(
 ): Modifier {
     val chrome = LocalAppChrome.current
     val opacity = chrome.glassOpacity.coerceIn(0f, 1f)
-    val refraction = chrome.glassRefraction.coerceIn(0f, 1f)
+    val blurRadius = chrome.glassBlurRadiusDp.coerceIn(0f, 40f)
+    val refractionHeight = chrome.glassRefractionHeightDp.coerceIn(0f, 40f)
+    val refractionAmount = chrome.glassRefractionAmountDp.coerceIn(0f, 60f)
     val backdrop = LocalGlassBackdrop.current
     val baseTint = tint ?: MaterialTheme.colorScheme.surfaceContainer
     val isDark = isSystemInDarkTheme()
@@ -176,23 +178,30 @@ fun Modifier.liquidGlass(
     }
 
     if (backdrop != null) {
-        val resolvedTint = baseTint.copy(alpha = baseTint.alpha * (0.10f + opacity * 0.55f))
+        val resolvedTint = baseTint.copy(
+            alpha = (chrome.glassTintAlpha + opacity * 0.04f).coerceIn(0f, 0.45f)
+        )
         return this
             .drawBackdrop(
                 backdrop = backdrop,
                 shape = { shape },
                 effects = {
-                    vibrancy()
-                    blur(16f.dp.toPx())
-                    if (refraction > 0.01f) {
+                    if (chrome.glassVibrancyEnabled) vibrancy()
+                    blur(blurRadius.dp.toPx())
+                    if (refractionHeight > 0.01f || refractionAmount > 0.01f) {
                         lens(
-                            refractionHeight = 26f.dp.toPx() * refraction,
-                            refractionAmount = 26f.dp.toPx() * refraction
+                            refractionHeight = refractionHeight.dp.toPx(),
+                            refractionAmount = refractionAmount.dp.toPx(),
+                            chromaticAberration = chrome.glassChromaticAberration,
                         )
                     }
                 },
                 highlight = {
-                    Highlight.Default.copy(alpha = borderAlpha.coerceIn(0f, 1f) * 0.9f)
+                    Highlight(
+                        width = borderWidth,
+                        alpha = (chrome.glassBorderAlpha * borderAlpha.coerceIn(0f, 1f) / 0.42f)
+                            .coerceIn(0f, 0.8f),
+                    )
                 },
                 shadow = {
                     if (elevation > 0.dp) {
@@ -210,7 +219,9 @@ fun Modifier.liquidGlass(
     }
 
     // Fallback: no backdrop layer available (e.g. dialog window) — translucent tint.
-    val resolvedTint = baseTint.copy(alpha = baseTint.alpha * (0.28f + opacity * 0.45f))
+    val resolvedTint = baseTint.copy(
+        alpha = (0.26f + chrome.glassTintAlpha + opacity * 0.18f).coerceIn(0f, 0.72f)
+    )
     return this
         .shadow(elevation, shape, clip = false)
         .clip(shape)

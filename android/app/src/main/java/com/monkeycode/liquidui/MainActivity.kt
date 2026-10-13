@@ -40,7 +40,14 @@ class MainActivity : ComponentActivity() {
                     cornerScale = settings.cornerScale,
                     reducedMotion = settings.reducedMotion,
                     motionDamping = settings.motionDamping,
-                    wallpaperBackground = settings.wallpaperBackground
+                    wallpaperBackground = settings.wallpaperBackground,
+                    glassBlurRadiusDp = settings.glassBlurRadiusDp,
+                    glassRefractionHeightDp = settings.glassRefractionHeightDp,
+                    glassRefractionAmountDp = settings.glassRefractionAmountDp,
+                    glassTintAlpha = settings.glassTintAlpha,
+                    glassBorderAlpha = settings.glassBorderAlpha,
+                    glassVibrancyEnabled = settings.glassVibrancyEnabled,
+                    glassChromaticAberration = settings.glassChromaticAberration,
                 )
             ) {
                 if (!onboardingCompleted) {

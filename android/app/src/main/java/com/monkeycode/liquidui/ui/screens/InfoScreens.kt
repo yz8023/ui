@@ -40,6 +40,7 @@ private data class OpenSourceCredit(
 )
 
 private val allCredits = listOf(
+    OpenSourceCredit("StudyTrack（学迹）", "L1angK1NG 与项目贡献者", "液态玻璃参数体系、浅色视觉、卡片/按钮/指标组件及自定义壁纸体验参考；底部导航仍使用本项目原实现", "上游仓库未提供 LICENSE；本项目采用独立实现，不直接复制其源码", "https://github.com/L1angK1NG/StudyTrack"),
     OpenSourceCredit("dyparse", "kd64i", "液态玻璃与 Miuix 风格的视觉语言、配色、圆角及设置页结构参考", "以原仓库许可证为准", "https://github.com/kd64i/dyparse"),
     OpenSourceCredit("Miuix", "chibatching 及贡献者", "MIUI 风格 Compose 组件语义与布局参考", "Apache-2.0", "https://github.com/chibatching/Miuix"),
     OpenSourceCredit("backdrop-android", "kyant0 及贡献者", "玻璃背景采样、模糊、折射和高光渲染", "Apache-2.0", "https://github.com/kyant0/backdrop-android"),

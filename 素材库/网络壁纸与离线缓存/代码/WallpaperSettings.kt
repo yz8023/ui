@@ -1,0 +1,201 @@
+package com.monkeycode.liquidui.ui.screens
+
+import android.Manifest
+import android.content.pm.PackageManager
+import android.graphics.BitmapFactory
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
+import com.monkeycode.liquidui.ui.components.GlassCard
+import com.monkeycode.liquidui.ui.components.GlassTextField
+import com.monkeycode.liquidui.ui.components.PrimaryButton
+import com.monkeycode.liquidui.ui.components.SecondaryButton
+import com.monkeycode.liquidui.ui.components.SegmentedTabs
+import com.monkeycode.liquidui.ui.features.WallpaperStore
+import kotlinx.coroutines.launch
+
+@Composable
+fun WallpaperSettingsCard(settings: AppSettingsState) {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    var url by remember(settings.networkWallpaperUrl) { mutableStateOf(settings.networkWallpaperUrl) }
+    var busy by remember { mutableStateOf(false) }
+    var message by remember { mutableStateOf<String?>(null) }
+
+    fun applyCached(path: String, sourceUrl: String, success: String) {
+        settings.updateCachedWallpaper(path, sourceUrl)
+        message = success
+        busy = false
+    }
+
+    val documentPicker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        if (uri != null) {
+            busy = true
+            message = "正在复制并缓存图片…"
+            scope.launch {
+                WallpaperStore.cacheDocument(context, uri)
+                    .onSuccess { applyCached(it.file.absolutePath, "", "本地图片已复制到应用内部并启用") }
+                    .onFailure { busy = false; message = it.message ?: "图片缓存失败" }
+            }
+        }
+    }
+
+    val systemPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+        if (granted) {
+            settings.updateWallpaperMode(WallpaperMode.System)
+            message = "已切换为系统桌面壁纸"
+        } else {
+            message = "未获得读取权限；可使用本地图片或网络壁纸"
+        }
+    }
+
+    GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
+        Text("壁纸与背景", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
+        Spacer(Modifier.height(4.dp))
+        Text(
+            "网络图片会下载、校验并复制到应用私有目录。即使原链接失效，已缓存壁纸仍可离线使用。",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Spacer(Modifier.height(14.dp))
+        SegmentedTabs(
+            labels = WallpaperMode.entries.map { it.label },
+            selectedIndex = settings.wallpaperMode.ordinal,
+            onSelected = { index ->
+                when (val mode = WallpaperMode.entries[index]) {
+                    WallpaperMode.Aurora -> settings.updateWallpaperMode(mode)
+                    WallpaperMode.Cached -> {
+                        if (!settings.cachedWallpaperPath.isNullOrBlank()) settings.updateWallpaperMode(mode)
+                        else message = "请先选择本地图片或下载网络壁纸"
+                    }
+                    WallpaperMode.System -> {
+                        val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                            Manifest.permission.READ_MEDIA_IMAGES
+                        } else Manifest.permission.READ_EXTERNAL_STORAGE
+                        if (ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED) {
+                            settings.updateWallpaperMode(mode)
+                        } else systemPermission.launch(permission)
+                    }
+                }
+            },
+            modifier = Modifier.fillMaxWidth(),
+        )
+
+        val preview = remember(settings.cachedWallpaperPath, settings.wallpaperRevision) {
+            settings.cachedWallpaperPath?.let(BitmapFactory::decodeFile)
+        }
+        if (preview != null) {
+            Spacer(Modifier.height(14.dp))
+            Box(
+                Modifier.fillMaxWidth().height(176.dp).clip(RoundedCornerShape(18.dp)),
+                contentAlignment = Alignment.BottomStart,
+            ) {
+                Image(
+                    bitmap = preview.asImageBitmap(),
+                    contentDescription = "缓存壁纸预览",
+                    modifier = Modifier.fillMaxWidth().height(176.dp),
+                    contentScale = ContentScale.Crop,
+                )
+                Text(
+                    text = if (settings.wallpaperMode == WallpaperMode.Cached) "缓存壁纸使用中" else "缓存壁纸已保留",
+                    modifier = Modifier.padding(12.dp),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+            }
+        }
+
+        Spacer(Modifier.height(14.dp))
+        SecondaryButton(
+            onClick = { documentPicker.launch(arrayOf("image/*")) },
+            enabled = !busy,
+            modifier = Modifier.fillMaxWidth(),
+        ) { Text("选择本地图片并永久缓存") }
+
+        Spacer(Modifier.height(14.dp))
+        Text("网络壁纸", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+        Spacer(Modifier.height(8.dp))
+        GlassTextField(
+            value = url,
+            onValueChange = { url = it; message = null },
+            label = "壁纸图片链接",
+            placeholder = "https://example.com/wallpaper.jpg",
+            supportingText = "支持 HTTPS，最大 20MB；会缩放并缓存到本地",
+            enabled = !busy,
+            modifier = Modifier.fillMaxWidth(),
+        )
+        Spacer(Modifier.height(10.dp))
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            PrimaryButton(
+                onClick = {
+                    if (url.isBlank()) {
+                        message = "请先填写图片链接"
+                    } else {
+                        busy = true
+                        message = "正在下载并缓存网络壁纸…"
+                        settings.updateNetworkWallpaperUrl(url.trim())
+                        scope.launch {
+                            WallpaperStore.cacheNetwork(context, url)
+                                .onSuccess {
+                                    applyCached(it.file.absolutePath, url.trim(), "网络壁纸已缓存并启用（${it.width}×${it.height}）")
+                                }
+                                .onFailure { busy = false; message = it.message ?: "网络壁纸下载失败" }
+                        }
+                    }
+                },
+                enabled = !busy,
+                modifier = Modifier.weight(1f),
+            ) { Text(if (busy) "处理中…" else "下载并应用") }
+            SecondaryButton(
+                onClick = {
+                    WallpaperStore.clear(context)
+                    settings.updateCachedWallpaper(null, "")
+                    settings.updateWallpaperMode(WallpaperMode.Aurora)
+                    url = ""
+                    message = "缓存壁纸已清除"
+                },
+                enabled = !busy && !settings.cachedWallpaperPath.isNullOrBlank(),
+                modifier = Modifier.weight(1f),
+            ) { Text("清除缓存") }
+        }
+
+        message?.let {
+            Spacer(Modifier.height(10.dp))
+            Text(
+                it,
+                style = MaterialTheme.typography.bodySmall,
+                color = if (it.contains("失败") || it.contains("请先") || it.contains("未获得")) {
+                    MaterialTheme.colorScheme.error
+                } else MaterialTheme.colorScheme.primary,
+            )
+        }
+    }
+}

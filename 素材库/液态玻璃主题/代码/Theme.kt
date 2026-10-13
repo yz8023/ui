@@ -39,7 +39,7 @@ enum class PaletteId(val label: String) {
 val CustomPalette = PaletteId.Custom
 
 /** Light-mode primary of a palette — used for swatch previews in settings. */
-fun 调色板主色浅色版(palette: PaletteId): Color =
+fun palettePrimaryLight(palette: PaletteId): Color =
     if (palette == PaletteId.Custom) Color(0xFF3E8FE0)
     else PaletteSeeds.getValue(palette).light.primary
 
@@ -396,8 +396,15 @@ data class AppChrome(
      * so one slider retunes every spring token in the app.
      */
     val motionDamping: Float = 0.5f,
-    /** Use the device's home-screen wallpaper as the background layer. */
-    val wallpaperBackground: Boolean = false
+    /** Use a system or app-cached wallpaper as the background layer. */
+    val wallpaperBackground: Boolean = false,
+    val glassBlurRadiusDp: Float = 0f,
+    val glassRefractionHeightDp: Float = 15f,
+    val glassRefractionAmountDp: Float = 20f,
+    val glassTintAlpha: Float = 0.08f,
+    val glassBorderAlpha: Float = 0.20f,
+    val glassVibrancyEnabled: Boolean = true,
+    val glassChromaticAberration: Boolean = true,
 )
 
 val LocalAppChrome = staticCompositionLocalOf { AppChrome() }

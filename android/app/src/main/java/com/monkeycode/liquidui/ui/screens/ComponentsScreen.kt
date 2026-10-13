@@ -34,6 +34,9 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.monkeycode.liquidui.ui.components.CompactSwitch
 import com.monkeycode.liquidui.ui.components.GlassCard
+import com.monkeycode.liquidui.ui.components.GlassMetricCard
+import com.monkeycode.liquidui.ui.components.GlassHeroCard
+import com.monkeycode.liquidui.ui.components.GlassCapsuleButton
 import com.monkeycode.liquidui.ui.components.GlassDialog
 import com.monkeycode.liquidui.ui.components.GlassIconButton
 import com.monkeycode.liquidui.ui.components.ErrorState
@@ -64,6 +67,7 @@ fun ComponentsScreen() {
     var segmented by rememberSaveable { mutableIntStateOf(0) }
     var meter by remember { mutableFloatStateOf(0.62f) }
     var showDialog by remember { mutableStateOf(false) }
+    var capsule by rememberSaveable { mutableIntStateOf(0) }
 
     LazyColumn(
         modifier = Modifier
@@ -90,7 +94,37 @@ fun ComponentsScreen() {
             }
         }
 
-        item { SectionTitle("按钮 · 按下权重", Modifier.padding(top = 8.dp)) }
+        item { SectionTitle("概览 · 大卡与指标", Modifier.padding(top = 8.dp)) }
+        item {
+            GlassHeroCard(
+                title = "液态玻璃设计系统",
+                value = "12 个功能模块",
+                badge = "实时折射",
+                subtitle = "大卡、指标、胶囊筛选与功能组件共享同一套壁纸采样和玻璃参数。",
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+            )
+        }
+        item {
+            Row(
+                Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+            ) {
+                GlassMetricCard("组件", "完整", Modifier.weight(1f), AuroraMint, "可直接接业务")
+                GlassMetricCard("壁纸", "离线", Modifier.weight(1f), AuroraViolet, "网络图已缓存")
+            }
+        }
+        item {
+            Row(
+                Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                listOf("全部", "外观", "交互").forEachIndexed { index, label ->
+                    GlassCapsuleButton(capsule == index, label, { capsule = index })
+                }
+            }
+        }
+
+        item { SectionTitle("按钮 · 按下权重") }
         item {
             GlassCard(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
                 Row(

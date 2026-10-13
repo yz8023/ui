@@ -14,11 +14,11 @@ import androidx.compose.ui.graphics.Color
 // ---------------------------------------------------------------------------
 // Core neutrals
 // ---------------------------------------------------------------------------
-internal val Ink = Color(0xFF1A1C1E)
-internal val InkMuted = Color(0xFF5A6068)
-internal val Paper = Color(0xFFF8F9FC)
-internal val PaperContainer = Color(0xFFEFF3F8)
-internal val PaperContainerLow = Color(0xFFF2F5F9)
+internal val Ink = Color(0xFF202634)
+internal val InkMuted = Color(0xFF7B8497)
+internal val Paper = Color(0xFFFFFFFF)
+internal val PaperContainer = Color(0xFFF6F8FC)
+internal val PaperContainerLow = Color(0xFFFAFBFE)
 
 internal val Night = Color(0xFF0C1118)
 internal val NightContainer = Color(0xFF1A222C)
@@ -28,9 +28,9 @@ internal val NightText = Color(0xFFE6EAF1)
 // ---------------------------------------------------------------------------
 // Accents
 // ---------------------------------------------------------------------------
-internal val BlueLight = Color(0xFF00639A)
-internal val BlueLightContainer = Color(0xFFCBE6FF)
-internal val OnBlueLightContainer = Color(0xFF001D32)
+internal val BlueLight = Color(0xFF7C93F4)
+internal val BlueLightContainer = Color(0xFFDDE4FF)
+internal val OnBlueLightContainer = Color(0xFF202634)
 
 internal val BlueDark = Color(0xFF9DCCFF)
 internal val BlueDarkContainer = Color(0xFF164A70)
@@ -107,9 +107,9 @@ internal val GalaxyDarkTertiary = Color(0xFFE2B4EB)
 // ---------------------------------------------------------------------------
 internal val AuroraLight = listOf(
     Color(0xFFFFFFFF),
-    Color(0xFFE8F1FF),
-    Color(0xFFF4ECFF),
-    Color(0xFFE6FBF5),
+    Color(0xFFB7C8FF),
+    Color(0xFFE6ECFF),
+    Color(0xFF8BA3FF),
 )
 
 internal val AuroraDark = listOf(

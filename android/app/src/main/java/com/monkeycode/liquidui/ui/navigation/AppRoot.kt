@@ -1,6 +1,8 @@
 package com.monkeycode.liquidui.ui.navigation
 
 import android.app.WallpaperManager
+import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
@@ -36,6 +38,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -55,6 +58,7 @@ import com.monkeycode.liquidui.ui.screens.AboutScreen
 import com.monkeycode.liquidui.ui.screens.AppSettingsState
 import com.monkeycode.liquidui.ui.screens.PermissionCenterScreen
 import com.monkeycode.liquidui.ui.screens.PrivacyScreen
+import com.monkeycode.liquidui.ui.screens.WallpaperMode
 import com.monkeycode.liquidui.ui.screens.ComponentsScreen
 import com.monkeycode.liquidui.ui.screens.HomeScreen
 import com.monkeycode.liquidui.ui.screens.FeatureTarget
@@ -87,31 +91,38 @@ fun AppRoot(settings: AppSettingsState) {
     val chrome = LocalAppChrome.current
     val glassEnabled = chrome.visualMode == VisualMode.Glass
     val wallpaperBackground = chrome.wallpaperBackground
+    val wallpaperMode = settings.wallpaperMode
+    val cachedWallpaperPath = settings.cachedWallpaperPath
+    val wallpaperRevision = settings.wallpaperRevision
     val surfaceColor = MaterialTheme.colorScheme.background
 
     val context = LocalContext.current
-    val wallpaperDrawable = remember(wallpaperBackground, context) {
-        if (wallpaperBackground) {
-            try {
-                // Reading the wallpaper requires a media permission on API 31+;
-                // degrade to the aurora layer when missing or unavailable.
+    val wallpaperDrawable = remember(wallpaperMode, cachedWallpaperPath, wallpaperRevision, context) {
+        when (wallpaperMode) {
+            WallpaperMode.Aurora -> null
+            WallpaperMode.Cached -> cachedWallpaperPath
+                ?.let(BitmapFactory::decodeFile)
+                ?.let { BitmapDrawable(context.resources, it) }
+            WallpaperMode.System -> try {
+                // Some Android builds restrict direct wallpaper access; gracefully
+                // retain the built-in aurora when the system refuses the read.
                 WallpaperManager.getInstance(context).drawable
-            } catch (e: SecurityException) {
+            } catch (_: SecurityException) {
                 null
-            } catch (e: RuntimeException) {
+            } catch (_: RuntimeException) {
                 null
             }
-        } else null
+        }
     }
 
-    val auroraBackdrop = rememberLayerBackdrop {
+    val auroraBackdrop = rememberLayerBackdrop(graphicsLayer = rememberGraphicsLayer()) {
         when {
             wallpaperDrawable != null -> drawWallpaperCover(wallpaperDrawable)
             else -> drawRect(surfaceColor)
         }
         drawContent()
     }
-    val contentBackdrop = rememberLayerBackdrop { drawContent() }
+    val contentBackdrop = rememberLayerBackdrop(graphicsLayer = rememberGraphicsLayer()) { drawContent() }
     val fullSceneBackdrop = if (glassEnabled) {
         rememberCombinedBackdrop(auroraBackdrop, contentBackdrop)
     } else null

@@ -18,6 +18,10 @@ import com.monkeycode.liquidui.ui.theme.VisualMode
 import androidx.compose.runtime.snapshotFlow
 import org.json.JSONObject
 
+enum class WallpaperMode(val label: String) {
+    Aurora("极光"), System("系统壁纸"), Cached("本地缓存")
+}
+
 /**
  * Every user-facing knob the template exposes, persisted so a fresh launch
  * restores the exact look the user configured. This is the only place the app
@@ -68,7 +72,42 @@ class AppSettingsState(private val prefs: Context) {
     var motionDamping by mutableFloatStateOf(store.getFloat(KEY_DAMPING, 0.5f))
         private set
 
-    var wallpaperBackground by mutableStateOf(store.getBoolean(KEY_WALLPAPER, false))
+    var wallpaperMode by mutableStateOf(
+        runCatching {
+            WallpaperMode.valueOf(
+                store.getString(
+                    KEY_WALLPAPER_MODE,
+                    if (store.getBoolean(KEY_WALLPAPER, false)) WallpaperMode.System.name else WallpaperMode.Aurora.name,
+                )!!,
+            )
+        }.getOrDefault(WallpaperMode.Aurora)
+    )
+        private set
+
+    var cachedWallpaperPath by mutableStateOf(store.getString(KEY_WALLPAPER_PATH, null))
+        private set
+
+    var networkWallpaperUrl by mutableStateOf(store.getString(KEY_WALLPAPER_URL, "").orEmpty())
+        private set
+
+    var wallpaperRevision by mutableIntStateOf(0)
+        private set
+
+    val wallpaperBackground: Boolean get() = wallpaperMode != WallpaperMode.Aurora
+
+    var glassBlurRadiusDp by mutableFloatStateOf(store.getFloat(KEY_GLASS_BLUR, 0f))
+        private set
+    var glassRefractionHeightDp by mutableFloatStateOf(store.getFloat(KEY_REFRACTION_HEIGHT, 15f))
+        private set
+    var glassRefractionAmountDp by mutableFloatStateOf(store.getFloat(KEY_REFRACTION_AMOUNT, 20f))
+        private set
+    var glassTintAlpha by mutableFloatStateOf(store.getFloat(KEY_TINT_ALPHA, 0.08f))
+        private set
+    var glassBorderAlpha by mutableFloatStateOf(store.getFloat(KEY_BORDER_ALPHA, 0.20f))
+        private set
+    var glassVibrancyEnabled by mutableStateOf(store.getBoolean(KEY_VIBRANCY, true))
+        private set
+    var glassChromaticAberration by mutableStateOf(store.getBoolean(KEY_CHROMATIC, true))
         private set
 
     var glassOpacity by mutableFloatStateOf(
@@ -136,8 +175,63 @@ class AppSettingsState(private val prefs: Context) {
     }
 
     fun updateWallpaperBackground(value: Boolean) {
-        wallpaperBackground = value
-        store.edit().putBoolean(KEY_WALLPAPER, value).apply()
+        updateWallpaperMode(if (value) WallpaperMode.System else WallpaperMode.Aurora)
+    }
+
+    fun updateWallpaperMode(value: WallpaperMode) {
+        wallpaperMode = value
+        store.edit().putString(KEY_WALLPAPER_MODE, value.name).apply()
+    }
+
+    fun updateCachedWallpaper(path: String?, sourceUrl: String = networkWallpaperUrl) {
+        cachedWallpaperPath = path
+        networkWallpaperUrl = sourceUrl
+        wallpaperRevision++
+        store.edit()
+            .putString(KEY_WALLPAPER_PATH, path)
+            .putString(KEY_WALLPAPER_URL, sourceUrl)
+            .apply()
+        if (!path.isNullOrBlank()) updateWallpaperMode(WallpaperMode.Cached)
+    }
+
+    fun updateNetworkWallpaperUrl(value: String) {
+        networkWallpaperUrl = value
+        store.edit().putString(KEY_WALLPAPER_URL, value).apply()
+    }
+
+    fun updateGlassBlurRadiusDp(value: Float) {
+        glassBlurRadiusDp = value.coerceIn(0f, 40f)
+        store.edit().putFloat(KEY_GLASS_BLUR, glassBlurRadiusDp).apply()
+    }
+
+    fun updateGlassRefractionHeightDp(value: Float) {
+        glassRefractionHeightDp = value.coerceIn(0f, 40f)
+        store.edit().putFloat(KEY_REFRACTION_HEIGHT, glassRefractionHeightDp).apply()
+    }
+
+    fun updateGlassRefractionAmountDp(value: Float) {
+        glassRefractionAmountDp = value.coerceIn(0f, 60f)
+        store.edit().putFloat(KEY_REFRACTION_AMOUNT, glassRefractionAmountDp).apply()
+    }
+
+    fun updateGlassTintAlpha(value: Float) {
+        glassTintAlpha = value.coerceIn(0f, 0.35f)
+        store.edit().putFloat(KEY_TINT_ALPHA, glassTintAlpha).apply()
+    }
+
+    fun updateGlassBorderAlpha(value: Float) {
+        glassBorderAlpha = value.coerceIn(0f, 0.45f)
+        store.edit().putFloat(KEY_BORDER_ALPHA, glassBorderAlpha).apply()
+    }
+
+    fun updateGlassVibrancyEnabled(value: Boolean) {
+        glassVibrancyEnabled = value
+        store.edit().putBoolean(KEY_VIBRANCY, value).apply()
+    }
+
+    fun updateGlassChromaticAberration(value: Boolean) {
+        glassChromaticAberration = value
+        store.edit().putBoolean(KEY_CHROMATIC, value).apply()
     }
 
     fun updateGlassOpacity(value: Float) {
@@ -174,6 +268,16 @@ class AppSettingsState(private val prefs: Context) {
         put(KEY_REDUCED, reducedMotion)
         put(KEY_DAMPING, motionDamping)
         put(KEY_WALLPAPER, wallpaperBackground)
+        put(KEY_WALLPAPER_MODE, wallpaperMode.name)
+        put(KEY_WALLPAPER_PATH, cachedWallpaperPath)
+        put(KEY_WALLPAPER_URL, networkWallpaperUrl)
+        put(KEY_GLASS_BLUR, glassBlurRadiusDp)
+        put(KEY_REFRACTION_HEIGHT, glassRefractionHeightDp)
+        put(KEY_REFRACTION_AMOUNT, glassRefractionAmountDp)
+        put(KEY_TINT_ALPHA, glassTintAlpha)
+        put(KEY_BORDER_ALPHA, glassBorderAlpha)
+        put(KEY_VIBRANCY, glassVibrancyEnabled)
+        put(KEY_CHROMATIC, glassChromaticAberration)
         put(KEY_OPACITY, glassOpacity)
         put(KEY_REFRACTION, glassRefraction)
         put(KEY_CORNER, cornerScale)
@@ -198,7 +302,18 @@ class AppSettingsState(private val prefs: Context) {
         )
         updateReducedMotion(data.optBoolean(KEY_REDUCED, reducedMotion))
         updateMotionDamping(data.optDouble(KEY_DAMPING, motionDamping.toDouble()).toFloat().coerceIn(0f, 1f))
-        updateWallpaperBackground(data.optBoolean(KEY_WALLPAPER, wallpaperBackground))
+        updateWallpaperMode(
+            runCatching { WallpaperMode.valueOf(data.optString(KEY_WALLPAPER_MODE, wallpaperMode.name)) }
+                .getOrDefault(wallpaperMode)
+        )
+        updateNetworkWallpaperUrl(data.optString(KEY_WALLPAPER_URL, networkWallpaperUrl))
+        updateGlassBlurRadiusDp(data.optDouble(KEY_GLASS_BLUR, glassBlurRadiusDp.toDouble()).toFloat())
+        updateGlassRefractionHeightDp(data.optDouble(KEY_REFRACTION_HEIGHT, glassRefractionHeightDp.toDouble()).toFloat())
+        updateGlassRefractionAmountDp(data.optDouble(KEY_REFRACTION_AMOUNT, glassRefractionAmountDp.toDouble()).toFloat())
+        updateGlassTintAlpha(data.optDouble(KEY_TINT_ALPHA, glassTintAlpha.toDouble()).toFloat())
+        updateGlassBorderAlpha(data.optDouble(KEY_BORDER_ALPHA, glassBorderAlpha.toDouble()).toFloat())
+        updateGlassVibrancyEnabled(data.optBoolean(KEY_VIBRANCY, glassVibrancyEnabled))
+        updateGlassChromaticAberration(data.optBoolean(KEY_CHROMATIC, glassChromaticAberration))
         updateGlassOpacity(data.optDouble(KEY_OPACITY, glassOpacity.toDouble()).toFloat().coerceIn(0f, 1f))
         updateGlassRefraction(data.optDouble(KEY_REFRACTION, glassRefraction.toDouble()).toFloat().coerceIn(0f, 1f))
         updateCornerScale(data.optDouble(KEY_CORNER, cornerScale.toDouble()).toFloat().coerceIn(0.8f, 1.5f))
@@ -213,7 +328,14 @@ class AppSettingsState(private val prefs: Context) {
         updateVisualMode(VisualMode.Glass)
         updateReducedMotion(false)
         updateMotionDamping(0.5f)
-        updateWallpaperBackground(false)
+        updateWallpaperMode(WallpaperMode.Aurora)
+        updateGlassBlurRadiusDp(0f)
+        updateGlassRefractionHeightDp(15f)
+        updateGlassRefractionAmountDp(20f)
+        updateGlassTintAlpha(0.08f)
+        updateGlassBorderAlpha(0.20f)
+        updateGlassVibrancyEnabled(true)
+        updateGlassChromaticAberration(true)
         updateGlassOpacity(0.55f)
         updateGlassRefraction(1f)
         updateCornerScale(1f)
@@ -232,6 +354,16 @@ class AppSettingsState(private val prefs: Context) {
         const val KEY_REDUCED = "reducedMotion"
         const val KEY_DAMPING = "motionDamping"
         const val KEY_WALLPAPER = "wallpaperBackground"
+        const val KEY_WALLPAPER_MODE = "wallpaperMode"
+        const val KEY_WALLPAPER_PATH = "cachedWallpaperPath"
+        const val KEY_WALLPAPER_URL = "networkWallpaperUrl"
+        const val KEY_GLASS_BLUR = "glassBlurRadiusDp"
+        const val KEY_REFRACTION_HEIGHT = "glassRefractionHeightDp"
+        const val KEY_REFRACTION_AMOUNT = "glassRefractionAmountDp"
+        const val KEY_TINT_ALPHA = "glassTintAlpha"
+        const val KEY_BORDER_ALPHA = "glassBorderAlpha"
+        const val KEY_VIBRANCY = "glassVibrancy"
+        const val KEY_CHROMATIC = "glassChromatic"
         const val KEY_FROST = "glassFrost"
         const val KEY_OPACITY = "glassOpacity"
         const val KEY_REFRACTION = "glassRefraction"

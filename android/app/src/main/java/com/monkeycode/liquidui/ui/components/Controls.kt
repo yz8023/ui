@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -56,6 +57,8 @@ import androidx.compose.ui.util.lerp
 import com.monkeycode.liquidui.ui.motion.运动
 import com.monkeycode.liquidui.ui.motion.按压缩放
 import com.monkeycode.liquidui.ui.theme.AppShape
+import com.monkeycode.liquidui.ui.theme.LocalAppChrome
+import com.monkeycode.liquidui.ui.theme.VisualMode
 import kotlin.math.PI
 import kotlin.math.atan2
 import kotlin.math.cos
@@ -73,20 +76,38 @@ fun PrimaryButton(
     content: @Composable RowScope.() -> Unit
 ) {
     val interaction = remember { MutableInteractionSource() }
-    Button(
-        onClick = onClick,
-        modifier = modifier.按压缩放(interaction, 0.96f, enabled),
-        enabled = enabled,
-        shape = AppShape.control,
-        interactionSource = interaction,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.onPrimary,
-            disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-            disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant
-        ),
-        content = content
-    )
+    if (LocalAppChrome.current.visualMode == VisualMode.Glass) {
+        Row(
+            modifier = modifier
+                .按压缩放(interaction, 0.96f, enabled)
+                .liquidGlass(
+                    shape = AppShape.control,
+                    tint = MaterialTheme.colorScheme.primary.copy(alpha = if (enabled) 0.18f else 0.05f),
+                    elevation = 1.dp,
+                )
+                .clickable(enabled = enabled, interactionSource = interaction, indication = null, onClick = onClick)
+                .defaultMinSize(minHeight = 48.dp)
+                .padding(horizontal = 20.dp, vertical = 12.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+            content = content,
+        )
+    } else {
+        Button(
+            onClick = onClick,
+            modifier = modifier.按压缩放(interaction, 0.96f, enabled),
+            enabled = enabled,
+            shape = AppShape.control,
+            interactionSource = interaction,
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+                disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant
+            ),
+            content = content
+        )
+    }
 }
 
 /** Secondary action. */
@@ -98,14 +119,28 @@ fun SecondaryButton(
     content: @Composable RowScope.() -> Unit
 ) {
     val interaction = remember { MutableInteractionSource() }
-    OutlinedButton(
-        onClick = onClick,
-        modifier = modifier.按压缩放(interaction, 0.96f, enabled),
-        enabled = enabled,
-        shape = AppShape.control,
-        interactionSource = interaction,
-        content = content
-    )
+    if (LocalAppChrome.current.visualMode == VisualMode.Glass) {
+        Row(
+            modifier = modifier
+                .按压缩放(interaction, 0.96f, enabled)
+                .liquidGlass(shape = AppShape.control, elevation = 0.dp, borderAlpha = 0.6f)
+                .clickable(enabled = enabled, interactionSource = interaction, indication = null, onClick = onClick)
+                .defaultMinSize(minHeight = 48.dp)
+                .padding(horizontal = 20.dp, vertical = 12.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+            content = content,
+        )
+    } else {
+        OutlinedButton(
+            onClick = onClick,
+            modifier = modifier.按压缩放(interaction, 0.96f, enabled),
+            enabled = enabled,
+            shape = AppShape.control,
+            interactionSource = interaction,
+            content = content
+        )
+    }
 }
 
 /** Circular glass icon button with the same press weight. */

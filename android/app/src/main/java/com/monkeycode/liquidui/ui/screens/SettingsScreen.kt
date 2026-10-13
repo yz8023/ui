@@ -75,14 +75,6 @@ import com.monkeycode.liquidui.ui.theme.LocalAppChrome
 import com.monkeycode.liquidui.ui.theme.VisualMode
 import com.monkeycode.liquidui.ui.theme.palettePrimaryLight
 
-/** Permission required to read the home-screen wallpaper for the background layer. */
-private fun wallpaperReadPermission(): String =
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        Manifest.permission.READ_MEDIA_IMAGES
-    } else {
-        Manifest.permission.READ_EXTERNAL_STORAGE
-    }
-
 @Composable
 fun SettingsScreen(
     settings: AppSettingsState,
@@ -199,18 +191,7 @@ fun SettingsScreen(
         }
         item { SectionTitle("主题配置") }
         item { ThemeConfigTransferCard(settings) }
-        item {
-            PreferenceCard {
-                PreferenceRow(
-                    icon = AppIcons.Image,
-                    title = "桌面壁纸背景",
-                    subtitle = "用手机桌面壁纸做背景层，玻璃面板折射其上（首次开启需授权媒体权限）",
-                    trailing = {
-                        WallpaperSwitch(settings)
-                    }
-                )
-            }
-        }
+        item { WallpaperSettingsCard(settings) }
 
         item { SectionTitle("首次体验") }
         item {
@@ -257,19 +238,72 @@ fun SettingsScreen(
         }
         item {
             SliderCard(
-                title = "透明度",
-                subtitle = "玻璃涂层浓淡：${((currentChrome.glassOpacity.coerceIn(0f, 1f)) * 100).toInt()}%",
-                value = settings.glassOpacity,
-                onValueChange = settings::updateGlassOpacity
+                title = "模糊强度",
+                subtitle = "背景采样模糊：${settings.glassBlurRadiusDp.toInt()}dp",
+                value = settings.glassBlurRadiusDp,
+                valueRange = 0f..40f,
+                onValueChange = settings::updateGlassBlurRadiusDp
             )
         }
         item {
             SliderCard(
-                title = "折射率",
-                subtitle = "液态透镜强度：${((currentChrome.glassRefraction.coerceIn(0f, 1f)) * 100).toInt()}%",
-                value = settings.glassRefraction,
-                onValueChange = settings::updateGlassRefraction
+                title = "折射高度",
+                subtitle = "液态透镜边缘高度：${settings.glassRefractionHeightDp.toInt()}dp",
+                value = settings.glassRefractionHeightDp,
+                valueRange = 0f..40f,
+                onValueChange = settings::updateGlassRefractionHeightDp
             )
+        }
+        item {
+            SliderCard(
+                title = "折射幅度",
+                subtitle = "壁纸内容偏移幅度：${settings.glassRefractionAmountDp.toInt()}dp",
+                value = settings.glassRefractionAmountDp,
+                valueRange = 0f..60f,
+                onValueChange = settings::updateGlassRefractionAmountDp
+            )
+        }
+        item {
+            SliderCard(
+                title = "玻璃染色",
+                subtitle = "白色玻璃涂层：${(settings.glassTintAlpha * 100).toInt()}%",
+                value = settings.glassTintAlpha,
+                valueRange = 0f..0.35f,
+                onValueChange = settings::updateGlassTintAlpha
+            )
+        }
+        item {
+            SliderCard(
+                title = "高光边框",
+                subtitle = "玻璃边缘强度：${(settings.glassBorderAlpha * 100).toInt()}%",
+                value = settings.glassBorderAlpha,
+                valueRange = 0f..0.45f,
+                onValueChange = settings::updateGlassBorderAlpha
+            )
+        }
+        item {
+            PreferenceCard {
+                PreferenceRow(
+                    icon = AppIcons.WaterDrop,
+                    title = "增强色彩层次",
+                    subtitle = "提升玻璃后的壁纸色彩通透感",
+                    trailing = {
+                        CompactSwitch(settings.glassVibrancyEnabled, settings::updateGlassVibrancyEnabled)
+                    }
+                )
+            }
+        }
+        item {
+            PreferenceCard {
+                PreferenceRow(
+                    icon = AppIcons.WaterDrop,
+                    title = "色差折射",
+                    subtitle = "在液态透镜边缘显示更明显的色散",
+                    trailing = {
+                        CompactSwitch(settings.glassChromaticAberration, settings::updateGlassChromaticAberration)
+                    }
+                )
+            }
         }
         item {
             SliderCard(
@@ -368,8 +402,8 @@ fun SettingsScreen(
             ) {
                 InfoBanner(
                     text = "生效中的 chrome：mode=${currentChrome.visualMode.label} · " +
-                        "opacity=${String.format("%.2f", currentChrome.glassOpacity)} · " +
-                        "refraction=${String.format("%.2f", currentChrome.glassRefraction)} · " +
+                        "blur=${settings.glassBlurRadiusDp.toInt()}dp · " +
+                        "lens=${settings.glassRefractionHeightDp.toInt()}/${settings.glassRefractionAmountDp.toInt()}dp · " +
                         "corner=${String.format("%.2f", currentChrome.cornerScale)} · " +
                         "damping=${(currentChrome.motionDamping * 100).toInt()}%",
                     modifier = Modifier.weight(1f)
@@ -435,31 +469,6 @@ private fun PaletteChips(settings: AppSettingsState) {
             }
         }
     }
-}
-
-@Composable
-private fun WallpaperSwitch(settings: AppSettingsState) {
-    val context = LocalContext.current
-    val permissionLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { granted ->
-        if (granted) settings.updateWallpaperBackground(true)
-    }
-    CompactSwitch(
-        checked = settings.wallpaperBackground,
-        onCheckedChange = { checked ->
-            if (!checked) {
-                settings.updateWallpaperBackground(false)
-            } else {
-                val granted = ContextCompat.checkSelfPermission(
-                    context,
-                    wallpaperReadPermission()
-                ) == PackageManager.PERMISSION_GRANTED
-                if (granted) settings.updateWallpaperBackground(true)
-                else permissionLauncher.launch(wallpaperReadPermission())
-            }
-        }
-    )
 }
 
 @Composable
