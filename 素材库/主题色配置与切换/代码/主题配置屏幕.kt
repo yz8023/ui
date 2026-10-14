@@ -1,4 +1,13 @@
 /*
+ * ⚠️ 已知问题（照抄前必修，见 docs/功能逐项手册.md F04）：
+ * 1. 本文件声明的是 `object 主题控制器` / `class 设置仓库`，文件内调用处仍写
+ *    ThemeController / SettingsRepository，整文件复制会编译失败，需先统一为一侧名字；
+ * 2. 文末 seedColorScheme 是 TODO 占位（直接返回默认深/浅色），不是文档所说的 HCT 生成，
+ *    自定义种子色不会真正生效，接手时必须补真实实现或明确标注未实现；
+ * 3. 与示例工程现行 LiquidUITheme/PaletteId 体系不是同一套，不要混接。
+ */
+
+/*
  * 主题色配置与切换（Theme Configuration）
  *
  * 功能：
