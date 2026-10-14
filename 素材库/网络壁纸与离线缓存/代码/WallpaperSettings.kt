@@ -40,6 +40,7 @@ import com.monkeycode.liquidui.ui.components.PrimaryButton
 import com.monkeycode.liquidui.ui.components.SecondaryButton
 import com.monkeycode.liquidui.ui.components.SegmentedTabs
 import com.monkeycode.liquidui.ui.features.WallpaperStore
+import com.monkeycode.liquidui.ui.features.isSystemWallpaperAvailable
 import kotlinx.coroutines.launch
 
 @Composable
@@ -68,13 +69,20 @@ fun WallpaperSettingsCard(settings: AppSettingsState) {
         }
     }
 
-    val systemPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-        if (granted) {
-            settings.updateWallpaperMode(WallpaperMode.System)
-            message = "已切换为系统桌面壁纸"
+    // Android 12 and below only: the real wallpaper needs READ_EXTERNAL_STORAGE.
+    // The mode is switched immediately either way (the pan-x/YunX approach —
+    // never gate the feature behind a permission the platform does not use
+    // for this call); the grant result only affects whether the real or the
+    // built-in default wallpaper comes back, and the root re-reads on resume.
+    val legacyStoragePermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+        message = if (granted) {
+            "已切换为系统桌面壁纸"
         } else {
-            message = "未获得读取权限；可使用本地图片或网络壁纸"
+            "未授予存储权限，将显示系统默认壁纸；也可以使用本地图片或网络壁纸"
         }
+    }
+    val systemWallpaperAvailable = remember(settings.wallpaperMode, settings.wallpaperRevision) {
+        settings.wallpaperMode == WallpaperMode.System && isSystemWallpaperAvailable(context)
     }
 
     GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
@@ -97,17 +105,44 @@ fun WallpaperSettingsCard(settings: AppSettingsState) {
                         else message = "请先选择本地图片或下载网络壁纸"
                     }
                     WallpaperMode.System -> {
-                        val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                            Manifest.permission.READ_MEDIA_IMAGES
-                        } else Manifest.permission.READ_EXTERNAL_STORAGE
-                        if (ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED) {
-                            settings.updateWallpaperMode(mode)
-                        } else systemPermission.launch(permission)
+                        // No permission gate on Android 13+: READ_MEDIA_IMAGES
+                        // never unlocked WallpaperManager access, and denying
+                        // it used to block the feature entirely. Switch first,
+                        // then (pre-13 only) ask for the legacy storage grant
+                        // that unlocks the real — not default — wallpaper.
+                        settings.updateWallpaperMode(mode)
+                        message = "已切换为系统桌面壁纸"
+                        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2 &&
+                            ContextCompat.checkSelfPermission(
+                                context,
+                                Manifest.permission.READ_EXTERNAL_STORAGE,
+                            ) != PackageManager.PERMISSION_GRANTED
+                        ) {
+                            legacyStoragePermission.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+                        }
                     }
                 }
             },
             modifier = Modifier.fillMaxWidth(),
         )
+
+        if (settings.wallpaperMode == WallpaperMode.System) {
+            Spacer(Modifier.height(10.dp))
+            Text(
+                text = if (systemWallpaperAvailable) {
+                    "已读取当前系统桌面壁纸作为背景（更换桌面壁纸后回到应用即会刷新）。"
+                } else {
+                    "当前系统限制应用直接读取桌面壁纸（Android 14 起系统级限制），已自动回退极光背景；" +
+                        "可在下方选择同一张图片做本地缓存，显示效果一致。"
+                },
+                style = MaterialTheme.typography.bodySmall,
+                color = if (systemWallpaperAvailable) {
+                    MaterialTheme.colorScheme.primary
+                } else {
+                    MaterialTheme.colorScheme.error
+                },
+            )
+        }
 
         val preview = remember(settings.cachedWallpaperPath, settings.wallpaperRevision) {
             settings.cachedWallpaperPath?.let(BitmapFactory::decodeFile)

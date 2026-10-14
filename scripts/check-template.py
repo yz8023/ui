@@ -25,6 +25,8 @@ MIRRORS = [
     ("素材库/O神主题与布局/代码/OShinTheme.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/theme/OShinTheme.kt"),
     ("素材库/O神主题与布局/代码/OShinComponents.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/components/OShinComponents.kt"),
     ("素材库/网络壁纸与离线缓存/代码/WallpaperStore.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/features/WallpaperStore.kt"),
+    ("素材库/网络壁纸与离线缓存/代码/SystemWallpaper.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/features/SystemWallpaper.kt"),
+    ("素材库/网络壁纸与离线缓存/代码/WallpaperSettings.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/screens/WallpaperSettings.kt"),
 ]
 for mirror, authoritative in MIRRORS:
     a, b = ROOT / mirror, ROOT / authoritative
