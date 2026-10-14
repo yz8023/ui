@@ -22,6 +22,8 @@ MIRRORS = [
     ("素材库/液态玻璃主题/代码/Theme.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/theme/Theme.kt"),
     ("素材库/液态玻璃主题/代码/Shape.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/theme/Shape.kt"),
     ("素材库/液态玻璃主题/代码/Type.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/theme/Type.kt"),
+    ("素材库/O神主题与布局/代码/OShinTheme.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/theme/OShinTheme.kt"),
+    ("素材库/O神主题与布局/代码/OShinComponents.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/components/OShinComponents.kt"),
     ("素材库/网络壁纸与离线缓存/代码/WallpaperStore.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/features/WallpaperStore.kt"),
 ]
 for mirror, authoritative in MIRRORS:
@@ -49,7 +51,7 @@ for f in material_files:
 KNOWN_UNDECLARED = {
     "ThemeController", "SettingsRepository",  # F04 镜像主题文件的历史引用，见该文件头横幅
     "PrimaryButton", "SecondaryButton", "GlassTextField", "SegmentedTabs",
-    "PreferenceRow", "PreferenceCard",  # 镜像组件被改中文名后与英文引用不一致，以 android 权威源码英文名为准
+    "PreferenceRow", "PreferenceCard", "CompactSwitch",  # 同上：镜像改中文名（紧凑开关等），权威以 android 英文名为准
     "IconSwitcher", "IconSwitchHelper",  # F02 已合并变体内的残留引用，不要单独选
 }
 

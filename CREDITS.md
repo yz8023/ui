@@ -61,6 +61,13 @@
 |---|---|---|
 | **CYQawa/YunX（云析）** | https://github.com/CYQawa/YunX | activity-alias 两套图标（经典 / 新图标）切换、变体值 SharedPreferences 持久化、Compose 设置页卡片集成，AGPL-3.0 |
 
+## O神主题与布局（F14）
+
+| 项目 | 链接 | 说明 |
+|---|---|---|
+| **suqi8/OShin（O神）** | https://github.com/suqi8/OShin | 界面设计参考：Miuix 分组卡片、系统蓝、翻页主壳、悬浮胶囊底栏的公开界面参数。本仓库为**独立实现的视觉映射，未复制其 AGPL-3.0 源码**；若直接使用其本体代码须遵守 AGPL-3.0 与其 README 开源说明 |
+| **Miuix · compose-miuix-ui** | https://github.com/compose-miuix-ui/miuix | OShin 界面底座，默认色板与分组列表规范出处（Apache-2.0） |
+
 ## 其他资源
 
 - **Material 3 / Jetpack Compose**（Google）：https://developer.android.com/jetpack/compose

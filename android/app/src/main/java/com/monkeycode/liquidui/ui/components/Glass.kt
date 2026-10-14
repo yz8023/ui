@@ -168,6 +168,15 @@ fun Modifier.liquidGlass(
     val baseTint = tint ?: MaterialTheme.colorScheme.surfaceContainer
     val isDark = isSystemInDarkTheme()
 
+    // OShin (Miuix) mode: borderless solid grouped card — white on the light
+    // grey page (#242424 in dark), no shadow, no highlight edge. The caller's
+    // shape is kept; the shell swaps shape tokens to the 16dp OShin radius.
+    if (chrome.visualMode == VisualMode.OShin) {
+        return this
+            .clip(shape)
+            .background(baseTint.copy(alpha = 1f))
+    }
+
     // Normal / MD3 modes: plain Material surface, no backdrop sampling at all.
     if (chrome.visualMode != VisualMode.Glass) {
         val solidTint = baseTint.copy(alpha = 1f)
