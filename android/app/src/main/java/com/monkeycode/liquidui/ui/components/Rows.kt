@@ -22,6 +22,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.monkeycode.liquidui.ui.theme.AppShape
+import com.monkeycode.liquidui.ui.theme.LocalAppChrome
+import com.monkeycode.liquidui.ui.theme.VisualMode
 
 /** Section label used above a group of settings. */
 @Composable
@@ -29,6 +31,16 @@ fun SectionTitle(
     text: String,
     modifier: Modifier = Modifier
 ) {
+    // O神模式：Miuix 分组小标题（灰色小字，与卡片内文对齐），不再用主色。
+    if (LocalAppChrome.current.visualMode == VisualMode.OShin) {
+        Text(
+            text = text,
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = modifier.padding(start = 32.dp, bottom = 8.dp, top = 6.dp)
+        )
+        return
+    }
     Text(
         text = text,
         style = MaterialTheme.typography.labelLarge,
@@ -71,7 +83,12 @@ fun PreferenceRow(
         Box(
             modifier = Modifier
                 .size(38.dp)
-                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.13f), CircleShape),
+                // O神模式去掉彩色圆形底，图标直接以主色呈现（HyperOS 设置行做法）。
+                .background(
+                    if (LocalAppChrome.current.visualMode == VisualMode.OShin) androidx.compose.ui.graphics.Color.Transparent
+                    else MaterialTheme.colorScheme.primary.copy(alpha = 0.13f),
+                    CircleShape
+                ),
             contentAlignment = Alignment.Center,
         ) {
             Icon(
@@ -115,7 +132,12 @@ fun PreferenceCard(
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 4.dp)
-            .liquidGlass(shape = AppShape.card, elevation = 1.dp),
+            // O神模式：16dp 分组卡圆角（而非玻璃的 22dp）。
+            .liquidGlass(
+                shape = if (LocalAppChrome.current.visualMode == VisualMode.OShin)
+                    androidx.compose.foundation.shape.RoundedCornerShape(16.dp) else AppShape.card,
+                elevation = 1.dp
+            ),
         content = { content() }
     )
 }
