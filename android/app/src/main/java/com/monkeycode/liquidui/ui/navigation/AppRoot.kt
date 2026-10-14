@@ -1,6 +1,5 @@
 package com.monkeycode.liquidui.ui.navigation
 
-import android.app.WallpaperManager
 import android.os.Build
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
@@ -71,6 +70,7 @@ import com.monkeycode.liquidui.ui.components.LiquidBottomTabs
 import com.monkeycode.liquidui.ui.components.LocalGlassBackdrop
 import com.monkeycode.liquidui.ui.components.LocalGlassContentBackdrop
 import com.monkeycode.liquidui.ui.components.LocalGlassDialogHost
+import com.monkeycode.liquidui.ui.features.rememberSystemWallpaper
 import com.monkeycode.liquidui.ui.motion.运动
 import com.monkeycode.liquidui.ui.screens.AboutScreen
 import com.monkeycode.liquidui.ui.screens.AppSettingsState
@@ -118,22 +118,20 @@ fun AppRoot(settings: AppSettingsState) {
     val surfaceColor = MaterialTheme.colorScheme.background
 
     val context = LocalContext.current
-    val wallpaperDrawable = remember(wallpaperMode, cachedWallpaperPath, wallpaperRevision, context) {
-        when (wallpaperMode) {
-            WallpaperMode.Aurora -> null
-            WallpaperMode.Cached -> cachedWallpaperPath
-                ?.let(BitmapFactory::decodeFile)
-                ?.let { BitmapDrawable(context.resources, it) }
-            WallpaperMode.System -> try {
-                // Some Android builds restrict direct wallpaper access; gracefully
-                // retain the built-in aurora when the system refuses the read.
-                WallpaperManager.getInstance(context).drawable
-            } catch (_: SecurityException) {
-                null
-            } catch (_: RuntimeException) {
-                null
-            }
-        }
+    // System wallpaper: direct WallpaperManager read with graceful fallback
+    // (see features/SystemWallpaper.kt — no permission gate; the holder
+    // re-reads on every foreground return so a changed home-screen wallpaper
+    // is picked up live). Always composed; only selected in System mode.
+    val systemWallpaper = rememberSystemWallpaper()
+    val cachedDrawable = remember(cachedWallpaperPath, wallpaperRevision, context) {
+        cachedWallpaperPath
+            ?.let(BitmapFactory::decodeFile)
+            ?.let { BitmapDrawable(context.resources, it) }
+    }
+    val wallpaperDrawable = when (wallpaperMode) {
+        WallpaperMode.Aurora -> null
+        WallpaperMode.Cached -> cachedDrawable
+        WallpaperMode.System -> systemWallpaper
     }
 
     val auroraBackdrop = rememberLayerBackdrop(graphicsLayer = rememberGraphicsLayer()) {

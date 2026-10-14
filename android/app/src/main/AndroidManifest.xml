@@ -4,11 +4,16 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
-    <!-- Wallpaper background layer: read the home-screen wallpaper. -->
+    <!-- Wallpaper background layer: up to Android 12, reading the real
+         home-screen wallpaper via WallpaperManager requires this permission.
+         Android 13 returns the default wallpaper and Android 14+ refuses the
+         call entirely (except MANAGE_EXTERNAL_STORAGE holders, which this
+         template deliberately does not request), so no permission is declared
+         for those versions. READ_MEDIA_IMAGES never applied to this API and
+         must not be declared or requested for it. -->
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
 
     <!-- Preview notification posted from the settings page. -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
