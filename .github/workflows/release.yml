@@ -84,11 +84,19 @@ jobs:
           mkdir -p release
           cp android/app/build/outputs/apk/release/app-release.apk "release/liquidui-${RELEASE_TAG}-release.apk"
 
+      - name: Package source zip
+        run: |
+          git archive --format=zip --prefix="liquidui-${RELEASE_TAG}/" \
+            -o "release/liquidui-${RELEASE_TAG}-source.zip" HEAD
+          ls -la release/
+
       - name: Upload release APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: liquidui-release-apk
-          path: release/*.apk
+          path: |
+            release/*.apk
+            release/*.zip
           retention-days: 90
 
       - name: Create GitHub Release
@@ -97,7 +105,9 @@ jobs:
           tag_name: ${{ env.RELEASE_TAG }}
           target_commitish: ${{ github.sha }}
           name: Liquid UI ${{ env.RELEASE_TAG }}
-          files: release/*.apk
+          files: |
+            release/*.apk
+            release/*.zip
           draft: false
           prerelease: false
           generate_release_notes: true
