@@ -183,6 +183,11 @@ class AppSettingsState(private val prefs: Context) {
         store.edit().putString(KEY_WALLPAPER_MODE, value.name).apply()
     }
 
+    /** Forces wallpaper consumers (and settings-page probes) to re-read. */
+    fun bumpWallpaperRevision() {
+        wallpaperRevision++
+    }
+
     fun updateCachedWallpaper(path: String?, sourceUrl: String = networkWallpaperUrl) {
         cachedWallpaperPath = path
         networkWallpaperUrl = sourceUrl

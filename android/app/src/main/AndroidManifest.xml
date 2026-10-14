@@ -4,16 +4,23 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
-    <!-- Wallpaper background layer: up to Android 12, reading the real
-         home-screen wallpaper via WallpaperManager requires this permission.
-         Android 13 returns the default wallpaper and Android 14+ refuses the
-         call entirely (except MANAGE_EXTERNAL_STORAGE holders, which this
-         template deliberately does not request), so no permission is declared
-         for those versions. READ_MEDIA_IMAGES never applied to this API and
-         must not be declared or requested for it. -->
+    <!-- Wallpaper background layer (same setup as the pan-x/YunX app, whose
+         system-wallpaper mode this mirrors):
+         - Up to Android 12, reading the real home-screen wallpaper via
+           WallpaperManager requires READ_EXTERNAL_STORAGE.
+         - Android 14+ refuses WallpaperManager.getDrawable() entirely
+           *unless* the app holds "all files access" (MANAGE_EXTERNAL_STORAGE,
+           granted only from a system settings page — there is no runtime
+           dialog). pan-x declares it for its download feature and guides
+           users to enable it; that grant is what makes its system wallpaper
+           work on modern Android, so it is declared here for the same call.
+         - READ_MEDIA_IMAGES never applied to this API; do not re-add it. -->
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
+    <uses-permission
+        android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
 
     <!-- Preview notification posted from the settings page. -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />

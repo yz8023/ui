@@ -40,6 +40,8 @@ import com.monkeycode.liquidui.ui.components.PrimaryButton
 import com.monkeycode.liquidui.ui.components.SecondaryButton
 import com.monkeycode.liquidui.ui.components.SegmentedTabs
 import com.monkeycode.liquidui.ui.features.WallpaperStore
+import com.monkeycode.liquidui.ui.features.allFilesAccessSettingsIntent
+import com.monkeycode.liquidui.ui.features.hasAllFilesAccess
 import com.monkeycode.liquidui.ui.features.isSystemWallpaperAvailable
 import kotlinx.coroutines.launch
 
@@ -81,9 +83,27 @@ fun WallpaperSettingsCard(settings: AppSettingsState) {
             "未授予存储权限，将显示系统默认壁纸；也可以使用本地图片或网络壁纸"
         }
     }
+    // Android 11+: the real system wallpaper (and any wallpaper at all on
+    // Android 14+) is only readable while the app holds "all files access".
+    // Like pan-x, we send the user to the system settings page for this app —
+    // the grant has no runtime dialog. Returning from that page bumps the
+    // revision so the probe below (and the root wallpaper layer, via its
+    // resume re-read) picks the wallpaper up immediately.
+    val allFilesAccessLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartActivityForResult(),
+    ) {
+        settings.bumpWallpaperRevision()
+        message = if (hasAllFilesAccess()) {
+            "已开启所有文件访问，系统壁纸已生效"
+        } else {
+            "仍未开启所有文件访问，系统壁纸暂时读不到；可改用本地图片或网络壁纸"
+        }
+    }
     val systemWallpaperAvailable = remember(settings.wallpaperMode, settings.wallpaperRevision) {
         settings.wallpaperMode == WallpaperMode.System && isSystemWallpaperAvailable(context)
     }
+    val needsAllFilesAccess = Build.VERSION.SDK_INT >= Build.VERSION_CODES.R &&
+        settings.wallpaperMode == WallpaperMode.System && !hasAllFilesAccess()
 
     GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
         Text("壁纸与背景", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
@@ -105,20 +125,27 @@ fun WallpaperSettingsCard(settings: AppSettingsState) {
                         else message = "请先选择本地图片或下载网络壁纸"
                     }
                     WallpaperMode.System -> {
-                        // No permission gate on Android 13+: READ_MEDIA_IMAGES
-                        // never unlocked WallpaperManager access, and denying
-                        // it used to block the feature entirely. Switch first,
-                        // then (pre-13 only) ask for the legacy storage grant
-                        // that unlocks the real — not default — wallpaper.
+                        // Switch first — never block the mode behind a prompt
+                        // (the old READ_MEDIA_IMAGES gate did exactly that and
+                        // could never unlock WallpaperManager anyway). Then
+                        // guide the grant that actually unlocks the read:
+                        // pre-13 the legacy storage runtime permission, on
+                        // Android 11+ the all-files-access settings page
+                        // (this is what makes pan-x's system wallpaper work
+                        // on Android 14+, where the call otherwise always
+                        // throws SecurityException).
                         settings.updateWallpaperMode(mode)
                         message = "已切换为系统桌面壁纸"
-                        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2 &&
-                            ContextCompat.checkSelfPermission(
-                                context,
-                                Manifest.permission.READ_EXTERNAL_STORAGE,
-                            ) != PackageManager.PERMISSION_GRANTED
-                        ) {
-                            legacyStoragePermission.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+                        when {
+                            Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2 &&
+                                ContextCompat.checkSelfPermission(
+                                    context,
+                                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                                ) != PackageManager.PERMISSION_GRANTED ->
+                                legacyStoragePermission.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+
+                            Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !hasAllFilesAccess() ->
+                                allFilesAccessLauncher.launch(allFilesAccessSettingsIntent(context))
                         }
                     }
                 }
@@ -128,20 +155,34 @@ fun WallpaperSettingsCard(settings: AppSettingsState) {
 
         if (settings.wallpaperMode == WallpaperMode.System) {
             Spacer(Modifier.height(10.dp))
-            Text(
-                text = if (systemWallpaperAvailable) {
-                    "已读取当前系统桌面壁纸作为背景（更换桌面壁纸后回到应用即会刷新）。"
-                } else {
-                    "当前系统限制应用直接读取桌面壁纸（Android 14 起系统级限制），已自动回退极光背景；" +
-                        "可在下方选择同一张图片做本地缓存，显示效果一致。"
-                },
-                style = MaterialTheme.typography.bodySmall,
-                color = if (systemWallpaperAvailable) {
-                    MaterialTheme.colorScheme.primary
-                } else {
-                    MaterialTheme.colorScheme.error
-                },
-            )
+            when {
+                systemWallpaperAvailable -> Text(
+                    "已读取当前系统桌面壁纸作为背景（更换桌面壁纸后回到应用即会刷新）。",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.primary,
+                )
+
+                needsAllFilesAccess -> {
+                    Text(
+                        "系统壁纸需要先开启「所有文件访问」权限：Android 14 起系统只允许持有该权限的应用读取桌面壁纸（已自动回退极光背景）。开启后返回本页即可生效。",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error,
+                    )
+                    Spacer(Modifier.height(8.dp))
+                    SecondaryButton(
+                        onClick = {
+                            allFilesAccessLauncher.launch(allFilesAccessSettingsIntent(context))
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                    ) { Text("去开启所有文件访问权限") }
+                }
+
+                else -> Text(
+                    "当前系统未返回桌面壁纸（可能是动态壁纸或厂商限制），已自动回退极光背景；可在下方选择同一张图片做本地缓存，显示效果一致。",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.error,
+                )
+            }
         }
 
         val preview = remember(settings.cachedWallpaperPath, settings.wallpaperRevision) {

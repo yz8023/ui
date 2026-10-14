@@ -149,7 +149,7 @@ fun PrivacyScreen(onBack: () -> Unit) {
     ) {
         item { SectionTitle("数据处理") }
         item { InfoCard("本地偏好", "主题、动效、桌面图标与引导完成状态仅保存在设备本地 SharedPreferences，不会上传。") }
-        item { InfoCard("壁纸读取", "系统壁纸仅通过 WallpaperManager 在本机读取并绘制，不保存、不上传。Android 12 及以下读取真实壁纸需要存储读取权限；Android 14 起系统限制应用直接读取时，应用会自动回退到内置背景，本地图片与网络壁纸不受影响。") }
+        item { InfoCard("壁纸读取", "系统壁纸仅通过 WallpaperManager 在本机读取并绘制，不保存、不上传。Android 12 及以下读取真实壁纸需要存储读取权限；Android 14 起系统只允许持有「所有文件访问」的 app 读取桌面壁纸，应用会在系统壁纸设置处引导你在系统设置中开启（可随时关闭），未开启前自动回退内置背景，本地图片与网络壁纸不受影响。") }
         item { InfoCard("通知", "仅在你点击“发送测试通知”时申请通知权限并创建本地通知，不向服务器发送数据。") }
         item { InfoCard("网络与账号", "应用没有账号、分析、广告、遥测或后台上传功能。点击项目链接时会交给系统浏览器打开。") }
         item { InfoCard("权限撤回", "可随时在 Android 系统设置的“应用信息 → 权限”中撤回授权；撤回不影响其他离线功能。") }
@@ -177,7 +177,7 @@ fun PermissionCenterScreen(onBack: () -> Unit) {
             item {
                 InfoCard(
                     "系统壁纸权限",
-                    "Android 13 起读取系统壁纸不使用媒体图片权限（该权限对 WallpaperManager 无效，旧版曾误用）：Android 13 返回系统默认壁纸，Android 14 起系统限制直接读取，应用会自动回退内置背景，无需在此授权。改用本地图片/网络壁纸可获得一致效果。",
+                    "读取系统壁纸不使用媒体图片权限（该权限对 WallpaperManager 无效，旧版曾误用）。Android 14 起系统只允许持有「所有文件访问」的 app 读取桌面壁纸——请在设置页「壁纸与背景 → 系统壁纸」处点按钮，跳到系统设置里为本 app 开启；开启后返回即生效，不需要时可随时关闭。",
                 )
             }
         } else {
