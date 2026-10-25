@@ -68,6 +68,12 @@
 | **suqi8/OShin（O神）** | https://github.com/suqi8/OShin | 界面设计参考：Miuix 分组卡片、系统蓝、翻页主壳、悬浮胶囊底栏的公开界面参数。本仓库为**独立实现的视觉映射，未复制其 AGPL-3.0 源码**；若直接使用其本体代码须遵守 AGPL-3.0 与其 README 开源说明 |
 | **Miuix · compose-miuix-ui** | https://github.com/compose-miuix-ui/miuix | OShin 界面底座，默认色板与分组列表规范出处（Apache-2.0） |
 
+## AI 协作开发流程规范
+
+| 来源 | 链接 | 说明 |
+|---|---|---|
+| **《AI 开发的大概流程》· SpicyTater（飞书文档）** | https://iaadlou6fm1.feishu.cn/wiki/GLf6w38ITiH64EkkB9pceuxynRd | 需求描述、渐进式强度（L0–L4）、接口调用与联动、双会话审计、Bug 先定位后修、Skills 沉淀等关键点来源；`docs/AI开发流程与需求描述规范.md`、`prompts/07-AI协作流程.md` 与 `AGENTS.md` 第 6 节为结合本模板教训的**提炼改写，非原文复制** |
+
 ## 其他资源
 
 - **Material 3 / Jetpack Compose**（Google）：https://developer.android.com/jetpack/compose
