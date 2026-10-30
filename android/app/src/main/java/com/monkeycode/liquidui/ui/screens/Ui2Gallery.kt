@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.horizontalScroll
@@ -32,6 +33,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -57,8 +59,10 @@ import com.monkeycode.liquidui.ui.features.ui2.Ui2Preview
  */
 @Composable
 fun Ui2CatalogSection(onOpen: (Ui2Feature) -> Unit) {
-    var query by remember { mutableStateOf("") }
-    var category by remember { mutableStateOf<String?>(null) }
+    var query by rememberSaveable { mutableStateOf("") }
+    var category by rememberSaveable { mutableStateOf<String?>(null) }
+    val chipRowState1 = rememberSaveable(saver = ScrollState.Saver) { ScrollState(0) }
+    val chipRowState2 = rememberSaveable(saver = ScrollState.Saver) { ScrollState(0) }
     val filtered = remember(query, category) {
         (Ui2Features + Ui2ExtraFeatures).filter { f ->
             (category == null || f.category == category) &&
@@ -73,14 +77,14 @@ fun Ui2CatalogSection(onOpen: (Ui2Feature) -> Unit) {
         )
         SectionTitle(text = "分类")
         Row(
-            Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(horizontal = 22.dp),
+            Modifier.fillMaxWidth().horizontalScroll(chipRowState1).padding(horizontal = 22.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Ui2Chip("全部", category == null) { category = null }
             (Ui2Categories + listOf("玻璃拆解", "动效案例")).forEach { c -> Ui2Chip(c, category == c) { category = if (category == c) null else c } }
         }
         Row(
-            Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(horizontal = 22.dp),
+            Modifier.fillMaxWidth().horizontalScroll(chipRowState2).padding(horizontal = 22.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             listOf("视频专题", "弹层馆", "动效馆", "工具").forEach { c -> Ui2Chip(c, category == c) { category = if (category == c) null else c } }
