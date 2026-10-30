@@ -13,7 +13,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -43,6 +47,7 @@ import com.monkeycode.liquidui.ui.components.GlassCard
 import com.monkeycode.liquidui.ui.components.SectionTitle
 import com.monkeycode.liquidui.ui.features.ui2.Ui2Categories
 import com.monkeycode.liquidui.ui.features.ui2.Ui2Feature
+import com.monkeycode.liquidui.ui.features.ui2.Ui2ExtraFeatures
 import com.monkeycode.liquidui.ui.features.ui2.Ui2Features
 import com.monkeycode.liquidui.ui.features.ui2.Ui2Preview
 
@@ -55,7 +60,7 @@ fun Ui2CatalogSection(onOpen: (Ui2Feature) -> Unit) {
     var query by remember { mutableStateOf("") }
     var category by remember { mutableStateOf<String?>(null) }
     val filtered = remember(query, category) {
-        Ui2Features.filter { f ->
+        (Ui2Features + Ui2ExtraFeatures).filter { f ->
             (category == null || f.category == category) &&
                 (query.isBlank() || f.name.contains(query) || f.summary.contains(query) || f.id.contains(query, true))
         }
@@ -68,17 +73,17 @@ fun Ui2CatalogSection(onOpen: (Ui2Feature) -> Unit) {
         )
         SectionTitle(text = "分类")
         Row(
-            Modifier.fillMaxWidth().padding(horizontal = 22.dp),
+            Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(horizontal = 22.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Ui2Chip("全部", category == null) { category = null }
-            Ui2Categories.take(4).forEach { c -> Ui2Chip(c, category == c) { category = if (category == c) null else c } }
+            (Ui2Categories + listOf("玻璃拆解", "动效案例")).forEach { c -> Ui2Chip(c, category == c) { category = if (category == c) null else c } }
         }
         Row(
-            Modifier.fillMaxWidth().padding(horizontal = 22.dp),
+            Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(horizontal = 22.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            Ui2Categories.drop(4).forEach { c -> Ui2Chip(c, category == c) { category = if (category == c) null else c } }
+            listOf("视频专题", "弹层馆", "动效馆", "工具").forEach { c -> Ui2Chip(c, category == c) { category = if (category == c) null else c } }
         }
         Text(
             "共 ${filtered.size} 条 · 点卡片进入真实预览，长按详情页按钮复制提示词",

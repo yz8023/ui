@@ -55,6 +55,37 @@ import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewF43
 import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewF44
 import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewF45
 import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewF46
+import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewG01
+import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewG02
+import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewG03
+import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewG04
+import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewG05
+import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewG06
+import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewM01
+import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewM02
+import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewM03
+import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewM04
+import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewM05
+import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewM06
+import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewM07
+import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewV01
+import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewV02
+import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewV03
+import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewV04
+import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewV05
+import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewV06
+import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewV07
+import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewV08
+import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewV09
+import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewX01
+import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewX02
+import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewX03
+import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewX04
+import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewW01
+import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewW02
+import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewW03
+import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewT01
+import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewT02
 
 /** UI2 体验馆预览分发：每条都是真实可操作的 Compose 实现（非 HTML、非截图）。 */
 @Composable
@@ -107,6 +138,37 @@ fun Ui2Preview(feature: Ui2Feature, modifier: Modifier = Modifier) {
             "F44" -> PreviewF44()
             "F45" -> PreviewF45()
             "F46" -> PreviewF46()
+            "G01" -> PreviewG01()
+            "G02" -> PreviewG02()
+            "G03" -> PreviewG03()
+            "G04" -> PreviewG04()
+            "G05" -> PreviewG05()
+            "G06" -> PreviewG06()
+            "M01" -> PreviewM01()
+            "M02" -> PreviewM02()
+            "M03" -> PreviewM03()
+            "M04" -> PreviewM04()
+            "M05" -> PreviewM05()
+            "M06" -> PreviewM06()
+            "M07" -> PreviewM07()
+            "V01" -> PreviewV01()
+            "V02" -> PreviewV02()
+            "V03" -> PreviewV03()
+            "V04" -> PreviewV04()
+            "V05" -> PreviewV05()
+            "V06" -> PreviewV06()
+            "V07" -> PreviewV07()
+            "V08" -> PreviewV08()
+            "V09" -> PreviewV09()
+            "X01" -> PreviewX01()
+            "X02" -> PreviewX02()
+            "X03" -> PreviewX03()
+            "X04" -> PreviewX04()
+            "W01" -> PreviewW01()
+            "W02" -> PreviewW02()
+            "W03" -> PreviewW03()
+            "T01" -> PreviewT01()
+            "T02" -> PreviewT02()
             else -> Text(
                 "预览建设中",
                 modifier = Modifier.align(Alignment.Center).padding(24.dp),
