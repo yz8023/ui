@@ -60,6 +60,7 @@ import kotlin.math.roundToInt
 
 /* 视频专题 V01–V09 与弹层馆 X01–X04。 */
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PreviewV01() {
     var kind by remember { mutableStateOf<String?>(null) }
@@ -353,6 +354,7 @@ fun PreviewX02() {
             anims.drop(4).forEachIndexed { i, a -> TextButton(onClick = { sel = i + 4; show = false }) { Text(a) } }
         }
         Box(Modifier.fillMaxWidth().height(110.dp).clip(RoundedCornerShape(12.dp)).background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.45f)), contentAlignment = Alignment.Center) {
+          Column {
             AnimatedVisibility(
                 visible = show,
                 enter = when (sel) {
@@ -369,6 +371,7 @@ fun PreviewX02() {
             ) {
                 Card { Text("舞台卡片 · ${anims[sel]}", Modifier.padding(18.dp), fontWeight = FontWeight.Bold) }
             }
+          }
             if (!show) {
                 LaunchedEffect(Unit) { delay(60); show = true }
             }
