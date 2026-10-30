@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 
@@ -34,6 +35,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -57,14 +59,18 @@ import com.monkeycode.liquidui.ui.theme.AppShape
  */
 @Composable
 fun 素材浏览器(onOpenFeature: (FeatureTarget) -> Unit) {
-    var section by remember { mutableStateOf(0) } // 0=模板素材 1=UI2体验馆
+    // 状态一律提到详情分支之前、并可跨组合保存：点卡片查看（UI2 详情或跳转功能页）后
+    // 返回时，列表滚动位置（条目+像素偏移）、搜索词、分类筛选都停在原处，不回到顶部。
+    var section by rememberSaveable { mutableStateOf(0) } // 0=模板素材 1=UI2体验馆
     var ui2Selected by remember { mutableStateOf<com.monkeycode.liquidui.ui.features.ui2.Ui2Feature?>(null) }
+    var query by rememberSaveable { mutableStateOf("") }
+    var selectedCategoryName by rememberSaveable { mutableStateOf<String?>(null) }
+    val selectedCategory = FeatureCategory.entries.firstOrNull { it.name == selectedCategoryName }
+    val listState = rememberSaveable(saver = LazyListState.Saver) { LazyListState() }
     ui2Selected?.let { feature ->
         Ui2DetailScreen(feature = feature, onBack = { ui2Selected = null })
         return
     }
-    var query by remember { mutableStateOf("") }
-    var selectedCategory by remember { mutableStateOf<FeatureCategory?>(null) }
 
     val filtered = remember(query, selectedCategory) {
         全部素材().asSequence()
@@ -80,6 +86,7 @@ fun 素材浏览器(onOpenFeature: (FeatureTarget) -> Unit) {
     }
 
     LazyColumn(
+        state = listState,
         modifier = Modifier
             .fillMaxSize()
             .statusBarsPadding(),
@@ -162,13 +169,13 @@ fun 素材浏览器(onOpenFeature: (FeatureTarget) -> Unit) {
                 分类芯片(
                     label = "全部",
                     selected = selectedCategory == null,
-                    onClick = { selectedCategory = null }
+                    onClick = { selectedCategoryName = null }
                 )
                 FeatureCategory.entries.forEach { category ->
                     分类芯片(
                         label = category.label,
                         selected = selectedCategory == category,
-                        onClick = { selectedCategory = if (selectedCategory == category) null else category }
+                        onClick = { selectedCategoryName = if (selectedCategory == category) null else category.name }
                     )
                 }
             }
