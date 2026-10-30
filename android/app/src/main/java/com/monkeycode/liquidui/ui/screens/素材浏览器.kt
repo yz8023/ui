@@ -57,6 +57,12 @@ import com.monkeycode.liquidui.ui.theme.AppShape
  */
 @Composable
 fun 素材浏览器(onOpenFeature: (FeatureTarget) -> Unit) {
+    var section by remember { mutableStateOf(0) } // 0=模板素材 1=UI2体验馆
+    var ui2Selected by remember { mutableStateOf<com.monkeycode.liquidui.ui.features.ui2.Ui2Feature?>(null) }
+    ui2Selected?.let { feature ->
+        Ui2DetailScreen(feature = feature, onBack = { ui2Selected = null })
+        return
+    }
     var query by remember { mutableStateOf("") }
     var selectedCategory by remember { mutableStateOf<FeatureCategory?>(null) }
 
@@ -98,6 +104,22 @@ fun 素材浏览器(onOpenFeature: (FeatureTarget) -> Unit) {
             }
         }
 
+        item {
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 22.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                分类芯片(label = "模板素材", selected = section == 0, onClick = { section = 0 })
+                分类芯片(label = "UI2 体验馆 · 46", selected = section == 1, onClick = { section = 1 })
+            }
+        }
+
+        if (section == 1) {
+            item { Ui2CatalogSection(onOpen = { ui2Selected = it }) }
+            item { Spacer(Modifier.height(24.dp)) }
+        }
+
+        if (section == 0) {
         item {
             OutlinedTextField(
                 value = query,
@@ -161,6 +183,7 @@ fun 素材浏览器(onOpenFeature: (FeatureTarget) -> Unit) {
                 feature = feature,
                 onClick = { onOpenFeature(feature.target) }
             )
+        }
         }
     }
 

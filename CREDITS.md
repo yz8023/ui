@@ -74,6 +74,12 @@
 |---|---|---|
 | **《AI 开发的大概流程》· SpicyTater（飞书文档）** | https://iaadlou6fm1.feishu.cn/wiki/GLf6w38ITiH64EkkB9pceuxynRd | 需求描述、渐进式强度（L0–L4）、接口调用与联动、双会话审计、Bug 先定位后修、Skills 沉淀等关键点来源；`docs/AI开发流程与需求描述规范.md`、`prompts/07-AI协作流程.md` 与 `AGENTS.md` 第 6 节为结合本模板教训的**提炼改写，非原文复制** |
 
+## UI2 体验馆（F15）
+
+| 来源 | 链接 | 说明 |
+|---|---|---|
+| **yz8023/UI2** | https://github.com/yz8023/UI2 | 46 条界面素材的目录、机制参数、文档四件套与提示词原文；本仓库仅移植文档与提示词（`素材库/UI2体验馆/`），App 内预览为 Compose 独立实现 |
+
 ## 其他资源
 
 - **Material 3 / Jetpack Compose**（Google）：https://developer.android.com/jetpack/compose
