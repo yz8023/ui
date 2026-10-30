@@ -110,7 +110,7 @@ fun 素材浏览器(onOpenFeature: (FeatureTarget) -> Unit) {
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 分类芯片(label = "模板素材", selected = section == 0, onClick = { section = 0 })
-                分类芯片(label = "UI2 体验馆 · 46", selected = section == 1, onClick = { section = 1 })
+                分类芯片(label = "UI2 体验馆 · 77", selected = section == 1, onClick = { section = 1 })
             }
         }
 
