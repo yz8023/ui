@@ -97,21 +97,20 @@ fun PreviewF38() {
 @Composable
 fun PreviewF39() {
     var show by remember { mutableStateOf(false) }
-    val visible = remember { mutableStateListOf<Boolean>() }
-    LaunchedEffect(show) {
-        visible.clear()
-        if (show) repeat(5) { i -> delay(90); visible.add(true) }
-    }
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Button(onClick = { show = !show }) { Text(if (show) "重置" else "播放错峰入场") }
         (0 until 5).forEach { i ->
-            val on = visible.getOrElse(i) { false }
+            val anim = remember { androidx.compose.animation.core.Animatable(0f) }
+            LaunchedEffect(show) {
+                if (show) { delay(i * 90L); anim.animateTo(1f, androidx.compose.animation.core.tween(420)) }
+                else anim.snapTo(0f)
+            }
             Box(
                 Modifier.fillMaxWidth().graphicsLayer {
-                    alpha = if (on) 1f else 0f
-                    translationY = if (on) 0f else 40f
+                    alpha = anim.value
+                    translationY = (1f - anim.value) * 40f
                 }.clip(RoundedCornerShape(10.dp)).background(MaterialTheme.colorScheme.secondaryContainer).padding(12.dp),
-            ) { Text("条目 ${i + 1}（入场延迟 ${i * 90}ms）") }
+            ) { Text("条目 ${i + 1}（入场延迟 ${i * 90}ms，420ms 渐入上浮）") }
         }
     }
 }
@@ -172,12 +171,21 @@ fun PreviewF41() {
 
 @Composable
 fun PreviewF42() {
-    LazyColumn(Modifier.fillMaxWidth().height(200.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    val listState = androidx.compose.foundation.lazy.rememberLazyListState()
+    val parallax = if (listState.firstVisibleItemIndex == 0) listState.firstVisibleItemScrollOffset * 0.5f else 42f
+    LazyColumn(state = listState, modifier = Modifier.fillMaxWidth().height(200.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         item {
             Box(
                 Modifier.fillMaxWidth().height(84.dp).clip(RoundedCornerShape(12.dp)).background(MaterialTheme.colorScheme.primary),
                 contentAlignment = Alignment.Center,
-            ) { Text("头图（滚动时内容从其上方滑过）", color = MaterialTheme.colorScheme.onPrimary, fontWeight = FontWeight.Bold) }
+            ) {
+                Text(
+                    "头图（以 0.5× 速度视差后移）",
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.graphicsLayer { translationY = parallax },
+                )
+            }
         }
         items(6) { i ->
             Card(Modifier.fillMaxWidth()) { Text("滚动条目 ${i + 1}", Modifier.padding(14.dp)) }
