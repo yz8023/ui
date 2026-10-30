@@ -245,7 +245,7 @@ fun PreviewF34() {
 @Composable
 fun PreviewF35() {
     Row(horizontalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.fillMaxWidth()) {
-        listOf("今日步数" to "8,432" to "+12%", "专注时长" to "3.2h" to "+5%").forEach { (label, value, delta) ->
+        listOf(Triple("今日步数", "8,432", "+12%"), Triple("专注时长", "3.2h", "+5%")).forEach { (label, value, delta) ->
             Card(Modifier.weight(1f)) {
                 Column(Modifier.padding(14.dp)) {
                     Text(label, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)

@@ -230,13 +230,14 @@ fun PreviewF21() {
 @Composable
 fun PreviewF22() {
     BoxWithConstraints(Modifier.fillMaxWidth()) {
+        val containerWidth = maxWidth
         val cols = when {
-            maxWidth < 200.dp -> 1
-            maxWidth < 320.dp -> 2
+            containerWidth < 200.dp -> 1
+            containerWidth < 320.dp -> 2
             else -> 3
         }
         Column {
-            Text("当前容器宽 ${maxWidth.value.toInt()}dp → $cols 列", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
+            Text("当前容器宽 ${containerWidth.value.toInt()}dp → $cols 列", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
             Spacer(Modifier.height(8.dp))
             LazyVerticalGrid(columns = GridCells.Fixed(cols), modifier = Modifier.height(120.dp), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 items(6) { i ->

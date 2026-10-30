@@ -63,6 +63,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withTimeout
 
 /* 01 基础组件 F01–F06 与 02 表单输入 F07–F12 的真实预览（对照 UI2 同名条目规格实现）。 */
 
