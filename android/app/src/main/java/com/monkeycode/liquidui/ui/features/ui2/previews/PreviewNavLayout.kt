@@ -176,14 +176,14 @@ fun PreviewF18() {
 
 @Composable
 fun PreviewF19() {
-    val tiles = listOf("大横幅" to 2, "开关" to 1, "图表" to 1, "按钮组" to 1, "列表" to 1)
+    val tiles = listOf("大横幅" to 2, "开关" to 1, "图表" to 1, "按钮组" to 1, "列表" to 1, "统计" to 1)
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         modifier = Modifier.fillMaxWidth().height(190.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        items(tiles) { (label, _) ->
+        items(tiles, span = { androidx.compose.foundation.lazy.grid.GridItemSpan(it.second) }) { (label, _) ->
             Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)) {
                 Box(Modifier.fillMaxWidth().height(56.dp), contentAlignment = Alignment.Center) { Text(label) }
             }
@@ -266,8 +266,12 @@ fun PreviewF23() {
 @Composable
 fun PreviewF24() {
     val insets = WindowInsets.safeDrawing
+    val density = androidx.compose.ui.platform.LocalDensity.current
+    val top = insets.getTop(density); val bottom = insets.getBottom(density)
+    val left = insets.getLeft(density, androidx.compose.ui.unit.LayoutDirection.Ltr)
+    val right = insets.getRight(density, androidx.compose.ui.unit.LayoutDirection.Ltr)
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Text("安全区（真实 WindowInsets 读数）", fontWeight = FontWeight.SemiBold)
+        Text("安全区（真实 WindowInsets 读数：上 $top / 下 $bottom / 左 $left / 右 $right px）", fontWeight = FontWeight.SemiBold)
         Box(
             Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).background(MaterialTheme.colorScheme.secondaryContainer).padding(16.dp),
         ) {
