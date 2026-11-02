@@ -3,7 +3,6 @@ package com.monkeycode.liquidui.ui.features.toolkit
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -124,13 +123,14 @@ fun AdaptiveSideRail(
     showLabels: Boolean = true,
     modifier: Modifier = Modifier
 ) {
+    // 注意：Material3 1.3 的 NavigationRail 没有 contentPadding 参数（1.4+ 才有），
+    // 内边距放在内层 Column 上，兼容当前 BOM 也兼容以后升级。
     NavigationRail(
         modifier = modifier.fillMaxHeight(),
-        containerColor = MaterialTheme.colorScheme.surface,
-        contentPadding = PaddingValues(vertical = 8.dp)
+        containerColor = MaterialTheme.colorScheme.surface
     ) {
         Column(
-            Modifier.fillMaxHeight().padding(bottom = 8.dp),
+            Modifier.fillMaxHeight().padding(vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             items.forEachIndexed { index, item ->
