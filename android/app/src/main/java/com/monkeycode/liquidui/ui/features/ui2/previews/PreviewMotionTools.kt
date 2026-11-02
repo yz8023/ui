@@ -291,13 +291,13 @@ fun PreviewT02() {
             Box {
                 OutlinedButton(onClick = { menuA = true }) { Text("左侧：$aId") }
                 androidx.compose.material3.DropdownMenu(expanded = menuA, onDismissRequest = { menuA = false }) {
-                    all.take(24).forEach { f -> androidx.compose.material3.DropdownMenuItem(text = { Text("${f.id} ${f.name}") }, onClick = { aId = f.id; menuA = false }) }
+                    all.take(24).forEach { f -> androidx.compose.material3.DropdownMenuItem(text = { Text("${f.id} ${stringResource(f.nameRes)}") }, onClick = { aId = f.id; menuA = false }) }
                 }
             }
             Box {
                 OutlinedButton(onClick = { menuB = true }) { Text("右侧：$bId") }
                 androidx.compose.material3.DropdownMenu(expanded = menuB, onDismissRequest = { menuB = false }) {
-                    all.drop(22).forEach { f -> androidx.compose.material3.DropdownMenuItem(text = { Text("${f.id} ${f.name}") }, onClick = { bId = f.id; menuB = false }) }
+                    all.drop(22).forEach { f -> androidx.compose.material3.DropdownMenuItem(text = { Text("${f.id} ${stringResource(f.nameRes)}") }, onClick = { bId = f.id; menuB = false }) }
                 }
             }
         }
@@ -305,7 +305,7 @@ fun PreviewT02() {
             val f = all.firstOrNull { it.id == id } ?: all.first()
             Card(Modifier.fillMaxWidth()) {
                 Column(Modifier.padding(12.dp)) {
-                    Text("${f.id} · ${f.name}", fontWeight = FontWeight.Bold)
+                    Text("${f.id} · ${stringResource(f.nameRes)}", fontWeight = FontWeight.Bold)
                     Spacer(Modifier.height(8.dp))
                     Ui2Preview(f)
                 }
