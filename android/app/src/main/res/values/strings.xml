@@ -1,4 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Android 素材库示例</string>
+
+    <!-- ===== 底部导航与页面标题 =====
+         对应 ui/navigation/Screen.kt 的五个目的地。套壳时改这 10 条就能换掉底栏文字，
+         不用动 Kotlin。Screen 枚举持有的是 @StringRes id，渲染点用 stringResource() 解析。 -->
+    <string name="nav_home">首页</string>
+    <string name="nav_home_subtitle">设计系统概览</string>
+    <string name="nav_components">组件</string>
+    <string name="nav_components_subtitle">控件与状态</string>
+    <string name="nav_motion">动效</string>
+    <string name="nav_motion_subtitle">交互物理演示</string>
+    <string name="nav_settings">设置</string>
+    <string name="nav_settings_subtitle">主题与偏好</string>
+    <string name="nav_gallery">素材</string>
+    <string name="nav_gallery_subtitle">功能点目录</string>
 </resources>
