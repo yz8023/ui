@@ -54,8 +54,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
-import com.monkeycode.liquidui.ui.motion.运动
-import com.monkeycode.liquidui.ui.motion.按压缩放
+import com.monkeycode.liquidui.ui.motion.Motion
+import com.monkeycode.liquidui.ui.motion.pressScale
 import com.monkeycode.liquidui.ui.theme.AppShape
 import com.monkeycode.liquidui.ui.theme.LocalAppChrome
 import com.monkeycode.liquidui.ui.theme.VisualMode
@@ -79,7 +79,7 @@ fun PrimaryButton(
     if (LocalAppChrome.current.visualMode == VisualMode.Glass) {
         Row(
             modifier = modifier
-                .按压缩放(interaction, 0.96f, enabled)
+                .pressScale(interaction, 0.96f, enabled)
                 .liquidGlass(
                     shape = AppShape.control,
                     tint = MaterialTheme.colorScheme.primary.copy(alpha = if (enabled) 0.18f else 0.05f),
@@ -95,7 +95,7 @@ fun PrimaryButton(
     } else {
         Button(
             onClick = onClick,
-            modifier = modifier.按压缩放(interaction, 0.96f, enabled),
+            modifier = modifier.pressScale(interaction, 0.96f, enabled),
             enabled = enabled,
             shape = AppShape.control,
             interactionSource = interaction,
@@ -122,7 +122,7 @@ fun SecondaryButton(
     if (LocalAppChrome.current.visualMode == VisualMode.Glass) {
         Row(
             modifier = modifier
-                .按压缩放(interaction, 0.96f, enabled)
+                .pressScale(interaction, 0.96f, enabled)
                 .liquidGlass(shape = AppShape.control, elevation = 0.dp, borderAlpha = 0.6f)
                 .clickable(enabled = enabled, interactionSource = interaction, indication = null, onClick = onClick)
                 .defaultMinSize(minHeight = 48.dp)
@@ -134,7 +134,7 @@ fun SecondaryButton(
     } else {
         OutlinedButton(
             onClick = onClick,
-            modifier = modifier.按压缩放(interaction, 0.96f, enabled),
+            modifier = modifier.pressScale(interaction, 0.96f, enabled),
             enabled = enabled,
             shape = AppShape.control,
             interactionSource = interaction,
@@ -156,7 +156,7 @@ fun GlassIconButton(
     Box(
         modifier = modifier
             .size(44.dp)
-            .按压缩放(interaction, 0.90f)
+            .pressScale(interaction, 0.90f)
             .liquidGlass(shape = CircleShape, elevation = 1.dp, borderAlpha = 0.5f)
             .clickable(
                 interactionSource = interaction,
@@ -191,7 +191,7 @@ fun CompactSwitch(
     val dragging = remember { mutableStateOf(false) }
 
     LaunchedEffect(checked) {
-        if (!dragging.value) fraction.animateTo(if (checked) 1f else 0f, 运动.snappy(0.01f))
+        if (!dragging.value) fraction.animateTo(if (checked) 1f else 0f, Motion.snappy(0.01f))
     }
 
     val thumbOffset = offsetDp(fraction.value, travelPx, trackWidth, thumbSize, inset)
@@ -202,7 +202,7 @@ fun CompactSwitch(
             checked -> MaterialTheme.colorScheme.primary
             else -> MaterialTheme.colorScheme.surfaceVariant
         },
-        animationSpec = androidx.compose.animation.core.tween(运动.Duration.Fast),
+        animationSpec = androidx.compose.animation.core.tween(Motion.Duration.Fast),
         label = "switchTrack"
     )
     val trackBorder by animateColorAsState(
@@ -211,12 +211,12 @@ fun CompactSwitch(
             checked -> MaterialTheme.colorScheme.primary.copy(alpha = 0.9f)
             else -> MaterialTheme.colorScheme.outlineVariant
         },
-        animationSpec = androidx.compose.animation.core.tween(运动.Duration.Fast),
+        animationSpec = androidx.compose.animation.core.tween(Motion.Duration.Fast),
         label = "switchTrackBorder"
     )
     val thumbScale by animateFloatAsState(
         targetValue = if (checked) 1f else 0.94f,
-        animationSpec = 运动.snappy(0.001f),
+        animationSpec = Motion.snappy(0.001f),
         label = "switchThumbScale"
     )
 
@@ -240,7 +240,7 @@ fun CompactSwitch(
                             dragging.value = false
                             val newState = fraction.value > 0.5f
                             scope.launch {
-                                fraction.animateTo(if (newState) 1f else 0f, 运动.snappy(0.01f))
+                                fraction.animateTo(if (newState) 1f else 0f, Motion.snappy(0.01f))
                             }
                             if (newState != checked) onCheckedChange(newState)
                         }
@@ -249,7 +249,7 @@ fun CompactSwitch(
                         if (enabled) {
                             dragging.value = false
                             scope.launch {
-                                fraction.animateTo(if (checked) 1f else 0f, 运动.snappy(0.01f))
+                                fraction.animateTo(if (checked) 1f else 0f, Motion.snappy(0.01f))
                             }
                         }
                     },
@@ -573,7 +573,7 @@ fun SegmentedTabs(
     val dragging = remember { mutableStateOf(false) }
 
     LaunchedEffect(selectedIndex) {
-        if (!dragging.value) fraction.animateTo(selectedIndex.toFloat(), 运动.snappy(0.001f))
+        if (!dragging.value) fraction.animateTo(selectedIndex.toFloat(), Motion.snappy(0.001f))
     }
 
     Row(
@@ -590,14 +590,14 @@ fun SegmentedTabs(
                         dragging.value = false
                         val target = fraction.value.roundToInt().coerceIn(0, labels.lastIndex)
                         scope.launch {
-                            fraction.animateTo(target.toFloat(), 运动.snappy(0.001f))
+                            fraction.animateTo(target.toFloat(), Motion.snappy(0.001f))
                         }
                         if (target != selectedIndex) onSelected(target)
                     },
                     onDragCancel = {
                         dragging.value = false
                         scope.launch {
-                            fraction.animateTo(selectedIndex.toFloat(), 运动.snappy(0.001f))
+                            fraction.animateTo(selectedIndex.toFloat(), Motion.snappy(0.001f))
                         }
                     },
                     onHorizontalDrag = { change, dragAmount ->
@@ -680,7 +680,7 @@ fun Meter(
 ) {
     val animated by animateFloatAsState(
         targetValue = progress.coerceIn(0f, 1f),
-        animationSpec = 运动.gentle(0.001f),
+        animationSpec = Motion.gentle(0.001f),
         label = "meter"
     )
     Box(

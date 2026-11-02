@@ -21,7 +21,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
-import com.monkeycode.liquidui.ui.motion.运动
+import com.monkeycode.liquidui.ui.motion.Motion
 
 /** The colour themes the settings page switches between. */
 enum class PaletteId(val label: String) {
@@ -360,7 +360,14 @@ enum class VisualMode(val label: String) {
     /** Plain Material surfaces, solid bottom bar, no refraction. */
     Normal("普通"),
     /** Material Design 3 dynamic colour scheme sampled from the wallpaper. */
-    Md3("MD3")
+    Md3("MD3"),
+    /**
+     * OShin (Miuix) look: light-grey page, white grouped cards, system-blue
+     * accent, large-title headers and a floating capsule tab bar.
+     * Switching to it changes colour, shape, type AND shell layout (pager +
+     * floating bottom tabs). Tokens: [oshinColorScheme] / [OShinTokens].
+     */
+    OShin("O神")
 }
 
 /**
@@ -434,6 +441,8 @@ fun LiquidUITheme(
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
+        // O神模式独占色板：与玻璃的 7 套 Palette 互不干扰，切换即整页换色。
+        visualMode == VisualMode.OShin -> oshinColorScheme(darkTheme)
         else -> schemeFor(palette, darkTheme, customSeed, customShade)
     }
 
@@ -459,8 +468,14 @@ fun LiquidUITheme(
     CompositionLocalProvider(LocalAppChrome provides chrome) {
         MaterialTheme(
             colorScheme = animatedScheme,
-            typography = Typography,
-            shapes = if (chrome.cornerScale == 1f) Shapes else scaledShapes(chrome.cornerScale),
+            // O神模式连排版与圆角一起切换（16dp 卡片，而不是玻璃的 22dp）。
+            typography = if (visualMode == VisualMode.OShin) OShinTypography else Typography,
+            shapes = when {
+                visualMode == VisualMode.OShin ->
+                    if (chrome.cornerScale == 1f) OShinShapes else scaledOShinShapes(chrome.cornerScale)
+                chrome.cornerScale == 1f -> Shapes
+                else -> scaledShapes(chrome.cornerScale)
+            },
             content = content
         )
     }
@@ -476,7 +491,7 @@ private fun rememberAnimatedColorScheme(target: ColorScheme, reducedMotion: Bool
     val spec = if (reducedMotion) {
         androidx.compose.animation.core.tween<Color>(0)
     } else {
-        androidx.compose.animation.core.tween<Color>(运动.Duration.Standard)
+        androidx.compose.animation.core.tween<Color>(Motion.Duration.Standard)
     }
     @Composable
     fun animated(role: Color, label: String): Color =

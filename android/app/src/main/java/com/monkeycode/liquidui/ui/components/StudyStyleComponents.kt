@@ -22,7 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.monkeycode.liquidui.ui.motion.按压缩放
+import com.monkeycode.liquidui.ui.motion.pressScale
 import com.monkeycode.liquidui.ui.theme.AppShape
 
 /** Large summary card for dashboards and feature headers. */
@@ -76,7 +76,7 @@ fun GlassCapsuleButton(
     val interaction = remember { MutableInteractionSource() }
     Row(
         modifier = modifier
-            .按压缩放(interaction, 0.96f)
+            .pressScale(interaction, 0.96f)
             .liquidGlass(
                 shape = AppShape.pill,
                 tint = if (selected) MaterialTheme.colorScheme.primary.copy(alpha = 0.18f) else null,
@@ -109,7 +109,7 @@ fun GlassCircleAction(
         modifier = modifier
             .size(40.dp)
             .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.12f), CircleShape)
-            .按压缩放(interaction, 0.92f)
+            .pressScale(interaction, 0.92f)
             .clickable(interactionSource = interaction, indication = null, onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {

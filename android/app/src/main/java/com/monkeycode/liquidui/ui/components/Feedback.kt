@@ -31,7 +31,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.monkeycode.liquidui.ui.motion.闲置呼吸
+import com.monkeycode.liquidui.ui.motion.idleBreathing
 
 /**
  * Empty state — the default content for the "blank feature" screens.
@@ -64,7 +64,7 @@ fun EmptyState(
             Canvas(
                 modifier = Modifier
                     .size(132.dp)
-                    .闲置呼吸(
+                    .idleBreathing(
                         periodMs = 6400,
                         amplitudeX = 0.018f,
                         amplitudeY = 0.026f

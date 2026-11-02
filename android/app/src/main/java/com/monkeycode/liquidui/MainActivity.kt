@@ -10,11 +10,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.graphics.Color
-import com.monkeycode.liquidui.ui.motion.运动
+import com.monkeycode.liquidui.ui.motion.Motion
 import com.monkeycode.liquidui.ui.navigation.AppRoot
 import com.monkeycode.liquidui.ui.screens.OnboardingScreen
 import com.monkeycode.liquidui.ui.screens.rememberAppSettingsState
-import com.monkeycode.liquidui.ui.screens.欢迎引导屏幕
+import com.monkeycode.liquidui.ui.screens.WelcomeGuideScreen
 import com.monkeycode.liquidui.ui.theme.AppChrome
 import com.monkeycode.liquidui.ui.theme.LiquidUITheme
 
@@ -24,7 +24,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val settings = rememberAppSettingsState()
-            SideEffect { 运动.motionDamping.floatValue = settings.motionDamping }
+            SideEffect { Motion.motionDamping.floatValue = settings.motionDamping }
             val onboardingCompleted by settings.onboardingCompletedFlow
                 .collectAsStateWithLifecycle(initialValue = settings.onboardingCompleted)
             LiquidUITheme(
@@ -51,7 +51,7 @@ class MainActivity : ComponentActivity() {
                 )
             ) {
                 if (!onboardingCompleted) {
-                    欢迎引导屏幕(onFinish = settings::completeOnboarding)
+                    WelcomeGuideScreen(onFinish = settings::completeOnboarding)
                 } else {
                     AppRoot(settings = settings)
                 }

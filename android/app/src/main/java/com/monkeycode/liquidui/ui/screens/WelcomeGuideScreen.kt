@@ -42,7 +42,7 @@ import com.monkeycode.liquidui.ui.theme.AppIcons
  * @param onFinish 点击"开始使用"后的回调（由上层负责写状态 + 跳转主页）
  */
 @Composable
-fun 欢迎引导屏幕(
+fun WelcomeGuideScreen(
     onFinish: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -100,22 +100,22 @@ fun 欢迎引导屏幕(
             Spacer(modifier = Modifier.height(36.dp))
 
             // ── 功能列表 ───────────────────────────────────────
-            欢迎引导功能(
+            WelcomeGuideFeature(
                 icon = AppIcons.Widgets,
                 title = "核心功能一",
                 description = "一句话描述这个功能的亮点和价值"
             )
-            欢迎引导功能(
+            WelcomeGuideFeature(
                 icon = AppIcons.Speed,
                 title = "核心功能二",
                 description = "一句话描述这个功能的亮点和价值"
             )
-            欢迎引导功能(
+            WelcomeGuideFeature(
                 icon = AppIcons.Widgets,
                 title = "核心功能三",
                 description = "一句话描述这个功能的亮点和价值"
             )
-            欢迎引导功能(
+            WelcomeGuideFeature(
                 icon = AppIcons.Shield,
                 title = "隐私安全",
                 description = "数据仅存本地，不上传任何服务器"
@@ -124,15 +124,15 @@ fun 欢迎引导屏幕(
             Spacer(modifier = Modifier.height(24.dp))
 
             // ── 免费声明卡 ─────────────────────────────────────
-            免费声明卡()
+            FreeNoticeCard()
             Spacer(modifier = Modifier.height(16.dp))
 
             // ── 免责声明卡 ─────────────────────────────────────
-            免责声明卡()
+            DisclaimerCard()
             Spacer(modifier = Modifier.height(16.dp))
 
             // ── 开源仓库卡 ─────────────────────────────────────
-            开源仓库卡(
+            OpenSourceRepoCard(
                 repoUrl = "https://github.com/your-org/your-repo",
                 context = context
             )
@@ -166,7 +166,7 @@ fun 欢迎引导屏幕(
 
 /** 功能条目：圆形图标底 + 标题 + 描述 */
 @Composable
-private fun 欢迎引导功能(
+private fun WelcomeGuideFeature(
     icon: ImageVector,
     title: String,
     description: String
@@ -211,7 +211,7 @@ private fun 欢迎引导功能(
 
 /** 免费声明卡 */
 @Composable
-private fun 免费声明卡() {
+private fun FreeNoticeCard() {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.large,
@@ -257,7 +257,7 @@ private fun 免费声明卡() {
 
 /** 免责声明卡 */
 @Composable
-private fun 免责声明卡() {
+private fun DisclaimerCard() {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.large,
@@ -290,7 +290,7 @@ private fun 免责声明卡() {
 
 /** 开源仓库入口卡 */
 @Composable
-private fun 开源仓库卡(
+private fun OpenSourceRepoCard(
     repoUrl: String,
     context: android.content.Context
 ) {

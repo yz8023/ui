@@ -71,7 +71,7 @@ import com.monkeycode.liquidui.ui.components.LocalGlassBackdrop
 import com.monkeycode.liquidui.ui.components.LocalGlassContentBackdrop
 import com.monkeycode.liquidui.ui.components.LocalGlassDialogHost
 import com.monkeycode.liquidui.ui.features.rememberSystemWallpaper
-import com.monkeycode.liquidui.ui.motion.运动
+import com.monkeycode.liquidui.ui.motion.Motion
 import com.monkeycode.liquidui.ui.screens.AboutScreen
 import com.monkeycode.liquidui.ui.screens.AppSettingsState
 import com.monkeycode.liquidui.ui.screens.PermissionCenterScreen
@@ -80,9 +80,9 @@ import com.monkeycode.liquidui.ui.screens.WallpaperMode
 import com.monkeycode.liquidui.ui.screens.ComponentsScreen
 import com.monkeycode.liquidui.ui.screens.HomeScreen
 import com.monkeycode.liquidui.ui.screens.FeatureTarget
-import com.monkeycode.liquidui.ui.screens.运动屏幕
+import com.monkeycode.liquidui.ui.screens.MotionScreen
 import com.monkeycode.liquidui.ui.screens.SettingsScreen
-import com.monkeycode.liquidui.ui.screens.素材浏览器
+import com.monkeycode.liquidui.ui.screens.MaterialBrowser
 import com.monkeycode.liquidui.ui.theme.LocalAppChrome
 import com.monkeycode.liquidui.ui.theme.OShinTokens
 import com.monkeycode.liquidui.ui.theme.VisualMode
@@ -150,17 +150,17 @@ fun AppRoot(settings: AppSettingsState) {
     val screenContent: @Composable () -> Unit = {
         val currentChrome = LocalAppChrome.current
         val bounceSpec = if (currentChrome.reducedMotion) {
-            tween<Float>(运动.Duration.Fast)
+            tween<Float>(Motion.Duration.Fast)
         } else {
-            运动.bouncy(0.001f)
+            Motion.bouncy(0.001f)
         }
         AnimatedContent(
             targetState = selectedIndex to infoDestination,
             transitionSpec = {
                 (scaleIn(initialScale = 0.94f, animationSpec = bounceSpec) +
-                    fadeIn(animationSpec = tween(运动.Duration.Fast))) togetherWith
-                    (scaleOut(targetScale = 0.97f, animationSpec = tween(运动.Duration.Fast)) +
-                        fadeOut(animationSpec = tween(运动.Duration.Fast)))
+                    fadeIn(animationSpec = tween(Motion.Duration.Fast))) togetherWith
+                    (scaleOut(targetScale = 0.97f, animationSpec = tween(Motion.Duration.Fast)) +
+                        fadeOut(animationSpec = tween(Motion.Duration.Fast)))
             },
             label = "screenSwitch"
         ) { destination ->
@@ -331,14 +331,14 @@ private fun TemplatePage(
             onOpenMotion = { onNavigate(Screen.Motion.ordinal) }
         )
         Screen.Components -> ComponentsScreen()
-        Screen.Motion -> 运动屏幕(settings = settings)
+        Screen.Motion -> MotionScreen(settings = settings)
         Screen.Settings -> SettingsScreen(
             settings = settings,
             onOpenAbout = { onOpenInfo(InfoDestination.About) },
             onOpenPrivacy = { onOpenInfo(InfoDestination.Privacy) },
             onOpenPermissions = { onOpenInfo(InfoDestination.Permissions) },
         )
-        Screen.Gallery -> 素材浏览器 { target ->
+        Screen.Gallery -> MaterialBrowser { target ->
             when (target) {
                 FeatureTarget.Components -> onNavigate(Screen.Components.ordinal)
                 FeatureTarget.Motion -> onNavigate(Screen.Motion.ordinal)

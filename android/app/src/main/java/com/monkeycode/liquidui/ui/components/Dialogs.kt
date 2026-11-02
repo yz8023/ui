@@ -35,7 +35,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.kyant.backdrop.backdrops.layerBackdrop
 import com.kyant.backdrop.backdrops.rememberLayerBackdrop
-import com.monkeycode.liquidui.ui.motion.运动
+import com.monkeycode.liquidui.ui.motion.Motion
 import com.monkeycode.liquidui.ui.theme.AppShape
 import kotlinx.coroutines.launch
 
@@ -118,8 +118,8 @@ private fun DialogOverlay(
     val cardScale = remember { Animatable(0.88f) }
     val cardAlpha = remember { Animatable(0f) }
     LaunchedEffect(Unit) {
-        launch { cardAlpha.animateTo(1f, tween(运动.Duration.Fast)) }
-        launch { cardScale.animateTo(1f, spring(运动.DampedRatio(0.7f), 320f, 0.63f)) }
+        launch { cardAlpha.animateTo(1f, tween(Motion.Duration.Fast)) }
+        launch { cardScale.animateTo(1f, spring(Motion.DampedRatio(0.7f), 320f, 0.63f)) }
     }
 
     val scrimBackdrop = rememberLayerBackdrop { drawRect(Color.Black.copy(alpha = 0.42f)) }

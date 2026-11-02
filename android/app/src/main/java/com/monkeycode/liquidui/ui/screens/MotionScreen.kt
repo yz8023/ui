@@ -51,9 +51,9 @@ import com.monkeycode.liquidui.ui.components.SecondaryButton
 import com.monkeycode.liquidui.ui.components.SectionTitle
 import com.monkeycode.liquidui.ui.components.SegmentedTabs
 import com.monkeycode.liquidui.ui.components.liquidGlass
-import com.monkeycode.liquidui.ui.motion.运动
-import com.monkeycode.liquidui.ui.motion.冲击抖动
-import com.monkeycode.liquidui.ui.motion.闲置呼吸
+import com.monkeycode.liquidui.ui.motion.Motion
+import com.monkeycode.liquidui.ui.motion.impactShake
+import com.monkeycode.liquidui.ui.motion.idleBreathing
 import com.monkeycode.liquidui.ui.theme.AuroraAmber
 import com.monkeycode.liquidui.ui.theme.AuroraMint
 import com.monkeycode.liquidui.ui.theme.AuroraRose
@@ -65,15 +65,15 @@ import kotlin.math.roundToInt
 private val springPresetLabels = listOf("gentle", "standard", "snappy", "bouncy", "heavy")
 
 private fun springPreset(index: Int): FiniteAnimationSpec<Float> = when (index) {
-    0 -> 运动.gentle(0.001f)
-    1 -> 运动.standard(0.001f)
-    2 -> 运动.snappy(0.001f)
-    3 -> 运动.bouncy(0.001f)
-    else -> 运动.heavy(0.001f)
+    0 -> Motion.gentle(0.001f)
+    1 -> Motion.standard(0.001f)
+    2 -> Motion.snappy(0.001f)
+    3 -> Motion.bouncy(0.001f)
+    else -> Motion.heavy(0.001f)
 }
 
 @Composable
-fun 运动屏幕(settings: AppSettingsState) {
+fun MotionScreen(settings: AppSettingsState) {
     val reduced = settings.reducedMotion
 
     LazyColumn(
@@ -136,7 +136,7 @@ private fun SpringPlayground(reduced: Boolean) {
     var demoRun by remember { mutableIntStateOf(0) }
     var demoDir by remember { mutableFloatStateOf(1f) }
     val trackWidthState = androidx.compose.runtime.rememberUpdatedState(trackWidth)
-    val damping = 运动.motionDamping.floatValue
+    val damping = Motion.motionDamping.floatValue
     val density = androidx.compose.ui.platform.LocalDensity.current
 
     fun runDemo() {
@@ -272,8 +272,8 @@ private fun RevealRow(runId: Int, index: Int, enabled: Boolean) {
             return@LaunchedEffect
         }
         progress.snapTo(0f)
-        delay((index * 运动.Stagger.StandardList).toLong())
-        progress.animateTo(1f, 运动.standard(0.01f))
+        delay((index * Motion.Stagger.StandardList).toLong())
+        progress.animateTo(1f, Motion.standard(0.01f))
     }
     Row(
         modifier = Modifier
@@ -324,7 +324,7 @@ private fun ShakeDemo(reduced: Boolean) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
-            .冲击抖动(
+            .impactShake(
                 trigger = if (reduced) null else trigger,
                 amplitude = amplitude
             )
@@ -387,7 +387,7 @@ private fun BreathingDemo(reduced: Boolean) {
                         .weight(1f)
                         .height(72.dp)
                         .then(
-                            if (reduced) Modifier else Modifier.闲置呼吸(
+                            if (reduced) Modifier else Modifier.idleBreathing(
                                 periodMs = 5200 + index * 900,
                                 amplitudeX = 0.02f + index * 0.01f,
                                 amplitudeY = 0.03f + index * 0.01f

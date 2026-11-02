@@ -65,7 +65,7 @@ import com.monkeycode.liquidui.ui.theme.AppShape
  * 支持搜索和分类筛选，点击卡片可查看接入说明。
  */
 @Composable
-fun 素材浏览器(onOpenFeature: (FeatureTarget) -> Unit) {
+fun MaterialBrowser(onOpenFeature: (FeatureTarget) -> Unit) {
     // 状态一律提到详情分支之前、并可跨组合保存：点卡片查看（UI2 详情或跳转功能页）后
     // 返回时，列表滚动位置（条目+像素偏移）、搜索词、分类筛选都停在原处，不回到顶部。
     var section by rememberSaveable { mutableStateOf(0) } // 0=模板素材 1=UI2体验馆 2=数据查询规范 3=弹窗提示术语 4=工具与基建
@@ -100,7 +100,7 @@ fun 素材浏览器(onOpenFeature: (FeatureTarget) -> Unit) {
     }
 
     val filtered = remember(query, selectedCategory) {
-        全部素材().asSequence()
+        allFeatureItems().asSequence()
             .filter { feature ->
                 selectedCategory == null || feature.category == selectedCategory
             }
@@ -143,11 +143,11 @@ fun 素材浏览器(onOpenFeature: (FeatureTarget) -> Unit) {
                 modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(horizontal = 22.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                分类芯片(label = "模板素材", selected = section == 0, onClick = { section = 0 })
-                分类芯片(label = "UI2 体验馆 · 77", selected = section == 1, onClick = { section = 1 })
-                分类芯片(label = "数据查询规范 · 5", selected = section == 2, onClick = { section = 2 })
-                分类芯片(label = "弹窗提示术语 · 12", selected = section == 3, onClick = { section = 3 })
-                分类芯片(label = "工具与基建 · 4", selected = section == 4, onClick = { section = 4 })
+                CategoryChip(label = "模板素材", selected = section == 0, onClick = { section = 0 })
+                CategoryChip(label = "UI2 体验馆 · 77", selected = section == 1, onClick = { section = 1 })
+                CategoryChip(label = "数据查询规范 · 5", selected = section == 2, onClick = { section = 2 })
+                CategoryChip(label = "弹窗提示术语 · 12", selected = section == 3, onClick = { section = 3 })
+                CategoryChip(label = "工具与基建 · 4", selected = section == 4, onClick = { section = 4 })
             }
         }
 
@@ -211,13 +211,13 @@ fun 素材浏览器(onOpenFeature: (FeatureTarget) -> Unit) {
                     .padding(horizontal = 22.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                分类芯片(
+                CategoryChip(
                     label = "全部",
                     selected = selectedCategory == null,
                     onClick = { selectedCategoryName = null }
                 )
                 FeatureCategory.entries.forEach { category ->
-                    分类芯片(
+                    CategoryChip(
                         label = category.label,
                         selected = selectedCategory == category,
                         onClick = { selectedCategoryName = if (selectedCategory == category) null else category.name }
@@ -231,7 +231,7 @@ fun 素材浏览器(onOpenFeature: (FeatureTarget) -> Unit) {
         }
 
         items(filtered) { feature ->
-            功能卡片(
+            FeatureCard(
                 feature = feature,
                 onClick = { onOpenFeature(feature.target) }
             )
@@ -243,7 +243,7 @@ fun 素材浏览器(onOpenFeature: (FeatureTarget) -> Unit) {
 }
 
 @Composable
-private fun 分类芯片(
+private fun CategoryChip(
     label: String,
     selected: Boolean,
     onClick: () -> Unit
@@ -271,7 +271,7 @@ private fun 分类芯片(
 }
 
 @Composable
-private fun 功能卡片(
+private fun FeatureCard(
     feature: FeatureItem,
     onClick: () -> Unit
 ) {
@@ -364,7 +364,7 @@ data class FeatureItem(
 )
 
 /** 扫描素材库，返回所有功能模块。 */
-private fun 全部素材(): List<FeatureItem> = listOf(
+private fun allFeatureItems(): List<FeatureItem> = listOf(
     FeatureItem(
         name = "液态玻璃主题",
         description = "一套基于 Blur + backdrop 的玻璃拟态主题，支持多套配色和动态取色。",

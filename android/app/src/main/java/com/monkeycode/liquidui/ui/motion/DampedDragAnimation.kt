@@ -19,8 +19,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
-typealias DampedDragAnimation = 阻尼拖拽动画
-
 /**
  * The damped, press-scaled drag model used by the liquid tab bar.
  *
@@ -33,7 +31,7 @@ typealias DampedDragAnimation = 阻尼拖拽动画
  * `scaleX` is divided by a velocity term (stretch along travel) while `scaleY`
  * is multiplied by a smaller one — volume-preserving squash, not a uniform pop.
  */
-class 阻尼拖拽动画(
+class DampedDragAnimation(
     private val animationScope: CoroutineScope,
     initialValue: Float,
     val valueRange: ClosedRange<Float>,
@@ -41,15 +39,15 @@ class 阻尼拖拽动画(
     initialScale: Float,
     val pressedScale: Float,
     val canDrag: (Offset) -> Boolean = { true },
-    val onDragStarted: 阻尼拖拽动画.(position: Offset) -> Unit,
-    val onDragStopped: 阻尼拖拽动画.() -> Unit,
-    val onDrag: 阻尼拖拽动画.(size: IntSize, dragAmount: Offset) -> Unit
+    val onDragStarted: DampedDragAnimation.(position: Offset) -> Unit,
+    val onDragStopped: DampedDragAnimation.() -> Unit,
+    val onDrag: DampedDragAnimation.(size: IntSize, dragAmount: Offset) -> Unit
 ) {
-    private val valueAnimationSpec = spring(运动.DampedRatio(1f), 1000f, visibilityThreshold)
-    private val velocityAnimationSpec = spring(运动.DampedRatio(0.5f), 300f, visibilityThreshold * 10f)
-    private val pressProgressAnimationSpec = spring(运动.DampedRatio(1f), 1000f, 0.001f)
-    private val scaleXAnimationSpec = spring(运动.DampedRatio(0.6f), 250f, 0.001f)
-    private val scaleYAnimationSpec = spring(运动.DampedRatio(0.7f), 250f, 0.001f)
+    private val valueAnimationSpec = spring(Motion.DampedRatio(1f), 1000f, visibilityThreshold)
+    private val velocityAnimationSpec = spring(Motion.DampedRatio(0.5f), 300f, visibilityThreshold * 10f)
+    private val pressProgressAnimationSpec = spring(Motion.DampedRatio(1f), 1000f, 0.001f)
+    private val scaleXAnimationSpec = spring(Motion.DampedRatio(0.6f), 250f, 0.001f)
+    private val scaleYAnimationSpec = spring(Motion.DampedRatio(0.7f), 250f, 0.001f)
 
     private val valueAnimation = Animatable(initialValue, visibilityThreshold)
     private val velocityAnimation = Animatable(0f, 5f)

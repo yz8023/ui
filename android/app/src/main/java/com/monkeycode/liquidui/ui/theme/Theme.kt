@@ -21,7 +21,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
-import com.monkeycode.liquidui.ui.motion.运动
+import com.monkeycode.liquidui.ui.motion.Motion
 
 /** The colour themes the settings page switches between. */
 enum class PaletteId(val label: String) {
@@ -491,7 +491,7 @@ private fun rememberAnimatedColorScheme(target: ColorScheme, reducedMotion: Bool
     val spec = if (reducedMotion) {
         androidx.compose.animation.core.tween<Color>(0)
     } else {
-        androidx.compose.animation.core.tween<Color>(运动.Duration.Standard)
+        androidx.compose.animation.core.tween<Color>(Motion.Duration.Standard)
     }
     @Composable
     fun animated(role: Color, label: String): Color =
