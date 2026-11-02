@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
+import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -34,27 +35,31 @@ import com.monkeycode.liquidui.ui.features.PermissionRequestCard
 import com.monkeycode.liquidui.ui.features.PermissionSpec
 
 private data class OpenSourceCredit(
-    val name: String,
-    val author: String,
-    val purpose: String,
-    val license: String,
+    @StringRes val nameRes: Int,
+    @StringRes val authorRes: Int,
+    @StringRes val purposeRes: Int,
+    @StringRes val licenseRes: Int,
     val url: String,
 )
 
+/**
+ * 开源致谢 13 条。显示字段（名字/作者/用途/许可证）都是 @StringRes，
+ * **url 留在代码里**：它不是文案，既是 LazyColumn item 的 key，也是 Intent 的目标。
+ */
 private val allCredits = listOf(
-    OpenSourceCredit("StudyTrack（学迹）", "L1angK1NG 与项目贡献者", "液态玻璃参数体系、浅色视觉、卡片/按钮/指标组件及自定义壁纸体验参考；底部导航仍使用本项目原实现", "上游仓库未提供 LICENSE；本项目采用独立实现，不直接复制其源码", "https://github.com/L1angK1NG/StudyTrack"),
-    OpenSourceCredit("dyparse", "kd64i", "液态玻璃与 Miuix 风格的视觉语言、配色、圆角及设置页结构参考", "以原仓库许可证为准", "https://github.com/kd64i/dyparse"),
-    OpenSourceCredit("Miuix", "chibatching 及贡献者", "MIUI 风格 Compose 组件语义与布局参考", "Apache-2.0", "https://github.com/chibatching/Miuix"),
-    OpenSourceCredit("backdrop-android", "kyant0 及贡献者", "玻璃背景采样、模糊、折射和高光渲染", "Apache-2.0", "https://github.com/kyant0/backdrop-android"),
-    OpenSourceCredit("shapes", "kyant0 及贡献者", "Capsule 等自定义 Shape 支持", "Apache-2.0", "https://github.com/kyant0/shapes"),
-    OpenSourceCredit("motion-web", "feitangyuan", "动效时长、缓动与弹簧 token 的设计参考", "以原仓库许可证为准", "https://github.com/feitangyuan/motion-web"),
-    OpenSourceCredit("Framer Motion", "Motion 团队及贡献者", "弹簧 stiffness / damping 参数体系参考", "MIT", "https://www.framer.com/motion/"),
-    OpenSourceCredit("YunX（云析）", "CYQawa 及贡献者", "欢迎引导、主题配置、动态桌面图标等交互结构参考", "AGPL-3.0", "https://github.com/CYQawa/YunX"),
-    OpenSourceCredit("Material Color Utilities", "Google Material Foundation", "HCT / TonalSpot 配色算法参考", "Apache-2.0", "https://github.com/material-foundation/material-color-utilities"),
-    OpenSourceCredit("Jetpack Compose / Material 3", "Android Open Source Project / Google", "界面、主题、动画及 Android 平台能力", "Apache-2.0", "https://developer.android.com/compose"),
-    OpenSourceCredit("Material Icons", "Android Open Source Project", "应用内矢量图标路径", "Apache-2.0", "https://fonts.google.com/icons"),
-    OpenSourceCredit("Android activity-alias / PackageManager", "Android Open Source Project / Google", "运行时切换桌面应用图标", "官方文档", "https://developer.android.com/guide/topics/manifest/activity-alias-element"),
-    OpenSourceCredit("Changing an Android App Icon", "SitePoint 社区作者", "activity-alias 图标切换实现思路参考", "文章", "https://www.sitepoint.com/changing-your-android-apps-icon-dynamically/"),
+    OpenSourceCredit(R.string.info_credit_01_name, R.string.info_credit_01_author, R.string.info_credit_01_purpose, R.string.info_credit_01_license, "https://github.com/L1angK1NG/StudyTrack"),
+    OpenSourceCredit(R.string.info_credit_02_name, R.string.info_credit_02_author, R.string.info_credit_02_purpose, R.string.info_credit_02_license, "https://github.com/kd64i/dyparse"),
+    OpenSourceCredit(R.string.info_credit_03_name, R.string.info_credit_03_author, R.string.info_credit_03_purpose, R.string.info_credit_03_license, "https://github.com/chibatching/Miuix"),
+    OpenSourceCredit(R.string.info_credit_04_name, R.string.info_credit_04_author, R.string.info_credit_04_purpose, R.string.info_credit_04_license, "https://github.com/kyant0/backdrop-android"),
+    OpenSourceCredit(R.string.info_credit_05_name, R.string.info_credit_05_author, R.string.info_credit_05_purpose, R.string.info_credit_05_license, "https://github.com/kyant0/shapes"),
+    OpenSourceCredit(R.string.info_credit_06_name, R.string.info_credit_06_author, R.string.info_credit_06_purpose, R.string.info_credit_06_license, "https://github.com/feitangyuan/motion-web"),
+    OpenSourceCredit(R.string.info_credit_07_name, R.string.info_credit_07_author, R.string.info_credit_07_purpose, R.string.info_credit_07_license, "https://www.framer.com/motion/"),
+    OpenSourceCredit(R.string.info_credit_08_name, R.string.info_credit_08_author, R.string.info_credit_08_purpose, R.string.info_credit_08_license, "https://github.com/CYQawa/YunX"),
+    OpenSourceCredit(R.string.info_credit_09_name, R.string.info_credit_09_author, R.string.info_credit_09_purpose, R.string.info_credit_09_license, "https://github.com/material-foundation/material-color-utilities"),
+    OpenSourceCredit(R.string.info_credit_10_name, R.string.info_credit_10_author, R.string.info_credit_10_purpose, R.string.info_credit_10_license, "https://developer.android.com/compose"),
+    OpenSourceCredit(R.string.info_credit_11_name, R.string.info_credit_11_author, R.string.info_credit_11_purpose, R.string.info_credit_11_license, "https://fonts.google.com/icons"),
+    OpenSourceCredit(R.string.info_credit_12_name, R.string.info_credit_12_author, R.string.info_credit_12_purpose, R.string.info_credit_12_license, "https://developer.android.com/guide/topics/manifest/activity-alias-element"),
+    OpenSourceCredit(R.string.info_credit_13_name, R.string.info_credit_13_author, R.string.info_credit_13_purpose, R.string.info_credit_13_license, "https://www.sitepoint.com/changing-your-android-apps-icon-dynamically/"),
 )
 
 @Composable
@@ -120,10 +125,11 @@ fun AboutScreen(onBack: () -> Unit) {
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                            Text(credit.name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
-                            Text(stringResource(R.string.info_text_20, credit.author), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary)
-                            Text(credit.purpose, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                            Text(stringResource(R.string.info_text_21, credit.license), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text(stringResource(credit.nameRes), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                            // 「作者：%1$s」的实参本身也是文案资源，这里嵌一层 stringResource
+                            Text(stringResource(R.string.info_text_20, stringResource(credit.authorRes)), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary)
+                            Text(stringResource(credit.purposeRes), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text(stringResource(R.string.info_text_21, stringResource(credit.licenseRes)), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                         Text(context.getString(R.string.info_text_3), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
                     }
@@ -174,8 +180,8 @@ fun PermissionCenterScreen(onBack: () -> Unit) {
                 PermissionRequestCard(
                     PermissionSpec(
                         permission = Manifest.permission.POST_NOTIFICATIONS,
-                        title = stringResource(R.string.info_title_2),
-                        description = stringResource(R.string.info_desc_1),
+                        titleRes = R.string.info_title_2,
+                        descriptionRes = R.string.info_desc_1,
                     ),
                     modifier = Modifier.padding(horizontal = 16.dp),
                 )
@@ -191,8 +197,8 @@ fun PermissionCenterScreen(onBack: () -> Unit) {
                 PermissionRequestCard(
                     PermissionSpec(
                         permission = Manifest.permission.READ_EXTERNAL_STORAGE,
-                        title = stringResource(R.string.info_title_3),
-                        description = stringResource(R.string.info_desc_2),
+                        titleRes = R.string.info_title_3,
+                        descriptionRes = R.string.info_desc_2,
                     ),
                     modifier = Modifier.padding(horizontal = 16.dp),
                 )

@@ -1,5 +1,6 @@
 package com.monkeycode.liquidui.ui.screens
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -40,50 +41,52 @@ import androidx.compose.ui.res.stringResource
 
 private data class Principle(
     val index: String,
-    val title: String,
-    val body: String,
+    @StringRes val titleRes: Int,
+    @StringRes val bodyRes: Int,
     val accent: androidx.compose.ui.graphics.Color
 )
 
 
 private data class FeatureMaterial(
-    val name: String,
-    val description: String,
-    val status: String,
+    @StringRes val nameRes: Int,
+    @StringRes val descriptionRes: Int,
+    @StringRes val statusRes: Int,
     val accent: androidx.compose.ui.graphics.Color
 )
 
+/** 首页「特色素材」5 条。status 只有三种取值，重复的共用一条资源。 */
 private val featureMaterials = listOf(
-    FeatureMaterial("液态玻璃主题", "真 backdrop 玻璃、7 套配色、普通 / MD3 降级。", "已接入", AuroraMint),
-    FeatureMaterial("应用欢迎引导", "首次启动说明、免费声明、开源入口，可从设置重新查看。", "新增", AuroraAmber),
-    FeatureMaterial("状态反馈组件", "加载、空态、错误、成功、离线提示与重试骨架。", "新增", AuroraRose),
-    FeatureMaterial("主题导入导出", "外观和动效偏好一键复制为 JSON，可跨设备恢复。", "新增", AuroraViolet),
-    FeatureMaterial("权限请求组件", "通知、媒体、相机、位置权限的解释卡与设置跳转素材。", "素材", AuroraMint)
+    FeatureMaterial(R.string.home_material_01_name, R.string.home_material_01_description, R.string.home_material_status_integrated, AuroraMint),
+    FeatureMaterial(R.string.home_material_02_name, R.string.home_material_02_description, R.string.home_material_status_new, AuroraAmber),
+    FeatureMaterial(R.string.home_material_03_name, R.string.home_material_03_description, R.string.home_material_status_new, AuroraRose),
+    FeatureMaterial(R.string.home_material_04_name, R.string.home_material_04_description, R.string.home_material_status_new, AuroraViolet),
+    FeatureMaterial(R.string.home_material_05_name, R.string.home_material_05_description, R.string.home_material_status_asset, AuroraMint)
 )
 
+/** 首页「四条设计原则」。index 是 "01"–"04" 这种编号，不随语言变，留在代码里。 */
 private val principles = listOf(
     Principle(
         index = "01",
-        title = "动效即材质",
-        body = "动效是界面材料本身，不是事后装饰。每个位移都有阻尼、动量和过冲回弹。",
+        titleRes = R.string.home_principle_01_title,
+        bodyRes = R.string.home_principle_01_body,
         accent = AuroraMint
     ),
     Principle(
         index = "02",
-        title = "反 AI 塑料感",
-        body = "禁用无意义的 0→1 淡入与线性匀速。统一使用二阶弹簧阻尼与各向异性形变。",
+        titleRes = R.string.home_principle_02_title,
+        bodyRes = R.string.home_principle_02_body,
         accent = AuroraViolet
     ),
     Principle(
         index = "03",
-        title = "可验证的手感",
-        body = "时序、缓动、错峰全部以 token 固化，可被量化核对，避免同一产品出现两套节奏。",
+        titleRes = R.string.home_principle_03_title,
+        bodyRes = R.string.home_principle_03_body,
         accent = AuroraAmber
     ),
     Principle(
         index = "04",
-        title = "降级即设计",
-        body = "减少动效模式是一套完整设计，而不是坏掉的页面：默认终态始终可用。",
+        titleRes = R.string.home_principle_04_title,
+        bodyRes = R.string.home_principle_04_body,
         accent = AuroraRose
     )
 )
@@ -206,12 +209,12 @@ fun HomeScreen(
                         )
                         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                             Text(
-                                text = principle.title,
+                                text = stringResource(principle.titleRes),
                                 style = MaterialTheme.typography.titleLarge,
                                 color = MaterialTheme.colorScheme.onSurface
                             )
                             Text(
-                                text = principle.body,
+                                text = stringResource(principle.bodyRes),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -243,19 +246,19 @@ fun HomeScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        Tag(text = material.status, accent = material.accent)
+                        Tag(text = stringResource(material.statusRes), accent = material.accent)
                         Column(
                             modifier = Modifier.weight(1f),
                             verticalArrangement = Arrangement.spacedBy(3.dp)
                         ) {
                             Text(
-                                text = material.name,
+                                text = stringResource(material.nameRes),
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.SemiBold,
                                 color = MaterialTheme.colorScheme.onSurface
                             )
                             Text(
-                                text = material.description,
+                                text = stringResource(material.descriptionRes),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )

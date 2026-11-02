@@ -1609,4 +1609,84 @@
     <string name="tk_demo_md_changelog"># v2.8.0 更新日志\n\n新增 **F17 弹窗与提示术语**（P01–P12），把「加个弹窗」这种模糊需求拆成 12 个术语。\n\n## 新增\n\n- 素材库第四分区：*弹窗提示术语 · 12*\n- 每条含定义、何时用、`与邻居的区别`、反例与提示词\n- 详见 [实现方案](https://github.com/yz8023/ui)\n\n## 修复\n\n1. 列表返回不再回到顶部\n2. 提示词长按复制补上触感反馈\n\n&gt; 术语 P01–P06 出自视频简介点名，P07–P12 为本仓库补足。\n\n---\n\n```kotlin\nSnackbarHostState().showSnackbar(\n    message = \"已删除\",\n    actionLabel = \"撤销\"\n)\n```</string>
     <string name="tk_demo_md_syntax">### 支持清单\n\n- 标题 `#`~`######`\n- **粗体** 与 *斜体*、_斜体_\n- `行内代码` 与围栏代码块\n- [链接](https://github.com/yz8023/ui)\n- 有序列表：\n\n1. 第一项\n2. 第二项\n\n&gt; 引用：连续多行会合并成一段。\n\n***\n\n不支持：表格、图片、嵌套列表、任务列表、HTML 内联。\n需要时改引 `org.commonmark:commonmark`（约 200KB 依赖）。</string>
     <string name="tk_demo_md_privacy">## 隐私说明（示例）\n\n本模板**不联网上传任何用户数据**。唯一的网络行为有两处：\n\n1. 更新检查：请求 `api.github.com`（U01）\n2. 壁纸缓存：请求你配置的壁纸地址\n\n日志只存内存，*不写文件*，分享由用户手动触发。\n\n- 不申请通讯录、位置、麦克风\n- 存储权限仅用于「所有文件访问」读取系统壁纸</string>
+
+    <!-- ===== 阶段 5d-2：页面级顶层数据（开源致谢 / 首页素材与原则 / 权限卡默认提示） ===== -->
+    <!-- 协议与开源许可页：致谢 13 条（url 不是文案，留在代码里） -->
+    <string name="info_credit_01_name">StudyTrack（学迹）</string>
+    <string name="info_credit_01_author">L1angK1NG 与项目贡献者</string>
+    <string name="info_credit_01_purpose">液态玻璃参数体系、浅色视觉、卡片/按钮/指标组件及自定义壁纸体验参考；底部导航仍使用本项目原实现</string>
+    <string name="info_credit_01_license">上游仓库未提供 LICENSE；本项目采用独立实现，不直接复制其源码</string>
+    <string name="info_credit_02_name">dyparse</string>
+    <string name="info_credit_02_author">kd64i</string>
+    <string name="info_credit_02_purpose">液态玻璃与 Miuix 风格的视觉语言、配色、圆角及设置页结构参考</string>
+    <string name="info_credit_02_license">以原仓库许可证为准</string>
+    <string name="info_credit_03_name">Miuix</string>
+    <string name="info_credit_03_author">chibatching 及贡献者</string>
+    <string name="info_credit_03_purpose">MIUI 风格 Compose 组件语义与布局参考</string>
+    <string name="info_credit_03_license">Apache-2.0</string>
+    <string name="info_credit_04_name">backdrop-android</string>
+    <string name="info_credit_04_author">kyant0 及贡献者</string>
+    <string name="info_credit_04_purpose">玻璃背景采样、模糊、折射和高光渲染</string>
+    <string name="info_credit_04_license">Apache-2.0</string>
+    <string name="info_credit_05_name">shapes</string>
+    <string name="info_credit_05_author">kyant0 及贡献者</string>
+    <string name="info_credit_05_purpose">Capsule 等自定义 Shape 支持</string>
+    <string name="info_credit_05_license">Apache-2.0</string>
+    <string name="info_credit_06_name">motion-web</string>
+    <string name="info_credit_06_author">feitangyuan</string>
+    <string name="info_credit_06_purpose">动效时长、缓动与弹簧 token 的设计参考</string>
+    <string name="info_credit_06_license">以原仓库许可证为准</string>
+    <string name="info_credit_07_name">Framer Motion</string>
+    <string name="info_credit_07_author">Motion 团队及贡献者</string>
+    <string name="info_credit_07_purpose">弹簧 stiffness / damping 参数体系参考</string>
+    <string name="info_credit_07_license">MIT</string>
+    <string name="info_credit_08_name">YunX（云析）</string>
+    <string name="info_credit_08_author">CYQawa 及贡献者</string>
+    <string name="info_credit_08_purpose">欢迎引导、主题配置、动态桌面图标等交互结构参考</string>
+    <string name="info_credit_08_license">AGPL-3.0</string>
+    <string name="info_credit_09_name">Material Color Utilities</string>
+    <string name="info_credit_09_author">Google Material Foundation</string>
+    <string name="info_credit_09_purpose">HCT / TonalSpot 配色算法参考</string>
+    <string name="info_credit_09_license">Apache-2.0</string>
+    <string name="info_credit_10_name">Jetpack Compose / Material 3</string>
+    <string name="info_credit_10_author">Android Open Source Project / Google</string>
+    <string name="info_credit_10_purpose">界面、主题、动画及 Android 平台能力</string>
+    <string name="info_credit_10_license">Apache-2.0</string>
+    <string name="info_credit_11_name">Material Icons</string>
+    <string name="info_credit_11_author">Android Open Source Project</string>
+    <string name="info_credit_11_purpose">应用内矢量图标路径</string>
+    <string name="info_credit_11_license">Apache-2.0</string>
+    <string name="info_credit_12_name">Android activity-alias / PackageManager</string>
+    <string name="info_credit_12_author">Android Open Source Project / Google</string>
+    <string name="info_credit_12_purpose">运行时切换桌面应用图标</string>
+    <string name="info_credit_12_license">官方文档</string>
+    <string name="info_credit_13_name">Changing an Android App Icon</string>
+    <string name="info_credit_13_author">SitePoint 社区作者</string>
+    <string name="info_credit_13_purpose">activity-alias 图标切换实现思路参考</string>
+    <string name="info_credit_13_license">文章</string>
+    <!-- 权限请求卡：deniedHint 的默认值 -->
+    <string name="permission_denied_hint">拒绝后仍可在系统设置中重新开启。</string>
+    <!-- 首页：特色素材 5 条（status 三种取值共用一条资源） -->
+    <string name="home_material_01_name">液态玻璃主题</string>
+    <string name="home_material_01_description">真 backdrop 玻璃、7 套配色、普通 / MD3 降级。</string>
+    <string name="home_material_status_integrated">已接入</string>
+    <string name="home_material_02_name">应用欢迎引导</string>
+    <string name="home_material_02_description">首次启动说明、免费声明、开源入口，可从设置重新查看。</string>
+    <string name="home_material_status_new">新增</string>
+    <string name="home_material_03_name">状态反馈组件</string>
+    <string name="home_material_03_description">加载、空态、错误、成功、离线提示与重试骨架。</string>
+    <string name="home_material_04_name">主题导入导出</string>
+    <string name="home_material_04_description">外观和动效偏好一键复制为 JSON，可跨设备恢复。</string>
+    <string name="home_material_05_name">权限请求组件</string>
+    <string name="home_material_05_description">通知、媒体、相机、位置权限的解释卡与设置跳转素材。</string>
+    <string name="home_material_status_asset">素材</string>
+    <!-- 首页：四条设计原则 -->
+    <string name="home_principle_01_title">动效即材质</string>
+    <string name="home_principle_01_body">动效是界面材料本身，不是事后装饰。每个位移都有阻尼、动量和过冲回弹。</string>
+    <string name="home_principle_02_title">反 AI 塑料感</string>
+    <string name="home_principle_02_body">禁用无意义的 0→1 淡入与线性匀速。统一使用二阶弹簧阻尼与各向异性形变。</string>
+    <string name="home_principle_03_title">可验证的手感</string>
+    <string name="home_principle_03_body">时序、缓动、错峰全部以 token 固化，可被量化核对，避免同一产品出现两套节奏。</string>
+    <string name="home_principle_04_title">降级即设计</string>
+    <string name="home_principle_04_body">减少动效模式是一套完整设计，而不是坏掉的页面：默认终态始终可用。</string>
 </resources>

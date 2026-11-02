@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.provider.Settings
+import androidx.annotation.StringRes
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Row
@@ -22,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
 import com.monkeycode.liquidui.R
 import com.monkeycode.liquidui.ui.components.PreferenceCard
@@ -34,9 +36,10 @@ import com.monkeycode.liquidui.ui.theme.AppIcons
 /** Description of one Android runtime permission and its user-facing rationale. */
 data class PermissionSpec(
     val permission: String,
-    val title: String,
-    val description: String,
-    val deniedHint: String = "拒绝后仍可在系统设置中重新开启。"
+    @StringRes val titleRes: Int,
+    @StringRes val descriptionRes: Int,
+    // 默认参数值也不能是文案：改成资源 id，调用方不传就用这条通用提示
+    @StringRes val deniedHintRes: Int = R.string.permission_denied_hint
 )
 
 /** True when [permission] is currently granted. */
@@ -65,6 +68,10 @@ fun PermissionRequestCard(
     onResult: (Boolean) -> Unit = {}
 ) {
     val context = LocalContext.current
+    // 文案在组合体首行解析一次：下面的 subtitle 是 if 分支里的字符串拼接，
+    // 拼接表达式里塞 stringResource 虽然也合法，但 hoist 出来更好读，也少一次组合调用
+    val specDescription = stringResource(spec.descriptionRes)
+    val deniedHint = stringResource(spec.deniedHintRes)
     var granted by remember(spec.permission) {
         mutableStateOf(context.isPermissionGranted(spec.permission))
     }
@@ -78,8 +85,8 @@ fun PermissionRequestCard(
     PreferenceCard(modifier = modifier) {
         PreferenceRow(
             icon = AppIcons.Shield,
-            title = spec.title,
-            subtitle = if (granted) spec.description else spec.description + "\n" + spec.deniedHint,
+            title = stringResource(spec.titleRes),
+            subtitle = if (granted) specDescription else specDescription + "\n" + deniedHint,
             trailing = {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     if (granted) {
