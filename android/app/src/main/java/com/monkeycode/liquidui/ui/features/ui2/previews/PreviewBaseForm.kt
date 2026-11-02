@@ -1,5 +1,7 @@
 package com.monkeycode.liquidui.ui.features.ui2.previews
 
+import com.monkeycode.liquidui.R
+
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -62,6 +64,7 @@ import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withTimeout
 
@@ -74,20 +77,20 @@ fun PreviewF01() {
     LaunchedEffect(loading) { if (loading) { delay(1600); loading = false } }
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            PressButton("主要按钮") { count++ }
-            OutlinedButton(onClick = { count++ }, shape = RoundedCornerShape(12.dp)) { Text("次要") }
-            TextButton(onClick = { count++ }) { Text("幽灵") }
+            PressButton(stringResource(R.string.pv_form_text_1)) { count++ }
+            OutlinedButton(onClick = { count++ }, shape = RoundedCornerShape(12.dp)) { Text(stringResource(R.string.pv_form_text_2)) }
+            TextButton(onClick = { count++ }) { Text(stringResource(R.string.pv_form_text_3)) }
         }
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Button(onClick = { loading = true }, enabled = !loading, shape = RoundedCornerShape(12.dp)) {
                 if (loading) {
                     CircularProgressIndicator(Modifier.size(14.dp), strokeWidth = 2.dp, color = MaterialTheme.colorScheme.onPrimary)
-                    Spacer(Modifier.width(8.dp)); Text("提交中…")
-                } else Text("加载态演示")
+                    Spacer(Modifier.width(8.dp)); Text(stringResource(R.string.common_shared_1))
+                } else Text(stringResource(R.string.pv_form_text_4))
             }
             Text("已点击 $count 次", style = MaterialTheme.typography.bodySmall)
         }
-        Text("按压缩放 0.955 + 弹簧回弹（左一）；加载态尺寸不变。", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(stringResource(R.string.pv_form_text_5), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
 
@@ -106,14 +109,14 @@ fun PreviewF02() {
     val error = value.length > max
     Column {
         OutlinedTextField(
-            value = value, onValueChange = { value = it }, label = { Text("昵称") },
+            value = value, onValueChange = { value = it }, label = { Text(stringResource(R.string.components_label_1)) },
             modifier = Modifier.fillMaxWidth(), singleLine = true, isError = error,
             trailingIcon = {
                 if (value.isNotEmpty()) Text("✕", Modifier.clickable { value = "" }.padding(8.dp))
             },
             supportingText = {
                 Row(Modifier.fillMaxWidth()) {
-                    Text(if (error) "超出字数上限" else "浮动标签 + 清除键 + 计数", Modifier.weight(1f))
+                    Text(if (error) stringResource(R.string.pv_form_text_6) else stringResource(R.string.pv_form_text_7), Modifier.weight(1f))
                     Text("${value.length}/$max", color = if (error) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             },
@@ -123,7 +126,7 @@ fun PreviewF02() {
 
 @Composable
 fun PreviewF03() {
-    val items = listOf("壁纸背景", "动效", "通知")
+    val items = listOf(stringResource(R.string.common_wallpaper_bg), stringResource(R.string.nav_motion), stringResource(R.string.components_content_desc_1))
     val states = remember { mutableStateListOf(true, false, true) }
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
         items.forEachIndexed { i, label ->
@@ -132,7 +135,7 @@ fun PreviewF03() {
                 Switch(checked = states[i], onCheckedChange = { states[i] = it })
             }
         }
-        Text("连点开关试试：状态与位置始终同步。", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(stringResource(R.string.pv_form_text_8), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
 
@@ -142,11 +145,11 @@ fun PreviewF04() {
     var dragging by remember { mutableStateOf(false) }
     Column {
         Row(Modifier.fillMaxWidth()) {
-            Text("音量", Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
+            Text(stringResource(R.string.pv_form_text_9), Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
             if (dragging || true) Text("${v.toInt()}", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
         }
         Slider(value = v, onValueChange = { v = it; dragging = true }, onValueChangeFinished = { dragging = false }, valueRange = 0f..100f)
-        Text("拖动看数值气泡（此处常显数值），两端不越界。", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(stringResource(R.string.pv_form_text_10), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
 
@@ -165,15 +168,15 @@ fun PreviewF05() {
                 val target = parent != ToggleableState.On
                 for (i in checks.indices) checks[i] = target
             })
-            Text("全部权限（三态）", fontWeight = FontWeight.SemiBold)
+            Text(stringResource(R.string.pv_form_text_11), fontWeight = FontWeight.SemiBold)
         }
-        listOf("读取壁纸", "发送通知", "访问网络").forEachIndexed { i, label ->
+        listOf(stringResource(R.string.pv_form_text_12), stringResource(R.string.pv_form_text_13), stringResource(R.string.pv_form_text_14)).forEachIndexed { i, label ->
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(start = 16.dp)) {
                 Checkbox(checked = checks[i], onCheckedChange = { checks[i] = it }); Text(label)
             }
         }
         Spacer(Modifier.height(6.dp))
-        listOf("极光", "系统壁纸", "本地缓存").forEachIndexed { i, label ->
+        listOf(stringResource(R.string.pv_form_text_15), stringResource(R.string.common_system_wallpaper), stringResource(R.string.pv_form_text_16)).forEachIndexed { i, label ->
             Row(verticalAlignment = Alignment.CenterVertically) {
                 RadioButton(selected = radio == i, onClick = { radio = i }); Text(label)
             }
@@ -185,7 +188,7 @@ fun PreviewF05() {
 fun PreviewF06() {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Row {
-            listOf("张", "李", "王", "+9").forEachIndexed { i, name ->
+            listOf(stringResource(R.string.pv_form_text_17), stringResource(R.string.pv_form_text_18), stringResource(R.string.pv_form_text_19), "+9").forEachIndexed { i, name ->
                 Box(
                     Modifier.padding(start = if (i == 0) 0.dp else (-8).dp).size(40.dp).clip(CircleShape)
                         .background(MaterialTheme.colorScheme.primaryContainer)
@@ -195,14 +198,14 @@ fun PreviewF06() {
             }
             Spacer(Modifier.width(16.dp))
             Box {
-                Box(Modifier.size(40.dp).clip(CircleShape).background(MaterialTheme.colorScheme.secondaryContainer), contentAlignment = Alignment.Center) { Text("邮") }
+                Box(Modifier.size(40.dp).clip(CircleShape).background(MaterialTheme.colorScheme.secondaryContainer), contentAlignment = Alignment.Center) { Text(stringResource(R.string.pv_form_text_20)) }
                 Box(
                     Modifier.align(Alignment.TopEnd).size(16.dp).clip(CircleShape).background(MaterialTheme.colorScheme.error),
                     contentAlignment = Alignment.Center,
                 ) { Text("3", color = MaterialTheme.colorScheme.onError, style = MaterialTheme.typography.labelSmall) }
             }
         }
-        Text("头像组重叠 8dp + 未读徽标；点任意头像无动作，纯展示组件。", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(stringResource(R.string.pv_form_text_21), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
 
@@ -216,18 +219,18 @@ fun PreviewF07() {
     val pwdOk = pwd.length >= 6
     val confirmOk = confirm.isNotEmpty() && confirm == pwd
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        OutlinedTextField(email, { email = it }, label = { Text("邮箱") }, modifier = Modifier.fillMaxWidth(), singleLine = true,
+        OutlinedTextField(email, { email = it }, label = { Text(stringResource(R.string.pv_form_text_22)) }, modifier = Modifier.fillMaxWidth(), singleLine = true,
             isError = touched && !emailOk,
-            supportingText = { if (touched && !emailOk) Text("邮箱格式不正确") })
-        OutlinedTextField(pwd, { pwd = it }, label = { Text("密码（≥6位）") }, modifier = Modifier.fillMaxWidth(), singleLine = true,
+            supportingText = { if (touched && !emailOk) Text(stringResource(R.string.pv_form_text_23)) })
+        OutlinedTextField(pwd, { pwd = it }, label = { Text(stringResource(R.string.pv_form_text_24)) }, modifier = Modifier.fillMaxWidth(), singleLine = true,
             visualTransformation = PasswordVisualTransformation(),
-            isError = touched && !pwdOk, supportingText = { if (touched && !pwdOk) Text("密码至少 6 位") })
-        OutlinedTextField(confirm, { confirm = it }, label = { Text("确认密码") }, modifier = Modifier.fillMaxWidth(), singleLine = true,
+            isError = touched && !pwdOk, supportingText = { if (touched && !pwdOk) Text(stringResource(R.string.pv_form_text_25)) })
+        OutlinedTextField(confirm, { confirm = it }, label = { Text(stringResource(R.string.pv_form_text_26)) }, modifier = Modifier.fillMaxWidth(), singleLine = true,
             visualTransformation = PasswordVisualTransformation(),
-            isError = touched && !confirmOk, supportingText = { if (touched && !confirmOk) Text("两次输入不一致") })
-        Button(onClick = { touched = true }, modifier = Modifier.fillMaxWidth()) { Text("注册（演示校验）") }
-        if (touched && emailOk && pwdOk && confirmOk) Text("✓ 格式检查通过（演示，未创建账号）", color = MaterialTheme.colorScheme.primary)
-        Text("改密码后确认密码会重新判不一致——联动校验。", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            isError = touched && !confirmOk, supportingText = { if (touched && !confirmOk) Text(stringResource(R.string.pv_form_text_27)) })
+        Button(onClick = { touched = true }, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.pv_form_text_28)) }
+        if (touched && emailOk && pwdOk && confirmOk) Text(stringResource(R.string.pv_form_text_29), color = MaterialTheme.colorScheme.primary)
+        Text(stringResource(R.string.pv_form_text_30), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
 
@@ -240,7 +243,7 @@ fun PreviewF08() {
             Text("$n", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold, modifier = Modifier.width(56.dp), textAlign = androidx.compose.ui.text.style.TextAlign.Center)
             HoldButton("+", enabled = n < 9) { n = (n + 1).coerceAtMost(9) }
         }
-        Text("单击 ±1，长按连发（到端自动停）；范围 0–9。", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(stringResource(R.string.pv_form_text_31), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
 
@@ -269,7 +272,7 @@ private fun HoldButton(label: String, enabled: Boolean, onStep: () -> Unit) {
 @Composable
 fun PreviewF09() {
     var sel by remember { mutableIntStateOf(0) }
-    val opts = listOf("日", "周", "月")
+    val opts = listOf(stringResource(R.string.pv_form_text_32), stringResource(R.string.pv_form_text_33), stringResource(R.string.pv_form_text_34))
     Column {
         SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {
             opts.forEachIndexed { i, label ->
@@ -283,19 +286,19 @@ fun PreviewF09() {
 @Composable
 fun PreviewF10() {
     var q by remember { mutableStateOf("") }
-    val all = listOf("液态玻璃", "系统壁纸", "图标切换", "动效系统", "O神主题", "网络壁纸", "权限中心")
+    val all = listOf(stringResource(R.string.common_liquid_glass), stringResource(R.string.common_system_wallpaper), stringResource(R.string.common_shared_2), stringResource(R.string.common_shared_3), stringResource(R.string.common_shared_4), stringResource(R.string.common_shared_5), stringResource(R.string.common_shared_6))
     val hits = all.filter { it.contains(q, ignoreCase = true) }
     Column {
-        OutlinedTextField(q, { q = it }, placeholder = { Text("搜索功能…") }, modifier = Modifier.fillMaxWidth(), singleLine = true,
+        OutlinedTextField(q, { q = it }, placeholder = { Text(stringResource(R.string.pv_form_text_35)) }, modifier = Modifier.fillMaxWidth(), singleLine = true,
             trailingIcon = { if (q.isNotEmpty()) Text("✕", Modifier.clickable { q = "" }.padding(8.dp)) })
         Spacer(Modifier.height(8.dp))
         if (q.isBlank()) {
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                listOf("壁纸", "玻璃", "图标").forEach { FilterChip(selected = false, onClick = { q = it }, label = { Text(it) }) }
+                listOf(stringResource(R.string.components_text_7), stringResource(R.string.common_shared_7), stringResource(R.string.pv_form_text_36)).forEach { FilterChip(selected = false, onClick = { q = it }, label = { Text(it) }) }
             }
         }
         hits.forEach { Text("· $it", Modifier.padding(vertical = 3.dp), style = MaterialTheme.typography.bodyMedium) }
-        if (hits.isEmpty()) Text("无结果，换个关键词试试", color = MaterialTheme.colorScheme.onSurfaceVariant)
+        if (hits.isEmpty()) Text(stringResource(R.string.pv_form_text_37), color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
 
@@ -315,7 +318,7 @@ fun PreviewF11() {
         }
     }
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Button(onClick = { seq++; jobs.add(UploadJob("壁纸素材_$seq.jpg", 0f, false)) }) { Text("添加图片（模拟上传）") }
+        Button(onClick = { seq++; jobs.add(UploadJob("壁纸素材_$seq.jpg", 0f, false)) }) { Text(stringResource(R.string.pv_form_text_38)) }
         jobs.forEach { job ->
             Column {
                 Row(Modifier.fillMaxWidth()) {
@@ -325,7 +328,7 @@ fun PreviewF11() {
                 LinearProgressIndicator(progress = { job.progress }, modifier = Modifier.fillMaxWidth())
             }
         }
-        if (jobs.isEmpty()) Text("队列为空——先添加一张。", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        if (jobs.isEmpty()) Text(stringResource(R.string.pv_form_text_39), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
 
@@ -353,7 +356,7 @@ fun PreviewF12() {
     }
     if (showDate) {
         DatePickerDialog(onDismissRequest = { showDate = false }, confirmButton = {
-            TextButton(onClick = { showDate = false }) { Text("确定") }
+            TextButton(onClick = { showDate = false }) { Text(stringResource(R.string.dialog_confirm_1)) }
         }) { DatePicker(state = dateState) }
     }
 }

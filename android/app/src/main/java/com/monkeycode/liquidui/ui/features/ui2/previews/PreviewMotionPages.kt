@@ -1,5 +1,7 @@
 package com.monkeycode.liquidui.ui.features.ui2.previews
 
+import com.monkeycode.liquidui.R
+
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Spring
@@ -54,6 +56,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
@@ -98,7 +101,7 @@ fun PreviewF38() {
 fun PreviewF39() {
     var show by remember { mutableStateOf(false) }
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Button(onClick = { show = !show }) { Text(if (show) "重置" else "播放错峰入场") }
+        Button(onClick = { show = !show }) { Text(if (show) stringResource(R.string.pv_motion_page_text_1) else stringResource(R.string.pv_motion_page_text_2)) }
         (0 until 5).forEach { i ->
             val anim = remember { androidx.compose.animation.core.Animatable(0f) }
             LaunchedEffect(show) {
@@ -163,8 +166,8 @@ fun PreviewF41() {
             ) { Text("页面 ${p + 1} / 3", fontWeight = FontWeight.Bold) }
         }
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            OutlinedButton(onClick = { page = (page + 2) % 3 }) { Text("上一页") }
-            Button(onClick = { page = (page + 1) % 3 }) { Text("下一页") }
+            OutlinedButton(onClick = { page = (page + 2) % 3 }) { Text(stringResource(R.string.pv_motion_page_text_3)) }
+            Button(onClick = { page = (page + 1) % 3 }) { Text(stringResource(R.string.pv_motion_page_text_4)) }
         }
     }
 }
@@ -195,7 +198,7 @@ fun PreviewF42() {
 
 @Composable
 fun PreviewF43() {
-    val pages = listOf("欢迎使用" to "46 条素材全部可现场体验", "长按复制" to "每条提示词长按即复制给 AI", "开始吧" to "点完成回到素材列表")
+    val pages = listOf("欢迎使用" to stringResource(R.string.pv_motion_page_text_5), "长按复制" to stringResource(R.string.pv_motion_page_text_6), "开始吧" to stringResource(R.string.pv_motion_page_text_7))
     val state = rememberPagerState(pageCount = { pages.size })
     Column {
         HorizontalPager(state = state, modifier = Modifier.fillMaxWidth().height(130.dp)) { p ->
@@ -224,17 +227,17 @@ fun PreviewF44() {
     var pwd by remember { mutableStateOf("") }
     var msg by remember { mutableStateOf<String?>(null) }
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        Text("登录", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-        OutlinedTextField(account, { account = it }, label = { Text("手机号 / 邮箱") }, modifier = Modifier.fillMaxWidth(), singleLine = true)
-        OutlinedTextField(pwd, { pwd = it }, label = { Text("密码") }, modifier = Modifier.fillMaxWidth(), singleLine = true, visualTransformation = PasswordVisualTransformation())
+        Text(stringResource(R.string.pv_motion_page_text_8), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+        OutlinedTextField(account, { account = it }, label = { Text(stringResource(R.string.pv_motion_page_text_9)) }, modifier = Modifier.fillMaxWidth(), singleLine = true)
+        OutlinedTextField(pwd, { pwd = it }, label = { Text(stringResource(R.string.components_label_2)) }, modifier = Modifier.fillMaxWidth(), singleLine = true, visualTransformation = PasswordVisualTransformation())
         Button(
             onClick = { msg = if (account.isNotBlank() && pwd.length >= 6) "演示登录成功（未连后端）" else "账号不能为空，密码至少 6 位" },
             modifier = Modifier.fillMaxWidth(),
-        ) { Text("登录") }
+        ) { Text(stringResource(R.string.pv_motion_page_text_8)) }
         msg?.let { Text(it, color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.bodySmall) }
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            Text("忘记密码", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
-            Text("注册账号", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
+            Text(stringResource(R.string.pv_motion_page_text_10), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
+            Text(stringResource(R.string.pv_motion_page_text_11), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
         }
     }
 }
@@ -243,7 +246,7 @@ fun PreviewF44() {
 fun PreviewF45() {
     val states = remember { mutableStateListOf(true, false, true) }
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        listOf("系统壁纸背景", "减少动效", "通知").forEachIndexed { i, label ->
+        listOf(stringResource(R.string.pv_motion_page_text_12), stringResource(R.string.pv_motion_page_text_13), stringResource(R.string.components_content_desc_1)).forEachIndexed { i, label ->
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 Column(Modifier.weight(1f)) {
                     Text(label, fontWeight = FontWeight.SemiBold)
@@ -264,8 +267,8 @@ fun PreviewF46() {
             }
             Spacer(Modifier.width(12.dp))
             Column {
-                Text("Liquid 用户", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
-                Text("已体验 12 / 46 条素材", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(stringResource(R.string.pv_motion_page_text_14), fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
+                Text(stringResource(R.string.pv_motion_page_text_15), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.fillMaxWidth()) {
@@ -278,6 +281,6 @@ fun PreviewF46() {
                 }
             }
         }
-        listOf("我的收藏", "浏览历史", "设置").forEach { Text("$it ›", Modifier.fillMaxWidth().padding(vertical = 4.dp)) }
+        listOf(stringResource(R.string.pv_motion_page_text_16), stringResource(R.string.pv_motion_page_text_17), stringResource(R.string.nav_settings)).forEach { Text("$it ›", Modifier.fillMaxWidth().padding(vertical = 4.dp)) }
     }
 }

@@ -56,6 +56,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
+import com.monkeycode.liquidui.R
 import com.monkeycode.liquidui.ui.features.ui2.Ui2Features
 import com.monkeycode.liquidui.ui.features.ui2.Ui2Preview
 import kotlinx.coroutines.delay
@@ -103,7 +105,7 @@ fun PreviewW01() {
                 else -> Text(Recipes[sel], fontWeight = FontWeight.Bold)
             }
         }
-        Text("20 条配方共用一个舞台骨架（选配方即以 700ms 重播其主动画通道）。", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(stringResource(R.string.pv_motion_tool_text_1), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
 
@@ -120,7 +122,7 @@ fun PreviewW02() {
     val primary = MaterialTheme.colorScheme.primary
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {
-            listOf("时长", "曲线", "弹簧", "错峰").forEachIndexed { i, label ->
+            listOf(stringResource(R.string.pv_motion_tool_text_2), stringResource(R.string.pv_motion_tool_text_3), stringResource(R.string.pv_motion_tool_text_4), stringResource(R.string.pv_motion_tool_text_5)).forEachIndexed { i, label ->
                 SegmentedButton(selected = group == i, onClick = { group = i }, shape = SegmentedButtonDefaults.itemShape(i, 4)) { Text(label) }
             }
         }
@@ -147,8 +149,8 @@ fun PreviewW02() {
                     val t = anim.value; val e = FastOutSlowInEasing.transform(t)
                     drawCircle(primary, 8f, Offset(size.width * t, size.height * (1 - e)))
                 }
-                Button(onClick = { playKey++ }) { Text("沿曲线重播") }
-                Text("展示 FastOutSlowIn；9 条曲线同理可换 Easing 重播。", style = MaterialTheme.typography.labelSmall)
+                Button(onClick = { playKey++ }) { Text(stringResource(R.string.pv_motion_tool_text_6)) }
+                Text(stringResource(R.string.pv_motion_tool_text_7), style = MaterialTheme.typography.labelSmall)
             }
             2 -> {
                 var springSel by remember { mutableIntStateOf(0) }
@@ -173,9 +175,9 @@ fun PreviewW02() {
                         }
                         Box(Modifier.size(30.dp).offset { IntOffset(0, ((1 - a.value) * 18).roundToInt()) }.clip(RoundedCornerShape(8.dp)).background(primary.copy(alpha = 0.35f + a.value * 0.65f)))
                     }
-                    TextButton(onClick = { playKey++ }) { Text("重播错峰") }
+                    TextButton(onClick = { playKey++ }) { Text(stringResource(R.string.pv_motion_tool_text_8)) }
                 }
-                Text("5 个方块以 80ms 间隔依次入场——错峰就是给每个元素排队。", style = MaterialTheme.typography.labelSmall)
+                Text(stringResource(R.string.pv_motion_tool_text_9), style = MaterialTheme.typography.labelSmall)
             }
         }
     }
@@ -214,7 +216,7 @@ fun PreviewW03() {
     var q by remember { mutableStateOf("") }
     val hits = Specs.filter { it.first.contains(q) || it.second.contains(q) }
     Column {
-        OutlinedTextField(q, { q = it }, placeholder = { Text("搜索规范…（如 弹簧 / 错峰）") }, modifier = Modifier.fillMaxWidth(), singleLine = true)
+        OutlinedTextField(q, { q = it }, placeholder = { Text(stringResource(R.string.pv_motion_tool_text_10)) }, modifier = Modifier.fillMaxWidth(), singleLine = true)
         Spacer(Modifier.height(8.dp))
         Column(Modifier.height(230.dp).verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             hits.forEachIndexed { i, (title, guide) ->
@@ -234,11 +236,11 @@ fun PreviewW03() {
 @Composable
 fun PreviewT01() {
     var platform by remember { mutableIntStateOf(0) }
-    val features = listOf("液态玻璃", "图标切换", "壁纸背景", "底栏导航", "动效系统", "主题配色", "权限中心", "引导页", "主题导入导出", "网络壁纸", "O神主题")
+    val features = listOf(stringResource(R.string.common_liquid_glass), stringResource(R.string.common_shared_2), stringResource(R.string.common_wallpaper_bg), stringResource(R.string.pv_motion_tool_text_11), stringResource(R.string.common_shared_3), stringResource(R.string.common_theme_palette), stringResource(R.string.common_shared_6), stringResource(R.string.pv_motion_tool_text_12), stringResource(R.string.pv_motion_tool_text_13), stringResource(R.string.common_shared_5), stringResource(R.string.common_shared_4))
     val checked = remember { mutableStateListOf(true, true, false, true, true, false, false, true, false, false, false) }
     val clipboard = LocalClipboardManager.current
     var copied by remember { mutableStateOf(false) }
-    val platformNames = listOf("Android Compose", "Web App", "纯静态页")
+    val platformNames = listOf("Android Compose", "Web App", stringResource(R.string.pv_motion_tool_text_14))
     val tree = buildString {
         appendLine(platformNames[platform] + "/")
         appendLine("├─ src/  入口与导航")
@@ -268,8 +270,8 @@ fun PreviewT01() {
         OutlinedButton(onClick = {
             clipboard.setText(AnnotatedString("平台：${platformNames[platform]}\n功能：${features.filterIndexed { i, _ -> checked[i] }.joinToString("、")}\n目录树：\n$tree"))
             copied = true
-        }) { Text(if (copied) "✓ 已复制结构" else "复制结构到剪贴板") }
-        Text("勾选实时重算目录树；映射到模板功能编号请对照手册 F01–F15。", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }) { Text(if (copied) stringResource(R.string.pv_motion_tool_text_15) else stringResource(R.string.pv_motion_tool_text_16)) }
+        Text(stringResource(R.string.pv_motion_tool_text_17), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
 

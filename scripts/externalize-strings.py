@@ -30,6 +30,7 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 SRC = ROOT / 'android/app/src/main/java/com/monkeycode/liquidui'
 STRINGS = ROOT / 'android/app/src/main/res/values/strings.xml'
 DRY = '--dry' in sys.argv
+STAGE = '2b' if '--stage' in sys.argv and '2b' in sys.argv else '2a'
 
 # ---- 文件 → slug -------------------------------------------------------------
 SLUG = {
@@ -44,6 +45,13 @@ SLUG = {
     'ui/features/PermissionToolkit.kt': 'permission',
     'ui/features/AppIconSwitcher.kt': 'app_icon',
     'ui/features/ui2/Ui2PreviewHost.kt': 'ui2_host',
+    'ui/features/ui2/previews/PreviewVideoLabs.kt': 'pv_video',
+    'ui/features/ui2/previews/PreviewBaseForm.kt': 'pv_form',
+    'ui/features/ui2/previews/PreviewFeedbackData.kt': 'pv_feedback',
+    'ui/features/ui2/previews/PreviewNavLayout.kt': 'pv_nav',
+    'ui/features/ui2/previews/PreviewMotionPages.kt': 'pv_motion_page',
+    'ui/features/ui2/previews/PreviewMotionTools.kt': 'pv_motion_tool',
+    'ui/features/ui2/previews/PreviewGlassMotion.kt': 'pv_glass',
     'ui/screens/SettingsScreen.kt': 'settings',
     'ui/screens/ComponentsScreen.kt': 'components',
     'ui/screens/InfoScreens.kt': 'info',
@@ -141,6 +149,28 @@ def role_of(arg: str) -> str:
     return 'text'
 
 
+def xml_unescape(t: str) -> str:
+    return (t.replace('\\n', '\n').replace("\\'", "'").replace('\\"', '"')
+             .replace('&lt;', '<').replace('&gt;', '>').replace('&amp;', '&'))
+
+
+def load_existing():
+    """读现有 strings.xml：{资源名: 文案}、{文案: 资源名}、每个 (slug,角色) 已用到的最大序号。"""
+    import xml.etree.ElementTree as ET
+    if not STRINGS.exists():
+        return {}, {}, {}
+    by_name, by_text, counters = {}, {}, {}
+    for r in ET.parse(STRINGS).getroot().findall('string'):
+        nm = r.get('name'); txt = xml_unescape(r.text or '')
+        by_name[nm] = txt; by_text.setdefault(txt, nm)
+        m = re.match(r'^(.+)_(text|title|subtitle|label|content_desc|section_title|message|desc|hint|'
+                     r'confirm|dismiss|placeholder|name|value|caption|headline|note|empty|summary|body)_(\d+)$', nm)
+        if m:
+            k = (m.group(1), m.group(2))
+            counters[k] = max(counters.get(k, 0), int(m.group(3)))
+    return by_name, by_text, counters
+
+
 def xml_escape(text: str):
     need_raw = False
     t = text.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
@@ -157,25 +187,27 @@ def add_imports(src: str) -> str:
         if ms:
             src = src[:ms[-1].end()] + 'import androidx.compose.ui.res.stringResource\n' + src[ms[-1].end():]
         else:
-            src = re.sub(r'^(package [^\n]*\n)', r'\1\nimport androidx.compose.ui.res.stringResource\n', src, 1, re.M)
+            src = re.sub(r'^(package [^\n]*\n)', r'\1\nimport androidx.compose.ui.res.stringResource\n', src, count=1, flags=re.M)
     if 'import com.monkeycode.liquidui.R' not in src:
         ms = list(re.finditer(r'^import com\.monkeycode\.[^\n]*\n', src, re.M))
         if ms:
             src = src[:ms[0].start()] + 'import com.monkeycode.liquidui.R\n' + src[ms[0].start():]
         else:
-            src = re.sub(r'^(package [^\n]*\n)', r'\1\nimport com.monkeycode.liquidui.R\n', src, 1, re.M)
+            src = re.sub(r'^(package [^\n]*\n)', r'\1\nimport com.monkeycode.liquidui.R\n', src, count=1, flags=re.M)
     return src
 
 
 def main():
-    recs = json.load(open('/tmp/scan_all.json'))
+    sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+    import kt_scan
+    recs = kt_scan.collect(SRC)
     srcs = {}
     skipped = collections.Counter()
     stage = []
     for r in recs:
         if r['cat'] not in ('A 组合体内', 'C1 组合默认参数'):
             continue
-        if '/ui2/previews/' in r['file']:
+        if ('/ui2/previews/' in r['file']) != (STAGE == '2b'):
             continue
         if r['file'] not in srcs:
             srcs[r['file']] = (SRC / r['file']).read_text(encoding='utf-8')
@@ -189,9 +221,10 @@ def main():
     files_of = {}
     for r in stage:
         files_of.setdefault(r['text'], set()).add(r['file'])
-    names, used = {}, {}
-    shared_n = [0]
-    counters = {}
+    ex_name, ex_text, counters = load_existing()
+    names, used = dict(ex_text), dict(ex_name)     # 已有资源名优先复用，避免同文案生成两条
+    shared_n = [max([int(n.rsplit('_', 1)[-1]) for n in ex_name if n.startswith('common_shared_')] or [0])]
+    print(f'[{STAGE}] 既有 strings.xml {len(ex_name)} 条，其中 {len(ex_text)} 种文案可复用')
     entries = []          # (name, text, group)
     for r in sorted(stage, key=lambda x: (x['file'], x['start'])):
         txt = r['text']
@@ -240,34 +273,22 @@ def main():
         p.write_text(add_imports(src), encoding='utf-8')
     print(f'  改写 Kotlin 文件 {len(byfile)} 个')
 
-    # ---- 写 strings.xml ----
-    keep = re.findall(r'<string name="(app_name|nav_[a-z_]+)"[^>]*>.*?</string>',
-                      STRINGS.read_text(encoding='utf-8'), re.S)
-    head = STRINGS.read_text(encoding='utf-8')
-    preserved = re.findall(r'([ \t]*<string name="(?:app_name|nav_[a-z_]+)".*?</string>\n)', head, re.S)
-    out = ['<?xml version="1.0" encoding="utf-8"?>\n',
-           '<!--\n',
-           '  本文件是套壳时改文案的唯一入口。命名约定：\n',
-           '    nav_*                 底部导航与页面标题（对应 ui/navigation/Screen.kt）\n',
-           '    common_*              跨页面共用文案（取消 / 确认 / 全部 / 提示词 …）\n',
-           '    <文件 slug>_<角色>_<序号>  某个页面内部的文案，slug 见 scripts/externalize-strings.py\n',
-           '  角色取自代码里的具名参数：title / subtitle / text / label / content_desc …\n',
-           '  还有 B/C2/D/C3 四类共约 1250 条尚未外置（顶层数据需先改 @StringRes 模型），\n',
-           '  进度见 docs/把本仓库当壳用-套壳上手指南.md 第 8 项。\n',
-           '-->\n',
-           '<resources>\n']
-    out += preserved
+    # ---- 写 strings.xml：保留既有条目与注释，新条目按源文件分组追加 ----
+    cur_xml = STRINGS.read_text(encoding='utf-8')
+    fresh = [(nm, txt, f) for nm, txt, f in entries if nm not in ex_name]
+    block = []
     cur = None
-    for nm, txt, f in sorted(entries, key=lambda x: (x[2], x[0])):
+    for nm, txt, f in sorted(fresh, key=lambda x: (x[2], x[0])):
         if f != cur:
-            out.append(f'\n    <!-- ===== {f.split("/java/")[-1]} ===== -->\n')
+            block.append(f'\n    <!-- ===== {f.split("/java/")[-1]}（阶段 {STAGE}） ===== -->\n')
             cur = f
         esc, raw = xml_escape(txt)
-        attr = ' formatted="false"' if raw else ''
-        out.append(f'    <string name="{nm}"{attr}>{esc}</string>\n')
-    out.append('</resources>\n')
-    STRINGS.write_text(''.join(out), encoding='utf-8')
-    print(f'  strings.xml 写入 {len(entries)} 条（含既有 app_name/nav_* {len(preserved)} 条）')
+        block.append(f'    <string name="{nm}"{" formatted=\"false\"" if raw else ""}>{esc}</string>\n')
+    if block:
+        assert '</resources>' in cur_xml
+        cur_xml = cur_xml.replace('</resources>', ''.join(block) + '</resources>', 1)
+    STRINGS.write_text(cur_xml, encoding='utf-8')
+    print(f'  strings.xml 新增 {len(fresh)} 条（复用既有 {len(entries) - len(fresh)} 条），总计 {len(ex_name) + len(fresh)} 条')
 
 
 if __name__ == '__main__':

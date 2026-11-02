@@ -1,5 +1,7 @@
 package com.monkeycode.liquidui.ui.features.ui2.previews
 
+import com.monkeycode.liquidui.R
+
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -47,13 +49,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 
 /* 03 导航 F13–F18 与 04 布局 F19–F24。 */
 
 @Composable
 fun PreviewF13() {
     var tab by remember { mutableIntStateOf(0) }
-    val tabs = listOf("首页", "发现", "我的")
+    val tabs = listOf(stringResource(R.string.nav_home), stringResource(R.string.pv_nav_text_1), stringResource(R.string.pv_nav_text_2))
     Column {
         Box(
             Modifier.fillMaxWidth().height(72.dp).clip(RoundedCornerShape(12.dp))
@@ -79,12 +82,12 @@ fun PreviewF14() {
             Text("‹", style = MaterialTheme.typography.titleLarge)
             Spacer(Modifier.width(10.dp))
             Column(Modifier.weight(1f)) {
-                Text(if (collapsed) "素材库" else "素材库 · UI2 体验馆", fontWeight = FontWeight.Bold, style = if (collapsed) MaterialTheme.typography.titleMedium else MaterialTheme.typography.titleLarge)
-                if (!collapsed) Text("46 条真实预览", style = MaterialTheme.typography.labelSmall)
+                Text(if (collapsed) stringResource(R.string.pv_nav_text_3) else stringResource(R.string.pv_nav_text_4), fontWeight = FontWeight.Bold, style = if (collapsed) MaterialTheme.typography.titleMedium else MaterialTheme.typography.titleLarge)
+                if (!collapsed) Text(stringResource(R.string.pv_nav_text_5), style = MaterialTheme.typography.labelSmall)
             }
-            Text("分享  收藏")
+            Text(stringResource(R.string.pv_nav_text_6))
         }
-        TextButton(onClick = { collapsed = !collapsed }) { Text(if (collapsed) "展开顶栏" else "折叠顶栏") }
+        TextButton(onClick = { collapsed = !collapsed }) { Text(if (collapsed) stringResource(R.string.pv_nav_text_7) else stringResource(R.string.pv_nav_text_8)) }
     }
 }
 
@@ -98,13 +101,13 @@ fun PreviewF15() {
                     Modifier.width(120.dp).background(MaterialTheme.colorScheme.primaryContainer).padding(12.dp).height(150.dp),
                     verticalArrangement = Arrangement.spacedBy(10.dp),
                 ) {
-                    Text("抽屉菜单", fontWeight = FontWeight.Bold)
-                    listOf("主页", "收藏", "设置").forEach { Text(it) }
+                    Text(stringResource(R.string.pv_nav_text_9), fontWeight = FontWeight.Bold)
+                    listOf(stringResource(R.string.pv_nav_text_10), stringResource(R.string.pv_nav_text_11), stringResource(R.string.nav_settings)).forEach { Text(it) }
                 }
             }
             Column(Modifier.padding(12.dp)) {
-                Button(onClick = { open = !open }) { Text(if (open) "关闭抽屉" else "打开抽屉") }
-                Text("抽屉从左侧滑出，内容区仍可见。", style = MaterialTheme.typography.labelSmall)
+                Button(onClick = { open = !open }) { Text(if (open) stringResource(R.string.pv_nav_text_12) else stringResource(R.string.ot_demo_text_26)) }
+                Text(stringResource(R.string.pv_nav_text_13), style = MaterialTheme.typography.labelSmall)
             }
         }
     }
@@ -112,7 +115,7 @@ fun PreviewF15() {
 
 @Composable
 fun PreviewF16() {
-    val full = listOf("首页", "素材库", "导航类", "抽屉")
+    val full = listOf(stringResource(R.string.nav_home), stringResource(R.string.pv_nav_text_3), stringResource(R.string.pv_nav_text_14), stringResource(R.string.common_shared_9))
     var depth by remember { mutableIntStateOf(3) }
     Column {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -127,23 +130,23 @@ fun PreviewF16() {
             }
         }
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            TextButton(onClick = { depth = (depth + 1).coerceAtMost(3) }) { Text("深入一层") }
-            TextButton(onClick = { depth = 0 }) { Text("回首页") }
+            TextButton(onClick = { depth = (depth + 1).coerceAtMost(3) }) { Text(stringResource(R.string.pv_nav_text_15)) }
+            TextButton(onClick = { depth = 0 }) { Text(stringResource(R.string.pv_nav_text_16)) }
         }
-        Text("点任意一段可跳回该层级。", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(stringResource(R.string.pv_nav_text_17), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
 
 @Composable
 fun PreviewF17() {
     var tab by remember { mutableIntStateOf(0) }
-    val tabs = listOf("概览", "参数", "出处")
+    val tabs = listOf(stringResource(R.string.ot_demo_text_29), stringResource(R.string.pv_nav_text_18), stringResource(R.string.pv_nav_text_19))
     Column {
         TabRow(selectedTabIndex = tab) {
             tabs.forEachIndexed { i, label -> Tab(selected = tab == i, onClick = { tab = i }, text = { Text(label) }) }
         }
         Box(Modifier.fillMaxWidth().height(64.dp), contentAlignment = Alignment.Center) {
-            Text(listOf("这里是功能概览内容", "关键参数与取值范围", "参考项目与许可证")[tab])
+            Text(listOf(stringResource(R.string.pv_nav_text_20), stringResource(R.string.pv_nav_text_21), stringResource(R.string.pv_nav_text_22))[tab])
         }
     }
 }
@@ -151,7 +154,7 @@ fun PreviewF17() {
 @Composable
 fun PreviewF18() {
     var sel by remember { mutableIntStateOf(0) }
-    val menu = listOf("工作台", "素材", "团队", "设置")
+    val menu = listOf(stringResource(R.string.pv_nav_text_23), stringResource(R.string.nav_gallery), stringResource(R.string.pv_nav_text_24), stringResource(R.string.nav_settings))
     Row(Modifier.fillMaxWidth().height(140.dp)) {
         Column(
             Modifier.width(92.dp).background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f), RoundedCornerShape(12.dp)).padding(10.dp),
@@ -194,7 +197,7 @@ fun PreviewF19() {
 @Composable
 fun PreviewF20() {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        listOf("外观" to listOf("主题配色", "壁纸背景"), "通用" to listOf("权限管理", "关于本机")).forEach { (group, rows) ->
+        listOf("外观" to listOf(stringResource(R.string.common_theme_palette), stringResource(R.string.common_wallpaper_bg)), "通用" to listOf(stringResource(R.string.pv_nav_text_25), stringResource(R.string.pv_nav_text_26))).forEach { (group, rows) ->
             Column {
                 Text(group, style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
                 Card(Modifier.fillMaxWidth()) {
@@ -251,7 +254,7 @@ fun PreviewF22() {
 @Composable
 fun PreviewF23() {
     LazyColumn(Modifier.fillMaxWidth().height(210.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        listOf("基础组件", "导航", "反馈").forEach { group ->
+        listOf(stringResource(R.string.pv_nav_text_27), stringResource(R.string.ot_demo_text_28), stringResource(R.string.pv_nav_text_28)).forEach { group ->
             stickyHeader {
                 Box(Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.primaryContainer).padding(8.dp)) {
                     Text(group, fontWeight = FontWeight.Bold)
@@ -275,8 +278,8 @@ fun PreviewF24() {
         Box(
             Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).background(MaterialTheme.colorScheme.secondaryContainer).padding(16.dp),
         ) {
-            Text("本卡已避开状态栏/手势区绘制；刘海与手势条区域不会压住内容。insets 类型：safeDrawing")
+            Text(stringResource(R.string.pv_nav_text_29))
         }
-        Text("实现要点：根布局用 safeDrawingPadding / statusBarsPadding，底栏叠加导航栏 inset。", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(stringResource(R.string.pv_nav_text_30), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }

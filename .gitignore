@@ -24,3 +24,7 @@ out/
 
 # Release artifacts
 mapping.txt
+
+# Python 缓存（scripts/ 下的检查与迁移工具）
+__pycache__/
+*.pyc

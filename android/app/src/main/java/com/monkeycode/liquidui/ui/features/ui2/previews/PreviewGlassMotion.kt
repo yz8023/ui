@@ -1,5 +1,7 @@
 package com.monkeycode.liquidui.ui.features.ui2.previews
 
+import com.monkeycode.liquidui.R
+
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
@@ -51,6 +53,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.PI
@@ -106,7 +109,7 @@ fun PreviewG02() {
             Text("视角 ${angle.toInt()}° · 眩光 ${(glare * 100).toInt()}%", fontWeight = FontWeight.Bold)
         }
         Slider(value = angle, onValueChange = { angle = it }, valueRange = 0f..90f)
-        Text("菲涅尔：越斜着看，边缘反光越强——玻璃与塑料的分界线。", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(stringResource(R.string.pv_glass_text_1), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
 
@@ -145,7 +148,7 @@ fun PreviewG03() {
 @Composable
 fun PreviewG04() {
     var stage by remember { mutableIntStateOf(0) }
-    val stages = listOf("0 原图", "1 横向模糊", "2 纵向模糊", "3 合成 + 高光")
+    val stages = listOf(stringResource(R.string.pv_glass_text_2), stringResource(R.string.pv_glass_text_3), stringResource(R.string.pv_glass_text_4), stringResource(R.string.pv_glass_text_5))
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Box(
             Modifier.fillMaxWidth().height(90.dp).clip(RoundedCornerShape(16.dp))
@@ -155,7 +158,7 @@ fun PreviewG04() {
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text("第 ${stage} 步：${stages[stage].substringAfter(' ')}", fontWeight = FontWeight.Bold)
-                Text("模糊必须分横/纵两趟（可分离卷积），一次二维卷积贵 4 倍。", style = MaterialTheme.typography.labelSmall)
+                Text(stringResource(R.string.pv_glass_text_6), style = MaterialTheme.typography.labelSmall)
             }
         }
         Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -187,14 +190,14 @@ fun PreviewG05() {
             Modifier.offset { IntOffset(x.value.roundToInt(), y.value.roundToInt()) }.size(56.dp).clip(CircleShape)
                 .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.75f)),
             contentAlignment = Alignment.Center,
-        ) { Text("玻璃", color = Color.White, style = MaterialTheme.typography.labelSmall) }
-        Text("在区域内拖动：玻璃用弹簧追你，永远慢半拍", Modifier.padding(10.dp), style = MaterialTheme.typography.labelSmall)
+        ) { Text(stringResource(R.string.common_shared_7), color = Color.White, style = MaterialTheme.typography.labelSmall) }
+        Text(stringResource(R.string.pv_glass_text_7), Modifier.padding(10.dp), style = MaterialTheme.typography.labelSmall)
     }
 }
 
 @Composable
 fun PreviewG06() {
-    val passes = listOf("采样 backdrop", "双向模糊", "折射位移", "染色+高光描边")
+    val passes = listOf(stringResource(R.string.pv_glass_text_8), stringResource(R.string.pv_glass_text_9), stringResource(R.string.pv_glass_text_10), stringResource(R.string.pv_glass_text_11))
     val on = remember { mutableStateOf(listOf(true, true, true, true)) }
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
         passes.forEachIndexed { i, label ->
@@ -206,12 +209,12 @@ fun PreviewG06() {
             }
         }
         Text(
-            "当前效果：" + when {
-                !on.value[0] -> "无采样 → 只能退化成半透明蒙层"
-                !on.value[1] -> "边缘锯齿、无磨砂"
-                !on.value[2] -> "是磨砂玻璃，但没有液态感"
-                !on.value[3] -> "发灰发闷，像塑料片"
-                else -> "完整液态玻璃"
+            stringResource(R.string.pv_glass_text_12) + when {
+                !on.value[0] -> stringResource(R.string.pv_glass_text_13)
+                !on.value[1] -> stringResource(R.string.pv_glass_text_14)
+                !on.value[2] -> stringResource(R.string.pv_glass_text_15)
+                !on.value[3] -> stringResource(R.string.pv_glass_text_16)
+                else -> stringResource(R.string.pv_glass_text_17)
             },
             color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.bodySmall,
         )
@@ -235,7 +238,7 @@ fun PreviewM01() {
                 )
             }
         }
-        Button(onClick = { play++ }) { Text("拉开幕布（重播）") }
+        Button(onClick = { play++ }) { Text(stringResource(R.string.pv_glass_text_18)) }
     }
 }
 
@@ -303,7 +306,7 @@ fun PreviewM03() {
 @Composable
 fun PreviewM04() {
     LazyColumn(Modifier.fillMaxWidth().height(190.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        listOf("第一屏", "第二屏", "第三屏").forEach { title ->
+        listOf(stringResource(R.string.pv_glass_text_19), stringResource(R.string.pv_glass_text_20), stringResource(R.string.pv_glass_text_21)).forEach { title ->
             stickyHeader {
                 Box(Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.primaryContainer).padding(10.dp)) {
                     Text(title, fontWeight = FontWeight.Bold)
@@ -342,10 +345,10 @@ fun PreviewM06() {
                 .graphicsLayer { rotationY = (frame * 180f); cameraDistance = 12f * density },
             contentAlignment = Alignment.Center,
         ) {
-            Text(if ((frame * 2).toInt() % 2 == 0) "第 ${(frame * 10).toInt() + 1} 帧 · 正面" else "背面", fontWeight = FontWeight.Bold)
+            Text(if ((frame * 2).toInt() % 2 == 0) "第 ${(frame * 10).toInt() + 1} 帧 · 正面" else stringResource(R.string.pv_glass_text_22), fontWeight = FontWeight.Bold)
         }
         Slider(value = frame, onValueChange = { frame = it }, valueRange = 0f..1f)
-        Text("拖动翻页：角度驱动帧，过了 90° 看到背面。", style = MaterialTheme.typography.labelSmall)
+        Text(stringResource(R.string.pv_glass_text_23), style = MaterialTheme.typography.labelSmall)
     }
 }
 
@@ -377,6 +380,6 @@ fun PreviewM07() {
         TextButton(onClick = {
             rotating = !rotating
             if (!rotating) { /* pause at current angle */ }
-        }) { Text(if (rotating) "暂停自转" else "继续自转（从当前角度重新转一圈）") }
+        }) { Text(if (rotating) stringResource(R.string.pv_glass_text_24) else stringResource(R.string.pv_glass_text_25)) }
     }
 }

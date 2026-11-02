@@ -1,5 +1,7 @@
 package com.monkeycode.liquidui.ui.features.ui2.previews
 
+import com.monkeycode.liquidui.R
+
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.fadeIn
@@ -54,6 +56,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
@@ -97,7 +100,7 @@ fun PreviewV01() {
 @Composable
 fun PreviewV02() {
     var active by remember { mutableStateOf(0) }
-    val types = listOf("非模态条", "悬浮球", "边缘坞", "横幅", "迷你窗", "灵动岛")
+    val types = listOf(stringResource(R.string.pv_video_text_1), stringResource(R.string.pv_video_text_2), stringResource(R.string.pv_video_text_3), stringResource(R.string.pv_video_text_4), stringResource(R.string.pv_video_text_5), stringResource(R.string.pv_video_text_6))
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             types.forEachIndexed { i, t -> TextButton(onClick = { active = i }) { Text(t, fontWeight = if (active == i) FontWeight.Bold else FontWeight.Normal) } }
@@ -108,12 +111,12 @@ fun PreviewV02() {
         ) {
             Text(
                 listOf(
-                    "顶部非模态条：不挡操作，自动消失",
-                    "悬浮球：全局入口，可拖",
-                    "边缘坞：贴边收起，滑出展开",
-                    "横幅：图+文+按钮，强运营位",
-                    "迷你窗：小窗播放/导航，可拖动",
-                    "灵动岛：状态胶囊，点开扩展",
+                    stringResource(R.string.pv_video_text_7),
+                    stringResource(R.string.pv_video_text_8),
+                    stringResource(R.string.pv_video_text_9),
+                    stringResource(R.string.pv_video_text_10),
+                    stringResource(R.string.pv_video_text_11),
+                    stringResource(R.string.pv_video_text_12),
                 )[active],
                 Modifier.padding(12.dp), style = MaterialTheme.typography.bodySmall,
             )
@@ -124,11 +127,11 @@ fun PreviewV02() {
 @Composable
 fun PreviewV03() {
     val tricks = listOf(
-        "发丝线（1px 真线）" to "分隔不用阴影，用最细的线",
-        "连续曲率圆角" to "角不是圆弧拼接，是连续过渡",
-        "动态背景模糊" to "浮层身后实时模糊，不是灰蒙版",
-        "物理弹簧" to "动画带过冲与速度继承",
-        "触觉反馈" to "关键动作配轻震，眼睛耳朵手指一起确认",
+        "发丝线（1px 真线）" to stringResource(R.string.pv_video_text_13),
+        "连续曲率圆角" to stringResource(R.string.pv_video_text_14),
+        "动态背景模糊" to stringResource(R.string.pv_video_text_15),
+        "物理弹簧" to stringResource(R.string.pv_video_text_16),
+        "触觉反馈" to stringResource(R.string.pv_video_text_17),
     )
     val on = remember { mutableStateListOf(true, true, false, true, false) }
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -147,7 +150,7 @@ fun PreviewV03() {
 
 @Composable
 fun PreviewV04() {
-    val full = "流式输出时，文字像打字一样逐段到达；思考时有三点脉冲；随时能停；不满意可重新生成；长按可复制——五个细节缺一不可。"
+    val full = stringResource(R.string.pv_video_text_18)
     var shown by remember { mutableIntStateOf(0) }
     var running by remember { mutableStateOf(false) }
     LaunchedEffect(running) {
@@ -159,12 +162,12 @@ fun PreviewV04() {
     }
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Card(Modifier.fillMaxWidth()) {
-            Text(if (shown == 0 && !running) "点「生成」看流式输出…" else full.take(shown), Modifier.padding(14.dp), style = MaterialTheme.typography.bodyMedium)
+            Text(if (shown == 0 && !running) stringResource(R.string.pv_video_text_19) else full.take(shown), Modifier.padding(14.dp), style = MaterialTheme.typography.bodyMedium)
         }
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            Button(onClick = { running = true }) { Text(if (shown in 1 until full.length) "重新生成" else "生成") }
-            OutlinedButton(onClick = { running = false }, enabled = running) { Text("停止") }
-            if (shown == full.length) Text("✓ 已完成（可长按复制）", color = MaterialTheme.colorScheme.primary, modifier = Modifier.align(Alignment.CenterVertically))
+            Button(onClick = { running = true }) { Text(if (shown in 1 until full.length) stringResource(R.string.pv_video_text_20) else stringResource(R.string.pv_video_text_21)) }
+            OutlinedButton(onClick = { running = false }, enabled = running) { Text(stringResource(R.string.pv_video_text_22)) }
+            if (shown == full.length) Text(stringResource(R.string.pv_video_text_23), color = MaterialTheme.colorScheme.primary, modifier = Modifier.align(Alignment.CenterVertically))
         }
     }
 }
@@ -175,34 +178,34 @@ fun PreviewV05() {
     var ddVal by remember { mutableStateOf("上海") }
     var selectOpen by remember { mutableStateOf(false) }
     var selVal by remember { mutableStateOf("上海") }
-    val cities = listOf("北京", "上海", "广州", "深圳")
+    val cities = listOf(stringResource(R.string.pv_video_text_24), stringResource(R.string.pv_video_text_25), stringResource(R.string.pv_video_text_26), stringResource(R.string.pv_video_text_27))
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             Column(Modifier.weight(1f)) {
-                Text("Dropdown（菜单）", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodySmall)
+                Text(stringResource(R.string.pv_video_text_28), fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodySmall)
                 Box {
                     OutlinedButton(onClick = { dd = true }) { Text("$ddVal ▾") }
                     DropdownMenu(expanded = dd, onDismissRequest = { dd = false }) {
                         cities.forEach { c -> DropdownMenuItem(text = { Text(c) }, onClick = { ddVal = c; dd = false }) }
                     }
                 }
-                Text("轻量、就近、选项少时用", style = MaterialTheme.typography.labelSmall)
+                Text(stringResource(R.string.pv_video_text_29), style = MaterialTheme.typography.labelSmall)
             }
             Column(Modifier.weight(1f)) {
-                Text("Select（选择器）", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodySmall)
+                Text(stringResource(R.string.pv_video_text_30), fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodySmall)
                 OutlinedButton(onClick = { selectOpen = true }) { Text(selVal) }
-                Text("表单字段、要校验/回显时用", style = MaterialTheme.typography.labelSmall)
+                Text(stringResource(R.string.pv_video_text_31), style = MaterialTheme.typography.labelSmall)
             }
         }
     }
     if (selectOpen) {
         AlertDialog(
             onDismissRequest = { selectOpen = false },
-            title = { Text("选择城市") },
+            title = { Text(stringResource(R.string.pv_video_text_32)) },
             text = {
                 Column { cities.forEach { c -> Text(c, Modifier.fillMaxWidth().clickable { selVal = c; selectOpen = false }.padding(10.dp)) } }
             },
-            confirmButton = { TextButton(onClick = { selectOpen = false }) { Text("取消") } },
+            confirmButton = { TextButton(onClick = { selectOpen = false }) { Text(stringResource(R.string.common_cancel)) } },
         )
     }
 }
@@ -213,7 +216,7 @@ fun PreviewV06() {
     var hits by remember { mutableIntStateOf(0) }
     Column {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text("显示热区透视", Modifier.weight(1f))
+            Text(stringResource(R.string.pv_video_text_33), Modifier.weight(1f))
             Switch(checked = showZones, onCheckedChange = { showZones = it })
         }
         Box(Modifier.fillMaxWidth().height(90.dp), contentAlignment = Alignment.Center) {
@@ -252,10 +255,10 @@ fun PreviewV07() {
         }
         Text(
             when (lang) {
-                0 -> "中文最短，按钮游刃有余"
-                1 -> "英文变长，固定宽按钮开始挤"
-                2 -> "德语最长——写死宽度的按钮必爆，这就是要弹性布局的原因"
-                else -> "阿拉伯语 RTL：布局镜像，起点在右侧"
+                0 -> stringResource(R.string.pv_video_text_34)
+                1 -> stringResource(R.string.pv_video_text_35)
+                2 -> stringResource(R.string.pv_video_text_36)
+                else -> stringResource(R.string.pv_video_text_37)
             },
             style = MaterialTheme.typography.bodySmall,
         )
@@ -263,10 +266,10 @@ fun PreviewV07() {
 }
 
 @Composable
-fun PreviewV08() { RhythmGame(thresholdMs = 1600, label = "虎先锋 · 慢速判定条") }
+fun PreviewV08() { RhythmGame(thresholdMs = 1600, label = stringResource(R.string.pv_video_label_1)) }
 
 @Composable
-fun PreviewV09() { RhythmGame(thresholdMs = 950, label = "寅虎 · 快速判定条 + 连击") }
+fun PreviewV09() { RhythmGame(thresholdMs = 950, label = stringResource(R.string.pv_video_label_2)) }
 
 @Composable
 private fun RhythmGame(thresholdMs: Int, label: String) {
@@ -293,14 +296,14 @@ private fun RhythmGame(thresholdMs: Int, label: String) {
             Box(Modifier.width(4.dp).height(26.dp).offset(x = (pos * 2.2f).dp).background(MaterialTheme.colorScheme.error))
         }
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-            Button(onClick = { running = true; verdict = "判定条行进中…" }) { Text("开始") }
+            Button(onClick = { running = true; verdict = "判定条行进中…" }) { Text(stringResource(R.string.aq_demo_text_3)) }
             Button(onClick = {
                 if (running) {
                     running = false
                     if (pos in 76..92) { score += 100 + combo * 10; combo++; verdict = "完美！+${100 + (combo - 1) * 10} 分" }
                     else { combo = 0; verdict = if (pos < 76) "早了——抢拍" else "晚了——拖拍" }
                 }
-            }) { Text("判定！") }
+            }) { Text(stringResource(R.string.pv_video_text_38)) }
             Text("分 $score · 连击 $combo", fontWeight = FontWeight.Bold)
         }
         Text(verdict, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
@@ -317,7 +320,7 @@ fun PreviewX01() {
     var active by remember { mutableStateOf<String?>(null) }
     var input by remember { mutableStateOf("") }
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        Text("点任意一型，立刻真弹（点外部/返回可关）：", style = MaterialTheme.typography.bodySmall)
+        Text(stringResource(R.string.pv_video_text_39), style = MaterialTheme.typography.bodySmall)
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             PopupTypes.take(5).forEach { t -> TextButton(onClick = { active = t }) { Text(t) } }
         }
@@ -326,14 +329,14 @@ fun PreviewX01() {
         }
     }
     when (active) {
-        "确认" -> AlertDialog(onDismissRequest = { active = null }, title = { Text("确认弹窗") }, text = { Text("asConfirm 的原生等价：模态确认。") }, confirmButton = { TextButton(onClick = { active = null }) { Text("确认") } }, dismissButton = { TextButton(onClick = { active = null }) { Text("取消") } })
-        "输入" -> AlertDialog(onDismissRequest = { active = null }, title = { Text("输入弹窗") }, text = { OutlinedTextField(input, { input = it }, placeholder = { Text("输入内容") }) }, confirmButton = { TextButton(onClick = { active = null }) { Text("提交") } })
-        "加载" -> AlertDialog(onDismissRequest = { active = null }, title = { Text("加载中…") }, text = { Row { androidx.compose.material3.CircularProgressIndicator(Modifier.size(22.dp)); Spacer(Modifier.width(12.dp)); Text("请稍候") } }, confirmButton = { TextButton(onClick = { active = null }) { Text("取消") } })
-        "中间列表", "依附", "气泡" -> AlertDialog(onDismissRequest = { active = null }, title = { Text("$active") }, text = { Column { listOf("选项一", "选项二", "选项三").forEach { Text(it, Modifier.fillMaxWidth().clickable { active = null }.padding(10.dp)) } } }, confirmButton = { TextButton(onClick = { active = null }) { Text("关闭") } })
-        "底部列表", "底部勾选", "抽屉", "图片" -> ModalBottomSheet(onDismissRequest = { active = null }) {
+        "确认" -> AlertDialog(onDismissRequest = { active = null }, title = { Text(stringResource(R.string.pv_video_text_40)) }, text = { Text(stringResource(R.string.pv_video_text_41)) }, confirmButton = { TextButton(onClick = { active = null }) { Text(stringResource(R.string.components_confirm_1)) } }, dismissButton = { TextButton(onClick = { active = null }) { Text(stringResource(R.string.common_cancel)) } })
+        "输入" -> AlertDialog(onDismissRequest = { active = null }, title = { Text(stringResource(R.string.pv_video_text_42)) }, text = { OutlinedTextField(input, { input = it }, placeholder = { Text(stringResource(R.string.components_placeholder_1)) }) }, confirmButton = { TextButton(onClick = { active = null }) { Text(stringResource(R.string.common_shared_8)) } })
+        "加载" -> AlertDialog(onDismissRequest = { active = null }, title = { Text(stringResource(R.string.pv_video_text_43)) }, text = { Row { androidx.compose.material3.CircularProgressIndicator(Modifier.size(22.dp)); Spacer(Modifier.width(12.dp)); Text(stringResource(R.string.pv_video_text_44)) } }, confirmButton = { TextButton(onClick = { active = null }) { Text(stringResource(R.string.common_cancel)) } })
+        stringResource(R.string.pv_video_text_45), stringResource(R.string.pv_video_text_46), "气泡" -> AlertDialog(onDismissRequest = { active = null }, title = { Text("$active") }, text = { Column { listOf(stringResource(R.string.pv_video_text_47), stringResource(R.string.pv_video_text_48), stringResource(R.string.pv_video_text_49)).forEach { Text(it, Modifier.fillMaxWidth().clickable { active = null }.padding(10.dp)) } } }, confirmButton = { TextButton(onClick = { active = null }) { Text(stringResource(R.string.pv_video_text_50)) } })
+        stringResource(R.string.pv_video_text_51), stringResource(R.string.pv_video_text_52), stringResource(R.string.common_shared_9), "图片" -> ModalBottomSheet(onDismissRequest = { active = null }) {
             Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text("$active（底部形态）", fontWeight = FontWeight.Bold)
-                listOf("条目一", "条目二", "条目三").forEach { Text(it, Modifier.fillMaxWidth().clickable { active = null }.padding(8.dp)) }
+                listOf(stringResource(R.string.pv_video_text_53), stringResource(R.string.pv_video_text_54), stringResource(R.string.pv_video_text_55)).forEach { Text(it, Modifier.fillMaxWidth().clickable { active = null }.padding(8.dp)) }
                 Spacer(Modifier.height(12.dp))
             }
         }
@@ -342,7 +345,7 @@ fun PreviewX01() {
 
 @Composable
 fun PreviewX02() {
-    val anims = listOf("淡入", "缩放", "上滑", "下滑", "左滑入", "右滑入", "缩放+淡入", "无动画")
+    val anims = listOf(stringResource(R.string.pv_video_text_56), stringResource(R.string.pv_video_text_57), stringResource(R.string.pv_video_text_58), stringResource(R.string.pv_video_text_59), stringResource(R.string.pv_video_text_60), stringResource(R.string.pv_video_text_61), stringResource(R.string.pv_video_text_62), stringResource(R.string.pv_video_text_63))
     var sel by remember { mutableIntStateOf(0) }
     var show by remember { mutableStateOf(true) }
     LaunchedEffect(sel, show) { }
@@ -376,7 +379,7 @@ fun PreviewX02() {
                 LaunchedEffect(Unit) { delay(60); show = true }
             }
         }
-        Text("XPopup 的 20 个 PopupAnimation 在此映射为 8 类过渡族（原生等价）。", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(stringResource(R.string.pv_video_text_64), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
 
@@ -391,14 +394,14 @@ fun PreviewX03() {
     var note by remember { mutableStateOf("") }
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            Text("点外部可关闭", Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
+            Text(stringResource(R.string.pv_video_text_65), Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
             Switch(checked = dismissOutside, onCheckedChange = { dismissOutside = it })
         }
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            Text("深色弹窗", Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
+            Text(stringResource(R.string.pv_video_text_66), Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
             Switch(checked = darkPopup, onCheckedChange = { darkPopup = it })
         }
-        Button(onClick = { open = true }) { Text("用当前设置弹一个") }
+        Button(onClick = { open = true }) { Text(stringResource(R.string.pv_video_text_67)) }
         if (note.isNotEmpty()) Text(note, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
     }
     if (open) {
@@ -406,9 +409,9 @@ fun PreviewX03() {
             onDismissRequest = {
                 if (dismissOutside) { open = false; note = "已通过点外部关闭" } else note = "点外部被拦截（设置生效中）"
             },
-            title = { Text(if (darkPopup) "深色弹窗" else "浅色弹窗") },
-            text = { Text("这就是设置直连运行时的效果。") },
-            confirmButton = { TextButton(onClick = { open = false; note = "已确认关闭" }) { Text("确认") } },
+            title = { Text(if (darkPopup) stringResource(R.string.pv_video_text_66) else stringResource(R.string.pv_video_text_68)) },
+            text = { Text(stringResource(R.string.pv_video_text_69)) },
+            confirmButton = { TextButton(onClick = { open = false; note = "已确认关闭" }) { Text(stringResource(R.string.components_confirm_1)) } },
             containerColor = if (darkPopup) Color(0xFF242424) else MaterialTheme.colorScheme.surface,
             titleContentColor = if (darkPopup) Color.White else MaterialTheme.colorScheme.onSurface,
             textContentColor = if (darkPopup) Color.White else MaterialTheme.colorScheme.onSurface,

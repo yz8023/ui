@@ -267,6 +267,37 @@ def _rec(src, a, b, raw, funs, idx) -> Dict:
                 scope=scope, comp=comp, fun=fname, arg=arg)
 
 
+CJK = re.compile(r'[\u4e00-\u9fff]')
+
+
+def collect(root):
+    """扫全仓，返回所有含中文的字面量记录（带 cat 分类）。不依赖任何临时文件。"""
+    root = pathlib.Path(root)
+    kinds = build_lambda_kinds(root)
+    recs = []
+    for f in sorted(root.rglob('*.kt')):
+        src = f.read_text(encoding='utf-8')
+        rel = str(f.relative_to(root))
+        for r in scan(src, kinds):
+            if not CJK.search(r['text']):
+                continue
+            r['file'] = rel
+            if r['scope'] == 'body' and r['comp']:
+                r['cat'] = 'A 组合体内'
+            elif r['scope'] == 'sig' and r['comp']:
+                r['cat'] = 'C1 组合默认参数'
+            elif r['scope'] == 'body':
+                r['cat'] = 'B 普通函数体内'
+            elif r['scope'] == 'sig':
+                r['cat'] = 'C2 普通函数默认参数'
+            else:
+                r['cat'] = 'C3 顶层/数据'
+            if r.get('interp'):
+                r['cat'] = 'D 带插值（需格式参数）'
+            recs.append(r)
+    return recs
+
+
 if __name__ == '__main__':
     import pathlib, sys, collections, json
     root = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else
