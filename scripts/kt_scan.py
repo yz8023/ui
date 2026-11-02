@@ -192,6 +192,7 @@ def scan(src: str, kinds: dict = None) -> List[Dict]:
             j, interp = _skip_string(src, i, raw)
             r = _rec(src, i, j, raw, funs, cur_fun())
             r['noncomp'] = innermost_noncomp(stack)
+            r['blocks'] = [b[3] for b in stack if b[0] == 'brace' and len(b) > 3]  # 外层块 callee 链，审计用
             r['interp'] = interp
             out.append(r)
             i = j
@@ -238,7 +239,9 @@ def scan(src: str, kinds: dict = None) -> List[Dict]:
             idx = cur_fun()
             if idx is not None and funs[idx]['state'] == 'await':
                 funs[idx]['state'] = 'body'; fi = idx
-            stack.append(['brace', fi, block_kind(src[max(0, i - 300):i], kinds)])
+            lead = src[max(0, i - 300):i]
+            _m = re.search(r'([A-Za-z_][\w.]*)\s*(?:\([^{}]*?\))?\s*$', lead.rstrip())
+            stack.append(['brace', fi, block_kind(lead, kinds), _m.group(1) if _m else '?'])
             i += 1; continue
         if c == '}':
             for k in range(len(stack) - 1, -1, -1):

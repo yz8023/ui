@@ -46,6 +46,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
+import com.monkeycode.liquidui.R
 import com.monkeycode.liquidui.ui.components.GlassCard
 import com.monkeycode.liquidui.ui.features.adminquery.AdminQueryNorms
 import com.monkeycode.liquidui.ui.features.overlayterms.OverlayTerms
@@ -126,12 +128,12 @@ fun MaterialBrowser(onOpenFeature: (FeatureTarget) -> Unit) {
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text(
-                    text = "素材库",
+                    text = stringResource(R.string.pv_nav_text_3),
                     style = MaterialTheme.typography.displayMedium,
                     color = MaterialTheme.colorScheme.onBackground
                 )
                 Text(
-                    text = "点击功能模块，直接进入真实可操作的功能；不是介绍弹窗",
+                    text = stringResource(R.string.material_text_1),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -179,7 +181,7 @@ fun MaterialBrowser(onOpenFeature: (FeatureTarget) -> Unit) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 22.dp),
-                placeholder = { Text("搜索功能模块…") },
+                placeholder = { Text(stringResource(R.string.material_text_2)) },
                 leadingIcon = {
                     Icon(AppIcons.BlurOn, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
                 },
@@ -202,7 +204,7 @@ fun MaterialBrowser(onOpenFeature: (FeatureTarget) -> Unit) {
         }
 
         item {
-            SectionTitle(text = "全部分类")
+            SectionTitle(text = stringResource(R.string.material_text_3))
         }
         item {
             Row(
@@ -212,7 +214,7 @@ fun MaterialBrowser(onOpenFeature: (FeatureTarget) -> Unit) {
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 CategoryChip(
-                    label = "全部",
+                    label = stringResource(R.string.common_all),
                     selected = selectedCategory == null,
                     onClick = { selectedCategoryName = null }
                 )

@@ -73,7 +73,7 @@ fun PreviewG01() {
                 .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)),
         ) {
             Text(
-                "液态玻璃不是贴图：透镜边缘把背后的字掰弯，中心保持清晰，边缘带一点 RGB 色散。拖动透镜看放大与色散边。",
+                stringResource(R.string.pv_glass_text_26),
                 Modifier.padding(14.dp), style = MaterialTheme.typography.bodySmall,
             )
             Box(
@@ -91,7 +91,7 @@ fun PreviewG01() {
                 contentAlignment = Alignment.Center,
             ) { Text("×1.4", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary) }
         }
-        Text("透镜可拖（色散红边为近似示意，真实折射需 backdrop 采样）。", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(stringResource(R.string.pv_glass_text_27), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
 

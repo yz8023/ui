@@ -700,4 +700,108 @@
     <string name="welcome_title_4">隐私安全</string>
 
     <!-- ===== ui/features/toolkit/ToolkitDemo.kt（阶段 3a） ===== -->
+
+    <!-- ===== ui/screens/AdminQueryScreen.kt（阶段 2a） ===== -->
+    <string name="admin_query_text_1">规范条文（照着做）</string>
+    <string name="admin_query_text_2">点按查看全文，长按按钮把整段提示词复制到剪贴板，可直接粘贴给 AI 复现这条规范。</string>
+    <string name="admin_query_text_3">来源：B 站 KD一对A《查数据查到崩溃？这套烂后台连改了四刀》（BV1Vuxr6BEDp）公开表述提炼；条文与提示词为本仓库独立撰写，实现方案见 素材库/后台数据查询规范/。</string>
+    <string name="common_anti_pattern">反例（别这么做）</string>
+    <string name="common_back_to_library">‹ 返回素材库</string>
+    <string name="common_category">分类</string>
+    <string name="common_copied_hint">✓ 已复制，去粘贴给 AI 吧</string>
+    <string name="common_demo_section_hint">功能体验（真实实现，可直接操作）</string>
+    <string name="common_long_press_to_copy">长按复制提示词</string>
+    <string name="common_prompt">提示词</string>
+
+    <!-- ===== ui/screens/HomeScreen.kt（阶段 2a） ===== -->
+    <string name="home_label_1">设计 token</string>
+    <string name="home_label_2">玻璃组件</string>
+    <string name="home_label_3">动效预设</string>
+    <string name="home_text_1">功能素材库\n选择式开发</string>
+    <string name="home_text_2">把常用功能拆成中文功能点：应用图标切换、液态玻璃主题、</string>
+    <string name="home_text_3">玻璃底栏、动效系统。一个个选着搭，拼出你的 App。</string>
+    <string name="home_text_4">浏览组件</string>
+    <string name="home_text_5">体验动效</string>
+    <string name="home_text_6">设计原则</string>
+    <string name="home_text_7">功能素材清单</string>
+    <string name="home_text_8">提示：主题、玻璃强度、圆角倍率与主题 JSON 都能在「设置」页实时调整。</string>
+
+    <!-- ===== ui/screens/InfoScreens.kt（阶段 2a） ===== -->
+    <string name="info_desc_1">用于你主动触发的主题预览通知。</string>
+    <string name="info_desc_2">仅在启用桌面壁纸背景时读取系统返回的壁纸图像。</string>
+    <string name="info_section_title_1_2">数据处理</string>
+    <string name="info_text_10">仅在你点击“发送测试通知”时申请通知权限并创建本地通知，不向服务器发送数据。</string>
+    <string name="info_text_11">网络与账号</string>
+    <string name="info_text_12">应用没有账号、分析、广告、遥测或后台上传功能。点击项目链接时会交给系统浏览器打开。</string>
+    <string name="info_text_13">权限撤回</string>
+    <string name="info_text_14">可随时在 Android 系统设置的“应用信息 → 权限”中撤回授权；撤回不影响其他离线功能。</string>
+    <string name="info_text_15">系统壁纸权限</string>
+    <string name="info_text_16">读取系统壁纸不使用媒体图片权限（该权限对 WallpaperManager 无效，旧版曾误用）。Android 14 起系统只允许持有「所有文件访问」的 app 读取桌面壁纸——请在设置页「壁纸与背景 → 系统壁纸」处点按钮，跳到系统设置里为本 app 开启；开启后返回即生效，不需要时可随时关闭。</string>
+    <string name="info_text_17">Android 12 及以下无需单独申请通知运行时权限。</string>
+    <string name="info_text_18">最小权限原则</string>
+    <string name="info_text_19">应用不申请位置、相机、麦克风、通讯录或电话权限。所有权限均由明确的用户操作触发。</string>
+    <string name="info_text_5">‹ 返回</string>
+    <string name="info_text_6">本地偏好</string>
+    <string name="info_text_7">主题、动效、桌面图标与引导完成状态仅保存在设备本地 SharedPreferences，不会上传。</string>
+    <string name="info_text_8">壁纸读取</string>
+    <string name="info_text_9">系统壁纸仅通过 WallpaperManager 在本机读取并绘制，不保存、不上传。Android 12 及以下读取真实壁纸需要存储读取权限；Android 14 起系统只允许持有「所有文件访问」的 app 读取桌面壁纸，应用会在系统壁纸设置处引导你在系统设置中开启（可随时关闭），未开启前自动回退内置背景，本地图片与网络壁纸不受影响。</string>
+    <string name="info_title_2">通知权限</string>
+    <string name="info_title_3">存储读取权限</string>
+
+    <!-- ===== ui/screens/MaterialBrowser.kt（阶段 2a） ===== -->
+    <string name="material_text_1">点击功能模块，直接进入真实可操作的功能；不是介绍弹窗</string>
+    <string name="material_text_2">搜索功能模块…</string>
+    <string name="material_text_3">全部分类</string>
+
+    <!-- ===== ui/screens/OverlayTermsScreen.kt（阶段 2a） ===== -->
+    <string name="overlaytermsscreen_text_1">强度速查（从最强打断到最弱）</string>
+    <string name="overlaytermsscreen_text_10">点按查看全文，长按按钮把整段提示词复制到剪贴板。提示词同时给了 Web 与 Android/Compose 两套写法，跟 AI 说的时候用对术语，它就不会给你做成四不像。</string>
+    <string name="overlaytermsscreen_text_11">来源：P01–P06 术语出自 B 站 ZTough《Vibe Coding 术语课：别再管所有弹窗都叫「弹窗」了》(BV14Utf6QEnB) 页面公开简介；P07–P12 为本仓库补足的同族术语。定义/区别/反例/提示词均为本仓库独立撰写，详见 素材库/弹窗与提示术语/参考来源.md。</string>
+    <string name="overlaytermsscreen_text_2">Alert（必须点掉）&gt; Modal（要你在里面做完）&gt; Drawer / BottomSheet（边缘面板）&gt; </string>
+    <string name="overlaytermsscreen_text_3">Popconfirm / Popover（锚定气泡）&gt; Snackbar（可撤销条幅）&gt; Toast（自动消失）；</string>
+    <string name="overlaytermsscreen_text_4">Loading 是过程反馈、Badge 是持续状态，两者不弹但同属提示族。</string>
+    <string name="overlaytermsscreen_text_5">选型口诀：要不要打断？打断完要不要用户做事？事情发生在哪个元素旁边？错过这条信息会不会有损失？</string>
+    <string name="overlaytermsscreen_text_6">定义</string>
+    <string name="overlaytermsscreen_text_7">什么时候用</string>
+    <string name="overlaytermsscreen_text_8">和邻居的区别（术语课的重点）</string>
+    <string name="overlaytermsscreen_text_9">Android / Compose 对应</string>
+
+    <!-- ===== ui/screens/ToolkitScreen.kt（阶段 2a） ===== -->
+    <string name="toolkit_text_1">这四条是「基建」，不是样式</string>
+    <string name="toolkit_text_10">参数与默认值</string>
+    <string name="toolkit_text_11">点按查看全文，长按按钮把整段提示词复制到剪贴板。整段可以直接发给 AI，</string>
+    <string name="toolkit_text_12">里面的接口名、超时值、权限项、失败分支都已写死，不用你再补细节。</string>
+    <string name="toolkit_text_13">实现全部在本仓库 `ui/features/toolkit/` 内（AppUpdateChecker / AppLog / MarkdownText / AdaptiveNav），</string>
+    <string name="toolkit_text_14">零第三方依赖；接入与替换说明见 素材库/工具与基建/实现方案.md。</string>
+    <string name="toolkit_text_2">更新检查、日志分享、Markdown 渲染、大屏适配——做完一个 App 迟早都要写，</string>
+    <string name="toolkit_text_3">而且写法一旦错了就是线上事故（拿不到日志、装不上更新、大屏布局塌）。</string>
+    <string name="toolkit_text_4">四条都是真实可运行代码：真的发请求、真的下载、真的分享、真的切布局，不是示意图。</string>
+    <string name="toolkit_text_5">示例 App 自己也用上了：设置页有真实的「检查更新」与「运行日志」，</string>
+    <string name="toolkit_text_6">更新检查打的就是本模板仓库的 GitHub Releases。</string>
+    <string name="toolkit_text_7">为什么需要</string>
+    <string name="toolkit_text_8">关键实现（照抄要点）</string>
+    <string name="toolkit_text_9">坑与反例</string>
+
+    <!-- ===== ui/screens/Ui2Gallery.kt（阶段 2a） ===== -->
+    <string name="ui2_gallery_text_1">视频专题</string>
+    <string name="ui2_gallery_text_2">弹层馆</string>
+    <string name="ui2_gallery_text_3">动效馆</string>
+    <string name="ui2_gallery_text_4">工具</string>
+    <string name="ui2_gallery_text_5">点按查看全文，长按按钮把整段提示词复制到剪贴板，可直接粘贴给 AI 复现此功能。</string>
+
+    <!-- ===== ui/features/ui2/previews/PreviewBaseForm.kt（阶段 2b） ===== -->
+    <string name="pv_form_text_40">完成</string>
+
+    <!-- ===== ui/features/ui2/previews/PreviewGlassMotion.kt（阶段 2b） ===== -->
+    <string name="pv_glass_text_26">液态玻璃不是贴图：透镜边缘把背后的字掰弯，中心保持清晰，边缘带一点 RGB 色散。拖动透镜看放大与色散边。</string>
+    <string name="pv_glass_text_27">透镜可拖（色散红边为近似示意，真实折射需 backdrop 采样）。</string>
+
+    <!-- ===== ui/features/ui2/previews/PreviewMotionPages.kt（阶段 2b） ===== -->
+    <string name="pv_motion_page_text_18">拖我</string>
+    <string name="pv_motion_page_text_19">← 左右拖动我，超过阈值就划走 →</string>
+    <string name="pv_motion_page_text_20">头图（以 0.5× 速度视差后移）</string>
+    <string name="pv_motion_page_text_21">演示行，切换即时生效</string>
+
+    <!-- ===== ui/features/ui2/previews/PreviewVideoLabs.kt（阶段 2b） ===== -->
+    <string name="pv_video_text_70">拖我上下移动，松手吸附到最近档位</string>
 </resources>

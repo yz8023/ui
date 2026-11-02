@@ -45,6 +45,8 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
+import com.monkeycode.liquidui.R
 import com.monkeycode.liquidui.ui.components.GlassCard
 import com.monkeycode.liquidui.ui.components.SectionTitle
 import com.monkeycode.liquidui.ui.features.ui2.Ui2Categories
@@ -75,19 +77,19 @@ fun Ui2CatalogSection(onOpen: (Ui2Feature) -> Unit) {
             modifier = Modifier.fillMaxWidth().padding(horizontal = 22.dp),
             placeholder = { Text("搜索 UI2 素材…（如 壁纸 / F08）") }, singleLine = true,
         )
-        SectionTitle(text = "分类")
+        SectionTitle(text = stringResource(R.string.common_category))
         Row(
             Modifier.fillMaxWidth().horizontalScroll(chipRowState1).padding(horizontal = 22.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            Ui2Chip("全部", category == null) { category = null }
+            Ui2Chip(stringResource(R.string.common_all), category == null) { category = null }
             (Ui2Categories + listOf("玻璃拆解", "动效案例")).forEach { c -> Ui2Chip(c, category == c) { category = if (category == c) null else c } }
         }
         Row(
             Modifier.fillMaxWidth().horizontalScroll(chipRowState2).padding(horizontal = 22.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            listOf("视频专题", "弹层馆", "动效馆", "工具").forEach { c -> Ui2Chip(c, category == c) { category = if (category == c) null else c } }
+            listOf(stringResource(R.string.ui2_gallery_text_1), stringResource(R.string.ui2_gallery_text_2), stringResource(R.string.ui2_gallery_text_3), stringResource(R.string.ui2_gallery_text_4)).forEach { c -> Ui2Chip(c, category == c) { category = if (category == c) null else c } }
         }
         Text(
             "共 ${filtered.size} 条 · 点卡片进入真实预览，长按详情页按钮复制提示词",
@@ -147,7 +149,7 @@ fun Ui2DetailScreen(feature: Ui2Feature, onBack: () -> Unit) {
     ) {
         item {
             Row(Modifier.padding(horizontal = 10.dp), verticalAlignment = Alignment.CenterVertically) {
-                TextButton(onClick = onBack) { Text("‹ 返回素材库") }
+                TextButton(onClick = onBack) { Text(stringResource(R.string.common_back_to_library)) }
                 Text("${feature.id} · ${feature.category} · ${feature.difficulty}", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
             Text(feature.name, Modifier.padding(horizontal = 22.dp), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
@@ -157,17 +159,17 @@ fun Ui2DetailScreen(feature: Ui2Feature, onBack: () -> Unit) {
             Text(feature.params, Modifier.padding(horizontal = 22.dp), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
         }
         item {
-            SectionTitle(text = "功能体验（真实实现，可直接操作）")
+            SectionTitle(text = stringResource(R.string.common_demo_section_hint))
             GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
                 Box(Modifier.padding(16.dp)) { Ui2Preview(feature) }
             }
         }
         item {
-            SectionTitle(text = "提示词")
+            SectionTitle(text = stringResource(R.string.common_prompt))
             GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
                 Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                     Text(
-                        "点按查看全文，长按按钮把整段提示词复制到剪贴板，可直接粘贴给 AI 复现此功能。",
+                        stringResource(R.string.ui2_gallery_text_5),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -186,7 +188,7 @@ fun Ui2DetailScreen(feature: Ui2Feature, onBack: () -> Unit) {
                         contentAlignment = Alignment.Center,
                     ) {
                         Text(
-                            if (copied) "✓ 已复制，去粘贴给 AI 吧" else "长按复制提示词",
+                            if (copied) stringResource(R.string.common_copied_hint) else stringResource(R.string.common_long_press_to_copy),
                             color = MaterialTheme.colorScheme.onPrimary,
                             fontWeight = FontWeight.SemiBold,
                         )

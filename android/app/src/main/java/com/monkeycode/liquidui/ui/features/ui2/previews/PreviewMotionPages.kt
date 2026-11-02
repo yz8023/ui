@@ -93,7 +93,7 @@ fun PreviewF38() {
                     }
                 },
             contentAlignment = Alignment.Center,
-        ) { Text("拖我", color = MaterialTheme.colorScheme.onPrimary, fontWeight = FontWeight.Bold) }
+        ) { Text(stringResource(R.string.pv_motion_page_text_18), color = MaterialTheme.colorScheme.onPrimary, fontWeight = FontWeight.Bold) }
     }
 }
 
@@ -139,7 +139,7 @@ fun PreviewF40() {
                         }
                     },
             ) {
-                Text("← 左右拖动我，超过阈值就划走 →", Modifier.padding(18.dp), fontWeight = FontWeight.SemiBold)
+                Text(stringResource(R.string.pv_motion_page_text_19), Modifier.padding(18.dp), fontWeight = FontWeight.SemiBold)
             }
         } else {
             Text("卡片已划走。")
@@ -183,7 +183,7 @@ fun PreviewF42() {
                 contentAlignment = Alignment.Center,
             ) {
                 Text(
-                    "头图（以 0.5× 速度视差后移）",
+                    stringResource(R.string.pv_motion_page_text_20),
                     color = MaterialTheme.colorScheme.onPrimary,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.graphicsLayer { translationY = parallax },
@@ -250,7 +250,7 @@ fun PreviewF45() {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 Column(Modifier.weight(1f)) {
                     Text(label, fontWeight = FontWeight.SemiBold)
-                    Text("演示行，切换即时生效", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(stringResource(R.string.pv_motion_page_text_21), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
                 Switch(checked = states[i], onCheckedChange = { states[i] = it })
             }

@@ -323,7 +323,7 @@ fun PreviewF11() {
             Column {
                 Row(Modifier.fillMaxWidth()) {
                     Text(job.name, Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
-                    Text(if (job.done) "完成" else "${(job.progress * 100).toInt()}%", color = MaterialTheme.colorScheme.primary)
+                    Text(if (job.done) stringResource(R.string.pv_form_text_40) else "${(job.progress * 100).toInt()}%", color = MaterialTheme.colorScheme.primary)
                 }
                 LinearProgressIndicator(progress = { job.progress }, modifier = Modifier.fillMaxWidth())
             }

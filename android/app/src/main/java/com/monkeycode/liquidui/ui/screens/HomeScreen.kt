@@ -21,6 +21,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.monkeycode.liquidui.R
 import com.monkeycode.liquidui.ui.components.EmptyState
 import com.monkeycode.liquidui.ui.components.GlassCard
 import com.monkeycode.liquidui.ui.components.InfoBanner
@@ -35,6 +36,7 @@ import com.monkeycode.liquidui.ui.theme.AuroraViolet
 import com.monkeycode.liquidui.ui.motion.Motion
 import com.monkeycode.liquidui.ui.motion.StaggeredReveal
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.ui.res.stringResource
 
 private data class Principle(
     val index: String,
@@ -109,13 +111,13 @@ fun HomeScreen(
                 ) {
                     Tag(text = "Android · Jetpack Compose")
                     Text(
-                        text = "功能素材库\n选择式开发",
+                        text = stringResource(R.string.home_text_1),
                         style = MaterialTheme.typography.displayLarge,
                         color = MaterialTheme.colorScheme.onBackground
                     )
                     Text(
-                        text = "把常用功能拆成中文功能点：应用图标切换、液态玻璃主题、" +
-                            "玻璃底栏、动效系统。一个个选着搭，拼出你的 App。",
+                        text = stringResource(R.string.home_text_2) +
+                            stringResource(R.string.home_text_3),
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -132,18 +134,18 @@ fun HomeScreen(
                     horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     StatTile(
-                        label = "设计 token",
+                        label = stringResource(R.string.home_label_1),
                         value = "42",
                         modifier = Modifier.weight(1f)
                     )
                     StatTile(
-                        label = "玻璃组件",
+                        label = stringResource(R.string.home_label_2),
                         value = "18",
                         accent = AuroraMint,
                         modifier = Modifier.weight(1f)
                     )
                     StatTile(
-                        label = "动效预设",
+                        label = stringResource(R.string.home_label_3),
                         value = "7",
                         accent = AuroraViolet,
                         modifier = Modifier.weight(1f)
@@ -163,18 +165,18 @@ fun HomeScreen(
                     PrimaryButton(
                         onClick = onOpenComponents,
                         modifier = Modifier.weight(1f)
-                    ) { Text("浏览组件") }
+                    ) { Text(stringResource(R.string.home_text_4)) }
                     SecondaryButton(
                         onClick = onOpenMotion,
                         modifier = Modifier.weight(1f)
-                    ) { Text("体验动效") }
+                    ) { Text(stringResource(R.string.home_text_5)) }
                 }
             }
         }
 
         item {
             Text(
-                text = "设计原则",
+                text = stringResource(R.string.home_text_6),
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onBackground,
@@ -221,7 +223,7 @@ fun HomeScreen(
 
         item {
             Text(
-                text = "功能素材清单",
+                text = stringResource(R.string.home_text_7),
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onBackground,
@@ -266,7 +268,7 @@ fun HomeScreen(
         item {
             StaggeredReveal(index = 9, enabled = staggerEnabled) {
                 InfoBanner(
-                    text = "提示：主题、玻璃强度、圆角倍率与主题 JSON 都能在「设置」页实时调整。",
+                    text = stringResource(R.string.home_text_8),
                     modifier = Modifier.padding(horizontal = 16.dp)
                 )
             }

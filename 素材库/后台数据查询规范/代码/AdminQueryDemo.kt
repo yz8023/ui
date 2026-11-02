@@ -1017,7 +1017,7 @@ private fun PreviewQ05() {
             enabled = selected != null,
         ) {
             clipboard.setText(
-                AnnotatedString(adminHandoffText(dim, selectedKey ?: "全部", applied, sliceAmount, slice.size, share, owner, slice.size))
+                AnnotatedString(adminHandoffText(dim, selectedKey ?: stringResource(R.string.common_all), applied, sliceAmount, slice.size, share, owner, slice.size))
             )
             haptics.performHapticFeedback(HapticFeedbackType.LongPress)
             handed = true

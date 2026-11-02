@@ -447,7 +447,7 @@ fun PreviewX04() {
                 Column(Modifier.padding(16.dp)) {
                     Box(Modifier.width(36.dp).height(4.dp).align(Alignment.CenterHorizontally).clip(CircleShape).background(MaterialTheme.colorScheme.outlineVariant))
                     Spacer(Modifier.height(10.dp))
-                    Text("拖我上下移动，松手吸附到最近档位", fontWeight = FontWeight.Bold)
+                    Text(stringResource(R.string.pv_video_text_70), fontWeight = FontWeight.Bold)
                     Text("当前档位 ${stage + 1} / 3（收起 · 半开 · 全开）", style = MaterialTheme.typography.bodySmall)
                 }
             }
