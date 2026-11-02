@@ -107,7 +107,7 @@ val OverlayTerms: List<OverlayTerm> = listOf(
         prompt = """实现 Popconfirm（气泡确认框），锚定在触发按钮旁。
 【语义】就地二次确认轻量、影响范围小的操作；不遮整页、用户视线不离开触发位置。
 【Web】触发元素外包一层 relative 容器，气泡 absolute 定位并带小箭头；出现 120–160ms 缩放 0.96→1 + 淡入；点外部/Esc 关闭；role="dialog" 且焦点移入气泡，关闭后回到触发按钮；靠近视口边缘时自动翻转方向不被裁切。
-【Android/Compose】做法一（推荐）：Box { 触发按钮; DropdownMenu(expanded = pending == item, onDismissRequest = { pending = null }) { Column { Text("确定删除「$item」？"); Row { TextButton(取消); TextButton(删除, color = error) } } } }。做法二：Popup(alignment, offset, PopupProperties(focusable = true)) 自定义位置与箭头。
+【Android/Compose】做法一（推荐）：Box { 触发按钮; DropdownMenu(expanded = pending == item, onDismissRequest = { pending = null }) { Column { Text("确定删除「\$item」？"); Row { TextButton(取消); TextButton(删除, color = error) } } } }。做法二：Popup(alignment, offset, PopupProperties(focusable = true)) 自定义位置与箭头。
 【内容】问话一句话点名对象（「删除『报表A』？」），确认按钮写动作（「删除」）不写「确定」。
 【自检】列表滚动时气泡跟随或自动关闭（不要留在原地错位）；边缘项不被裁切；连点不叠加多个气泡；确认后该项立即从列表消失并给 Snackbar 撤销。""",
     ),
@@ -218,7 +218,7 @@ val OverlayTerms: List<OverlayTerm> = listOf(
         prompt = """实现 Badge / Dot（角标与红点），含 99+ 与清零规则。
 【语义】持续状态提示：表示「这里有新东西/有多少未处理」，不打断、不抢焦点，被消费后才消失。
 【Web】图标外包 relative 容器，角标 absolute 右上角 + translate(30%, -30%)；min-width 18px + padding 0 4px，超过 99 显示「99+」，count === 0 时不渲染节点；红点是 8–10px 圆点无文字；用 2px 与背景同色的 border 把角标从图标里「挖」出来。
-【Android/Compose】Box { Icon(...); if (count > 0) Surface(Modifier.align(Alignment.TopEnd).offset(x = 6.dp, y = (-6).dp), shape = RoundedCornerShape(percent = 50), color = error) { Text(if (count > 99) "99+" else "$count", fontSize = 10.sp, modifier = Modifier.padding(horizontal = 5.dp, vertical = 1.dp)) } }；红点则用 Box(Modifier.size(9.dp).background(error, CircleShape))；也可用 Material3 的 Badge/BadgeBox。
+【Android/Compose】Box { Icon(...); if (count > 0) Surface(Modifier.align(Alignment.TopEnd).offset(x = 6.dp, y = (-6).dp), shape = RoundedCornerShape(percent = 50), color = error) { Text(if (count > 99) "99+" else "\$count", fontSize = 10.sp, modifier = Modifier.padding(horizontal = 5.dp, vertical = 1.dp)) } }；红点则用 Box(Modifier.size(9.dp).background(error, CircleShape))；也可用 Material3 的 Badge/BadgeBox。
 【数据】提供 +1 / −1 / 设为 100 / 清零 操作验证边界；清零后角标必须完全消失（含占位）。
 【自检】0 不显示、99 显示 99、100 显示 99+；角标不遮挡图标关键部分；红点与数字不同时出现在同一图标；深色模式下描边仍能把角标分离出来。""",
     ),
