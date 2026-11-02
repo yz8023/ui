@@ -33,6 +33,13 @@ MIRRORS = [
     ("素材库/弹窗与提示术语/代码/OverlayTermsSpec.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/features/overlayterms/OverlayTermsSpec.kt"),
     ("素材库/弹窗与提示术语/代码/OverlayTermsDemo.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/features/overlayterms/OverlayTermsDemo.kt"),
     ("素材库/弹窗与提示术语/代码/OverlayTermsScreen.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/screens/OverlayTermsScreen.kt"),
+    ("素材库/工具与基建/代码/AppUpdateChecker.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/features/toolkit/AppUpdateChecker.kt"),
+    ("素材库/工具与基建/代码/AppLog.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/features/toolkit/AppLog.kt"),
+    ("素材库/工具与基建/代码/MarkdownText.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/features/toolkit/MarkdownText.kt"),
+    ("素材库/工具与基建/代码/AdaptiveNav.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/features/toolkit/AdaptiveNav.kt"),
+    ("素材库/工具与基建/代码/ToolkitSpec.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/features/toolkit/ToolkitSpec.kt"),
+    ("素材库/工具与基建/代码/ToolkitDemo.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/features/toolkit/ToolkitDemo.kt"),
+    ("素材库/工具与基建/代码/ToolkitScreen.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/screens/ToolkitScreen.kt"),
 ]
 for mirror, authoritative in MIRRORS:
     a, b = ROOT / mirror, ROOT / authoritative
