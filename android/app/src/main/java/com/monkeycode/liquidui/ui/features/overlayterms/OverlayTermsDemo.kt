@@ -603,12 +603,14 @@ private fun PreviewP10() {
                         }.padding(horizontal = 24.dp, vertical = 15.dp),
                     )
                 }
+                // 文案上提到 lambda 外：clickable {} 不是组合上下文，里面不能调 stringResource()
+                val deleteLabel = stringResource(R.string.ot_demo_text_63)
                 Text(
-                    stringResource(R.string.ot_demo_text_63),
+                    deleteLabel,
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.error,
                     modifier = Modifier.fillMaxWidth().clickable {
-                        chosen = stringResource(R.string.ot_demo_text_63)
+                        chosen = deleteLabel
                         scope.launch { sheetState.hide() }
                         open = false
                     }.padding(horizontal = 24.dp, vertical = 15.dp),

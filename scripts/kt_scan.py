@@ -32,7 +32,11 @@ NON_COMP_HEAD = re.compile(
     r'derivedStateOf|LaunchedEffect|SideEffect|DisposableEffect|produceState|snapshotFlow|launch|withContext|'
     r'coroutineScope|runBlocking|forEach|forEachIndexed|map|mapNotNull|filter|let|apply|also|onEach|'
     r'firstOrNull|firstNotNullOfOrNull|find|any|all|none|sumOf|sortedBy|sortedByDescending|maxByOrNull|'
-    r'associateBy|groupBy|takeIf|run|repeat)\b[^{}]*$'
+    r'associateBy|groupBy|takeIf|run|repeat|with|collect|collectLatest|launchIn|'
+    r'clickable|combinedClickable|selectable|toggleable|triStateToggleable|draggable|scrollable|'
+    r'swipeable|anchoredDraggable|pointerInput|detectTapGestures|graphicsLayer|drawWithContent|'
+    r'drawBehind|drawWithCache|onSizeChanged|onGloballyPositioned|onPlaced|layout|semantics|'
+    r'clearAndSetSemantics)\b[^{}]*$'
 )
 NON_COMP_PARAM = re.compile(r'\bon[A-Z]\w*\s*=?\s*$')
 
