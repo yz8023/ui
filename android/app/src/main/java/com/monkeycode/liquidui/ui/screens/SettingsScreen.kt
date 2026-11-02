@@ -16,6 +16,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -33,7 +37,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
@@ -43,13 +53,22 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
@@ -67,6 +86,12 @@ import com.monkeycode.liquidui.ui.components.SecondaryButton
 import com.monkeycode.liquidui.ui.components.SectionTitle
 import com.monkeycode.liquidui.ui.components.SegmentedTabs
 import com.monkeycode.liquidui.ui.features.AppIconPicker
+import com.monkeycode.liquidui.ui.features.toolkit.AppLog
+import com.monkeycode.liquidui.ui.features.toolkit.AppLogLevel
+import com.monkeycode.liquidui.ui.features.toolkit.AppUpdateChecker
+import com.monkeycode.liquidui.ui.features.toolkit.MarkdownText
+import com.monkeycode.liquidui.ui.features.toolkit.UpdateCheckResult
+import com.monkeycode.liquidui.ui.features.toolkit.UpdateState
 import com.monkeycode.liquidui.ui.theme.AppChrome
 import com.monkeycode.liquidui.ui.theme.AppIcons
 import com.monkeycode.liquidui.ui.theme.PaletteId
@@ -347,6 +372,14 @@ fun SettingsScreen(
             }
         }
 
+        item { SectionTitle("更新与日志") }
+        item {
+            PreferenceCard { UpdateCheckPanel() }
+        }
+        item {
+            PreferenceCard { AppLogPanel() }
+        }
+
         item { SectionTitle("帮助与合规") }
         item {
             PreferenceCard {
@@ -625,6 +658,10 @@ private fun NotificationPreviewButton(modifier: Modifier = Modifier) {
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { granted ->
+        AppLog.i(
+            "Notification",
+            if (granted) "POST_NOTIFICATIONS 已授权，发送预览通知" else "POST_NOTIFICATIONS 被拒绝，跳过发送"
+        )
         if (granted) sendNotificationPreview(context, primary)
     }
     PrimaryButton(
@@ -668,4 +705,310 @@ private fun sendNotificationPreview(context: Context, accent: Color) {
         builder.setColor(accent.toArgb())
     }
     manager.notify(1001, builder.build())
+    AppLog.i("Notification", "已发送预览通知 id=1001 channel=$channelId accent=#${accent.toArgb().toUInt().toString(16)}")
+}
+
+/**
+ * 手册 F18 / 条目 U01 的真实接入：检查本模板仓库自己的 GitHub Release。
+ * 宿主把 [AppUpdateChecker.DEFAULT_REPO] 换成自己的 `owner/repo` 即可。
+ */
+@Composable
+private fun UpdateCheckPanel() {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    var checking by remember { mutableStateOf(false) }
+    var result by remember { mutableStateOf<UpdateCheckResult?>(null) }
+    var downloading by remember { mutableStateOf(false) }
+    var written by remember { mutableStateOf(0L) }
+    var total by remember { mutableStateOf(-1L) }
+    var apkPath by remember { mutableStateOf<String?>(null) }
+    var needPermission by remember { mutableStateOf(false) }
+    var note by remember { mutableStateOf<String?>(null) }
+    var job by remember { mutableStateOf<Job?>(null) }
+    val current = remember(context) { AppUpdateChecker.currentVersionName(context) }
+
+    Column(Modifier.padding(horizontal = 16.dp, vertical = 14.dp)) {
+        Text("检查更新", style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
+        Spacer(Modifier.height(4.dp))
+        Text(
+            "真实请求 api.github.com 比对版本；检查目标是本模板仓库 ${AppUpdateChecker.DEFAULT_REPO}。" +
+                "当前安装版本 $current。",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Spacer(Modifier.height(12.dp))
+        PrimaryButton(
+            onClick = {
+                checking = true
+                note = null
+                AppLog.i("Update", "设置页触发检查")
+                job = scope.launch {
+                    val r = withContext(Dispatchers.IO) { AppUpdateChecker.check(context) }
+                    result = r
+                    checking = false
+                }
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(if (checking) "检查中…" else "检查更新")
+        }
+
+        val r = result
+        if (r != null) {
+            Spacer(Modifier.height(12.dp))
+            HorizontalDivider()
+            Spacer(Modifier.height(10.dp))
+            Text(
+                when (r.state) {
+                    UpdateState.UPDATE_AVAILABLE -> "发现新版本"
+                    UpdateState.UP_TO_DATE -> "已是最新"
+                    UpdateState.FAILED -> "检查失败"
+                } + " · ${r.message} · 耗时 ${r.elapsedMillis}ms",
+                style = MaterialTheme.typography.bodySmall,
+                color = if (r.state == UpdateState.FAILED) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface
+            )
+            val latest = r.latest
+            if (latest != null) {
+                Spacer(Modifier.height(6.dp))
+                Text(
+                    "${latest.tag} · ${latest.publishedAt} · " +
+                        (latest.apkName ?: "无 APK 附件") + " · " + AppUpdateChecker.humanSize(latest.apkBytes),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                if (latest.body.isNotBlank()) {
+                    Spacer(Modifier.height(10.dp))
+                    Text("更新日志（Markdown 实时渲染，见 F20/U03）", style = MaterialTheme.typography.labelMedium)
+                    Spacer(Modifier.height(6.dp))
+                    MarkdownText(
+                        latest.body,
+                        Modifier
+                            .fillMaxWidth()
+                            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f), RoundedCornerShape(10.dp))
+                            .padding(12.dp)
+                    )
+                }
+            }
+
+            val url = latest?.apkUrl
+            if (r.state == UpdateState.UPDATE_AVAILABLE && url != null) {
+                Spacer(Modifier.height(12.dp))
+                if (downloading) {
+                    val t = total
+                    val w = written
+                    if (t > 0) {
+                        val ratio = (w.toFloat() / t.toFloat()).coerceIn(0f, 1f)
+                        LinearProgressIndicator(progress = { ratio }, modifier = Modifier.fillMaxWidth())
+                        Spacer(Modifier.height(6.dp))
+                        Text(
+                            "${(ratio * 100).toInt()}% · ${AppUpdateChecker.humanSize(w)} / ${AppUpdateChecker.humanSize(t)}",
+                            style = MaterialTheme.typography.labelMedium
+                        )
+                    } else {
+                        LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                        Spacer(Modifier.height(6.dp))
+                        Text("下载中 · ${AppUpdateChecker.humanSize(w)}", style = MaterialTheme.typography.labelMedium)
+                    }
+                    Spacer(Modifier.height(8.dp))
+                    SecondaryButton(
+                        onClick = {
+                            job?.cancel()
+                            downloading = false
+                            note = "已取消下载"
+                            AppLog.w("Update", "用户取消下载")
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) { Text("取消下载") }
+                } else {
+                    PrimaryButton(
+                        onClick = {
+                            downloading = true
+                            written = 0
+                            total = latest.apkBytes
+                            note = null
+                            needPermission = false
+                            job = scope.launch {
+                                val outcome = runCatching {
+                                    withContext(Dispatchers.IO) {
+                                        AppUpdateChecker.download(context, url, latest.apkName ?: "update.apk") { w, t ->
+                                            written = w
+                                            total = if (t > 0) t else -1
+                                        }
+                                    }
+                                }
+                                downloading = false
+                                outcome.onSuccess { file ->
+                                    apkPath = file.absolutePath
+                                    val launched = AppUpdateChecker.installApk(context, file)
+                                    needPermission = !launched
+                                    note = if (launched) "已调起系统安装器" else "已下载，但系统未授权「安装未知应用」"
+                                }.onFailure { th ->
+                                    note = "下载失败：${th.javaClass.simpleName} ${th.message}"
+                                    AppLog.e("Update", "下载失败", th)
+                                }
+                            }
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) { Text(if (apkPath != null) "重新下载并安装" else "下载 APK 并安装") }
+                }
+            }
+
+            if (needPermission) {
+                Spacer(Modifier.height(8.dp))
+                SecondaryButton(
+                    onClick = { AppUpdateChecker.openUnknownSourcesSettings(context) },
+                    modifier = Modifier.fillMaxWidth()
+                ) { Text("去授权「安装未知应用」") }
+                Spacer(Modifier.height(8.dp))
+                SecondaryButton(
+                    onClick = { url?.let { AppUpdateChecker.openInBrowser(context, it) } },
+                    modifier = Modifier.fillMaxWidth()
+                ) { Text("改用浏览器下载") }
+            }
+            if (r.state == UpdateState.FAILED) {
+                Spacer(Modifier.height(8.dp))
+                SecondaryButton(
+                    onClick = {
+                        checking = true
+                        note = null
+                        job = scope.launch {
+                            val again = withContext(Dispatchers.IO) { AppUpdateChecker.check(context) }
+                            result = again
+                            checking = false
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) { Text("重试") }
+            }
+            apkPath?.let {
+                Spacer(Modifier.height(6.dp))
+                Text("已落盘：$it", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+        }
+        note?.let {
+            Spacer(Modifier.height(8.dp))
+            Text(it, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary)
+        }
+    }
+}
+
+/**
+ * 手册 F19 / 条目 U02 的真实接入：查看、过滤、复制、分享应用自己的运行日志。
+ * 日志来自真实调用点（更新检查、通知发送、权限结果），不是面板自己造的数据。
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun AppLogPanel() {
+    val context = LocalContext.current
+    val clipboard = LocalClipboardManager.current
+    val haptics = LocalHapticFeedback.current
+    var showSheet by remember { mutableStateOf(false) }
+    var level by remember { mutableStateOf<AppLogLevel?>(null) }
+    var toast by remember { mutableStateOf<String?>(null) }
+    val entries = AppLog.entries
+    val picked = entries.filter { level == null || it.level == level }
+
+    PreferenceRow(
+        icon = AppIcons.Widgets,
+        title = "运行日志",
+        subtitle = "内存缓冲 ${entries.size}/${AppLog.MAX_ENTRIES} 条 · 可过滤、复制、系统分享",
+        onClick = {
+            showSheet = true
+            AppLog.d("Log", "打开运行日志面板")
+        }
+    )
+
+    if (showSheet) {
+        val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
+        ModalBottomSheet(onDismissRequest = { showSheet = false }, sheetState = sheetState) {
+            Column(Modifier.padding(horizontal = 20.dp)) {
+                Text("运行日志", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    "只存内存不落盘，进程被杀即清空，因此不需要存储权限。分享前请自行确认内容不含隐私。",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(Modifier.height(12.dp))
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    FilterChip(selected = level == null, onClick = { level = null }, label = { Text("全部") })
+                    AppLogLevel.entries.forEach { l ->
+                        FilterChip(
+                            selected = level == l,
+                            onClick = { level = if (level == l) null else l },
+                            label = { Text(l.label) }
+                        )
+                    }
+                }
+                Spacer(Modifier.height(10.dp))
+                Text("命中 ${picked.size} 条（最新在上）", style = MaterialTheme.typography.labelMedium)
+                Spacer(Modifier.height(6.dp))
+                Column(
+                    Modifier
+                        .fillMaxWidth()
+                        .heightIn(max = 320.dp)
+                        .verticalScroll(rememberScrollState())
+                        .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f), RoundedCornerShape(10.dp))
+                        .padding(10.dp),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    if (picked.isEmpty()) {
+                        Text("（暂无日志：去点几次「检查更新」或「发送通知」就有了）",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    } else {
+                        picked.asReversed().forEach { e ->
+                            Text(
+                                "#${e.seq} ${e.level.label}/${e.tag}: ${e.message.replace("\n", " ⏎ ")}",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = if (e.level == AppLogLevel.ERROR) MaterialTheme.colorScheme.error
+                                else MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+                    }
+                }
+                Spacer(Modifier.height(14.dp))
+                PrimaryButton(
+                    onClick = {
+                        clipboard.setText(AnnotatedString(AppLog.dump(level)))
+                        haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                        toast = "已复制 ${picked.size} 条"
+                        Toast.makeText(context, "已复制 ${picked.size} 条日志", Toast.LENGTH_SHORT).show()
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) { Text("复制全文") }
+                Spacer(Modifier.height(8.dp))
+                SecondaryButton(
+                    onClick = {
+                        val intent = AppLog.buildShareIntent(context, level)
+                        val ok = runCatching {
+                            context.startActivity(Intent.createChooser(intent, "分享日志"))
+                        }.isSuccess
+                        AppLog.i("Log", if (ok) "调起分享面板" else "无可接收分享的应用")
+                        Toast.makeText(
+                            context,
+                            if (ok) "已调起系统分享" else "没有可接收的应用，请改用复制",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) { Text("系统分享") }
+                Spacer(Modifier.height(8.dp))
+                SecondaryButton(
+                    onClick = {
+                        val n = entries.size
+                        AppLog.clear()
+                        AppLog.i("Log", "已清空缓冲（原 $n 条）")
+                        Toast.makeText(context, "已清空 $n 条", Toast.LENGTH_SHORT).show()
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) { Text("清空") }
+                toast?.let {
+                    Spacer(Modifier.height(6.dp))
+                    Text(it, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+                Spacer(Modifier.height(28.dp))
+            }
+        }
+    }
 }

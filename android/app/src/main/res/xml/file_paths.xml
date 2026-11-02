@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  FileProvider 路径白名单（手册 F18 / 条目 U01：应用内更新检查）。
+
+  只暴露应用私有缓存下的 updates/ 子目录——下载的 APK 放这里，
+  卸载即清、不需要任何存储权限，也不会把整个 cacheDir 开放给其他应用。
+  name 属性是 content:// URI 里的路径段，改它要同步改调用方（这里没有硬编码，无需改）。
+-->
+<paths>
+    <cache-path
+        name="updates"
+        path="updates/" />
+</paths>

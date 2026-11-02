@@ -25,6 +25,11 @@
     <!-- Preview notification posted from the settings page. -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
+    <!-- 应用内更新检查（手册 F18 / 条目 U01）：下载 APK 后调起系统安装器需要这个权限。
+         Android 8+ 还要用户在系统设置里授予「安装未知应用」，代码里已做检查与引导，
+         未授权时不会静默失败。宿主如果不做自更新，删掉这行与下面的 provider 即可。 -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -83,6 +88,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity-alias>
+
+        <!-- 更新检查（F18/U01）：把私有缓存里的 APK 以 content:// 形式交给系统安装器。
+             Android 7+ 禁止 file:// 跨应用暴露（FileUriExposedException），必须走 FileProvider。
+             路径规则见 res/xml/file_paths.xml。 -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
 
     </application>
 

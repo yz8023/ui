@@ -86,6 +86,17 @@
 |---|---|---|
 | **KD一对A**《查数据查到崩溃？这套烂后台连改了四刀》 | https://www.bilibili.com/video/BV1Vuxr6BEDp/ | B 端后台查询的四条规范主题（筛选分层 / 时间口径 / 标签聚合 / 看板下钻）来自该视频页面公开的标题与课程总结文字；本仓库未观看视频画面，未复制其画面、音频、字幕或截图。条文、反例、提示词与全部 Compose 实现均为本仓库独立撰写，具体参数（保留期 90 天、聚合阈值 3、模拟耗时 450ms 等）为本仓库自设的样板值。详见 `素材库/后台数据查询规范/参考来源.md` |
 
+## 工具与基建（F18–F21）
+
+| 来源 | 链接 | 说明 |
+|---|---|---|
+| **chenaizhang/KernelSU-Style-UI-Kit** | https://github.com/chenaizhang/KernelSU-Style-UI-Kit | 缺口对照来源（GPL-3.0）。只读了它的文件清单与公开文档来判断「本仓库缺哪些基建」（更新检查与下载、日志分享、Markdown 渲染、NavigationRail），**未复制其任何代码**；本仓库的实现零第三方依赖（对方用 okhttp + commonmark），接口与文案均独立撰写，因此本仓库继续以 MIT 发布 |
+| GitHub REST API · Releases | https://docs.github.com/rest/releases | `GET /repos/{owner}/{repo}/releases/latest` 的响应字段与限流规则（未认证 60 次/小时/IP），F18 的请求与失败文案依据 |
+| Android 开发者文档 · FileProvider / 安装未知应用 | https://developer.android.com/reference/androidx/core/content/FileProvider | APK 以 `content://` 交给系统安装器；Android 7+ 禁止 `file://` 跨应用暴露；Android 8+ 需 `canRequestPackageInstalls()` 与 `ACTION_MANAGE_UNKNOWN_APP_SOURCES` 引导 |
+| CommonMark 规范 | https://spec.commonmark.org | F20 自写解析器的语法判定口径（ATX 标题、围栏代码、强调、链接、列表、引用、分隔线）；只实现常用子集，未逐条实现全部规则 |
+| Compose UI 1.7 · LinkAnnotation | https://developer.android.com/reference/kotlin/androidx/compose/ui/text/LinkAnnotation | F20 链接点击交给 `LocalUriHandler`，替代已废弃的 `ClickableText` |
+| Material 3 · Window size classes / Navigation rail | https://m3.material.io/foundations/layout/applying-layout/window-size-classes | F21 的 600dp / 840dp 断点与「宽屏用侧栏」结论（断点数值非本仓库自定） |
+
 ## 弹窗与提示术语（F17）
 
 | 来源 | 链接 | 说明 |
