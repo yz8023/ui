@@ -747,6 +747,7 @@ private fun PreviewQ04() {
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun PreviewQ05() {
+    val commonAll = stringResource(R.string.common_all)
     val aqDemoText47 = stringResource(R.string.aq_demo_text_47)
     val scope = rememberCoroutineScope()
     val clipboard = LocalClipboardManager.current
@@ -1027,7 +1028,7 @@ private fun PreviewQ05() {
             enabled = selected != null,
         ) {
             clipboard.setText(
-                AnnotatedString(adminHandoffText(dim, selectedKey ?: stringResource(R.string.common_all), applied, sliceAmount, slice.size, share, owner, slice.size))
+                AnnotatedString(adminHandoffText(dim, selectedKey ?: commonAll, applied, sliceAmount, slice.size, share, owner, slice.size))
             )
             haptics.performHapticFeedback(HapticFeedbackType.LongPress)
             handed = true

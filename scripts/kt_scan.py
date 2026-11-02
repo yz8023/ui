@@ -89,7 +89,29 @@ def build_lambda_kinds(root) -> dict:
 # 少了这一态，`LazyColumn { if (x) { stringResource() } }` 里的 if 会被判成 comp，
 # 把外层 LazyColumn 的 noncomp 洗白；反过来用 any() 又会把 `LazyColumn { item { … } }`
 # 里合法的 item 内容一起毒化。所以必须三态 + 取最内层非控制流块。
-CTL_BLOCK = re.compile(r'\b(?:if|else|when|for|while|do|try|catch|finally)\s*(?:\([^{}]*\))?\s*$')
+CTL_KEYWORD = re.compile(r'\b(?:if|else|when|for|while|do|try|catch|finally)$')
+
+
+def _strip_tail_parens(s: str):
+    r"""剥掉结尾一个**平衡的**括号组，返回 (剩余, 是否剥掉了)。
+
+    不能用 `\([^{}]*\)` 这种写法：`[^{}]` 允许嵌套圆括号，于是
+    `QButton(text = if (handed) stringResource(…), enabled = x != null,) {`
+    里的 `if (` 会一路吃到最后那个 `)`，把整个调用误判成 if 控制流块，
+    从而把 onClick 尾随 lambda 洗白成可组合（CI run 41521727701 实测红 1 条）。
+    """
+    s = s.rstrip()
+    if s.endswith(')'):
+        d, i = 0, len(s) - 1
+        while i >= 0:
+            if s[i] == ')':
+                d += 1
+            elif s[i] == '(':
+                d -= 1
+                if d == 0:
+                    return s[:i].rstrip(), True
+            i -= 1
+    return s, False
 
 
 def innermost_noncomp(stack) -> bool:
@@ -103,7 +125,8 @@ def innermost_noncomp(stack) -> bool:
 def block_kind(lead: str, kinds: dict = None) -> str:
     """判断一个 `{` 的上下文：'noncomp' / 'comp' / 'ctl'（控制流，透明）。"""
     s = lead.rstrip()
-    if CTL_BLOCK.search(s):
+    head, _ = _strip_tail_parens(s)
+    if CTL_KEYWORD.search(head) or CTL_KEYWORD.search(s):
         return 'ctl'
     if NON_COMP_HEAD.search(s) or NON_COMP_PARAM.search(s):
         return 'noncomp'
