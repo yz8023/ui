@@ -114,6 +114,7 @@ fun PreviewF27() {
 
 @Composable
 fun PreviewF28() {
+    val pvFeedbackText35 = stringResource(R.string.pv_feedback_text_35)
     var loaded by remember { mutableStateOf(false) }
     val transition = rememberInfiniteTransition(label = "shimmer")
     val alpha by transition.animateFloat(0.35f, 0.85f, infiniteRepeatable(tween(800), RepeatMode.Reverse), label = "a")
@@ -128,7 +129,7 @@ fun PreviewF28() {
                 }
             }
         } else {
-            Text("内容已加载：真实数据替换骨架（同一布局位置）。", fontWeight = FontWeight.SemiBold)
+            Text(pvFeedbackText35, fontWeight = FontWeight.SemiBold)
         }
         OutlinedButton(onClick = { loaded = !loaded }) { Text(if (loaded) "回到骨架屏" else "模拟加载完成") }
     }

@@ -131,6 +131,7 @@ private fun OTChip(label: String, selected: Boolean, enabled: Boolean = true, on
 
 @Composable
 private fun OTButton(text: String, enabled: Boolean = true, primary: Boolean = true, loading: Boolean = false, onClick: () -> Unit) {
+    val wallpaperText10 = stringResource(R.string.wallpaper_text_10)
     val bg = when {
         !enabled -> MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
         primary -> MaterialTheme.colorScheme.primary
@@ -155,7 +156,7 @@ private fun OTButton(text: String, enabled: Boolean = true, primary: Boolean = t
             CircularProgressIndicator(Modifier.size(16.dp), strokeWidth = 2.dp, color = fg)
             Spacer(Modifier.width(8.dp))
         }
-        Text(if (loading) "处理中…" else text, color = fg, fontWeight = FontWeight.SemiBold, style = MaterialTheme.typography.titleSmall)
+        Text(if (loading) wallpaperText10 else text, color = fg, fontWeight = FontWeight.SemiBold, style = MaterialTheme.typography.titleSmall)
     }
 }
 
@@ -342,7 +343,10 @@ private fun PreviewP04() {
 
 @Composable
 private fun PreviewP05() {
-    var items by remember { mutableStateOf(listOf("报表 A", "报表 B", "报表 C")) }
+    val otDemoText86 = stringResource(R.string.ot_demo_text_86)
+    val otDemoText87 = stringResource(R.string.ot_demo_text_87)
+    val otDemoText88 = stringResource(R.string.ot_demo_text_88)
+    var items by remember { mutableStateOf(listOf(otDemoText86, otDemoText87, otDemoText88)) }
     var pending by remember { mutableStateOf<String?>(null) }
     var undo by remember { mutableStateOf<Pair<Int, String>?>(null) }
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -429,9 +433,12 @@ private fun PreviewP06() {
 
 @Composable
 private fun PreviewP07() {
+    val otDemoText89 = stringResource(R.string.ot_demo_text_89)
+    val otDemoText90 = stringResource(R.string.ot_demo_text_90)
+    val otDemoText91 = stringResource(R.string.ot_demo_text_91)
     val scope = rememberCoroutineScope()
     val host = remember { SnackbarHostState() }
-    var items by remember { mutableStateOf(listOf("草稿 1", "草稿 2", "草稿 3")) }
+    var items by remember { mutableStateOf(listOf(otDemoText89, otDemoText90, otDemoText91)) }
     Box(Modifier.fillMaxWidth().height(230.dp)) {
         Column(Modifier.padding(bottom = 56.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             OTNote(stringResource(R.string.ot_demo_text_47))
@@ -578,13 +585,15 @@ private fun PreviewP09() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun PreviewP10() {
+    val otDemoText92 = stringResource(R.string.ot_demo_text_92)
+    val otDemoText93 = stringResource(R.string.ot_demo_text_93)
     var open by remember { mutableStateOf(false) }
     var chosen by remember { mutableStateOf<String?>(null) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
     val scope = rememberCoroutineScope()
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        OTNote("BottomSheet / ActionSheet = 从底部升起的面板；移动端比 Drawer 顺手，拇指够得到。")
-        OTButton("打开动作面板（ActionSheet）") { open = true }
+        OTNote(otDemoText92)
+        OTButton(otDemoText93) { open = true }
         if (chosen != null) OTNote("已选择：$chosen", accent = true)
         OTNote("面板可半展开（露一半）与全展开两档，拖把手可切换；下拉关闭与内部滚动不打架。")
         OTNote("反例对照：ActionSheet 不给「取消」项，或把整页内容塞进面板造成滚动嵌套。")

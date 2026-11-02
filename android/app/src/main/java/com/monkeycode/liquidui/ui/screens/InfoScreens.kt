@@ -144,9 +144,11 @@ fun AboutScreen(onBack: () -> Unit) {
 
 @Composable
 fun PrivacyScreen(onBack: () -> Unit) {
+    val tkDemoText31 = stringResource(R.string.tk_demo_text_31)
+    val infoSubtitle2 = stringResource(R.string.info_subtitle_2)
     InfoPage(
-        title = "隐私说明",
-        subtitle = "逐项说明数据保存位置、权限用途和网络行为。",
+        title = tkDemoText31,
+        subtitle = infoSubtitle2,
         onBack = onBack,
     ) {
         item { SectionTitle(stringResource(R.string.info_section_title_1_2)) }
@@ -160,9 +162,11 @@ fun PrivacyScreen(onBack: () -> Unit) {
 
 @Composable
 fun PermissionCenterScreen(onBack: () -> Unit) {
+    val pvNavText25 = stringResource(R.string.pv_nav_text_25)
+    val infoSubtitle3 = stringResource(R.string.info_subtitle_3)
     InfoPage(
-        title = "权限管理",
-        subtitle = "权限不是介绍弹窗：可在这里真实请求、检查授权状态，并在拒绝后进入系统设置恢复。",
+        title = pvNavText25,
+        subtitle = infoSubtitle3,
         onBack = onBack,
     ) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {

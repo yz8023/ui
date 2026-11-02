@@ -335,6 +335,7 @@ fun PreviewF11() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PreviewF12() {
+    val pvFormText41 = stringResource(R.string.pv_form_text_41)
     var city by remember { mutableStateOf("上海") }
     var expanded by remember { mutableStateOf(false) }
     var showDate by remember { mutableStateOf(false) }
@@ -352,7 +353,7 @@ fun PreviewF12() {
         dateState.selectedDateMillis?.let {
             Text("已选：${java.text.SimpleDateFormat("yyyy-MM-dd").format(java.util.Date(it))}", color = MaterialTheme.colorScheme.primary)
         }
-        Text("下拉选择器 + 系统日期选择器，均为真实组件。", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(pvFormText41, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
     if (showDate) {
         DatePickerDialog(onDismissRequest = { showDate = false }, confirmButton = {

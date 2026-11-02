@@ -148,6 +148,7 @@ private fun QButton(
     loading: Boolean = false,
     onClick: () -> Unit,
 ) {
+    val aqDemoText39 = stringResource(R.string.aq_demo_text_39)
     val bg = when {
         !enabled -> MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
         primary -> MaterialTheme.colorScheme.primary
@@ -168,7 +169,7 @@ private fun QButton(
         contentAlignment = Alignment.Center,
     ) {
         Text(
-            if (loading) "查询中…" else text,
+            if (loading) aqDemoText39 else text,
             color = fg,
             fontWeight = FontWeight.SemiBold,
             style = MaterialTheme.typography.titleSmall,
@@ -424,6 +425,12 @@ private fun PreviewQ01() {
 
 @Composable
 private fun PreviewQ02() {
+    val aqDemoText40 = stringResource(R.string.aq_demo_text_40)
+    val aqDemoText41 = stringResource(R.string.aq_demo_text_41)
+    val aqDemoText42 = stringResource(R.string.aq_demo_text_42)
+    val aqDemoText43 = stringResource(R.string.aq_demo_text_43)
+    val aqDemoText44 = stringResource(R.string.aq_demo_text_44)
+    val aqDemoText45 = stringResource(R.string.aq_demo_text_45)
     val today = remember { LocalDate.now() }
     val earliest = remember { today.minusDays((ADMIN_RETENTION_DAYS - 1).toLong()) }
     var presetIndex by remember { mutableIntStateOf(2) }
@@ -455,7 +462,7 @@ private fun PreviewQ02() {
                 val (s, e) = p.range(today)
                 val enabled = !s.isBefore(earliest)
                 QChip(
-                    label = if (vague) p.label.replace("近7日", "近7天").replace("近30日", "近30天").replace("近一年", "近1年") else p.label,
+                    label = if (vague) p.label.replace(aqDemoText40, aqDemoText41).replace(aqDemoText42, aqDemoText43).replace(aqDemoText44, aqDemoText45) else p.label,
                     sub = if (vague) null else "${s.short()} ~ ${e.short()}",
                     selected = !customOpen && presetIndex == i,
                     enabled = enabled,
@@ -515,6 +522,7 @@ private fun PreviewQ02() {
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun PreviewQ03() {
+    val aqDemoText46 = stringResource(R.string.aq_demo_text_46)
     var depts by remember { mutableStateOf(emptySet<String>()) }
     var statuses by remember { mutableStateOf(emptySet<String>()) }
     var channel by remember { mutableStateOf<String?>(null) }
@@ -540,7 +548,7 @@ private fun PreviewQ03() {
             Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            QChip("全选部门（20）", selected = deptAll, onClick = { depts = if (deptAll) emptySet() else AdminDepts.toSet() })
+            QChip(aqDemoText46, selected = deptAll, onClick = { depts = if (deptAll) emptySet() else AdminDepts.toSet() })
             QChip("选 4 个部门", selected = depts.size == 4, onClick = { depts = AdminDepts.take(4).toSet() })
             QChip("选 2 个部门", selected = depts.size == 2, onClick = { depts = AdminDepts.take(2).toSet() })
             QChip(if (pickerOpen) "收起部门列表" else "逐个挑部门", selected = pickerOpen, onClick = { pickerOpen = !pickerOpen })
@@ -612,6 +620,7 @@ private fun PreviewQ03() {
 
 @Composable
 private fun PreviewQ04() {
+    val aqDemoText47 = stringResource(R.string.aq_demo_text_47)
     val clipboard = LocalClipboardManager.current
     val haptics = LocalHapticFeedback.current
     var dim by remember { mutableStateOf("渠道") }
@@ -654,7 +663,7 @@ private fun PreviewQ04() {
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             listOf(stringResource(R.string.aq_demo_text_13), stringResource(R.string.aq_demo_text_14), stringResource(R.string.aq_demo_text_15)).forEach { d ->
                 QChip(
-                    label = if (d == "部门") "部门前8" else d, selected = dim == d,
+                    label = if (d == "部门") aqDemoText47 else d, selected = dim == d,
                     onClick = {
                         if (dim != d) {
                             dim = d; selected = null; exported = null; csvPreview = null; handed = false
@@ -738,6 +747,7 @@ private fun PreviewQ04() {
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun PreviewQ05() {
+    val aqDemoText47 = stringResource(R.string.aq_demo_text_47)
     val scope = rememberCoroutineScope()
     val clipboard = LocalClipboardManager.current
     val haptics = LocalHapticFeedback.current
@@ -955,7 +965,7 @@ private fun PreviewQ05() {
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             listOf(stringResource(R.string.aq_demo_text_13), stringResource(R.string.aq_demo_text_14), stringResource(R.string.aq_demo_text_15)).forEach { d ->
                 QChip(
-                    label = if (d == "部门") "部门前8" else d, selected = dim == d,
+                    label = if (d == "部门") aqDemoText47 else d, selected = dim == d,
                     onClick = {
                         if (dim != d) {
                             dim = d; selected = null; exported = null; handed = false

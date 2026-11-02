@@ -68,6 +68,7 @@ import com.monkeycode.liquidui.ui.theme.AppShape
  */
 @Composable
 fun MaterialBrowser(onOpenFeature: (FeatureTarget) -> Unit) {
+    val materialLabel1 = stringResource(R.string.material_label_1)
     // 状态一律提到详情分支之前、并可跨组合保存：点卡片查看（UI2 详情或跳转功能页）后
     // 返回时，列表滚动位置（条目+像素偏移）、搜索词、分类筛选都停在原处，不回到顶部。
     var section by rememberSaveable { mutableStateOf(0) } // 0=模板素材 1=UI2体验馆 2=数据查询规范 3=弹窗提示术语 4=工具与基建
@@ -145,7 +146,7 @@ fun MaterialBrowser(onOpenFeature: (FeatureTarget) -> Unit) {
                 modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(horizontal = 22.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                CategoryChip(label = "模板素材", selected = section == 0, onClick = { section = 0 })
+                CategoryChip(label = materialLabel1, selected = section == 0, onClick = { section = 0 })
                 CategoryChip(label = "UI2 体验馆 · 77", selected = section == 1, onClick = { section = 1 })
                 CategoryChip(label = "数据查询规范 · 5", selected = section == 2, onClick = { section = 2 })
                 CategoryChip(label = "弹窗提示术语 · 12", selected = section == 3, onClick = { section = 3 })

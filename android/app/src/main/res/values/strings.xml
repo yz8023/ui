@@ -804,4 +804,46 @@
 
     <!-- ===== ui/features/ui2/previews/PreviewVideoLabs.kt（阶段 2b） ===== -->
     <string name="pv_video_text_70">拖我上下移动，松手吸附到最近档位</string>
+
+    <!-- ===== ui/features/adminquery/AdminQueryDemo.kt（阶段 3b） ===== -->
+    <string name="aq_demo_text_39">查询中…</string>
+    <string name="aq_demo_text_40">近7日</string>
+    <string name="aq_demo_text_41">近7天</string>
+    <string name="aq_demo_text_42">近30日</string>
+    <string name="aq_demo_text_43">近30天</string>
+    <string name="aq_demo_text_44">近一年</string>
+    <string name="aq_demo_text_45">近1年</string>
+    <string name="aq_demo_text_46">全选部门（20）</string>
+    <string name="aq_demo_text_47">部门前8</string>
+
+    <!-- ===== ui/features/overlayterms/OverlayTermsDemo.kt（阶段 3b） ===== -->
+    <string name="ot_demo_text_86">报表 A</string>
+    <string name="ot_demo_text_87">报表 B</string>
+    <string name="ot_demo_text_88">报表 C</string>
+    <string name="ot_demo_text_89">草稿 1</string>
+    <string name="ot_demo_text_90">草稿 2</string>
+    <string name="ot_demo_text_91">草稿 3</string>
+    <string name="ot_demo_text_92">BottomSheet / ActionSheet = 从底部升起的面板；移动端比 Drawer 顺手，拇指够得到。</string>
+    <string name="ot_demo_text_93">打开动作面板（ActionSheet）</string>
+
+    <!-- ===== ui/features/ui2/previews/PreviewBaseForm.kt（阶段 3b） ===== -->
+    <string name="pv_form_text_41">下拉选择器 + 系统日期选择器，均为真实组件。</string>
+
+    <!-- ===== ui/features/ui2/previews/PreviewFeedbackData.kt（阶段 3b） ===== -->
+    <string name="pv_feedback_text_35">内容已加载：真实数据替换骨架（同一布局位置）。</string>
+
+    <!-- ===== ui/features/ui2/previews/PreviewMotionPages.kt（阶段 3b） ===== -->
+    <string name="pv_motion_page_text_22">卡片已划走。</string>
+
+    <!-- ===== ui/features/ui2/previews/PreviewMotionTools.kt（阶段 3b） ===== -->
+    <string name="pv_motion_tool_text_18">无匹配规范</string>
+    <string name="pv_motion_tool_text_19">├─ src/  入口与导航</string>
+    <string name="pv_motion_tool_text_20">└─ docs/  实现方案 · 参考来源 · 环境要求</string>
+
+    <!-- ===== ui/screens/InfoScreens.kt（阶段 3b） ===== -->
+    <string name="info_subtitle_2">逐项说明数据保存位置、权限用途和网络行为。</string>
+    <string name="info_subtitle_3">权限不是介绍弹窗：可在这里真实请求、检查授权状态，并在拒绝后进入系统设置恢复。</string>
+
+    <!-- ===== ui/screens/MaterialBrowser.kt（阶段 3b） ===== -->
+    <string name="material_label_1">模板素材</string>
 </resources>

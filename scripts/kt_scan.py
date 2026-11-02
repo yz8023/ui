@@ -241,7 +241,15 @@ def scan(src: str, kinds: dict = None) -> List[Dict]:
                 funs[idx]['state'] = 'body'; fi = idx
             lead = src[max(0, i - 300):i]
             _m = re.search(r'([A-Za-z_][\w.]*)\s*(?:\([^{}]*?\))?\s*$', lead.rstrip())
-            stack.append(['brace', fi, block_kind(lead, kinds), _m.group(1) if _m else '?'])
+            if fi is not None:
+                # 这个 `{` 是**函数体**，不是尾随 lambda。必须由函数自身的可组合性决定，
+                # 不能走 block_kind 回溯 callee：`private fun QButton(…, onClick: () -> Unit) {`
+                # 会被查成「QButton 的尾随 lambda 不可组合」，从而把它 @Composable 函数体
+                # 里的合法 stringResource 误判为越界（CI 实测合法）。
+                kind = 'comp' if funs[fi]['comp'] else 'noncomp'
+            else:
+                kind = block_kind(lead, kinds)
+            stack.append(['brace', fi, kind, _m.group(1) if _m else '?'])
             i += 1; continue
         if c == '}':
             for k in range(len(stack) - 1, -1, -1):

@@ -120,6 +120,7 @@ fun PreviewF39() {
 
 @Composable
 fun PreviewF40() {
+    val pvMotionPageText22 = stringResource(R.string.pv_motion_page_text_22)
     var dismissed by remember { mutableStateOf(false) }
     val offsetX = remember { Animatable(0f) }
     val scope = rememberCoroutineScope()
@@ -142,7 +143,7 @@ fun PreviewF40() {
                 Text(stringResource(R.string.pv_motion_page_text_19), Modifier.padding(18.dp), fontWeight = FontWeight.SemiBold)
             }
         } else {
-            Text("卡片已划走。")
+            Text(pvMotionPageText22)
             TextButton(onClick = { dismissed = false; scope.launch { offsetX.snapTo(0f) } }) { Text("复原") }
         }
     }

@@ -242,6 +242,73 @@ def xml_escape(text: str):
     return t, need_raw
 
 
+def fun_body_start(src: str, fun: str):
+    """返回 fun 函数体 `{` 之后的偏移；表达式体（`= …`）或找不到则 None。"""
+    for m in re.finditer(r'fun\s+(?:<[^>]*>\s*)?(?:[\w<>.]+\.)?' + re.escape(fun) + r'\s*\(', src):
+        i, d = m.end(), 1
+        while i < len(src) and d:
+            d += (src[i] == '(') - (src[i] == ')')
+            i += 1
+        seg = src[i:i + 300]
+        mb = re.search(r'[={]', seg)
+        if mb and mb.group(0) == '{':
+            return i + mb.end()
+    return None
+
+
+def val_name(res: str, taken: set) -> str:
+    """资源名转 camelCase 变量名，撞名加序号。"""
+    parts = res.split('_')
+    nm = parts[0] + ''.join(x.capitalize() for x in parts[1:])
+    base, k = nm, 2
+    while nm in taken:
+        nm = f'{base}{k}'
+        k += 1
+    return nm
+
+
+def hoist_into_composable(src: str, rs: list) -> tuple:
+    """把同一文件里的非组合 lambda 文案上提到各自宿主 @Composable 函数体开头。
+
+    返回 (新源码, 上提条数, 放弃条数)。放弃的是找不到函数体 `{` 的（表达式体等）。
+    """
+    per_fun = {}
+    for r in rs:
+        per_fun.setdefault(r['fun'], []).append(r)
+    insertions, done, dropped = [], 0, 0
+    for fun, group in per_fun.items():
+        body = fun_body_start(src, fun)
+        if body is None:
+            dropped += len(group)
+            continue
+        taken = set(re.findall(r'\b[A-Za-z_]\w*\b', src))
+        res2val, decls = {}, []
+        for r in group:
+            if r['res'] in res2val:                 # 同函数内同资源共用一个 val
+                r['val'] = res2val[r['res']]
+                continue
+            nm = val_name(r['res'], taken)
+            taken.add(nm)
+            res2val[r['res']] = nm
+            r['val'] = nm
+            decls.append(f'val {nm} = stringResource(R.string.{r["res"]})')
+        line_start = src.rfind('\n', 0, body) + 1
+        indent = re.match(r'\s*', src[line_start:]).group(0) + '    '
+        insertions.append((body, ''.join(f'\n{indent}{d}' for d in decls)))
+        done += len(group)
+    # 替换与插入必须合成**同一批编辑**按偏移降序统一应用：
+    # 字面量替换会改变长度（`"全选部门（20）"` → `aqDemoText46`），若先替换再按
+    # 旧偏移插入，插入点会整体错位（实测把 val 插进了 `@OptIn(…Api::class)` 中间）。
+    edits = [(r['start'], r['end'], r['val']) for r in rs if 'val' in r]
+    for r in rs:
+        if 'val' in r:
+            assert src[r['start']:r['end']] == r['lit'], f'{r["file"]}:{r["line"]} 偏移失配'
+    edits += [(body, body, ins) for body, ins in insertions]
+    for a, b, txt in sorted(edits, key=lambda x: -x[0]):
+        src = src[:a] + txt + src[b:]
+    return src, done, dropped
+
+
 def add_imports(src: str, need_string_resource: bool = True) -> str:
     if need_string_resource and 'import androidx.compose.ui.res.stringResource' not in src:
         ms = list(re.finditer(r'^import androidx\.compose\.[^\n]*\n', src, re.M))
@@ -267,16 +334,21 @@ def main():
     skipped = collections.Counter()
     stage = []
     for r in recs:
-        if STAGE == '3a':
+        if STAGE in ('3a', '3b'):
             if r['cat'] != 'A 组合体内' or not r.get('noncomp') or r.get('interp'):
                 continue
             if r['file'] not in srcs:
                 srcs[r['file']] = (SRC / r['file']).read_text(encoding='utf-8')
             ctx = find_context(srcs[r['file']], r['fun'], r['start'])
-            if not ctx:
-                skipped['宿主无 context（留给 3b 上提）'] += 1
-                continue
-            r['ctx'] = ctx
+            if STAGE == '3a':
+                if not ctx:
+                    skipped['宿主无 context（3b 上提）'] += 1
+                    continue
+                r['ctx'] = ctx
+            else:
+                if ctx:
+                    skipped['宿主有 context（3a 已做）'] += 1
+                    continue
         else:
             if r['cat'] not in ('A 组合体内', 'C1 组合默认参数'):
                 continue
@@ -291,7 +363,7 @@ def main():
             srcs[r['file']] = (SRC / r['file']).read_text(encoding='utf-8')
         if r['file'] not in svars:
             svars[r['file']] = state_vars(srcs[r['file']])
-        why = risky(srcs[r['file']], r, allow_noncomp=(STAGE == '3a'), svars=svars[r['file']]) or (
+        why = risky(srcs[r['file']], r, allow_noncomp=(STAGE in ('3a', '3b')), svars=svars[r['file']]) or (
             '含插值（留给 D 阶段）' if is_interp(r['lit']) else '')
         if why:
             skipped[why] += 1
@@ -345,16 +417,22 @@ def main():
     byfile = {}
     for r in stage:
         byfile.setdefault(r['file'], []).append(r)
+    hoisted = dropped = 0
     for rel, rs in byfile.items():
         p = SRC / rel
         src = p.read_text(encoding='utf-8')
-        for r in sorted(rs, key=lambda x: -x['start']):
-            assert src[r['start']:r['end']] == r['lit'], f'{rel}:{r["line"]} 偏移失配'
-            call = (f"{r['ctx']}.getString(R.string.{r['res']})" if STAGE == '3a'
-                    else f"stringResource(R.string.{r['res']})")
-            src = src[:r['start']] + call + src[r['end']:]
+        if STAGE == '3b':
+            src, d, k = hoist_into_composable(src, rs)
+            hoisted += d; dropped += k
+        else:
+            for r in sorted(rs, key=lambda x: -x['start']):
+                assert src[r['start']:r['end']] == r['lit'], f'{rel}:{r["line"]} 偏移失配'
+                call = (f"{r['ctx']}.getString(R.string.{r['res']})" if STAGE == '3a'
+                        else f"stringResource(R.string.{r['res']})")
+                src = src[:r['start']] + call + src[r['end']:]
         p.write_text(add_imports(src, need_string_resource=(STAGE != '3a')), encoding='utf-8')
-    print(f'  改写 Kotlin 文件 {len(byfile)} 个')
+    print(f'  改写 Kotlin 文件 {len(byfile)} 个' +
+          (f'，上提 {hoisted} 处' + (f'，放弃 {dropped} 处（找不到函数体）' if dropped else '') if STAGE == '3b' else ''))
 
     # ---- 写 strings.xml：保留既有条目与注释，新条目按源文件分组追加 ----
     cur_xml = STRINGS.read_text(encoding='utf-8')

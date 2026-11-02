@@ -213,6 +213,7 @@ private val Specs = listOf(
 
 @Composable
 fun PreviewW03() {
+    val pvMotionToolText18 = stringResource(R.string.pv_motion_tool_text_18)
     var q by remember { mutableStateOf("") }
     val hits = Specs.filter { it.first.contains(q) || it.second.contains(q) }
     Column {
@@ -227,7 +228,7 @@ fun PreviewW03() {
                     }
                 }
             }
-            if (hits.isEmpty()) Text("无匹配规范")
+            if (hits.isEmpty()) Text(pvMotionToolText18)
         }
         Text("共 ${hits.size} / 25 篇（标题+导读索引，深读回仓库 motion 令牌文档）。", style = MaterialTheme.typography.labelSmall)
     }
@@ -235,6 +236,8 @@ fun PreviewW03() {
 
 @Composable
 fun PreviewT01() {
+    val pvMotionToolText19 = stringResource(R.string.pv_motion_tool_text_19)
+    val pvMotionToolText20 = stringResource(R.string.pv_motion_tool_text_20)
     var platform by remember { mutableIntStateOf(0) }
     val features = listOf(stringResource(R.string.common_liquid_glass), stringResource(R.string.common_shared_2), stringResource(R.string.common_wallpaper_bg), stringResource(R.string.pv_motion_tool_text_11), stringResource(R.string.common_shared_3), stringResource(R.string.common_theme_palette), stringResource(R.string.common_shared_6), stringResource(R.string.pv_motion_tool_text_12), stringResource(R.string.pv_motion_tool_text_13), stringResource(R.string.common_shared_5), stringResource(R.string.common_shared_4))
     val checked = remember { mutableStateListOf(true, true, false, true, true, false, false, true, false, false, false) }
@@ -243,9 +246,9 @@ fun PreviewT01() {
     val platformNames = listOf("Android Compose", "Web App", stringResource(R.string.pv_motion_tool_text_14))
     val tree = buildString {
         appendLine(platformNames[platform] + "/")
-        appendLine("├─ src/  入口与导航")
+        appendLine(pvMotionToolText19)
         features.forEachIndexed { i, f -> if (checked[i]) appendLine("├─ features/$f/") }
-        appendLine("└─ docs/  实现方案 · 参考来源 · 环境要求")
+        appendLine(pvMotionToolText20)
     }
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {

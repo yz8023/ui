@@ -549,15 +549,19 @@ private fun MarkdownDemo() {
 
 @Composable
 private fun AdaptiveNavDemo() {
+    val navHome = stringResource(R.string.nav_home)
+    val navGallery = stringResource(R.string.nav_gallery)
+    val navMotion = stringResource(R.string.nav_motion)
+    val navSettings = stringResource(R.string.nav_settings)
     val realClass = rememberAppWindowClass()
     var widthDp by remember { mutableFloatStateOf(420f) }
     var selected by remember { mutableIntStateOf(0) }
     val items = remember {
         listOf(
-            AdaptiveNavItem("home", "首页", AppIcons.BlurOn),
-            AdaptiveNavItem("gallery", "素材", AppIcons.Widgets),
-            AdaptiveNavItem("motion", "动效", AppIcons.Animation),
-            AdaptiveNavItem("settings", "设置", AppIcons.Settings)
+            AdaptiveNavItem("home", navHome, AppIcons.BlurOn),
+            AdaptiveNavItem("gallery", navGallery, AppIcons.Widgets),
+            AdaptiveNavItem("motion", navMotion, AppIcons.Animation),
+            AdaptiveNavItem("settings", navSettings, AppIcons.Settings)
         )
     }
 
