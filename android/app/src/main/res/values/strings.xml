@@ -905,7 +905,7 @@
 
     <!-- ===== ui/features/ui2/previews/PreviewBaseForm.kt（阶段 4） ===== -->
     <string name="pv_form_text_42">已点击 %1$s 次</string>
-    <string name="pv_form_text_43">壁纸素材_%1$s</string>
+    <string name="pv_form_text_43">壁纸素材_%1$s.jpg</string>
 
     <!-- ===== ui/features/ui2/previews/PreviewGlassMotion.kt（阶段 4） ===== -->
     <string name="pv_glass_text_28">视角 %1$s° · 眩光 %2$s%%</string>

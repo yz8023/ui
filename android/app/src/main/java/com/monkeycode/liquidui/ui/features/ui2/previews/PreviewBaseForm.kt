@@ -322,7 +322,7 @@ fun PreviewF11() {
         }
     }
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Button(onClick = { seq++; jobs.add(UploadJob(context.getString(R.string.pv_form_text_43, seq.jpg), 0f, false)) }) { Text(stringResource(R.string.pv_form_text_38)) }
+        Button(onClick = { seq++; jobs.add(UploadJob(context.getString(R.string.pv_form_text_43, seq), 0f, false)) }) { Text(stringResource(R.string.pv_form_text_38)) }
         jobs.forEach { job ->
             Column {
                 Row(Modifier.fillMaxWidth()) {

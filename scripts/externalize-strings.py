@@ -391,8 +391,12 @@ def parse_interp(lit: str):
                 j += 1
             spans.append((i, j, inner[i + 2:j - 1])); i = j; continue
         if inner[i] == '$' and i + 1 < n and (inner[i + 1].isalpha() or inner[i + 1] == '_'):
+            # `$name` 形式**只吃简单标识符**：Kotlin 里 `$seq.jpg` 的意思是
+            # `${seq}` 加字面文本 `.jpg`，点号不属于插值。旧写法把 `_.` 也吃进去，
+            # 于是 `"壁纸素材_$seq.jpg"` 被解析成表达式 `seq.jpg`（Unresolved reference），
+            # 而 `.jpg` 这段本该留在格式串里。要属性访问必须写成 `${a.b}`。
             j = i + 1
-            while j < n and (inner[j].isalnum() or inner[j] in '_.'):
+            while j < n and (inner[j].isalnum() or inner[j] == '_'):
                 j += 1
             spans.append((i, j, inner[i + 1:j])); i = j; continue
         i += 1

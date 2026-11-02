@@ -14,6 +14,11 @@
   5. 委托可空属性不能直接当格式参数：`var x by remember { mutableStateOf<String?>(null) }`
      在 `if (x != null)` 里也**不能**智能转换（委托属性），当 vararg Any 传会编译失败。
      模板里 `"$x"` 不报错（可空直接插值），换成 stringResource(id, x) 才暴露，CI 实测过。
+  另外有一条**只警告不拦**的启发式：实参里的成员名若全仓只出现一次，可能是把模板的
+  字面文本当成了属性访问（`$seq.jpg` 的正确解析是「表达式 seq + 字面文本 .jpg」，
+  误解析成 `seq.jpg` 会 Unresolved reference，CI 实测过）。之所以不拦：
+  `substringAfter` / `toUInt` 这类 stdlib 成员在本仓本来就只用一次，会误报。
+  解析器已从根上修掉（`$name` 不再吃点号），这条只作回归信号。
 
 用法： python3 scripts/probe-i18n.py [源码根]
 退出码非 0 表示有问题。
@@ -137,7 +142,13 @@ def main():
                 best = (off, nullable)
         return bool(best and best[1])
 
-    errs = []
+    # 全仓标识符出现次数（用于第 6 道闸）
+    ident_count = {}
+    for f in sorted(ROOT.rglob('*.kt')):
+        for w in re.findall(r'\b[A-Za-z_]\w*\b', f.read_text(encoding='utf-8')):
+            ident_count[w] = ident_count.get(w, 0) + 1
+
+    errs, warns = [], []
     # ---- 1. 资源存在性 + 参数个数 + formatted ----
     nsr = ngs = 0
     for c in calls:
@@ -158,6 +169,11 @@ def main():
             if a.isidentifier() and is_nullable_delegated(c['file'], a, c['offset']):
                 errs.append(f"[委托属性] {c['file']}:{c['line']} 参数 {a} 是可空委托属性，"
                             f'智能转换不成立，需先存局部 val 或用 ?: 兜底')
+        for a in c['args']:
+            for member in re.findall(r'\.([A-Za-z_]\w*)', a):
+                if ident_count.get(member, 0) <= 1:
+                    warns.append(f"[疑似假属性] {c['file']}:{c['line']} 实参 {a!r} 里的 .{member} "
+                                 '全仓只出现 1 次——若它来自 $name.xxx 写法就是解析错了')
         if c['args'] and formatted_false:
             errs.append(f"[formatted] {c['file']}:{c['line']} R.string.{c['res']} 标了 "
                         f'formatted="false" 却带 {len(c["args"])} 个实参（%% 不会还原）')
@@ -207,6 +223,8 @@ def main():
                             f"comp={r.get('comp')} noncomp={r.get('noncomp')} blocks={r.get('blocks')}")
 
     print(f'stringResource 调用 {nsr} 个｜getString 调用 {ngs} 个｜strings.xml {len(res)} 条')
+    for w in warns:
+        print('  ⚠ ' + w)
     if errs:
         print(f'\n⚠️ {len(errs)} 个问题（越界 {bad_ctx}）：')
         for e in errs[:40]:
@@ -214,7 +232,8 @@ def main():
         if len(errs) > 40:
             print(f'  …另有 {len(errs) - 40} 条')
         return 1
-    print('全部通过 ✓（上下文越界 0、参数数全对、格式串合法、formatted 用法一致）')
+    print('全部通过 ✓（上下文越界 0、参数数全对、格式串合法、formatted 用法一致'
+          + (f'；另有 {len(warns)} 条启发式警告' if warns else '') + '）')
     return 0
 
 
