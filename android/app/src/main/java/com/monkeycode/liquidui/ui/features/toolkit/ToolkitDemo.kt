@@ -423,68 +423,17 @@ private fun LogShareDemo() {
 
 // ---------------------------------------------------------------- U03 Markdown
 
-private const val MD_CHANGELOG = """# v2.8.0 更新日志
 
-新增 **F17 弹窗与提示术语**（P01–P12），把「加个弹窗」这种模糊需求拆成 12 个术语。
 
-## 新增
-
-- 素材库第四分区：*弹窗提示术语 · 12*
-- 每条含定义、何时用、`与邻居的区别`、反例与提示词
-- 详见 [实现方案](https://github.com/yz8023/ui)
-
-## 修复
-
-1. 列表返回不再回到顶部
-2. 提示词长按复制补上触感反馈
-
-> 术语 P01–P06 出自视频简介点名，P07–P12 为本仓库补足。
-
----
-
-```kotlin
-SnackbarHostState().showSnackbar(
-    message = "已删除",
-    actionLabel = "撤销"
-)
-```
-"""
-
-private const val MD_SYNTAX = """### 支持清单
-
-- 标题 `#`~`######`
-- **粗体** 与 *斜体*、_斜体_
-- `行内代码` 与围栏代码块
-- [链接](https://github.com/yz8023/ui)
-- 有序列表：
-
-1. 第一项
-2. 第二项
-
-> 引用：连续多行会合并成一段。
-
-***
-
-不支持：表格、图片、嵌套列表、任务列表、HTML 内联。
-需要时改引 `org.commonmark:commonmark`（约 200KB 依赖）。
-"""
-
-private const val MD_PRIVACY = """## 隐私说明（示例）
-
-本模板**不联网上传任何用户数据**。唯一的网络行为有两处：
-
-1. 更新检查：请求 `api.github.com`（U01）
-2. 壁纸缓存：请求你配置的壁纸地址
-
-日志只存内存，*不写文件*，分享由用户手动触发。
-
-- 不申请通讯录、位置、麦克风
-- 存储权限仅用于「所有文件访问」读取系统壁纸
-"""
 
 @Composable
 private fun MarkdownDemo() {
-    var source by remember { mutableStateOf(MD_CHANGELOG) }
+    // 三段演示用 Markdown 从 strings.xml 取；source 仍是**可编辑的文本**（用户可以改了写回），
+    // 所以不能把 source 换成资源 id，只在组合体首行取一次文案。
+    val mdChangelog = stringResource(R.string.tk_demo_md_changelog)
+    val mdSyntax = stringResource(R.string.tk_demo_md_syntax)
+    val mdPrivacy = stringResource(R.string.tk_demo_md_privacy)
+    var source by remember { mutableStateOf(mdChangelog) }
     var editing by remember { mutableStateOf(false) }
     var draft by remember { mutableStateOf("") }
     val blocks = remember(source) { MarkdownParser.parse(source) }
@@ -515,9 +464,9 @@ private fun MarkdownDemo() {
 
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            TKChip(stringResource(R.string.tk_demo_text_29), source == MD_CHANGELOG) { source = MD_CHANGELOG }
-            TKChip(stringResource(R.string.tk_demo_text_30), source == MD_SYNTAX) { source = MD_SYNTAX }
-            TKChip(stringResource(R.string.tk_demo_text_31), source == MD_PRIVACY) { source = MD_PRIVACY }
+            TKChip(stringResource(R.string.tk_demo_text_29), source == mdChangelog) { source = mdChangelog }
+            TKChip(stringResource(R.string.tk_demo_text_30), source == mdSyntax) { source = mdSyntax }
+            TKChip(stringResource(R.string.tk_demo_text_31), source == mdPrivacy) { source = mdPrivacy }
         }
         TKKeyValue(stringResource(R.string.tk_demo_text_32), summary)
 

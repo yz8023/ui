@@ -312,30 +312,48 @@ private fun RhythmGame(thresholdMs: Int, label: String) {
 
 /* ------- X01–X04 弹层馆 ------- */
 
-private val PopupTypes = listOf("确认", "输入", "加载", "中间列表", "底部列表", "底部勾选", "抽屉", "图片", "依附", "气泡")
+/**
+ * X01 弹窗 20 型的 ten 个入口：键参与 `when (active)` 分派与 `active` 状态，
+ * **不能用文案当键**（换语言就分派不上）；文案走资源，只用于芯片与标题显示。
+ */
+private val PopupTypes = listOf(
+    "confirm" to R.string.pv_video_popup_confirm,
+    "input" to R.string.pv_video_popup_input,
+    "loading" to R.string.pv_video_popup_loading,
+    "list_center" to R.string.pv_video_popup_list_center,
+    "list_bottom" to R.string.pv_video_popup_list_bottom,
+    "check_sheet" to R.string.pv_video_popup_check_sheet,
+    "drawer" to R.string.pv_video_popup_drawer,
+    "image" to R.string.pv_video_popup_image,
+    "attached" to R.string.pv_video_popup_attached,
+    "popup" to R.string.pv_video_popup_popup,
+)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PreviewX01() {
     var active by remember { mutableStateOf<String?>(null) }
     var input by remember { mutableStateOf("") }
+    // active 存的是稳定键；标题与显示要换成文案
+    val activeLabelRes = PopupTypes.firstOrNull { it.first == active }?.second
+    val activeLabel = if (activeLabelRes != null) stringResource(activeLabelRes) else ""
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
         Text(stringResource(R.string.pv_video_text_39), style = MaterialTheme.typography.bodySmall)
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-            PopupTypes.take(5).forEach { t -> TextButton(onClick = { active = t }) { Text(t) } }
+            PopupTypes.take(5).forEach { (key, labelRes) -> TextButton(onClick = { active = key }) { Text(stringResource(labelRes)) } }
         }
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-            PopupTypes.drop(5).forEach { t -> TextButton(onClick = { active = t }) { Text(t) } }
+            PopupTypes.drop(5).forEach { (key, labelRes) -> TextButton(onClick = { active = key }) { Text(stringResource(labelRes)) } }
         }
     }
     when (active) {
-        "确认" -> AlertDialog(onDismissRequest = { active = null }, title = { Text(stringResource(R.string.pv_video_text_40)) }, text = { Text(stringResource(R.string.pv_video_text_41)) }, confirmButton = { TextButton(onClick = { active = null }) { Text(stringResource(R.string.components_confirm_1)) } }, dismissButton = { TextButton(onClick = { active = null }) { Text(stringResource(R.string.common_cancel)) } })
-        "输入" -> AlertDialog(onDismissRequest = { active = null }, title = { Text(stringResource(R.string.pv_video_text_42)) }, text = { OutlinedTextField(input, { input = it }, placeholder = { Text(stringResource(R.string.components_placeholder_1)) }) }, confirmButton = { TextButton(onClick = { active = null }) { Text(stringResource(R.string.common_shared_8)) } })
-        "加载" -> AlertDialog(onDismissRequest = { active = null }, title = { Text(stringResource(R.string.pv_video_text_43)) }, text = { Row { androidx.compose.material3.CircularProgressIndicator(Modifier.size(22.dp)); Spacer(Modifier.width(12.dp)); Text(stringResource(R.string.pv_video_text_44)) } }, confirmButton = { TextButton(onClick = { active = null }) { Text(stringResource(R.string.common_cancel)) } })
-        stringResource(R.string.pv_video_text_45), stringResource(R.string.pv_video_text_46), "气泡" -> AlertDialog(onDismissRequest = { active = null }, title = { Text("$active") }, text = { Column { listOf(stringResource(R.string.pv_video_text_47), stringResource(R.string.pv_video_text_48), stringResource(R.string.pv_video_text_49)).forEach { Text(it, Modifier.fillMaxWidth().clickable { active = null }.padding(10.dp)) } } }, confirmButton = { TextButton(onClick = { active = null }) { Text(stringResource(R.string.pv_video_text_50)) } })
-        stringResource(R.string.pv_video_text_51), stringResource(R.string.pv_video_text_52), stringResource(R.string.common_shared_9), "图片" -> ModalBottomSheet(onDismissRequest = { active = null }) {
+        "confirm" -> AlertDialog(onDismissRequest = { active = null }, title = { Text(stringResource(R.string.pv_video_text_40)) }, text = { Text(stringResource(R.string.pv_video_text_41)) }, confirmButton = { TextButton(onClick = { active = null }) { Text(stringResource(R.string.components_confirm_1)) } }, dismissButton = { TextButton(onClick = { active = null }) { Text(stringResource(R.string.common_cancel)) } })
+        "input" -> AlertDialog(onDismissRequest = { active = null }, title = { Text(stringResource(R.string.pv_video_text_42)) }, text = { OutlinedTextField(input, { input = it }, placeholder = { Text(stringResource(R.string.components_placeholder_1)) }) }, confirmButton = { TextButton(onClick = { active = null }) { Text(stringResource(R.string.common_shared_8)) } })
+        "loading" -> AlertDialog(onDismissRequest = { active = null }, title = { Text(stringResource(R.string.pv_video_text_43)) }, text = { Row { androidx.compose.material3.CircularProgressIndicator(Modifier.size(22.dp)); Spacer(Modifier.width(12.dp)); Text(stringResource(R.string.pv_video_text_44)) } }, confirmButton = { TextButton(onClick = { active = null }) { Text(stringResource(R.string.common_cancel)) } })
+        "list_center", "attached", "popup" -> AlertDialog(onDismissRequest = { active = null }, title = { Text(activeLabel) }, text = { Column { listOf(stringResource(R.string.pv_video_text_47), stringResource(R.string.pv_video_text_48), stringResource(R.string.pv_video_text_49)).forEach { Text(it, Modifier.fillMaxWidth().clickable { active = null }.padding(10.dp)) } } }, confirmButton = { TextButton(onClick = { active = null }) { Text(stringResource(R.string.pv_video_text_50)) } })
+        "list_bottom", "check_sheet", "drawer", "image" -> ModalBottomSheet(onDismissRequest = { active = null }) {
             Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text("$active（底部形态）", fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.pv_video_bottom_form_title, activeLabel), fontWeight = FontWeight.Bold)
                 listOf(stringResource(R.string.pv_video_text_53), stringResource(R.string.pv_video_text_54), stringResource(R.string.pv_video_text_55)).forEach { Text(it, Modifier.fillMaxWidth().clickable { active = null }.padding(8.dp)) }
                 Spacer(Modifier.height(12.dp))
             }

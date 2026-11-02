@@ -555,15 +555,11 @@
     <string name="pv_video_text_42">输入弹窗</string>
     <string name="pv_video_text_43">加载中…</string>
     <string name="pv_video_text_44">请稍候</string>
-    <string name="pv_video_text_45">中间列表</string>
-    <string name="pv_video_text_46">依附</string>
     <string name="pv_video_text_47">选项一</string>
     <string name="pv_video_text_48">选项二</string>
     <string name="pv_video_text_49">选项三</string>
     <string name="pv_video_text_5">迷你窗</string>
     <string name="pv_video_text_50">关闭</string>
-    <string name="pv_video_text_51">底部列表</string>
-    <string name="pv_video_text_52">底部勾选</string>
     <string name="pv_video_text_53">条目一</string>
     <string name="pv_video_text_54">条目二</string>
     <string name="pv_video_text_55">条目三</string>
@@ -1523,4 +1519,94 @@
     <string name="aq_q05_bad_case">四条规范各做各的：筛选改了时间没跟着变，标签区漏掉时间条件，导出的明细还是全量而不是当前切片——用户拿到的表和屏幕上的数对不上。</string>
     <string name="aq_q05_params">条件区 4 组常显 + 3 组折叠 · 时间 6 档 · 标签聚合阈值 &gt;3 · 看板 3 维度 · 单次查询 450ms</string>
     <string name="aq_q05_prompt">做一个完整的后台数据查询页，把四条规范装进同一页面并保持状态一致。\n【结构】自上而下：① 条件区（常显：时间快捷、状态、部门聚合入口；折叠：渠道多选、金额区间、仅看异常）② 已选条件标签区（聚合规则：全选→「全部部门 · 20」，&gt;3→「部门 · n」，每个可删，附「清空全部条件」）③ 查询按钮（批量提交，显示待生效项数与累计请求次数）④ 结果概览（命中条数、金额合计、耗时、时间口径）⑤ 看板（3 维度柱状，可点柱下钻）⑥ 明细（当前切片前 8 行）⑦ 导出 CSV 与转负责人。\n【时间】快捷档位写明起止日期与「含首尾，共 n 天」；超出 90 天保留期的档位置灰并给原因；自定义起止倒置时禁用查询。\n【一致性】未按查询前，看板与明细保持上次结果并标注「结果为上次查询（条件有 n 项待生效）」；查询后标签区、概览、看板、明细同时更新；导出内容 = 当前下钻切片的全部行；切维度清空切片。\n【反馈】查询期间按钮 loading 禁用；导出与转交均复制到剪贴板并给触感反馈与文字回执。\n【自检】改 3 个条件只发 1 次请求；全选部门时标签区仅 1 个聚合标签；超限时间档不可点；点柱后导出行数 = 明细笔数；清空条件后回到全量默认态。</string>
+
+    <!-- ===== 阶段 5d-1：ui2/previews 的顶层演示数据 + ToolkitDemo 的 Markdown 演示常量 ===== -->
+    <!-- W01 动效配方 20 条（Recipes） -->
+    <string name="pv_motion_tool_recipe_01">淡入上浮</string>
+    <string name="pv_motion_tool_recipe_02">缩放弹入</string>
+    <string name="pv_motion_tool_recipe_03">错峰列表</string>
+    <string name="pv_motion_tool_recipe_04">抖动纠错</string>
+    <string name="pv_motion_tool_recipe_05">呼吸脉冲</string>
+    <string name="pv_motion_tool_recipe_06">旋转入场</string>
+    <string name="pv_motion_tool_recipe_07">翻转卡片</string>
+    <string name="pv_motion_tool_recipe_08">模糊渐清</string>
+    <string name="pv_motion_tool_recipe_09">数字滚动</string>
+    <string name="pv_motion_tool_recipe_10">打字机</string>
+    <string name="pv_motion_tool_recipe_11">跑马灯</string>
+    <string name="pv_motion_tool_recipe_12">弹跳落下</string>
+    <string name="pv_motion_tool_recipe_13">钟摆摇晃</string>
+    <string name="pv_motion_tool_recipe_14">进度填充</string>
+    <string name="pv_motion_tool_recipe_15">骨架微光</string>
+    <string name="pv_motion_tool_recipe_16">涟漪扩散</string>
+    <string name="pv_motion_tool_recipe_17">视差倾斜</string>
+    <string name="pv_motion_tool_recipe_18">磁吸吸附</string>
+    <string name="pv_motion_tool_recipe_19">弹性回弹</string>
+    <string name="pv_motion_tool_recipe_20">逐字幕布</string>
+    <!-- W03 动效规范索引 25 条（Specs：标题 + 导读） -->
+    <string name="pv_motion_tool_spec_01_title">时长分档</string>
+    <string name="pv_motion_tool_spec_01_guide">50–700ms 七档，微交互≤200，页面转场≤450</string>
+    <string name="pv_motion_tool_spec_02_title">曲线选择</string>
+    <string name="pv_motion_tool_spec_02_guide">进入用减速、退出用加速，同一手势全程一曲线</string>
+    <string name="pv_motion_tool_spec_03_title">弹簧优先</string>
+    <string name="pv_motion_tool_spec_03_guide">可打断的动画用弹簧：它天然继承当前速度</string>
+    <string name="pv_motion_tool_spec_04_title">速度继承</string>
+    <string name="pv_motion_tool_spec_04_guide">拖拽松手把手速注入动画，忌清零重来</string>
+    <string name="pv_motion_tool_spec_05_title">错峰上限</string>
+    <string name="pv_motion_tool_spec_05_guide">列表错峰总量不超 300ms，单项间隔 30–90ms</string>
+    <string name="pv_motion_tool_spec_06_title">可打断</string>
+    <string name="pv_motion_tool_spec_06_guide">任何长动画必须能被新手势接管</string>
+    <string name="pv_motion_tool_spec_07_title">减少动效</string>
+    <string name="pv_motion_tool_spec_07_guide">系统开启减少动效时：位移改淡入、时长归零也要到终点位</string>
+    <string name="pv_motion_tool_spec_08_title">退出更快</string>
+    <string name="pv_motion_tool_spec_08_guide" formatted="false">退出时长约为进入的 60–70%</string>
+    <string name="pv_motion_tool_spec_09_title">共享元素</string>
+    <string name="pv_motion_tool_spec_09_guide">跨页同一元素用共享转场，别两边各演一遍</string>
+    <string name="pv_motion_tool_spec_10_title">遮罩联动</string>
+    <string name="pv_motion_tool_spec_10_guide">遮罩透明度与内容位移同进度，不各走各的</string>
+    <string name="pv_motion_tool_spec_11_title">拖拽跟手</string>
+    <string name="pv_motion_tool_spec_11_guide">拖拽期间 1:1 跟随，动画只在松手后接管</string>
+    <string name="pv_motion_tool_spec_12_title">吸附阈值</string>
+    <string name="pv_motion_tool_spec_12_guide">过半或速度过阈才翻页/开合，两条判据取或</string>
+    <string name="pv_motion_tool_spec_13_title">回弹边界</string>
+    <string name="pv_motion_tool_spec_13_guide">过冲只许出现在松手动画，不许拖拽中越界太多</string>
+    <string name="pv_motion_tool_spec_14_title">列表入场</string>
+    <string name="pv_motion_tool_spec_14_guide">仅首屏入场做错峰，滚动中出现的不再逐个演</string>
+    <string name="pv_motion_tool_spec_15_title">状态同步</string>
+    <string name="pv_motion_tool_spec_15_guide">动画结束位必须等于逻辑状态位，防视觉与状态分家</string>
+    <string name="pv_motion_tool_spec_16_title">帧率底线</string>
+    <string name="pv_motion_tool_spec_16_guide">动画只动 transform/alpha 类属性，避免逐帧改布局</string>
+    <string name="pv_motion_tool_spec_17_title">图表动画</string>
+    <string name="pv_motion_tool_spec_17_guide">数据图首次描边生长，后续更新只补间数值</string>
+    <string name="pv_motion_tool_spec_18_title">加载反馈</string>
+    <string name="pv_motion_tool_spec_18_guide">100ms 内无反馈必闪烁；先骨架再内容的顺序不可反</string>
+    <string name="pv_motion_tool_spec_19_title">手势冲突</string>
+    <string name="pv_motion_tool_spec_19_guide">横滑与竖滚在斜向 30° 内按主方向锁定</string>
+    <string name="pv_motion_tool_spec_20_title">焦点与动效</string>
+    <string name="pv_motion_tool_spec_20_guide">键盘焦点移动不带动效，防晕</string>
+    <string name="pv_motion_tool_spec_21_title">深色适配</string>
+    <string name="pv_motion_tool_spec_21_guide">辉光/阴影类动效在深色下单独调强度</string>
+    <string name="pv_motion_tool_spec_22_title">大屏适配</string>
+    <string name="pv_motion_tool_spec_22_guide">位移距离按容器比例而非写死 px</string>
+    <string name="pv_motion_tool_spec_23_title">文案动效</string>
+    <string name="pv_motion_tool_spec_23_guide">数字滚动只滚变化位，长文本用淡入不用逐字</string>
+    <string name="pv_motion_tool_spec_24_title">中断恢复</string>
+    <string name="pv_motion_tool_spec_24_guide">页面切后台回来，动画落终点不续播一半</string>
+    <string name="pv_motion_tool_spec_25_title">一致性</string>
+    <string name="pv_motion_tool_spec_25_guide">同类组件全 App 用同一组 token，一处改全改</string>
+    <!-- X01 弹窗 20 型的入口文案（PopupTypes，键在代码里） -->
+    <string name="pv_video_popup_confirm">确认</string>
+    <string name="pv_video_popup_input">输入</string>
+    <string name="pv_video_popup_loading">加载</string>
+    <string name="pv_video_popup_list_center">中间列表</string>
+    <string name="pv_video_popup_list_bottom">底部列表</string>
+    <string name="pv_video_popup_check_sheet">底部勾选</string>
+    <string name="pv_video_popup_drawer">抽屉</string>
+    <string name="pv_video_popup_image">图片</string>
+    <string name="pv_video_popup_attached">依附</string>
+    <string name="pv_video_popup_popup">气泡</string>
+    <string name="pv_video_bottom_form_title">%1$s（底部形态）</string>
+    <!-- U03 Markdown 渲染演示用的三段示例文档 -->
+    <string name="tk_demo_md_changelog"># v2.8.0 更新日志\n\n新增 **F17 弹窗与提示术语**（P01–P12），把「加个弹窗」这种模糊需求拆成 12 个术语。\n\n## 新增\n\n- 素材库第四分区：*弹窗提示术语 · 12*\n- 每条含定义、何时用、`与邻居的区别`、反例与提示词\n- 详见 [实现方案](https://github.com/yz8023/ui)\n\n## 修复\n\n1. 列表返回不再回到顶部\n2. 提示词长按复制补上触感反馈\n\n&gt; 术语 P01–P06 出自视频简介点名，P07–P12 为本仓库补足。\n\n---\n\n```kotlin\nSnackbarHostState().showSnackbar(\n    message = \"已删除\",\n    actionLabel = \"撤销\"\n)\n```</string>
+    <string name="tk_demo_md_syntax">### 支持清单\n\n- 标题 `#`~`######`\n- **粗体** 与 *斜体*、_斜体_\n- `行内代码` 与围栏代码块\n- [链接](https://github.com/yz8023/ui)\n- 有序列表：\n\n1. 第一项\n2. 第二项\n\n&gt; 引用：连续多行会合并成一段。\n\n***\n\n不支持：表格、图片、嵌套列表、任务列表、HTML 内联。\n需要时改引 `org.commonmark:commonmark`（约 200KB 依赖）。</string>
+    <string name="tk_demo_md_privacy">## 隐私说明（示例）\n\n本模板**不联网上传任何用户数据**。唯一的网络行为有两处：\n\n1. 更新检查：请求 `api.github.com`（U01）\n2. 壁纸缓存：请求你配置的壁纸地址\n\n日志只存内存，*不写文件*，分享由用户手动触发。\n\n- 不申请通讯录、位置、麦克风\n- 存储权限仅用于「所有文件访问」读取系统壁纸</string>
 </resources>
