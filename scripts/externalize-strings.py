@@ -244,6 +244,40 @@ def xml_escape(text: str):
     return t, need_raw
 
 
+def xml_escape_value(v: str):
+    """**运行期真值** → XML 文本。与 `xml_escape` 的区别（别混用）：
+
+    `xml_escape` 吃的是 kt_scan 给的**源码形**文本——普通串里写的反斜杠+n 本来就是两个字符，
+    直接透传给 aapt 正好被还原成换行，所以它只替换真换行、不动反斜杠。
+    本函数吃的是**求值后的真值**（`kt_args.parse_concat` 的产物）：三引号原始串里的反斜杠+n
+    是字面两字符，若不先把反斜杠自我转义，aapt 会把它当换行、把反斜杠+引号当引号定界符，
+    运行时文案就变了。全仓审计（基线 9e10762 的 2153 个字面量）只有 2 条真值含字面反斜杠，
+    都是提示词里的代码示例：tk_u02_prompt 的 message 换行异常类名、ot_p05_prompt 的
+    actionLabel 转义引号。
+    """
+    t = v.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+    t = t.replace(chr(92), chr(92) * 2)      # 必须第一个做，后面新增的反斜杠才不会被二次加倍
+    t = t.replace('"', chr(92) + '"').replace("'", chr(92) + "'")
+    t = t.replace(chr(10), chr(92) + 'n').replace(chr(9), chr(92) + 't')
+    return t, ('%' in v)                     # 含 % 的一律 formatted="false"（0 个格式参数）
+
+
+def xml_unescape_value(t: str) -> str:
+    """`xml_escape_value` 的精确逆运算：单趟扫描，双反斜杠+n 还原成字面两字符而不是换行。"""
+    out, i = [], 0
+    while i < len(t):
+        c = t[i]
+        if c == chr(92) and i + 1 < len(t):
+            n = t[i + 1]
+            out.append({'n': chr(10), 't': chr(9), 'r': chr(13),
+                        '"': '"', "'": "'", chr(92): chr(92)}.get(n, n))
+            i += 2
+            continue
+        out.append(c)
+        i += 1
+    return ''.join(out).replace('&lt;', '<').replace('&gt;', '>').replace('&amp;', '&')
+
+
 def fun_body_start(src: str, fun: str):
     """返回 fun 函数体 `{` 之后的偏移；表达式体（`= …`）或找不到则 None。"""
     for m in re.finditer(r'fun\s+(?:<[^>]*>\s*)?(?:[\w<>.]+\.)?' + re.escape(fun) + r'\s*\(', src):

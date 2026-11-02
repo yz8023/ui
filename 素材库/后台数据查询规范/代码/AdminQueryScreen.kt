@@ -35,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontFamily
@@ -46,6 +47,7 @@ import com.monkeycode.liquidui.R
 import com.monkeycode.liquidui.ui.components.GlassCard
 import com.monkeycode.liquidui.ui.components.SectionTitle
 import com.monkeycode.liquidui.ui.features.adminquery.AdminQueryCategories
+import com.monkeycode.liquidui.ui.features.adminquery.AdminQueryCategoryLabels
 import com.monkeycode.liquidui.ui.features.adminquery.AdminQueryNorm
 import com.monkeycode.liquidui.ui.features.adminquery.AdminQueryNorms
 import com.monkeycode.liquidui.ui.features.adminquery.AdminQueryPreview
@@ -58,13 +60,14 @@ import com.monkeycode.liquidui.ui.features.adminquery.AdminQueryPreview
  */
 @Composable
 fun AdminQueryCatalogSection(onOpen: (AdminQueryNorm) -> Unit) {
+    val context = LocalContext.current
     var query by rememberSaveable { mutableStateOf("") }
     var category by rememberSaveable { mutableStateOf<String?>(null) }
     val chipRowState = rememberSaveable(saver = androidx.compose.foundation.ScrollState.Saver) { androidx.compose.foundation.ScrollState(0) }
     val filtered = remember(query, category) {
         AdminQueryNorms.filter { n ->
             (category == null || n.category == category) &&
-                (query.isBlank() || n.name.contains(query) || n.summary.contains(query) || n.id.contains(query, true))
+                (query.isBlank() || context.getString(n.nameRes).contains(query) || context.getString(n.summaryRes).contains(query) || n.id.contains(query, true))
         }
     }
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -79,8 +82,10 @@ fun AdminQueryCatalogSection(onOpen: (AdminQueryNorm) -> Unit) {
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             AdminQueryChip(stringResource(R.string.common_all), category == null) { category = null }
-            AdminQueryCategories.forEach { c ->
-                AdminQueryChip(c, category == c) { category = if (category == c) null else c }
+            AdminQueryCategories.forEach { key ->
+                AdminQueryChip(stringResource(AdminQueryCategoryLabels.getValue(key)), category == key) {
+                    category = if (category == key) null else key
+                }
             }
         }
         Text(
@@ -121,8 +126,8 @@ private fun AdminQueryCard(norm: AdminQueryNorm, onClick: () -> Unit) {
             }
             Spacer(Modifier.padding(horizontal = 6.dp))
             Column(Modifier.weight(1f)) {
-                Text(norm.name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
-                Text(norm.summary, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 2)
+                Text(stringResource(norm.nameRes), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                Text(stringResource(norm.summaryRes), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 2)
             }
             Text(norm.difficulty, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
@@ -134,6 +139,7 @@ private fun AdminQueryCard(norm: AdminQueryNorm, onClick: () -> Unit) {
 fun AdminQueryDetailScreen(norm: AdminQueryNorm, onBack: () -> Unit) {
     BackHandler(onBack = onBack)
     val clipboard = LocalClipboardManager.current
+    val context = LocalContext.current
     val haptics = LocalHapticFeedback.current
     var copied by remember { mutableStateOf(false) }
     var showPrompt by remember { mutableStateOf(false) }
@@ -148,27 +154,27 @@ fun AdminQueryDetailScreen(norm: AdminQueryNorm, onBack: () -> Unit) {
             Row(Modifier.padding(horizontal = 10.dp), verticalAlignment = Alignment.CenterVertically) {
                 TextButton(onClick = onBack) { Text(stringResource(R.string.common_back_to_library)) }
                 Text(
-                    "${norm.id} · ${norm.category} · ${norm.difficulty}",
+                    "${norm.id} · ${stringResource(AdminQueryCategoryLabels.getValue(norm.category))} · ${norm.difficulty}",
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
-            Text(norm.name, Modifier.padding(horizontal = 22.dp), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
+            Text(stringResource(norm.nameRes), Modifier.padding(horizontal = 22.dp), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
             Spacer(Modifier.height(6.dp))
-            Text(norm.summary, Modifier.padding(horizontal = 22.dp), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(stringResource(norm.summaryRes), Modifier.padding(horizontal = 22.dp), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
             Spacer(Modifier.height(4.dp))
-            Text(norm.params, Modifier.padding(horizontal = 22.dp), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
+            Text(stringResource(norm.paramsRes), Modifier.padding(horizontal = 22.dp), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
         }
         item {
             SectionTitle(text = stringResource(R.string.admin_query_text_1))
             GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
-                Text(norm.rule, style = MaterialTheme.typography.bodySmall)
+                Text(stringResource(norm.ruleRes), style = MaterialTheme.typography.bodySmall)
             }
         }
         item {
             SectionTitle(text = stringResource(R.string.common_anti_pattern))
             GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
-                Text(norm.badCase, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.error)
+                Text(stringResource(norm.badCaseRes), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.error)
             }
         }
         item {
@@ -192,7 +198,7 @@ fun AdminQueryDetailScreen(norm: AdminQueryNorm, onBack: () -> Unit) {
                             .combinedClickable(
                                 onClick = { showPrompt = !showPrompt },
                                 onLongClick = {
-                                    clipboard.setText(AnnotatedString(norm.prompt))
+                                    clipboard.setText(AnnotatedString(context.getString(norm.promptRes)))
                                     haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                                     copied = true
                                 },
@@ -208,7 +214,7 @@ fun AdminQueryDetailScreen(norm: AdminQueryNorm, onBack: () -> Unit) {
                     }
                     if (showPrompt) {
                         Text(
-                            norm.prompt,
+                            stringResource(norm.promptRes),
                             style = MaterialTheme.typography.bodySmall.copy(fontFamily = FontFamily.Monospace, fontSize = 12.sp),
                             modifier = Modifier
                                 .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f), RoundedCornerShape(10.dp))

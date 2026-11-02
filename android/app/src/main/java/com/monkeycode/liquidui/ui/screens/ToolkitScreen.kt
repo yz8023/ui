@@ -34,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontFamily
@@ -45,6 +46,7 @@ import com.monkeycode.liquidui.R
 import com.monkeycode.liquidui.ui.components.GlassCard
 import com.monkeycode.liquidui.ui.components.SectionTitle
 import com.monkeycode.liquidui.ui.features.toolkit.ToolkitCategories
+import com.monkeycode.liquidui.ui.features.toolkit.ToolkitCategoryLabels
 import com.monkeycode.liquidui.ui.features.toolkit.ToolkitEntries
 import com.monkeycode.liquidui.ui.features.toolkit.ToolkitEntry
 import com.monkeycode.liquidui.ui.features.toolkit.ToolkitPreview
@@ -58,14 +60,15 @@ import com.monkeycode.liquidui.ui.features.toolkit.ToolkitPreview
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ToolkitCatalogSection(onOpen: (ToolkitEntry) -> Unit) {
+    val context = LocalContext.current
     var query by rememberSaveable { mutableStateOf("") }
     var category by rememberSaveable { mutableStateOf<String?>(null) }
     val chipRowState = rememberSaveable(saver = ScrollState.Saver) { ScrollState(0) }
     val filtered = remember(query, category) {
         ToolkitEntries.filter { e ->
             (category == null || e.category == category) &&
-                (query.isBlank() || e.name.contains(query) || e.en.contains(query, true) ||
-                    e.summary.contains(query) || e.id.contains(query, true))
+                (query.isBlank() || context.getString(e.nameRes).contains(query) || e.en.contains(query, true) ||
+                    context.getString(e.summaryRes).contains(query) || e.id.contains(query, true))
         }
     }
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -80,7 +83,11 @@ fun ToolkitCatalogSection(onOpen: (ToolkitEntry) -> Unit) {
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             TkChip(stringResource(R.string.common_all), category == null) { category = null }
-            ToolkitCategories.forEach { c -> TkChip(c, category == c) { category = if (category == c) null else c } }
+            ToolkitCategories.forEach { key ->
+                TkChip(stringResource(ToolkitCategoryLabels.getValue(key)), category == key) {
+                    category = if (category == key) null else key
+                }
+            }
         }
         GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -138,8 +145,8 @@ private fun ToolkitCard(entry: ToolkitEntry, onClick: () -> Unit) {
             }
             Spacer(Modifier.padding(horizontal = 6.dp))
             Column(Modifier.weight(1f)) {
-                Text(entry.name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
-                Text(entry.summary, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 2)
+                Text(stringResource(entry.nameRes), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                Text(stringResource(entry.summaryRes), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 2)
             }
             Text(entry.difficulty, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
@@ -151,6 +158,7 @@ private fun ToolkitCard(entry: ToolkitEntry, onClick: () -> Unit) {
 fun ToolkitDetailScreen(entry: ToolkitEntry, onBack: () -> Unit) {
     BackHandler(onBack = onBack)
     val clipboard = LocalClipboardManager.current
+    val context = LocalContext.current
     val haptics = LocalHapticFeedback.current
     var copied by remember { mutableStateOf(false) }
     var showPrompt by remember { mutableStateOf(false) }
@@ -165,33 +173,33 @@ fun ToolkitDetailScreen(entry: ToolkitEntry, onBack: () -> Unit) {
             Row(Modifier.padding(horizontal = 10.dp), verticalAlignment = Alignment.CenterVertically) {
                 TextButton(onClick = onBack) { Text(stringResource(R.string.common_back_to_library)) }
                 Text(
-                    "${entry.id} · ${entry.category} · ${entry.difficulty}",
+                    "${entry.id} · ${stringResource(ToolkitCategoryLabels.getValue(entry.category))} · ${entry.difficulty}",
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
-            Text(entry.name, Modifier.padding(horizontal = 22.dp), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
+            Text(stringResource(entry.nameRes), Modifier.padding(horizontal = 22.dp), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
             Text(entry.en, Modifier.padding(horizontal = 22.dp), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
             Spacer(Modifier.height(6.dp))
-            Text(entry.summary, Modifier.padding(horizontal = 22.dp), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(stringResource(entry.summaryRes), Modifier.padding(horizontal = 22.dp), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
         item {
             SectionTitle(text = stringResource(R.string.toolkit_text_7))
-            GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) { Text(entry.why, style = MaterialTheme.typography.bodySmall) }
+            GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) { Text(stringResource(entry.whyRes), style = MaterialTheme.typography.bodySmall) }
         }
         item {
             SectionTitle(text = stringResource(R.string.toolkit_text_8))
-            GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) { Text(entry.keyImpl, style = MaterialTheme.typography.bodySmall) }
+            GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) { Text(stringResource(entry.keyImplRes), style = MaterialTheme.typography.bodySmall) }
         }
         item {
             SectionTitle(text = stringResource(R.string.toolkit_text_9))
             GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
-                Text(entry.pitfalls, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.error)
+                Text(stringResource(entry.pitfallsRes), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.error)
             }
         }
         item {
             SectionTitle(text = stringResource(R.string.toolkit_text_10))
-            GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) { Text(entry.params, style = MaterialTheme.typography.bodySmall) }
+            GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) { Text(stringResource(entry.paramsRes), style = MaterialTheme.typography.bodySmall) }
         }
         item {
             SectionTitle(text = stringResource(R.string.common_demo_section_hint))
@@ -215,7 +223,7 @@ fun ToolkitDetailScreen(entry: ToolkitEntry, onBack: () -> Unit) {
                             .combinedClickable(
                                 onClick = { showPrompt = !showPrompt },
                                 onLongClick = {
-                                    clipboard.setText(AnnotatedString(entry.prompt))
+                                    clipboard.setText(AnnotatedString(context.getString(entry.promptRes)))
                                     haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                                     copied = true
                                 },
@@ -231,7 +239,7 @@ fun ToolkitDetailScreen(entry: ToolkitEntry, onBack: () -> Unit) {
                     }
                     if (showPrompt) {
                         Text(
-                            entry.prompt,
+                            stringResource(entry.promptRes),
                             style = MaterialTheme.typography.bodySmall.copy(fontFamily = FontFamily.Monospace, fontSize = 12.sp),
                             modifier = Modifier
                                 .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f), RoundedCornerShape(10.dp))
