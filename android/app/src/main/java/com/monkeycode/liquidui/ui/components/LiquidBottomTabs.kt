@@ -79,9 +79,9 @@ import kotlin.math.sign
  *  - the active capsule is a second glass layer with a lens of its own; while
  *    pressed it samples the labels through `tabsBackdrop` so the accent colour
  *    shows through the glass
- *  - the active capsule springs between tabs (`阻尼拖拽动画`), presses
+ *  - the active capsule springs between tabs (`DampedDragAnimation`), presses
  *    scale it up, and drag velocity stretches it along travel (volume-preserving)
- *  - the specular highlight follows the finger (`交互高亮`)
+ *  - the specular highlight follows the finger (`InteractiveHighlight`)
  */
 @Composable
 fun LiquidBottomTabs(

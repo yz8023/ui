@@ -59,7 +59,7 @@ import com.monkeycode.liquidui.ui.theme.AppIcons
 import com.monkeycode.liquidui.ui.theme.AppShape
 
 /**
- * 素材浏览器 — 功能点目录页
+ * 素材浏览器（MaterialBrowser）— 功能点目录页
  *
  * 展示素材库中每个功能模块的元数据（名称、分类、难度、依赖、文件数），
  * 支持搜索和分类筛选，点击卡片可查看接入说明。
@@ -404,8 +404,8 @@ private fun allFeatureItems(): List<FeatureItem> = listOf(
         instructions = """
             1. 复制 动效系统/代码/ 下的 .kt 文件到项目的 ui/motion/ 包
             2. 在 Motion.kt 中调整 Duration / Easing / Stagger 全局 token
-            3. 用 运动.motionDamping 控制全局弹簧阻尼
-            4. 组件中直接引用 运动.Duration.Fast、运动.snappy() 等
+            3. 用 Motion.motionDamping 控制全局弹簧阻尼
+            4. 组件中直接引用 Motion.Duration.Fast、Motion.snappy() 等
         """.trimIndent(),
         fileCount = 5,
         codeDir = "素材库/动效系统/代码/",

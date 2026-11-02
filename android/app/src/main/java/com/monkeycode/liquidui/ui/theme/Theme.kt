@@ -399,7 +399,7 @@ data class AppChrome(
     /** Global escape hatch — motion demos honour this per animation. */
     val reducedMotion: Boolean = false,
     /**
-     * Spring damping, 0f..1f. Pushed into [com.monkeycode.liquidui.ui.motion.运动.motionDamping]
+     * Spring damping, 0f..1f. Pushed into [com.monkeycode.liquidui.ui.motion.Motion.motionDamping]
      * so one slider retunes every spring token in the app.
      */
     val motionDamping: Float = 0.5f,

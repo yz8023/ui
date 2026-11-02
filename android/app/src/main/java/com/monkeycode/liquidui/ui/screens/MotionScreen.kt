@@ -307,7 +307,7 @@ private fun RevealRow(runId: Int, index: Int, enabled: Boolean) {
         )
         Spacer(Modifier.weight(1f))
         Text(
-            text = "${index * 运动.Stagger.StandardList}ms",
+            text = "${index * Motion.Stagger.StandardList}ms",
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )

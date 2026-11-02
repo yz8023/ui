@@ -123,15 +123,15 @@ fun WelcomeGuideScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // ── 免费声明卡 ─────────────────────────────────────
+            // ── FreeNoticeCard ─────────────────────────────────────
             FreeNoticeCard()
             Spacer(modifier = Modifier.height(16.dp))
 
-            // ── 免责声明卡 ─────────────────────────────────────
+            // ── DisclaimerCard ─────────────────────────────────────
             DisclaimerCard()
             Spacer(modifier = Modifier.height(16.dp))
 
-            // ── 开源仓库卡 ─────────────────────────────────────
+            // ── OpenSourceRepoCard ─────────────────────────────────────
             OpenSourceRepoCard(
                 repoUrl = "https://github.com/your-org/your-repo",
                 context = context
@@ -209,7 +209,7 @@ private fun WelcomeGuideFeature(
     }
 }
 
-/** 免费声明卡 */
+/** FreeNoticeCard（免费声明卡） */
 @Composable
 private fun FreeNoticeCard() {
     Card(
@@ -255,7 +255,7 @@ private fun FreeNoticeCard() {
     }
 }
 
-/** 免责声明卡 */
+/** DisclaimerCard（免责声明卡） */
 @Composable
 private fun DisclaimerCard() {
     Card(
