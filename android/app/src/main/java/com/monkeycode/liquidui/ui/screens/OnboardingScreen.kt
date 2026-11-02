@@ -32,7 +32,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.res.stringResource
 import com.monkeycode.liquidui.R
 import com.monkeycode.liquidui.ui.components.AuroraBackground
 import com.monkeycode.liquidui.ui.components.GlassCard
@@ -111,20 +110,20 @@ fun OnboardingScreen(
                     ) {
                         Image(
                             painter = painterResource(R.mipmap.ic_launcher),
-                            contentDescription = stringResource(R.string.common_app_icon),
+                            contentDescription = "应用图标",
                             modifier = Modifier
                                 .size(88.dp)
                                 .clip(RoundedCornerShape(24.dp))
                         )
-                        Tag(text = stringResource(R.string.common_library_subtitle))
+                        Tag(text = "Android 功能素材库")
                         Text(
-                            text = stringResource(R.string.onboarding_text_1),
+                            text = "选功能，抄代码，拼出你的 App",
                             style = MaterialTheme.typography.displayMedium,
                             color = MaterialTheme.colorScheme.onBackground,
                             textAlign = TextAlign.Center
                         )
                         Text(
-                            text = stringResource(R.string.onboarding_text_2),
+                            text = "这里不是单一 UI Demo，而是一套可拆、可复制、可组合的 Compose 功能素材。",
                             style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             textAlign = TextAlign.Center
@@ -148,7 +147,7 @@ fun OnboardingScreen(
             item {
                 StaggeredReveal(index = 2, enabled = true) {
                     InfoBanner(
-                        text = stringResource(R.string.onboarding_text_3),
+                        text = "所有偏好都保存在本地。你可以随时在「设置」中重新查看本引导、导入导出主题配置。",
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
@@ -170,11 +169,11 @@ fun OnboardingScreen(
                                 runCatching { context.startActivity(intent) }
                             },
                             modifier = Modifier.weight(1f)
-                        ) { Text(stringResource(R.string.common_open_source)) }
+                        ) { Text("开源仓库") }
                         PrimaryButton(
                             onClick = onFinish,
                             modifier = Modifier.weight(1f)
-                        ) { Text(stringResource(R.string.common_get_started)) }
+                        ) { Text("开始使用") }
                     }
                 }
             }

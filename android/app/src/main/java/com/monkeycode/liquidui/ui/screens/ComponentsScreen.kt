@@ -120,7 +120,7 @@ fun ComponentsScreen() {
                 Modifier.fillMaxWidth().padding(horizontal = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                listOf(stringResource(R.string.common_all), stringResource(R.string.common_appearance), stringResource(R.string.components_text_10)).forEachIndexed { index, label ->
+                listOf(stringResource(R.string.common_all), stringResource(R.string.components_text_10), stringResource(R.string.components_text_11)).forEachIndexed { index, label ->
                     GlassCapsuleButton(capsule == index, label, { capsule = index })
                 }
             }
@@ -133,11 +133,11 @@ fun ComponentsScreen() {
                     horizontalArrangement = Arrangement.spacedBy(10.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    PrimaryButton(onClick = {}) { Text(stringResource(R.string.components_text_11)) }
-                    SecondaryButton(onClick = {}) { Text(stringResource(R.string.components_text_12)) }
+                    PrimaryButton(onClick = {}) { Text(stringResource(R.string.components_text_12)) }
+                    SecondaryButton(onClick = {}) { Text(stringResource(R.string.components_text_13)) }
                     GlassIconButton(
                         icon = AppIcons.Notifications,
-                        contentDescription = stringResource(R.string.common_notification),
+                        contentDescription = stringResource(R.string.components_content_desc_1),
                         onClick = {}
                     )
                 }
@@ -146,7 +146,7 @@ fun ComponentsScreen() {
                     horizontalArrangement = Arrangement.spacedBy(10.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    PrimaryButton(onClick = {}, enabled = false) { Text(stringResource(R.string.components_text_13)) }
+                    PrimaryButton(onClick = {}, enabled = false) { Text(stringResource(R.string.components_text_14)) }
                     Tag(text = "ease-out-back · 180ms")
                 }
             }
@@ -167,7 +167,7 @@ fun ComponentsScreen() {
                     value = password,
                     onValueChange = { password = it },
                     label = stringResource(R.string.components_label_2),
-                    supportingText = stringResource(R.string.components_text_14),
+                    supportingText = stringResource(R.string.components_text_15),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                     visualTransformation = PasswordVisualTransformation(),
                     modifier = Modifier.fillMaxWidth()
@@ -179,7 +179,7 @@ fun ComponentsScreen() {
         item {
             GlassCard(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
                 SegmentedTabs(
-                    labels = listOf(stringResource(R.string.components_text_15), stringResource(R.string.common_light), stringResource(R.string.common_dark)),
+                    labels = listOf(stringResource(R.string.components_text_16), stringResource(R.string.components_text_17), stringResource(R.string.components_text_18)),
                     selectedIndex = segmented,
                     onSelected = { segmented = it },
                     modifier = Modifier.fillMaxWidth()
@@ -189,10 +189,10 @@ fun ComponentsScreen() {
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Tag(text = stringResource(R.string.components_text_16), accent = AuroraMint)
-                    Tag(text = stringResource(R.string.components_text_17), accent = AuroraAmber)
-                    Tag(text = stringResource(R.string.components_text_18), accent = AuroraRose)
-                    Tag(text = stringResource(R.string.components_text_19), accent = AuroraViolet)
+                    Tag(text = stringResource(R.string.components_text_19), accent = AuroraMint)
+                    Tag(text = stringResource(R.string.components_text_20), accent = AuroraAmber)
+                    Tag(text = stringResource(R.string.components_text_21), accent = AuroraRose)
+                    Tag(text = stringResource(R.string.components_text_22), accent = AuroraViolet)
                 }
             }
         }
@@ -245,7 +245,7 @@ fun ComponentsScreen() {
                             meter < 0.7f -> 1f
                             else -> 0.18f
                         }
-                    }) { Text(stringResource(R.string.components_text_20)) }
+                    }) { Text(stringResource(R.string.components_text_23)) }
                 }
                 Spacer(Modifier.height(12.dp))
                 Meter(progress = meter)
@@ -261,9 +261,9 @@ fun ComponentsScreen() {
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(Modifier.height(10.dp))
-                SuccessBanner(stringResource(R.string.components_text_21))
+                SuccessBanner(stringResource(R.string.components_text_24))
                 Spacer(Modifier.height(8.dp))
-                OfflineBanner(text = stringResource(R.string.components_text_22))
+                OfflineBanner(text = stringResource(R.string.components_text_25))
             }
         }
         item {
@@ -280,12 +280,12 @@ fun ComponentsScreen() {
         item {
             GlassCard(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
                 Text(
-                    text = stringResource(R.string.components_text_23),
+                    text = stringResource(R.string.components_text_26),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Spacer(Modifier.height(12.dp))
-                PrimaryButton(onClick = { showDialog = true }) { Text(stringResource(R.string.components_text_24)) }
+                PrimaryButton(onClick = { showDialog = true }) { Text(stringResource(R.string.components_text_27)) }
             }
         }
 
@@ -336,7 +336,7 @@ fun ComponentsScreen() {
             confirmText = stringResource(R.string.components_confirm_1)
         ) {
             Text(
-                text = stringResource(R.string.components_text_25),
+                text = stringResource(R.string.components_text_28),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

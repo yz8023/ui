@@ -41,8 +41,6 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.res.stringResource
-import com.monkeycode.liquidui.R
 import com.monkeycode.liquidui.ui.components.GlassCard
 import com.monkeycode.liquidui.ui.components.SectionTitle
 import com.monkeycode.liquidui.ui.features.overlayterms.OverlayCategories
@@ -71,28 +69,28 @@ fun OverlayTermsCatalogSection(onOpen: (OverlayTerm) -> Unit) {
         OutlinedTextField(
             value = query, onValueChange = { query = it },
             modifier = Modifier.fillMaxWidth().padding(horizontal = 22.dp),
-            placeholder = { Text(stringResource(R.string.overlaytermsscreen_text_1)) }, singleLine = true,
+            placeholder = { Text("搜索术语…（如 Toast / 抽屉 / P05）") }, singleLine = true,
         )
-        SectionTitle(text = stringResource(R.string.common_category))
+        SectionTitle(text = "分类")
         Row(
             Modifier.fillMaxWidth().horizontalScroll(chipRowState).padding(horizontal = 22.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            OverlayChip(stringResource(R.string.common_all), category == null) { category = null }
+            OverlayChip("全部", category == null) { category = null }
             OverlayCategories.forEach { c -> OverlayChip(c, category == c) { category = if (category == c) null else c } }
         }
         GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                Text(stringResource(R.string.overlaytermsscreen_text_2), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.SemiBold)
+                Text("强度速查（从最强打断到最弱）", style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.SemiBold)
                 Text(
-                    stringResource(R.string.overlaytermsscreen_text_3) +
-                        stringResource(R.string.overlaytermsscreen_text_4) +
-                        stringResource(R.string.overlaytermsscreen_text_5),
+                    "Alert（必须点掉）> Modal（要你在里面做完）> Drawer / BottomSheet（边缘面板）> " +
+                        "Popconfirm / Popover（锚定气泡）> Snackbar（可撤销条幅）> Toast（自动消失）；" +
+                        "Loading 是过程反馈、Badge 是持续状态，两者不弹但同属提示族。",
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 Text(
-                    stringResource(R.string.overlaytermsscreen_text_6),
+                    "选型口诀：要不要打断？打断完要不要用户做事？事情发生在哪个元素旁边？错过这条信息会不会有损失？",
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.primary,
                 )
@@ -161,7 +159,7 @@ fun OverlayTermsDetailScreen(term: OverlayTerm, onBack: () -> Unit) {
     ) {
         item {
             Row(Modifier.padding(horizontal = 10.dp), verticalAlignment = Alignment.CenterVertically) {
-                TextButton(onClick = onBack) { Text(stringResource(R.string.common_back_to_library)) }
+                TextButton(onClick = onBack) { Text("‹ 返回素材库") }
                 Text(
                     "${term.id} · ${term.category} · ${term.difficulty}",
                     style = MaterialTheme.typography.labelMedium,
@@ -176,39 +174,39 @@ fun OverlayTermsDetailScreen(term: OverlayTerm, onBack: () -> Unit) {
             Text(term.params, Modifier.padding(horizontal = 22.dp), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
         }
         item {
-            SectionTitle(text = stringResource(R.string.overlaytermsscreen_text_7))
+            SectionTitle(text = "定义")
             GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) { Text(term.definition, style = MaterialTheme.typography.bodySmall) }
         }
         item {
-            SectionTitle(text = stringResource(R.string.overlaytermsscreen_text_8))
+            SectionTitle(text = "什么时候用")
             GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) { Text(term.whenToUse, style = MaterialTheme.typography.bodySmall) }
         }
         item {
-            SectionTitle(text = stringResource(R.string.overlaytermsscreen_text_9))
+            SectionTitle(text = "和邻居的区别（术语课的重点）")
             GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) { Text(term.vsNeighbor, style = MaterialTheme.typography.bodySmall) }
         }
         item {
-            SectionTitle(text = stringResource(R.string.overlaytermsscreen_text_10))
+            SectionTitle(text = "Android / Compose 对应")
             GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) { Text(term.androidImpl, style = MaterialTheme.typography.bodySmall) }
         }
         item {
-            SectionTitle(text = stringResource(R.string.common_anti_pattern))
+            SectionTitle(text = "反例（别这么做）")
             GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
                 Text(term.badCase, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.error)
             }
         }
         item {
-            SectionTitle(text = stringResource(R.string.common_demo_section_hint))
+            SectionTitle(text = "功能体验（真实实现，可直接操作）")
             GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
                 Column(Modifier.padding(vertical = 4.dp)) { OverlayTermsPreview(term) }
             }
         }
         item {
-            SectionTitle(text = stringResource(R.string.common_prompt))
+            SectionTitle(text = "提示词")
             GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
                 Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                     Text(
-                        stringResource(R.string.overlaytermsscreen_text_11),
+                        "点按查看全文，长按按钮把整段提示词复制到剪贴板。提示词同时给了 Web 与 Android/Compose 两套写法，跟 AI 说的时候用对术语，它就不会给你做成四不像。",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -227,7 +225,7 @@ fun OverlayTermsDetailScreen(term: OverlayTerm, onBack: () -> Unit) {
                         contentAlignment = Alignment.Center,
                     ) {
                         Text(
-                            if (copied) stringResource(R.string.common_copied_hint) else stringResource(R.string.common_long_press_to_copy),
+                            if (copied) "✓ 已复制，去粘贴给 AI 吧" else "长按复制提示词",
                             color = MaterialTheme.colorScheme.onPrimary,
                             fontWeight = FontWeight.SemiBold,
                         )
@@ -242,7 +240,7 @@ fun OverlayTermsDetailScreen(term: OverlayTerm, onBack: () -> Unit) {
                         )
                     }
                     Text(
-                        stringResource(R.string.overlaytermsscreen_text_12),
+                        "来源：P01–P06 术语出自 B 站 ZTough《Vibe Coding 术语课：别再管所有弹窗都叫「弹窗」了》(BV14Utf6QEnB) 页面公开简介；P07–P12 为本仓库补足的同族术语。定义/区别/反例/提示词均为本仓库独立撰写，详见 素材库/弹窗与提示术语/参考来源.md。",
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )

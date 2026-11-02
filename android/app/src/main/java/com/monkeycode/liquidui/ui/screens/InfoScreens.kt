@@ -24,8 +24,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.res.stringResource
-import com.monkeycode.liquidui.R
 import com.monkeycode.liquidui.BuildConfig
 import com.monkeycode.liquidui.ui.components.GlassCard
 import com.monkeycode.liquidui.ui.components.PrimaryButton
@@ -75,7 +73,7 @@ private fun InfoPage(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 Text(
-                    text = stringResource(R.string.info_text_1),
+                    text = "‹ 返回",
                     color = MaterialTheme.colorScheme.primary,
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.clickable(onClick = onBack).padding(vertical = 6.dp),
@@ -92,24 +90,24 @@ private fun InfoPage(
 fun AboutScreen(onBack: () -> Unit) {
     val context = LocalContext.current
     InfoPage(
-        title = stringResource(R.string.info_title_1),
-        subtitle = stringResource(R.string.info_subtitle_1),
+        title = "关于",
+        subtitle = "完整列出直接参考的项目、作者、用途与许可证，尊重每一位开源作者。",
         onBack = onBack,
     ) {
         item {
             GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Column(Modifier.weight(1f)) {
-                        Text(stringResource(R.string.common_library_subtitle), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
-                        Text(stringResource(R.string.info_text_2), color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text("Android 功能素材库", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
+                        Text("Liquid Motion UI 示例应用", color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                     Text("v${BuildConfig.VERSION_NAME}", color = MaterialTheme.colorScheme.primary)
                 }
                 Spacer(Modifier.height(10.dp))
-                Text(stringResource(R.string.info_text_3), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text("本项目自身代码采用 MIT 许可证。若复制或分发上游代码，请同时遵守对应上游许可证并保留署名。", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
-        item { SectionTitle(stringResource(R.string.info_section_title_1)) }
+        item { SectionTitle("参考项目与作者") }
         allCredits.forEach { credit ->
             item(key = credit.url) {
                 GlassCard(
@@ -137,7 +135,7 @@ fun AboutScreen(onBack: () -> Unit) {
                     runCatching { context.startActivity(intent) }
                 },
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-            ) { Text(stringResource(R.string.info_text_4)) }
+            ) { Text("查看本项目源码与 CREDITS.md") }
         }
     }
 }
@@ -145,24 +143,24 @@ fun AboutScreen(onBack: () -> Unit) {
 @Composable
 fun PrivacyScreen(onBack: () -> Unit) {
     InfoPage(
-        title = stringResource(R.string.common_privacy),
-        subtitle = stringResource(R.string.info_subtitle_2),
+        title = "隐私说明",
+        subtitle = "逐项说明数据保存位置、权限用途和网络行为。",
         onBack = onBack,
     ) {
-        item { SectionTitle(stringResource(R.string.info_section_title_2)) }
-        item { InfoCard(stringResource(R.string.info_text_5), stringResource(R.string.info_text_6)) }
-        item { InfoCard(stringResource(R.string.info_text_7), stringResource(R.string.info_text_8)) }
-        item { InfoCard(stringResource(R.string.common_notification), stringResource(R.string.info_text_9)) }
-        item { InfoCard(stringResource(R.string.info_text_10), stringResource(R.string.info_text_11)) }
-        item { InfoCard(stringResource(R.string.info_text_12), stringResource(R.string.info_text_13)) }
+        item { SectionTitle("数据处理") }
+        item { InfoCard("本地偏好", "主题、动效、桌面图标与引导完成状态仅保存在设备本地 SharedPreferences，不会上传。") }
+        item { InfoCard("壁纸读取", "系统壁纸仅通过 WallpaperManager 在本机读取并绘制，不保存、不上传。Android 12 及以下读取真实壁纸需要存储读取权限；Android 14 起系统只允许持有「所有文件访问」的 app 读取桌面壁纸，应用会在系统壁纸设置处引导你在系统设置中开启（可随时关闭），未开启前自动回退内置背景，本地图片与网络壁纸不受影响。") }
+        item { InfoCard("通知", "仅在你点击“发送测试通知”时申请通知权限并创建本地通知，不向服务器发送数据。") }
+        item { InfoCard("网络与账号", "应用没有账号、分析、广告、遥测或后台上传功能。点击项目链接时会交给系统浏览器打开。") }
+        item { InfoCard("权限撤回", "可随时在 Android 系统设置的“应用信息 → 权限”中撤回授权；撤回不影响其他离线功能。") }
     }
 }
 
 @Composable
 fun PermissionCenterScreen(onBack: () -> Unit) {
     InfoPage(
-        title = stringResource(R.string.common_permissions),
-        subtitle = stringResource(R.string.info_subtitle_3),
+        title = "权限管理",
+        subtitle = "权限不是介绍弹窗：可在这里真实请求、检查授权状态，并在拒绝后进入系统设置恢复。",
         onBack = onBack,
     ) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -170,16 +168,16 @@ fun PermissionCenterScreen(onBack: () -> Unit) {
                 PermissionRequestCard(
                     PermissionSpec(
                         permission = Manifest.permission.POST_NOTIFICATIONS,
-                        title = stringResource(R.string.info_title_2),
-                        description = stringResource(R.string.info_desc_1),
+                        title = "通知权限",
+                        description = "用于你主动触发的主题预览通知。",
                     ),
                     modifier = Modifier.padding(horizontal = 16.dp),
                 )
             }
             item {
                 InfoCard(
-                    stringResource(R.string.info_text_14),
-                    stringResource(R.string.info_text_15),
+                    "系统壁纸权限",
+                    "读取系统壁纸不使用媒体图片权限（该权限对 WallpaperManager 无效，旧版曾误用）。Android 14 起系统只允许持有「所有文件访问」的 app 读取桌面壁纸——请在设置页「壁纸与背景 → 系统壁纸」处点按钮，跳到系统设置里为本 app 开启；开启后返回即生效，不需要时可随时关闭。",
                 )
             }
         } else {
@@ -187,15 +185,15 @@ fun PermissionCenterScreen(onBack: () -> Unit) {
                 PermissionRequestCard(
                     PermissionSpec(
                         permission = Manifest.permission.READ_EXTERNAL_STORAGE,
-                        title = stringResource(R.string.info_title_3),
-                        description = stringResource(R.string.info_desc_2),
+                        title = "存储读取权限",
+                        description = "仅在启用桌面壁纸背景时读取系统返回的壁纸图像。",
                     ),
                     modifier = Modifier.padding(horizontal = 16.dp),
                 )
             }
-            item { InfoCard(stringResource(R.string.info_title_2), stringResource(R.string.info_text_16)) }
+            item { InfoCard("通知权限", "Android 12 及以下无需单独申请通知运行时权限。") }
         }
-        item { InfoCard(stringResource(R.string.info_text_17), stringResource(R.string.info_text_18)) }
+        item { InfoCard("最小权限原则", "应用不申请位置、相机、麦克风、通讯录或电话权限。所有权限均由明确的用户操作触发。") }
     }
 }
 

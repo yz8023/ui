@@ -12,6 +12,7 @@
   comp   = 所属函数是否 @Composable（scope='top' 时为 None）
   fun    = 所属函数名
 """
+import pathlib
 import re
 from typing import List, Dict, Optional
 
@@ -27,7 +28,7 @@ MODIFIERS = {'private', 'public', 'internal', 'protected', 'inline', 'suspend', 
 # 这些块是**非组合上下文**的 lambda：里面不能调 stringResource()。
 # 典型事故：remember { mutableStateOf("全部") } 与 onClick = { toast("已复制") }。
 NON_COMP_HEAD = re.compile(
-    r'\b(?:remember|rememberSaveable|rememberCoroutineScope|rememberUpdatedState|rememberInfiniteTransition|'
+    r'\b(?:remember\w*|runCatching|buildString|buildList|buildMap|lazy|'
     r'derivedStateOf|LaunchedEffect|SideEffect|DisposableEffect|produceState|snapshotFlow|launch|withContext|'
     r'coroutineScope|runBlocking|forEach|forEachIndexed|map|mapNotNull|filter|let|apply|also|onEach|'
     r'firstOrNull|firstNotNullOfOrNull|find|any|all|none|sumOf|sortedBy|sortedByDescending|maxByOrNull|'
@@ -36,11 +37,61 @@ NON_COMP_HEAD = re.compile(
 NON_COMP_PARAM = re.compile(r'\bon[A-Z]\w*\s*=?\s*$')
 
 
-def block_kind(lead: str) -> str:
+def _split_top(s: str):
+    parts, d, cur = [], 0, ''
+    for ch in s:
+        if ch in '(<[': d += 1
+        elif ch in ')>]': d -= 1
+        if ch == ',' and d == 0:
+            parts.append(cur); cur = ''
+        else:
+            cur += ch
+    if cur.strip(): parts.append(cur)
+    return parts
+
+
+def build_lambda_kinds(root) -> dict:
+    """{函数名: 尾随 lambda 是否 @Composable}。
+
+    为什么必须解析签名而不能靠关键词表：PrimaryButton/SecondaryButton 的尾参是
+    `content: @Composable RowScope.() -> Unit`（可组合），而 TKChip/TKButton/OTButton/
+    QButton 的尾参是 `onClick: () -> Unit`（不可组合）。两者写法看起来一样：
+    `XxxButton(...) { ... }`，只有被调函数的签名能区分。CI 曾因此报 30 条
+    "@Composable invocations can only happen from the context of a @Composable function"。
+    """
+    kinds = {}
+    for f in pathlib.Path(root).rglob('*.kt'):
+        src = f.read_text(encoding='utf-8')
+        for m in re.finditer(r'fun\s+(?:<[^>]*>\s*)?(?:[\w<>.]+\.)?([A-Za-z_]\w*)\s*\(', src):
+            i, d = m.end(), 1
+            while i < len(src) and d:
+                if src[i] == '(': d += 1
+                elif src[i] == ')': d -= 1
+                i += 1
+            parts = _split_top(src[m.end():i - 1])
+            if not parts: continue
+            last = parts[-1]
+            if '->' not in last: continue
+            kinds.setdefault(m.group(1), '@Composable' in last)
+    return kinds
+
+
+def block_kind(lead: str, kinds: dict = None) -> str:
     """判断一个 `{` 是不是非组合 lambda（看它前面那段代码）。"""
     s = lead.rstrip()
     if NON_COMP_HEAD.search(s) or NON_COMP_PARAM.search(s):
         return 'noncomp'
+    if kinds and s.endswith(')'):
+        d, i = 0, len(s) - 1
+        while i >= 0:
+            if s[i] == ')': d += 1
+            elif s[i] == '(':
+                d -= 1
+                if d == 0: break
+            i -= 1
+        mc = re.search(r'([A-Za-z_]\w*)\s*$', s[:i])
+        if mc and mc.group(1) in kinds and not kinds[mc.group(1)]:
+            return 'noncomp'
     return 'comp'
 
 
@@ -83,7 +134,7 @@ def _skip_string(src: str, i: int, raw: bool) -> tuple:
         j += 1
     return n, interp
 
-def scan(src: str) -> List[Dict]:
+def scan(src: str, kinds: dict = None) -> List[Dict]:
     i, n = 0, len(src)
     out: List[Dict] = []
     ann: List[str] = []
@@ -161,8 +212,7 @@ def scan(src: str) -> List[Dict]:
             idx = cur_fun()
             if idx is not None and funs[idx]['state'] == 'await':
                 funs[idx]['state'] = 'body'; fi = idx
-            ls = src.rfind('\n', 0, i) + 1
-            stack.append(['brace', fi, block_kind(src[max(ls, i - 120):i])])
+            stack.append(['brace', fi, block_kind(src[max(0, i - 300):i], kinds)])
             i += 1; continue
         if c == '}':
             for k in range(len(stack) - 1, -1, -1):
@@ -222,7 +272,8 @@ if __name__ == '__main__':
     for f in sorted(root.rglob('*.kt')):
         src = f.read_text(encoding='utf-8')
         rel = str(f.relative_to(root))
-        for r in scan(src):
+        kinds = kinds if 'kinds' in dir() else build_lambda_kinds(root)
+        for r in scan(src, kinds):
             if not CJK.search(r['text']):
                 continue
             r['file'] = rel

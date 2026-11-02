@@ -139,13 +139,13 @@ private fun UpdateCheckDemo() {
                         latest = ReleaseInfo(
                             tag = "v2.8.0",
                             name = "Liquid UI v2.8.0",
-                            body = stringResource(R.string.tk_demo_body_1),
+                            body = "## 更新内容\n\n- 新增 **F17** 弹窗与提示术语（12 条）\n- 新增套壳上手指南\n\n> 详见仓库 `docs/`",
                             publishedAt = "2026-11-02T08:00:00Z",
                             apkUrl = "https://example.invalid/liquidui-v2.8.0-release.apk",
                             apkName = "liquidui-v2.8.0-release.apk",
                             apkBytes = 1_979_392L
                         ),
-                        message = stringResource(R.string.tk_demo_message_1),
+                        message = "发现新版本 v2.8.0（当前 2.7.0）",
                         elapsedMillis = 412
                     )
                 )
@@ -157,7 +157,7 @@ private fun UpdateCheckDemo() {
                         state = UpdateState.UP_TO_DATE,
                         currentVersion = "2.8.0",
                         latest = ReleaseInfo("v2.8.0", "Liquid UI v2.8.0", "", "2026-11-02T08:00:00Z", null, null, -1),
-                        message = stringResource(R.string.tk_demo_message_2),
+                        message = "已是最新版本 v2.8.0",
                         elapsedMillis = 388
                     )
                 )
@@ -169,7 +169,7 @@ private fun UpdateCheckDemo() {
                         state = UpdateState.FAILED,
                         currentVersion = AppUpdateChecker.currentVersionName(context),
                         latest = null,
-                        message = stringResource(R.string.tk_demo_message_3),
+                        message = "HTTP 403：多半是 API 限流（未带 token 时 60 次/小时/IP），稍后再试",
                         elapsedMillis = 205
                     )
                 )
@@ -336,14 +336,14 @@ private fun LogShareDemo() {
 
         Text(stringResource(R.string.tk_demo_text_19), style = MaterialTheme.typography.labelMedium)
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            TKButton(stringResource(R.string.tk_demo_text_20), true) { AppLog.d("Demo", stringResource(R.string.tk_demo_text_21)) }
-            TKButton(stringResource(R.string.tk_demo_text_22), true) { AppLog.i("Demo", stringResource(R.string.tk_demo_text_23)) }
-            TKButton(stringResource(R.string.tk_demo_text_24), true) { AppLog.w("Demo", stringResource(R.string.tk_demo_text_25)) }
-            TKButton(stringResource(R.string.tk_demo_text_26), true) {
-                AppLog.e("Demo", stringResource(R.string.tk_demo_text_27), java.io.IOException("connect timed out"))
+            TKButton(stringResource(R.string.tk_demo_text_20), true) { AppLog.d("Demo", "用户展开日志面板") }
+            TKButton(stringResource(R.string.tk_demo_text_21), true) { AppLog.i("Demo", "切换主题为深色") }
+            TKButton(stringResource(R.string.tk_demo_text_22), true) { AppLog.w("Demo", "磁盘缓存超过 80%") }
+            TKButton(stringResource(R.string.tk_demo_text_23), true) {
+                AppLog.e("Demo", "拉取更新失败", java.io.IOException("connect timed out"))
             }
         }
-        TKNote(stringResource(R.string.tk_demo_text_28))
+        TKNote(stringResource(R.string.tk_demo_text_24))
 
         Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             TKChip(stringResource(R.string.common_all), level == null) { level = null }
@@ -353,7 +353,7 @@ private fun LogShareDemo() {
             value = keyword,
             onValueChange = { keyword = it },
             modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text(stringResource(R.string.tk_demo_text_29)) },
+            placeholder = { Text(stringResource(R.string.tk_demo_text_25)) },
             singleLine = true
         )
         Text("命中 ${picked.size} 条（只显示最新 8 条，完整内容用复制/分享取）", style = MaterialTheme.typography.labelMedium)
@@ -368,7 +368,7 @@ private fun LogShareDemo() {
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             if (picked.isEmpty()) {
-                Text(stringResource(R.string.tk_demo_text_30), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(stringResource(R.string.tk_demo_text_26), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             } else {
                 picked.takeLast(8).reversed().forEach { e ->
                     Row(verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -400,23 +400,23 @@ private fun LogShareDemo() {
             }
             TKButton(stringResource(R.string.common_share), true) {
                 val intent = AppLog.buildShareIntent(context, level, keyword)
-                val ok = runCatching { context.startActivity(Intent.createChooser(intent, stringResource(R.string.tk_demo_text_31))) }.isSuccess
-                AppLog.i("Demo", if (ok) stringResource(R.string.tk_demo_text_32) else stringResource(R.string.tk_demo_text_33))
-                shareNote = if (ok) stringResource(R.string.tk_demo_text_34) else stringResource(R.string.tk_demo_text_35)
+                val ok = runCatching { context.startActivity(Intent.createChooser(intent, "分享日志")) }.isSuccess
+                AppLog.i("Demo", if (ok) "调起分享面板" else "没有可接收分享的应用")
+                shareNote = if (ok) "已调起系统分享面板" else "分享失败：没有可接收的应用，请改用「复制全文」"
             }
-            TKButton(if (confirmingClear) stringResource(R.string.tk_demo_text_36) else stringResource(R.string.common_clear), true) {
+            TKButton(if (confirmingClear) stringResource(R.string.tk_demo_text_27) else stringResource(R.string.common_clear), true) {
                 if (confirmingClear) {
                     AppLog.clear()
                     confirmingClear = false
-                    shareNote = stringResource(R.string.tk_demo_text_37)
+                    shareNote = "已清空缓冲"
                 } else {
                     confirmingClear = true
-                    shareNote = stringResource(R.string.tk_demo_text_38)
+                    shareNote = "再点一次确认清空（3 秒后自动取消）"
                 }
             }
         }
         shareNote?.let { TKNote(it) }
-        TKNote(stringResource(R.string.tk_demo_text_39))
+        TKNote(stringResource(R.string.tk_demo_text_28))
     }
 }
 
@@ -510,13 +510,13 @@ private fun MarkdownDemo() {
 
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            TKChip(stringResource(R.string.tk_demo_text_40), source == MD_CHANGELOG) { source = MD_CHANGELOG }
-            TKChip(stringResource(R.string.tk_demo_text_41), source == MD_SYNTAX) { source = MD_SYNTAX }
-            TKChip(stringResource(R.string.common_privacy), source == MD_PRIVACY) { source = MD_PRIVACY }
+            TKChip(stringResource(R.string.tk_demo_text_29), source == MD_CHANGELOG) { source = MD_CHANGELOG }
+            TKChip(stringResource(R.string.tk_demo_text_30), source == MD_SYNTAX) { source = MD_SYNTAX }
+            TKChip(stringResource(R.string.tk_demo_text_31), source == MD_PRIVACY) { source = MD_PRIVACY }
         }
-        TKKeyValue(stringResource(R.string.tk_demo_text_42), summary)
+        TKKeyValue(stringResource(R.string.tk_demo_text_32), summary)
 
-        TKButton(if (editing) stringResource(R.string.tk_demo_text_43) else stringResource(R.string.tk_demo_text_44), true) {
+        TKButton(if (editing) stringResource(R.string.tk_demo_text_33) else stringResource(R.string.tk_demo_text_34), true) {
             editing = !editing
             if (editing) draft = source
         }
@@ -529,7 +529,7 @@ private fun MarkdownDemo() {
                 },
                 modifier = Modifier.fillMaxWidth().heightIn(min = 160.dp),
                 textStyle = MaterialTheme.typography.bodySmall.copy(fontFamily = FontFamily.Monospace, fontSize = 12.sp),
-                label = { Text(stringResource(R.string.tk_demo_text_45)) }
+                label = { Text(stringResource(R.string.tk_demo_text_35)) }
             )
         }
 
@@ -541,7 +541,7 @@ private fun MarkdownDemo() {
                 .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f), RoundedCornerShape(12.dp))
                 .padding(14.dp)
         )
-        TKNote(stringResource(R.string.tk_demo_text_46))
+        TKNote(stringResource(R.string.tk_demo_text_36))
     }
 }
 
@@ -562,10 +562,10 @@ private fun AdaptiveNavDemo() {
     }
 
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        TKKeyValue(stringResource(R.string.tk_demo_text_47), "${realClass.label}（${realClass.name}）")
-        TKKeyValue(stringResource(R.string.tk_demo_text_48), "${widthDp.toInt()} dp → ${windowClassOf(widthDp.toInt()).label}")
+        TKKeyValue(stringResource(R.string.tk_demo_text_37), "${realClass.label}（${realClass.name}）")
+        TKKeyValue(stringResource(R.string.tk_demo_text_38), "${widthDp.toInt()} dp → ${windowClassOf(widthDp.toInt()).label}")
 
-        Text(stringResource(R.string.tk_demo_text_49), style = MaterialTheme.typography.labelMedium)
+        Text(stringResource(R.string.tk_demo_text_39), style = MaterialTheme.typography.labelMedium)
         Slider(
             value = widthDp,
             onValueChange = { widthDp = it },
@@ -603,11 +603,11 @@ private fun AdaptiveNavDemo() {
                         )
                         Text(
                             "id=${items[selected].id} · 分级=${windowClassOf(widthDp.toInt()).label} · " +
-                                if (windowClassOf(widthDp.toInt()) == AppWindowClass.COMPACT) stringResource(R.string.tk_demo_text_50) else stringResource(R.string.tk_demo_text_51),
+                                if (windowClassOf(widthDp.toInt()) == AppWindowClass.COMPACT) stringResource(R.string.tk_demo_text_40) else stringResource(R.string.tk_demo_text_41),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
-                        TKNote(stringResource(R.string.tk_demo_text_52))
+                        TKNote(stringResource(R.string.tk_demo_text_42))
                         Icon(
                             items[selected].icon,
                             contentDescription = null,
@@ -618,7 +618,7 @@ private fun AdaptiveNavDemo() {
                 }
             }
         }
-        TKNote(stringResource(R.string.tk_demo_text_53))
+        TKNote(stringResource(R.string.tk_demo_text_43))
     }
 }
 

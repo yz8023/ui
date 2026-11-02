@@ -41,8 +41,6 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.res.stringResource
-import com.monkeycode.liquidui.R
 import com.monkeycode.liquidui.ui.components.GlassCard
 import com.monkeycode.liquidui.ui.components.SectionTitle
 import com.monkeycode.liquidui.ui.features.adminquery.AdminQueryCategories
@@ -71,14 +69,14 @@ fun AdminQueryCatalogSection(onOpen: (AdminQueryNorm) -> Unit) {
         OutlinedTextField(
             value = query, onValueChange = { query = it },
             modifier = Modifier.fillMaxWidth().padding(horizontal = 22.dp),
-            placeholder = { Text(stringResource(R.string.admin_query_text_1)) }, singleLine = true,
+            placeholder = { Text("搜索规范…（如 时间 / Q02）") }, singleLine = true,
         )
-        SectionTitle(text = stringResource(R.string.common_category))
+        SectionTitle(text = "分类")
         Row(
             Modifier.fillMaxWidth().horizontalScroll(chipRowState).padding(horizontal = 22.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            AdminQueryChip(stringResource(R.string.common_all), category == null) { category = null }
+            AdminQueryChip("全部", category == null) { category = null }
             AdminQueryCategories.forEach { c ->
                 AdminQueryChip(c, category == c) { category = if (category == c) null else c }
             }
@@ -146,7 +144,7 @@ fun AdminQueryDetailScreen(norm: AdminQueryNorm, onBack: () -> Unit) {
     ) {
         item {
             Row(Modifier.padding(horizontal = 10.dp), verticalAlignment = Alignment.CenterVertically) {
-                TextButton(onClick = onBack) { Text(stringResource(R.string.common_back_to_library)) }
+                TextButton(onClick = onBack) { Text("‹ 返回素材库") }
                 Text(
                     "${norm.id} · ${norm.category} · ${norm.difficulty}",
                     style = MaterialTheme.typography.labelMedium,
@@ -160,29 +158,29 @@ fun AdminQueryDetailScreen(norm: AdminQueryNorm, onBack: () -> Unit) {
             Text(norm.params, Modifier.padding(horizontal = 22.dp), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
         }
         item {
-            SectionTitle(text = stringResource(R.string.admin_query_text_2))
+            SectionTitle(text = "规范条文（照着做）")
             GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
                 Text(norm.rule, style = MaterialTheme.typography.bodySmall)
             }
         }
         item {
-            SectionTitle(text = stringResource(R.string.common_anti_pattern))
+            SectionTitle(text = "反例（别这么做）")
             GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
                 Text(norm.badCase, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.error)
             }
         }
         item {
-            SectionTitle(text = stringResource(R.string.common_demo_section_hint))
+            SectionTitle(text = "功能体验（真实实现，可直接操作）")
             GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
                 Column(Modifier.padding(vertical = 4.dp)) { AdminQueryPreview(norm) }
             }
         }
         item {
-            SectionTitle(text = stringResource(R.string.common_prompt))
+            SectionTitle(text = "提示词")
             GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
                 Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                     Text(
-                        stringResource(R.string.admin_query_text_3),
+                        "点按查看全文，长按按钮把整段提示词复制到剪贴板，可直接粘贴给 AI 复现这条规范。",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -201,7 +199,7 @@ fun AdminQueryDetailScreen(norm: AdminQueryNorm, onBack: () -> Unit) {
                         contentAlignment = Alignment.Center,
                     ) {
                         Text(
-                            if (copied) stringResource(R.string.common_copied_hint) else stringResource(R.string.common_long_press_to_copy),
+                            if (copied) "✓ 已复制，去粘贴给 AI 吧" else "长按复制提示词",
                             color = MaterialTheme.colorScheme.onPrimary,
                             fontWeight = FontWeight.SemiBold,
                         )
@@ -216,7 +214,7 @@ fun AdminQueryDetailScreen(norm: AdminQueryNorm, onBack: () -> Unit) {
                         )
                     }
                     Text(
-                        stringResource(R.string.admin_query_text_4),
+                        "来源：B 站 KD一对A《查数据查到崩溃？这套烂后台连改了四刀》（BV1Vuxr6BEDp）公开表述提炼；条文与提示词为本仓库独立撰写，实现方案见 素材库/后台数据查询规范/。",
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )

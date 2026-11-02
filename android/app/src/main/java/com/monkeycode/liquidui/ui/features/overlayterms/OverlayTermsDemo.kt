@@ -155,7 +155,7 @@ private fun OTButton(text: String, enabled: Boolean = true, primary: Boolean = t
             CircularProgressIndicator(Modifier.size(16.dp), strokeWidth = 2.dp, color = fg)
             Spacer(Modifier.width(8.dp))
         }
-        Text(if (loading) stringResource(R.string.common_processing) else text, color = fg, fontWeight = FontWeight.SemiBold, style = MaterialTheme.typography.titleSmall)
+        Text(if (loading) "处理中…" else text, color = fg, fontWeight = FontWeight.SemiBold, style = MaterialTheme.typography.titleSmall)
     }
 }
 
@@ -219,16 +219,16 @@ private fun PreviewP02() {
         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
             OTNote(stringResource(R.string.ot_demo_text_9))
             OTButton(stringResource(R.string.ot_demo_text_10)) {
-                Toast.makeText(context, stringResource(R.string.ot_demo_text_11), Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "已保存到草稿", Toast.LENGTH_SHORT).show()
                 fired += 1
             }
-            OTButton(stringResource(R.string.ot_demo_text_12), primary = false) {
-                light = stringResource(R.string.ot_demo_text_13)
+            OTButton(stringResource(R.string.ot_demo_text_11), primary = false) {
+                light = "已复制到剪贴板"
                 fired += 1
             }
             OTNote("已触发 $fired 次。系统 Toast 的限制：Android 12+ 应用在后台时不显示、样式不可定制、不能带按钮。")
-            OTNote(stringResource(R.string.ot_demo_text_14))
-            OTNote(stringResource(R.string.ot_demo_text_15))
+            OTNote(stringResource(R.string.ot_demo_text_12))
+            OTNote(stringResource(R.string.ot_demo_text_13))
         }
         if (light != null) {
             Surface(
@@ -252,15 +252,15 @@ private fun PreviewP03() {
     var saved by remember { mutableStateOf<String?>(null) }
     var outsideClosable by remember { mutableStateOf(false) }
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        OTNote(stringResource(R.string.ot_demo_text_16))
+        OTNote(stringResource(R.string.ot_demo_text_14))
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            OTChip(stringResource(R.string.ot_demo_text_17), selected = !outsideClosable, onClick = { outsideClosable = false })
-            OTChip(stringResource(R.string.ot_demo_text_18), selected = outsideClosable, onClick = { outsideClosable = true })
+            OTChip(stringResource(R.string.ot_demo_text_15), selected = !outsideClosable, onClick = { outsideClosable = false })
+            OTChip(stringResource(R.string.ot_demo_text_16), selected = outsideClosable, onClick = { outsideClosable = true })
         }
-        OTButton(stringResource(R.string.ot_demo_text_19)) { name = saved ?: stringResource(R.string.ot_demo_text_20); open = true }
+        OTButton(stringResource(R.string.ot_demo_text_17)) { name = saved ?: "未命名项目"; open = true }
         if (saved != null) OTNote("当前名称：$saved", accent = true)
-        OTNote(stringResource(R.string.ot_demo_text_21))
-        OTNote(stringResource(R.string.ot_demo_text_22))
+        OTNote(stringResource(R.string.ot_demo_text_18))
+        OTNote(stringResource(R.string.ot_demo_text_19))
     }
     if (open) {
         Dialog(
@@ -269,16 +269,16 @@ private fun PreviewP03() {
         ) {
             Surface(shape = RoundedCornerShape(20.dp), color = MaterialTheme.colorScheme.surface) {
                 Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    Text(stringResource(R.string.ot_demo_text_23), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                    Text(stringResource(R.string.ot_demo_text_20), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
                     OutlinedTextField(
                         value = name, onValueChange = { name = it },
-                        label = { Text(stringResource(R.string.ot_demo_text_24)) }, singleLine = true,
+                        label = { Text(stringResource(R.string.ot_demo_text_21)) }, singleLine = true,
                         modifier = Modifier.fillMaxWidth(),
                     )
-                    OTNote(stringResource(R.string.ot_demo_text_25))
+                    OTNote(stringResource(R.string.ot_demo_text_22))
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                         TextButton(onClick = { open = false }) { Text(stringResource(R.string.common_cancel)) }
-                        TextButton(onClick = { saved = name; open = false }, enabled = name.isNotBlank()) { Text(stringResource(R.string.ot_demo_text_26)) }
+                        TextButton(onClick = { saved = name; open = false }, enabled = name.isNotBlank()) { Text(stringResource(R.string.ot_demo_text_23)) }
                     }
                 }
             }
@@ -295,16 +295,16 @@ private fun PreviewP04() {
     val progress by animateFloatAsState(if (open) 1f else 0f, tween(260), label = "drawer")
     BackHandler(enabled = open) { open = false }
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        OTNote(stringResource(R.string.ot_demo_text_27))
+        OTNote(stringResource(R.string.ot_demo_text_24))
         Box(
             Modifier.fillMaxWidth().height(280.dp).clip(RoundedCornerShape(14.dp))
                 .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.25f))
         ) {
             Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                Text(stringResource(R.string.ot_demo_text_28), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
+                Text(stringResource(R.string.ot_demo_text_25), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
                 Text("当前选中：$picked", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                OTButton(stringResource(R.string.ot_demo_text_29)) { open = true }
-                OTNote(stringResource(R.string.ot_demo_text_30))
+                OTButton(stringResource(R.string.ot_demo_text_26)) { open = true }
+                OTNote(stringResource(R.string.ot_demo_text_27))
             }
             if (progress > 0.001f) {
                 Box(
@@ -319,8 +319,8 @@ private fun PreviewP04() {
                     tonalElevation = 8.dp,
                 ) {
                     Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                        Text(stringResource(R.string.ot_demo_text_31), style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                        listOf(stringResource(R.string.ot_demo_text_32), stringResource(R.string.ot_demo_text_33), stringResource(R.string.ot_demo_text_34), stringResource(R.string.ot_demo_text_35), stringResource(R.string.common_settings)).forEach { item ->
+                        Text(stringResource(R.string.ot_demo_text_28), style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        listOf(stringResource(R.string.ot_demo_text_29), stringResource(R.string.ot_demo_text_30), stringResource(R.string.ot_demo_text_31), stringResource(R.string.ot_demo_text_32), stringResource(R.string.ot_demo_text_33)).forEach { item ->
                             Text(
                                 item,
                                 style = MaterialTheme.typography.bodyMedium,
@@ -334,7 +334,7 @@ private fun PreviewP04() {
                 }
             }
         }
-        OTNote(stringResource(R.string.ot_demo_text_36))
+        OTNote(stringResource(R.string.ot_demo_text_34))
     }
 }
 
@@ -346,8 +346,8 @@ private fun PreviewP05() {
     var pending by remember { mutableStateOf<String?>(null) }
     var undo by remember { mutableStateOf<Pair<Int, String>?>(null) }
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        OTNote(stringResource(R.string.ot_demo_text_37))
-        if (items.isEmpty()) OTNote(stringResource(R.string.ot_demo_text_38))
+        OTNote(stringResource(R.string.ot_demo_text_35))
+        if (items.isEmpty()) OTNote(stringResource(R.string.ot_demo_text_36))
         items.forEachIndexed { index, name ->
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 Text(name, Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
@@ -370,15 +370,15 @@ private fun PreviewP05() {
             }
         }
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            OTChip(stringResource(R.string.ot_demo_text_39), selected = false, onClick = { items = listOf("报表 A", "报表 B", "报表 C"); undo = null })
+            OTChip(stringResource(R.string.ot_demo_text_37), selected = false, onClick = { items = listOf("报表 A", "报表 B", "报表 C"); undo = null })
             undo?.let { (i, n) ->
                 OTChip("撤销上一次（$n 回到第 ${i + 1} 位）", selected = false, onClick = {
                     val list = items.toMutableList(); list.add(i.coerceAtMost(list.size), n); items = list; undo = null
                 })
             }
         }
-        OTNote(stringResource(R.string.ot_demo_text_40))
-        OTNote(stringResource(R.string.ot_demo_text_41))
+        OTNote(stringResource(R.string.ot_demo_text_38))
+        OTNote(stringResource(R.string.ot_demo_text_39))
     }
 }
 
@@ -395,12 +395,12 @@ private fun PreviewP06() {
         }
     }
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        OTNote(stringResource(R.string.ot_demo_text_42))
+        OTNote(stringResource(R.string.ot_demo_text_40))
         Row(horizontalArrangement = Arrangement.spacedBy(18.dp), verticalAlignment = Alignment.CenterVertically) {
             listOf(
-                "notif" to ("通知" to stringResource(R.string.ot_demo_text_43)),
-                "sync" to ("同步" to stringResource(R.string.ot_demo_text_44)),
-                "lock" to ("锁定" to stringResource(R.string.ot_demo_text_45)),
+                "notif" to ("通知" to stringResource(R.string.ot_demo_text_41)),
+                "sync" to ("同步" to stringResource(R.string.ot_demo_text_42)),
+                "lock" to ("锁定" to stringResource(R.string.ot_demo_text_43)),
             ).forEach { (key, pair) ->
                 val (label, text) = pair
                 Box {
@@ -419,9 +419,9 @@ private fun PreviewP06() {
                 }
             }
         }
+        OTNote(stringResource(R.string.ot_demo_text_44))
+        OTNote(stringResource(R.string.ot_demo_text_45))
         OTNote(stringResource(R.string.ot_demo_text_46))
-        OTNote(stringResource(R.string.ot_demo_text_47))
-        OTNote(stringResource(R.string.ot_demo_text_48))
     }
 }
 
@@ -434,9 +434,9 @@ private fun PreviewP07() {
     var items by remember { mutableStateOf(listOf("草稿 1", "草稿 2", "草稿 3")) }
     Box(Modifier.fillMaxWidth().height(230.dp)) {
         Column(Modifier.padding(bottom = 56.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            OTNote(stringResource(R.string.ot_demo_text_49))
+            OTNote(stringResource(R.string.ot_demo_text_47))
             if (items.isEmpty()) {
-                OTNote(stringResource(R.string.ot_demo_text_50))
+                OTNote(stringResource(R.string.ot_demo_text_48))
             }
             items.forEachIndexed { index, name ->
                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
@@ -456,8 +456,8 @@ private fun PreviewP07() {
                     }) { Text("删除") }
                 }
             }
-            OTChip(stringResource(R.string.ot_demo_text_51), selected = false, onClick = { items = listOf("草稿 1", "草稿 2", "草稿 3") })
-            OTNote(stringResource(R.string.ot_demo_text_52))
+            OTChip(stringResource(R.string.ot_demo_text_49), selected = false, onClick = { items = listOf("草稿 1", "草稿 2", "草稿 3") })
+            OTNote(stringResource(R.string.ot_demo_text_50))
         }
         SnackbarHost(hostState = host, modifier = Modifier.align(Alignment.BottomCenter))
     }
@@ -471,7 +471,7 @@ private fun PreviewP08() {
     var status by remember { mutableStateOf<String?>(null) }
     var sent by remember { mutableIntStateOf(0) }
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-        status = if (granted) stringResource(R.string.ot_demo_text_53) else stringResource(R.string.ot_demo_text_54)
+        status = if (granted) "已授权，现在点「发送真实通知」能收到" else "被拒绝：Android 13+ 通知发不出去，需到系统设置手动开启"
     }
     fun hasPermission(): Boolean =
         Build.VERSION.SDK_INT < 33 ||
@@ -532,13 +532,13 @@ private fun PreviewP09() {
     var notifyOn by remember { mutableStateOf(true) }
     var picked by remember { mutableStateOf<String?>(null) }
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        OTNote(stringResource(R.string.ot_demo_text_55))
+        OTNote(stringResource(R.string.ot_demo_text_51))
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
             Box {
-                OTChip(stringResource(R.string.ot_demo_text_56), selected = open, onClick = { open = !open })
+                OTChip(stringResource(R.string.ot_demo_text_52), selected = open, onClick = { open = !open })
                 DropdownMenu(expanded = open, onDismissRequest = { open = false }) {
                     Column(Modifier.padding(vertical = 4.dp)) {
-                        listOf("分享" to stringResource(R.string.ot_demo_text_57), "导出" to stringResource(R.string.ot_demo_text_58), "归档" to stringResource(R.string.ot_demo_text_59)).forEach { (title, sub) ->
+                        listOf("分享" to stringResource(R.string.ot_demo_text_53), "导出" to stringResource(R.string.ot_demo_text_54), "归档" to stringResource(R.string.ot_demo_text_55)).forEach { (title, sub) ->
                             Row(
                                 Modifier.fillMaxWidth().clickable { picked = title; open = false }.padding(horizontal = 16.dp, vertical = 10.dp),
                                 verticalAlignment = Alignment.CenterVertically,
@@ -553,7 +553,7 @@ private fun PreviewP09() {
                         }
                         HorizontalDivider(Modifier.padding(vertical = 4.dp))
                         Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 6.dp), verticalAlignment = Alignment.CenterVertically) {
-                            Text(stringResource(R.string.ot_demo_text_60), Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
+                            Text(stringResource(R.string.ot_demo_text_56), Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
                             Box(
                                 Modifier.size(width = 42.dp, height = 26.dp).clip(RoundedCornerShape(percent = 50))
                                     .background(if (notifyOn) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant)
@@ -568,8 +568,8 @@ private fun PreviewP09() {
             }
         }
         if (picked != null) OTNote("已选择：$picked（气泡点外部或返回键即关）", accent = true)
-        OTNote(stringResource(R.string.ot_demo_text_61))
-        OTNote(stringResource(R.string.ot_demo_text_62))
+        OTNote(stringResource(R.string.ot_demo_text_57))
+        OTNote(stringResource(R.string.ot_demo_text_58))
     }
 }
 
@@ -583,16 +583,16 @@ private fun PreviewP10() {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
     val scope = rememberCoroutineScope()
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        OTNote(stringResource(R.string.ot_demo_text_63))
-        OTButton(stringResource(R.string.ot_demo_text_64)) { open = true }
+        OTNote("BottomSheet / ActionSheet = 从底部升起的面板；移动端比 Drawer 顺手，拇指够得到。")
+        OTButton("打开动作面板（ActionSheet）") { open = true }
         if (chosen != null) OTNote("已选择：$chosen", accent = true)
-        OTNote(stringResource(R.string.ot_demo_text_65))
-        OTNote(stringResource(R.string.ot_demo_text_66))
+        OTNote("面板可半展开（露一半）与全展开两档，拖把手可切换；下拉关闭与内部滚动不打架。")
+        OTNote("反例对照：ActionSheet 不给「取消」项，或把整页内容塞进面板造成滚动嵌套。")
     }
     if (open) {
         ModalBottomSheet(onDismissRequest = { open = false }, sheetState = sheetState) {
             Column(Modifier.padding(bottom = 20.dp)) {
-                listOf(stringResource(R.string.ot_demo_text_67), stringResource(R.string.ot_demo_text_68), stringResource(R.string.ot_demo_text_69), stringResource(R.string.ot_demo_text_70)).forEach { action ->
+                listOf(stringResource(R.string.ot_demo_text_59), stringResource(R.string.ot_demo_text_60), stringResource(R.string.ot_demo_text_61), stringResource(R.string.ot_demo_text_62)).forEach { action ->
                     Text(
                         action,
                         style = MaterialTheme.typography.bodyLarge,
@@ -604,11 +604,11 @@ private fun PreviewP10() {
                     )
                 }
                 Text(
-                    stringResource(R.string.ot_demo_text_71),
+                    stringResource(R.string.ot_demo_text_63),
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.error,
                     modifier = Modifier.fillMaxWidth().clickable {
-                        chosen = stringResource(R.string.ot_demo_text_71)
+                        chosen = stringResource(R.string.ot_demo_text_63)
                         scope.launch { sheetState.hide() }
                         open = false
                     }.padding(horizontal = 24.dp, vertical = 15.dp),
@@ -648,21 +648,21 @@ private fun PreviewP11() {
     }
     Box {
         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            OTNote(stringResource(R.string.ot_demo_text_72))
+            OTNote(stringResource(R.string.ot_demo_text_64))
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                listOf(stringResource(R.string.ot_demo_text_73), stringResource(R.string.ot_demo_text_74), stringResource(R.string.ot_demo_text_75)).forEach { m ->
+                listOf(stringResource(R.string.ot_demo_text_65), stringResource(R.string.ot_demo_text_66), stringResource(R.string.ot_demo_text_67)).forEach { m ->
                     OTChip(m, selected = mode == m, onClick = { mode = m })
                 }
             }
             if (mode == "非阻塞") {
                 LinearProgressIndicator(progress = { progress }, modifier = Modifier.fillMaxWidth())
-                OTNote(stringResource(R.string.ot_demo_text_76), accent = true)
+                OTNote(stringResource(R.string.ot_demo_text_68), accent = true)
             }
             OTButton(
                 text = when (mode) {
-                    "按钮内" -> stringResource(R.string.ot_demo_text_77)
-                    "全局遮罩" -> stringResource(R.string.ot_demo_text_78)
-                    else -> stringResource(R.string.ot_demo_text_79)
+                    "按钮内" -> stringResource(R.string.ot_demo_text_69)
+                    "全局遮罩" -> stringResource(R.string.ot_demo_text_70)
+                    else -> stringResource(R.string.ot_demo_text_71)
                 },
                 loading = mode == "按钮内" && running,
                 enabled = !running || mode != "按钮内",
@@ -671,9 +671,9 @@ private fun PreviewP11() {
                 running = true
             }
             OTNote(if (running) "进行中：${(progress * 100).toInt()}%" else "已完成 $done 次任务。", accent = running)
-            if (mode == "按钮内") OTNote(stringResource(R.string.ot_demo_text_80))
-            if (mode == "全局遮罩") OTNote(stringResource(R.string.ot_demo_text_81))
-            OTNote(stringResource(R.string.ot_demo_text_82))
+            if (mode == "按钮内") OTNote(stringResource(R.string.ot_demo_text_72))
+            if (mode == "全局遮罩") OTNote(stringResource(R.string.ot_demo_text_73))
+            OTNote(stringResource(R.string.ot_demo_text_74))
         }
         if (mode == "全局遮罩" && running) {
             Box(
@@ -699,7 +699,7 @@ private fun PreviewP12() {
     var count by remember { mutableIntStateOf(5) }
     var dot by remember { mutableStateOf(true) }
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        OTNote(stringResource(R.string.ot_demo_text_83))
+        OTNote(stringResource(R.string.ot_demo_text_75))
         Row(horizontalArrangement = Arrangement.spacedBy(26.dp), verticalAlignment = Alignment.CenterVertically) {
             Box {
                 Icon(AppIcons.Notifications, contentDescription = "未读 $count 条", tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(30.dp))
@@ -720,25 +720,25 @@ private fun PreviewP12() {
                 }
             }
             Box {
-                Icon(AppIcons.Settings, contentDescription = if (dot) stringResource(R.string.ot_demo_text_84) else stringResource(R.string.ot_demo_text_85), tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(30.dp))
+                Icon(AppIcons.Settings, contentDescription = if (dot) stringResource(R.string.ot_demo_text_76) else stringResource(R.string.ot_demo_text_77), tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(30.dp))
                 if (dot) {
                     Box(Modifier.align(Alignment.TopEnd).offset(x = 2.dp, y = (-2).dp).size(9.dp).background(MaterialTheme.colorScheme.error, CircleShape))
                 }
             }
             Column {
-                Text(stringResource(R.string.ot_demo_text_86), style = MaterialTheme.typography.labelMedium)
-                Text(stringResource(R.string.ot_demo_text_87), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(stringResource(R.string.ot_demo_text_78), style = MaterialTheme.typography.labelMedium)
+                Text(stringResource(R.string.ot_demo_text_79), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             OTChip("+1", selected = false, onClick = { count += 1 })
             OTChip("−1", selected = false, enabled = count > 0, onClick = { count -= 1 })
-            OTChip(stringResource(R.string.ot_demo_text_88), selected = false, onClick = { count = 100 })
-            OTChip(stringResource(R.string.ot_demo_text_89), selected = false, onClick = { count = 0; dot = false })
-            OTChip(stringResource(R.string.ot_demo_text_90), selected = dot, onClick = { dot = true })
+            OTChip(stringResource(R.string.ot_demo_text_80), selected = false, onClick = { count = 100 })
+            OTChip(stringResource(R.string.ot_demo_text_81), selected = false, onClick = { count = 0; dot = false })
+            OTChip(stringResource(R.string.ot_demo_text_82), selected = dot, onClick = { dot = true })
         }
         OTNote("当前 count = $count → 显示 ${if (count == 0) "（不渲染角标）" else if (count > 99) "99+" else "$count"}", accent = true)
-        OTNote(stringResource(R.string.ot_demo_text_91))
-        OTNote(stringResource(R.string.ot_demo_text_92))
+        OTNote(stringResource(R.string.ot_demo_text_83))
+        OTNote(stringResource(R.string.ot_demo_text_84))
     }
 }
