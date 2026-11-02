@@ -471,9 +471,9 @@ private fun PreviewQ02() {
             }
         }
         if (!customOpen) {
-            QNote("已选「${AdminRangePresets[presetIndex].label}」：$start ~ $end，含首尾共 $days 天。", accent = true)
+            QNote(stringResource(R.string.aq_demo_text_48, AdminRangePresets[presetIndex].label, start, end, days), accent = true)
         }
-        QNote("超出数据保留期 $ADMIN_RETENTION_DAYS 天的档位置灰不可点：最早可查 ${earliest.short()}（$earliest）。")
+        QNote(stringResource(R.string.aq_demo_text_49, ADMIN_RETENTION_DAYS, earliest.short(), earliest))
 
         SectionTitle(text = stringResource(R.string.aq_demo_text_2))
         QSwitchRow(label = stringResource(R.string.aq_demo_label_2), checked = customOpen, hint = stringResource(R.string.aq_demo_hint_2)) { customOpen = it }
@@ -496,11 +496,11 @@ private fun PreviewQ02() {
         if (invalid) {
             QNote(stringResource(R.string.aq_demo_text_5), accent = true)
         } else if (outOfRetention) {
-            QNote("所选区间超出保留期（最早 $earliest）：查询已禁用。", accent = true)
+            QNote(stringResource(R.string.aq_demo_text_50, earliest), accent = true)
         }
 
         QButton(
-            text = "查询 ${start.short()} ~ ${end.short()}",
+            text = stringResource(R.string.aq_demo_text_51, start.short(), end.short()),
             enabled = !invalid && !outOfRetention,
         ) {
             val hit = filterAdminRows(AdminRows, AdminFilter(start = start, end = end)).size
@@ -513,7 +513,7 @@ private fun PreviewQ02() {
         } else {
             QNote(stringResource(R.string.aq_demo_text_7))
         }
-        QNote("口径固定：闭区间 [起, 止]，含当天 00:00–23:59；「今日」= $today，共 1 天。")
+        QNote(stringResource(R.string.aq_demo_text_52, today))
     }
 }
 
@@ -598,14 +598,14 @@ private fun PreviewQ03() {
             val perRow = 3
             val approxRows = (tags.size + perRow - 1) / perRow
             if (spreadAll) {
-                QNote("反例：${tags.size} 个标签 ≈ $approxRows 行（每行约 $perRow 个），条件区把结果挤出首屏。", accent = true)
+                QNote(stringResource(R.string.aq_demo_text_53, tags.size, approxRows, perRow), accent = true)
             } else {
-                QNote("聚合后 ${tags.size} 个标签 ≈ $approxRows 行，控制在 2 行内。", accent = true)
+                QNote(stringResource(R.string.aq_demo_text_54, tags.size, approxRows), accent = true)
             }
         }
         if (deptTagOpen && deptAggregated && !spreadAll && !deptAll) {
             GlassCard(Modifier.fillMaxWidth(), contentPadding = PaddingValues(12.dp)) {
-                QNote("「部门 · ${depts.size}」展开：")
+                QNote(stringResource(R.string.aq_demo_text_55, depts.size))
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     depts.sorted().forEach { d -> QTag(QTagSpec(d, onDelete = { depts = depts - d })) }
                 }
@@ -673,7 +673,7 @@ private fun PreviewQ04() {
                 )
             }
         }
-        QNote("${rangeStart.short()} ~ ${rangeEnd.short()} · 命中 ${source.size} 条 · 金额合计 ¥${source.sumOf { it.amount }}（模拟数据）")
+        QNote(stringResource(R.string.aq_demo_text_56, rangeStart.short(), rangeEnd.short(), source.size, source.sumOf { it.amount }))
         Row(Modifier.fillMaxWidth().height(146.dp), verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             agg.forEach { (key, amount, count) ->
                 val isSelected = selected == key
@@ -702,7 +702,7 @@ private fun PreviewQ04() {
                         style = MaterialTheme.typography.labelSmall, fontSize = 9.sp, maxLines = 1,
                         color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
                     )
-                    Text("$count 笔", style = MaterialTheme.typography.labelSmall, fontSize = 9.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(stringResource(R.string.aq_demo_text_57, count), style = MaterialTheme.typography.labelSmall, fontSize = 9.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
         }
@@ -714,10 +714,10 @@ private fun PreviewQ04() {
             QNote(stringResource(R.string.aq_demo_text_18))
         } else {
             QNote("$dim · $selectedKey", accent = true)
-            QNote("金额合计 ¥$sliceAmount ｜ 笔数 ${slice.size} ｜ 占全量 $share% ｜ 负责人 $owner")
+            QNote(stringResource(R.string.aq_demo_text_58, sliceAmount, slice.size, share, owner))
             slice.take(6).forEach { QRowLine(it) }
-            if (slice.size > 6) QNote("… 其余 ${slice.size - 6} 条在导出的 CSV 里")
-            QButton(text = "导出明细（CSV · ${slice.size} 行）") {
+            if (slice.size > 6) QNote(stringResource(R.string.aq_demo_text_59, slice.size - 6))
+            QButton(text = stringResource(R.string.aq_demo_text_60, slice.size)) {
                 val csv = adminRowsToCsv(slice)
                 clipboard.setText(AnnotatedString(csv))
                 haptics.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -735,7 +735,7 @@ private fun PreviewQ04() {
                 if (csvPreview != null) QMono(csvPreview!!)
             }
             if (handed) {
-                QNote("转交话术（已复制，可直接粘贴给 $owner）：")
+                QNote(stringResource(R.string.aq_demo_text_61, owner))
                 QMono(adminHandoffText(dim, selectedKey ?: "", AdminFilter(start = rangeStart, end = rangeEnd), sliceAmount, slice.size, share, owner, slice.size))
             }
         }
@@ -747,6 +747,7 @@ private fun PreviewQ04() {
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun PreviewQ05() {
+    val aqDemoText67 = stringResource(R.string.aq_demo_text_67, applied.start.short(), applied.end.short(), days)
     val commonAll = stringResource(R.string.common_all)
     val aqDemoText47 = stringResource(R.string.aq_demo_text_47)
     val scope = rememberCoroutineScope()
@@ -854,9 +855,9 @@ private fun PreviewQ05() {
             }
         }
         if (!presetEnabled) {
-            QNote("当前档位超出保留期 $ADMIN_RETENTION_DAYS 天（最早 ${earliest.short()}）：查询已禁用。", accent = true)
+            QNote(stringResource(R.string.aq_demo_text_62, ADMIN_RETENTION_DAYS, earliest.short()), accent = true)
         } else {
-            QNote("口径：含首尾，共 ${(ChronoUnit.DAYS.between(presetRange.first, presetRange.second) + 1).toInt()} 天")
+            QNote(stringResource(R.string.aq_demo_text_63, (ChronoUnit.DAYS.between(presetRange.first, presetRange.second) + 1).toInt()))
         }
 
         SectionTitle(text = stringResource(R.string.aq_demo_text_22))
@@ -867,9 +868,9 @@ private fun PreviewQ05() {
             val deptAll = dDepts.size == AdminDepts.size
             QChip(
                 label = when {
-                    deptAll -> "全部部门 · ${AdminDepts.size}"
+                    deptAll -> stringResource(R.string.aq_demo_text_64, AdminDepts.size)
                     dDepts.isEmpty() -> stringResource(R.string.aq_demo_text_23)
-                    else -> "部门 · ${dDepts.size}"
+                    else -> stringResource(R.string.aq_demo_text_65, dDepts.size)
                 },
                 selected = dDepts.isNotEmpty(),
                 sub = if (dDepts != applied.depts) stringResource(R.string.aq_demo_text_24) else null,
@@ -898,7 +899,7 @@ private fun PreviewQ05() {
         val moreCount = listOf(dChannels.isNotEmpty(), dAmount != "全部", dAbnormal).count { it }
         QChip(
             label = if (moreOpen) stringResource(R.string.aq_demo_text_27) else stringResource(R.string.aq_demo_text_28),
-            sub = if (moreCount > 0) "已选 $moreCount 组" else null,
+            sub = if (moreCount > 0) stringResource(R.string.aq_demo_text_66, moreCount) else null,
             selected = moreOpen,
             onClick = { moreOpen = !moreOpen },
         )
@@ -918,7 +919,7 @@ private fun PreviewQ05() {
 
         SectionTitle(text = stringResource(R.string.aq_demo_text_29))
         val tags: List<QTagSpec> = buildList {
-            add(QTagSpec("${applied.start.short()} ~ ${applied.end.short()}（$days 天）"))
+            add(QTagSpec(aqDemoText67))
             applied.statuses.sorted().forEach { s -> add(QTagSpec(s, onDelete = { dStatuses = dStatuses - s; runQuery() })) }
             when {
                 applied.depts.size == AdminDepts.size ->
@@ -948,7 +949,7 @@ private fun PreviewQ05() {
 
         SectionTitle(text = stringResource(R.string.aq_demo_text_30))
         QButton(
-            text = if (pending > 0) "查询（$pending 项待生效）" else stringResource(R.string.aq_demo_text_31),
+            text = if (pending > 0) stringResource(R.string.aq_demo_text_68, pending) else stringResource(R.string.aq_demo_text_31),
             enabled = pending > 0,
             loading = loading,
         ) { runQuery() }
@@ -957,7 +958,7 @@ private fun PreviewQ05() {
 
         SectionTitle(text = stringResource(R.string.aq_demo_text_32))
         QNote(
-            "命中 ${rows.size} 条 / ${AdminRows.size} 条 · 金额合计 ¥${rows.sumOf { it.amount }} · 时间 ${applied.start.short()} ~ ${applied.end.short()}（含首尾 $days 天）",
+            stringResource(R.string.aq_demo_text_69, rows.size, AdminRows.size, rows.sumOf { it.amount }, applied.start.short(), applied.end.short(), days),
             accent = true,
         )
         if (note != null) QNote(note!!)
@@ -1003,7 +1004,7 @@ private fun PreviewQ05() {
                         )
                         Spacer(Modifier.height(4.dp))
                         Text(if (key.length > 4) key.take(3) + "…" else key, style = MaterialTheme.typography.labelSmall, fontSize = 9.sp, maxLines = 1, color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant)
-                        Text("$count 笔", style = MaterialTheme.typography.labelSmall, fontSize = 9.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(stringResource(R.string.aq_demo_text_57, count), style = MaterialTheme.typography.labelSmall, fontSize = 9.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 }
             }
@@ -1016,7 +1017,7 @@ private fun PreviewQ05() {
         if (slice.size > 8) QNote("… 其余 ${slice.size - 8} 条在导出的 CSV 里")
 
         SectionTitle(text = stringResource(R.string.aq_demo_text_37))
-        QButton(text = "导出明细（CSV · ${slice.size} 行）", enabled = slice.isNotEmpty()) {
+        QButton(text = stringResource(R.string.aq_demo_text_60, slice.size), enabled = slice.isNotEmpty()) {
             val csv = adminRowsToCsv(slice)
             clipboard.setText(AnnotatedString(csv))
             haptics.performHapticFeedback(HapticFeedbackType.LongPress)

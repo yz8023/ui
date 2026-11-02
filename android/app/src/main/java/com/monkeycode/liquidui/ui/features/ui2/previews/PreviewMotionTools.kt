@@ -134,7 +134,7 @@ fun PreviewW02() {
                 Box(Modifier.fillMaxWidth().height(46.dp).clip(RoundedCornerShape(8.dp)).background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f))) {
                     Box(Modifier.offset { IntOffset((anim.value * 230).roundToInt(), 12) }.size(22.dp).clip(CircleShape).background(primary))
                 }
-                Text("当前档 ${durations[durSel]}ms（点数字即以该时长重播小球位移）", style = MaterialTheme.typography.labelSmall)
+                Text(stringResource(R.string.pv_motion_tool_text_21, durations[durSel]), style = MaterialTheme.typography.labelSmall)
             }
             1 -> {
                 Canvas(Modifier.fillMaxWidth().height(90.dp)) {
@@ -230,7 +230,7 @@ fun PreviewW03() {
             }
             if (hits.isEmpty()) Text(pvMotionToolText18)
         }
-        Text("共 ${hits.size} / 25 篇（标题+导读索引，深读回仓库 motion 令牌文档）。", style = MaterialTheme.typography.labelSmall)
+        Text(stringResource(R.string.pv_motion_tool_text_22, hits.size), style = MaterialTheme.typography.labelSmall)
     }
 }
 

@@ -226,8 +226,8 @@ private fun SpringPlayground(reduced: Boolean) {
         Spacer(Modifier.height(10.dp))
         Text(
             text = "token: spring-${springPresetLabels[presetIndex]} · " +
-                "阻尼 ${(damping * 100).toInt()}% · " +
-                "位移 ${readout.roundToInt()}px · 选择预设立即回弹",
+                stringResource(R.string.motion_text_14, (damping * 100).toInt()) +
+                stringResource(R.string.motion_text_15, readout.roundToInt()),
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -303,7 +303,7 @@ private fun RevealRow(runId: Int, index: Int, enabled: Boolean) {
                 )
         )
         Text(
-            text = "列表项 ${index + 1}",
+            text = stringResource(R.string.motion_text_16, index + 1),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurface
         )

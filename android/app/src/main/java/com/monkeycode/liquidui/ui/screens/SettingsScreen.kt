@@ -257,7 +257,7 @@ fun SettingsScreen(
         item {
             SliderCard(
                 title = context.getString(R.string.settings_title_3),
-                subtitle = "全局弹簧阻尼：${((currentChrome.motionDamping.coerceIn(0f, 1f)) * 100).toInt()}%，越低越弹",
+                subtitle = stringResource(R.string.settings_subtitle_10, ((currentChrome.motionDamping.coerceIn(0f, 1f)) * 100).toInt()),
                 value = settings.motionDamping,
                 onValueChange = settings::updateMotionDamping
             )
@@ -265,7 +265,7 @@ fun SettingsScreen(
         item {
             SliderCard(
                 title = context.getString(R.string.settings_title_4),
-                subtitle = "背景采样模糊：${settings.glassBlurRadiusDp.toInt()}dp",
+                subtitle = stringResource(R.string.settings_subtitle_11, settings.glassBlurRadiusDp.toInt()),
                 value = settings.glassBlurRadiusDp,
                 valueRange = 0f..40f,
                 onValueChange = settings::updateGlassBlurRadiusDp
@@ -274,7 +274,7 @@ fun SettingsScreen(
         item {
             SliderCard(
                 title = context.getString(R.string.settings_title_5),
-                subtitle = "液态透镜边缘高度：${settings.glassRefractionHeightDp.toInt()}dp",
+                subtitle = stringResource(R.string.settings_subtitle_12, settings.glassRefractionHeightDp.toInt()),
                 value = settings.glassRefractionHeightDp,
                 valueRange = 0f..40f,
                 onValueChange = settings::updateGlassRefractionHeightDp
@@ -283,7 +283,7 @@ fun SettingsScreen(
         item {
             SliderCard(
                 title = context.getString(R.string.settings_title_6),
-                subtitle = "壁纸内容偏移幅度：${settings.glassRefractionAmountDp.toInt()}dp",
+                subtitle = stringResource(R.string.settings_subtitle_13, settings.glassRefractionAmountDp.toInt()),
                 value = settings.glassRefractionAmountDp,
                 valueRange = 0f..60f,
                 onValueChange = settings::updateGlassRefractionAmountDp
@@ -292,7 +292,7 @@ fun SettingsScreen(
         item {
             SliderCard(
                 title = context.getString(R.string.settings_title_7),
-                subtitle = "白色玻璃涂层：${(settings.glassTintAlpha * 100).toInt()}%",
+                subtitle = stringResource(R.string.settings_subtitle_14, (settings.glassTintAlpha * 100).toInt()),
                 value = settings.glassTintAlpha,
                 valueRange = 0f..0.35f,
                 onValueChange = settings::updateGlassTintAlpha
@@ -301,7 +301,7 @@ fun SettingsScreen(
         item {
             SliderCard(
                 title = context.getString(R.string.settings_title_8),
-                subtitle = "玻璃边缘强度：${(settings.glassBorderAlpha * 100).toInt()}%",
+                subtitle = stringResource(R.string.settings_subtitle_15, (settings.glassBorderAlpha * 100).toInt()),
                 value = settings.glassBorderAlpha,
                 valueRange = 0f..0.45f,
                 onValueChange = settings::updateGlassBorderAlpha
@@ -435,7 +435,7 @@ fun SettingsScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 InfoBanner(
-                    text = "生效中的 chrome：mode=${currentChrome.visualMode.label} · " +
+                    text = stringResource(R.string.settings_text_33, currentChrome.visualMode.label) +
                         "blur=${settings.glassBlurRadiusDp.toInt()}dp · " +
                         "lens=${settings.glassRefractionHeightDp.toInt()}/${settings.glassRefractionAmountDp.toInt()}dp · " +
                         "corner=${String.format("%.2f", currentChrome.cornerScale)} · " +
@@ -706,7 +706,7 @@ private fun sendNotificationPreview(context: Context, accent: Color) {
         builder.setColor(accent.toArgb())
     }
     manager.notify(1001, builder.build())
-    AppLog.i("Notification", "已发送预览通知 id=1001 channel=$channelId accent=#${accent.toArgb().toUInt().toString(16)}")
+    AppLog.i("Notification", context.getString(R.string.settings_text_34, channelId, accent.toArgb().toUInt().toString(16)))
 }
 
 /**
@@ -732,8 +732,8 @@ private fun UpdateCheckPanel() {
         Text(stringResource(R.string.settings_text_8), style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
         Spacer(Modifier.height(4.dp))
         Text(
-            "真实请求 api.github.com 比对版本；检查目标是本模板仓库 ${AppUpdateChecker.DEFAULT_REPO}。" +
-                "当前安装版本 $current。",
+            stringResource(R.string.settings_text_35, AppUpdateChecker.DEFAULT_REPO) +
+                stringResource(R.string.settings_text_36, current),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -764,7 +764,7 @@ private fun UpdateCheckPanel() {
                     UpdateState.UPDATE_AVAILABLE -> stringResource(R.string.settings_text_9)
                     UpdateState.UP_TO_DATE -> stringResource(R.string.settings_text_10)
                     UpdateState.FAILED -> stringResource(R.string.settings_text_11)
-                } + " · ${r.message} · 耗时 ${r.elapsedMillis}ms",
+                } + stringResource(R.string.settings_text_37, r.message, r.elapsedMillis),
                 style = MaterialTheme.typography.bodySmall,
                 color = if (r.state == UpdateState.FAILED) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface
             )
@@ -808,7 +808,7 @@ private fun UpdateCheckPanel() {
                     } else {
                         LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
                         Spacer(Modifier.height(6.dp))
-                        Text("下载中 · ${AppUpdateChecker.humanSize(w)}", style = MaterialTheme.typography.labelMedium)
+                        Text(stringResource(R.string.settings_text_38, AppUpdateChecker.humanSize(w)), style = MaterialTheme.typography.labelMedium)
                     }
                     Spacer(Modifier.height(8.dp))
                     SecondaryButton(
@@ -883,7 +883,7 @@ private fun UpdateCheckPanel() {
             }
             apkPath?.let {
                 Spacer(Modifier.height(6.dp))
-                Text("已落盘：$it", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(context.getString(R.string.settings_text_39, it), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
         note?.let {
@@ -912,7 +912,7 @@ private fun AppLogPanel() {
     PreferenceRow(
         icon = AppIcons.Widgets,
         title = stringResource(R.string.settings_title_1),
-        subtitle = "内存缓冲 ${entries.size}/${AppLog.MAX_ENTRIES} 条 · 可过滤、复制、系统分享",
+        subtitle = stringResource(R.string.settings_subtitle_16, entries.size, AppLog.MAX_ENTRIES),
         onClick = {
             showSheet = true
             AppLog.d("Log", "打开运行日志面板")
@@ -942,7 +942,7 @@ private fun AppLogPanel() {
                     }
                 }
                 Spacer(Modifier.height(10.dp))
-                Text("命中 ${picked.size} 条（最新在上）", style = MaterialTheme.typography.labelMedium)
+                Text(stringResource(R.string.settings_text_40, picked.size), style = MaterialTheme.typography.labelMedium)
                 Spacer(Modifier.height(6.dp))
                 Column(
                     Modifier
@@ -999,8 +999,8 @@ private fun AppLogPanel() {
                     onClick = {
                         val n = entries.size
                         AppLog.clear()
-                        AppLog.i("Log", "已清空缓冲（原 $n 条）")
-                        Toast.makeText(context, "已清空 $n 条", Toast.LENGTH_SHORT).show()
+                        AppLog.i("Log", context.getString(R.string.settings_text_41, n))
+                        Toast.makeText(context, context.getString(R.string.settings_text_42, n), Toast.LENGTH_SHORT).show()
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) { Text(stringResource(R.string.common_clear)) }

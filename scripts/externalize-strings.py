@@ -30,7 +30,8 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 SRC = ROOT / 'android/app/src/main/java/com/monkeycode/liquidui'
 STRINGS = ROOT / 'android/app/src/main/res/values/strings.xml'
 DRY = '--dry' in sys.argv
-STAGE = next((a for a in sys.argv[1:] if a in ('2a', '2b', '3a', '3b')), '2a') \
+STAGES = ('2a', '2b', '3a', '3b', '4', '4d')
+STAGE = next((a for a in sys.argv[1:] if a in STAGES), '2a') \
     if '--stage' in sys.argv else '2a'
 
 # ---- 文件 → slug -------------------------------------------------------------
@@ -158,7 +159,8 @@ def find_context(src: str, fun: str, pos: int):
     return name
 
 
-def risky(src: str, r: dict, allow_noncomp: bool = False, svars: set = None) -> str:
+def risky(src: str, r: dict, allow_noncomp: bool = False, svars: set = None,
+          allow_interp: bool = False) -> str:
     """返回跳过原因；空串表示可安全外置。
 
     这几类不是 UI 文案，外置会改语义：
@@ -177,8 +179,8 @@ def risky(src: str, r: dict, allow_noncomp: bool = False, svars: set = None) -> 
         return 'when 分支或 map 键'
     if STATE_BEFORE.search(before):
         return '状态初值'
-    if r.get('interp'):
-        return '含插值（留给 D 阶段）'
+    if r.get('interp') and not allow_interp:
+        return '含插值（留给阶段 4）'
     if r.get('noncomp') and not allow_noncomp:
         return '非组合 lambda'
     return ''
@@ -267,6 +269,59 @@ def val_name(res: str, taken: set) -> str:
     return nm
 
 
+def rewrite_interp(src: str, rs: list) -> tuple:
+    """阶段 4 改写：按上下文选 stringResource / getString / 上提 val，并带上格式参数。
+
+    返回 (新源码, 上提条数, 放弃条数)。
+    """
+    edits = []                                  # (start, end, 替换文本)
+    hoist = {}                                  # fun -> {'body', 'taken', 'decls'}
+    hoisted = dropped = 0
+    for r in sorted(rs, key=lambda x: -x['start']):
+        assert src[r['start']:r['end']] == r['lit'], f'{r["file"]}:{r["line"]} 偏移失配'
+        argtxt = ', '.join(r['args'])
+        tail = f', {argtxt}' if argtxt else ''      # 0 参数（只有 ${'$'}）不能留尾逗号
+        ctx = r.get('ctx')
+        if ctx:
+            # ctx 优先：非组合 lambda、以及**非组合函数体**（B 类，宿主带 Context 参数）
+            # 都只能用 getString。先判 noncomp 会漏掉 B 类——它 noncomp=False 但 comp 也是
+            # False，stringResource 写进去编译不过（实测 WallpaperStore.cacheNetwork、
+            # AppUpdateChecker.check 三处）。
+            edits.append((r['start'], r['end'], f"{ctx}.getString(R.string.{r['res']}{tail})"))
+            continue
+        if not r.get('noncomp'):
+            edits.append((r['start'], r['end'], f"stringResource(R.string.{r['res']}{tail})"))
+            continue
+        body = fun_body_start(src, r['fun'])
+        if body is None:
+            dropped += 1
+            continue
+        h = hoist.setdefault(r['fun'], {'body': body,
+                                       'taken': set(re.findall(r'\b[A-Za-z_]\w*\b', src)),
+                                       'decls': {}})
+        key = (r['res'], argtxt)
+        if key not in h['decls']:
+            nm = val_name(r['res'], h['taken'])
+            h['taken'].add(nm)
+            h['decls'][key] = (nm, f'val {nm} = stringResource(R.string.{r["res"]}{tail})')
+        edits.append((r['start'], r['end'], h['decls'][key][0]))
+        hoisted += 1
+
+    # 插入文本必须在**替换之前**按原始偏移算好：替换会改变长度，
+    # 先替换再按旧偏移插入会让插入点整体错位（阶段 3b 第一版就是这样把 val
+    # 插进了 `@OptIn(…Api::class)` 中间）。
+    ins = []
+    for fun, h in hoist.items():
+        body = h['body']
+        line_start = src.rfind('\n', 0, body) + 1
+        indent = re.match(r'\s*', src[line_start:]).group(0) + '    '
+        ins.append((body, body, ''.join(f'\n{indent}{d}' for _, d in h['decls'].values())))
+
+    for a, b, txt in sorted(edits + ins, key=lambda x: -x[0]):
+        src = src[:a] + txt + src[b:]
+    return src, hoisted, dropped
+
+
 def hoist_into_composable(src: str, rs: list) -> tuple:
     """把同一文件里的非组合 lambda 文案上提到各自宿主 @Composable 函数体开头。
 
@@ -309,6 +364,87 @@ def hoist_into_composable(src: str, rs: list) -> tuple:
     return src, done, dropped
 
 
+# ── 阶段 4：插值字面量 → 格式参数 ────────────────────────────────────────────
+
+def parse_interp(lit: str):
+    """拆出字面量内部的插值片段，返回 (内部文本, [(起, 止, 表达式)])。
+
+    `${…}` 按花括号深度跳，内部允许嵌套字符串；`$name` 按标识符/点号贪婪。
+    """
+    inner = lit[3:-3] if lit.startswith('"""') else lit[1:-1]
+    spans, i, n = [], 0, len(inner)
+    while i < n:
+        if inner[i] == '\\':
+            i += 2; continue
+        if inner.startswith('${', i):
+            d, j = 1, i + 2
+            while j < n and d:
+                if inner[j] == '"':
+                    j += 1
+                    while j < n and inner[j] != '"':
+                        j += 2 if inner[j] == '\\' else 1
+                elif inner[j] == '{':
+                    d += 1
+                elif inner[j] == '}':
+                    d -= 1
+                j += 1
+            spans.append((i, j, inner[i + 2:j - 1])); i = j; continue
+        if inner[i] == '$' and i + 1 < n and (inner[i + 1].isalpha() or inner[i + 1] == '_'):
+            j = i + 1
+            while j < n and (inner[j].isalnum() or inner[j] in '_.'):
+                j += 1
+            spans.append((i, j, inner[i + 1:j])); i = j; continue
+        i += 1
+    return inner, spans
+
+
+def build_fmt(lit: str):
+    """把插值字面量转成 Android 格式串。返回 (fmt, args) 或 (None, 原因)。
+
+    - 一律用**位置化** `%1$s`：aapt 对多参数的非位置化格式串会报
+      "Multiple substitutions specified in non-positional format"。
+    - 裸 `%` 必须转义成 `%%`，否则 aapt 报 invalid format string（全仓 16 条含裸 %）。
+    - `${'$'}` 是「字面美元符」惯用法，不算参数。
+    - 表达式里含嵌套字符串的先跳过：那需要把子表达式上提成 val，属另一档改法。
+    """
+    inner, spans = parse_interp(lit)
+    if not spans:
+        return None, '无插值', None
+    args, out, pos = [], [], 0
+    for a, b, expr in spans:
+        out.append(inner[pos:a])
+        if expr.strip() == "'$'":
+            out.append('\x00D\x00')
+        elif '"' in expr:
+            return None, '表达式含嵌套字符串（需先上提子表达式）', None
+        else:
+            args.append(expr)
+            out.append(f'\x00{len(args)}\x00')
+        pos = b
+    out.append(inner[pos:])
+    s = ''.join(out).replace('\x00D\x00', '$')
+    if args:
+        # 有参数才把裸 % 转义成 %%：%% 只有走 String.format 才会还原成 %，
+        # 若这条最终不带参数取值，界面上会原样显示两个百分号。
+        s = s.replace('%', '%%')
+        for k in range(len(args), 0, -1):
+            s = s.replace(f'\x00{k}\x00', f'%{k}$s')
+    if s.strip('%1234567890$s ') == '':
+        return None, '整条就是一个占位符，外置无意义', None
+    return s, args, bool(args)
+
+
+def xml_escape_fmt(fmt: str) -> str:
+    """格式串专用转义：**不加** formatted="false"（要保留格式化能力）。
+
+    普通 xml_escape 见 % 就标 formatted="false"，那是给「文案里有字面 %」用的；
+    阶段 4 的 % 是我们自己放的占位符，必须让 String.format 生效。
+    调用前 build_fmt 已把裸 % 转成 %%、占位符写成 %N$s，这里不再动 %。
+    """
+    return (fmt.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+               .replace("'", "\\'").replace('"', '\\"').replace('\n', '\\n'))
+
+
 def add_imports(src: str, need_string_resource: bool = True) -> str:
     if need_string_resource and 'import androidx.compose.ui.res.stringResource' not in src:
         ms = list(re.finditer(r'^import androidx\.compose\.[^\n]*\n', src, re.M))
@@ -334,7 +470,30 @@ def main():
     skipped = collections.Counter()
     stage = []
     for r in recs:
-        if STAGE in ('3a', '3b'):
+        if STAGE == '4':
+            if not r.get('interp') or r['scope'] != 'body':
+                continue
+            if r['file'] not in srcs:
+                srcs[r['file']] = (SRC / r['file']).read_text(encoding='utf-8')
+            fmt, args, needs_format = build_fmt(r['lit'])
+            if fmt is None:
+                skipped[f'插值·{args}'] += 1        # 此时 args 是原因字符串
+                continue
+            r['fmt'], r['args'], r['needs_format'] = fmt, args, needs_format
+            if r.get('noncomp'):
+                ctx = find_context(srcs[r['file']], r['fun'], r['start'])
+                if ctx:
+                    r['ctx'] = ctx
+                elif not r.get('comp'):
+                    skipped['插值·非组合函数体且无 Context'] += 1
+                    continue
+            elif not r.get('comp'):
+                ctx = find_context(srcs[r['file']], r['fun'], r['start'])
+                if not ctx:
+                    skipped['插值·非组合函数体且无 Context'] += 1
+                    continue
+                r['ctx'] = ctx
+        elif STAGE in ('3a', '3b'):
             if r['cat'] != 'A 组合体内' or not r.get('noncomp') or r.get('interp'):
                 continue
             if r['file'] not in srcs:
@@ -363,24 +522,29 @@ def main():
             srcs[r['file']] = (SRC / r['file']).read_text(encoding='utf-8')
         if r['file'] not in svars:
             svars[r['file']] = state_vars(srcs[r['file']])
-        why = risky(srcs[r['file']], r, allow_noncomp=(STAGE in ('3a', '3b')), svars=svars[r['file']]) or (
-            '含插值（留给 D 阶段）' if is_interp(r['lit']) else '')
+        why = risky(srcs[r['file']], r, allow_noncomp=(STAGE in ('3a', '3b', '4')),
+            svars=svars[r['file']], allow_interp=(STAGE == '4')) or (
+            '' if STAGE == '4' else ('含插值（留给 D 阶段）' if is_interp(r['lit']) else ''))
         if why:
             skipped[why] += 1
             continue
         stage.append(r)
     print('本阶段跳过：' + '，'.join(f'{k} {v} 条' for k, v in skipped.most_common()))
     # 跨文件重复 → common_*
+    def keyof(r):
+        return r['fmt'] if STAGE == '4' else r['text']
+
     files_of = {}
     for r in stage:
-        files_of.setdefault(r['text'], set()).add(r['file'])
+        files_of.setdefault(keyof(r), set()).add(r['file'])
     ex_name, ex_text, counters = load_existing()
+    raw_by_name = {nm: True for nm in ex_name}
     names, used = dict(ex_text), dict(ex_name)     # 已有资源名优先复用，避免同文案生成两条
     shared_n = [max([int(n.rsplit('_', 1)[-1]) for n in ex_name if n.startswith('common_shared_')] or [0])]
     print(f'[{STAGE}] 既有 strings.xml {len(ex_name)} 条，其中 {len(ex_text)} 种文案可复用')
-    entries = []          # (name, text, group)
+    entries = []          # (name, text, group)；raw_by_name 见上方（阶段 4：False → 不转义 % 且标 formatted="false"）
     for r in sorted(stage, key=lambda x: (x['file'], x['start'])):
-        txt = r['text']
+        txt = keyof(r)
         if txt in names:
             r['res'] = names[txt]
             continue
@@ -403,7 +567,8 @@ def main():
         used[nm] = txt
         names[txt] = nm
         r['res'] = nm
-        entries.append((nm, txt, r['file']))
+        entries.append((nm, txt, r['file']))  # 阶段 4 时 txt 即格式串
+        raw_by_name[nm] = r.get('needs_format', True)
 
     print(f'待外置 {len(stage)} 条 → {len(entries)} 个资源名（去重 {len(stage)-len(entries)} 条）')
     print(f'  其中 common_* {sum(1 for n,_,_ in entries if n.startswith("common_"))} 个')
@@ -424,6 +589,9 @@ def main():
         if STAGE == '3b':
             src, d, k = hoist_into_composable(src, rs)
             hoisted += d; dropped += k
+        elif STAGE == '4':
+            src, d, k = rewrite_interp(src, rs)
+            hoisted += d; dropped += k
         else:
             for r in sorted(rs, key=lambda x: -x['start']):
                 assert src[r['start']:r['end']] == r['lit'], f'{rel}:{r["line"]} 偏移失配'
@@ -432,7 +600,7 @@ def main():
                 src = src[:r['start']] + call + src[r['end']:]
         p.write_text(add_imports(src, need_string_resource=(STAGE != '3a')), encoding='utf-8')
     print(f'  改写 Kotlin 文件 {len(byfile)} 个' +
-          (f'，上提 {hoisted} 处' + (f'，放弃 {dropped} 处（找不到函数体）' if dropped else '') if STAGE == '3b' else ''))
+          (f'，上提/改写 {hoisted} 处' + (f'，放弃 {dropped} 处（找不到函数体）' if dropped else '') if STAGE in ('3b', '4') else ''))
 
     # ---- 写 strings.xml：保留既有条目与注释，新条目按源文件分组追加 ----
     cur_xml = STRINGS.read_text(encoding='utf-8')
@@ -443,7 +611,10 @@ def main():
         if f != cur:
             block.append(f'\n    <!-- ===== {f.split("/java/")[-1]}（阶段 {STAGE}） ===== -->\n')
             cur = f
-        esc, raw = xml_escape(txt)
+        if STAGE == '4' and raw_by_name.get(nm, True):
+            esc, raw = xml_escape_fmt(txt), False
+        else:
+            esc, raw = xml_escape(txt)
         block.append(f'    <string name="{nm}"{" formatted=\"false\"" if raw else ""}>{esc}</string>\n')
     if block:
         assert '</resources>' in cur_xml

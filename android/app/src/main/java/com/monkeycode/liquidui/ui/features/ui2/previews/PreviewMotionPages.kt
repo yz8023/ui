@@ -113,7 +113,7 @@ fun PreviewF39() {
                     alpha = anim.value
                     translationY = (1f - anim.value) * 40f
                 }.clip(RoundedCornerShape(10.dp)).background(MaterialTheme.colorScheme.secondaryContainer).padding(12.dp),
-            ) { Text("条目 ${i + 1}（入场延迟 ${i * 90}ms，420ms 渐入上浮）") }
+            ) { Text(stringResource(R.string.pv_motion_page_text_23, i + 1, i * 90)) }
         }
     }
 }
@@ -164,7 +164,7 @@ fun PreviewF41() {
                 Modifier.fillMaxWidth().height(90.dp).clip(RoundedCornerShape(12.dp))
                     .background(if (p % 2 == 0) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.tertiaryContainer),
                 contentAlignment = Alignment.Center,
-            ) { Text("页面 ${p + 1} / 3", fontWeight = FontWeight.Bold) }
+            ) { Text(stringResource(R.string.pv_motion_page_text_24, p + 1), fontWeight = FontWeight.Bold) }
         }
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             OutlinedButton(onClick = { page = (page + 2) % 3 }) { Text(stringResource(R.string.pv_motion_page_text_3)) }
@@ -192,7 +192,7 @@ fun PreviewF42() {
             }
         }
         items(6) { i ->
-            Card(Modifier.fillMaxWidth()) { Text("滚动条目 ${i + 1}", Modifier.padding(14.dp)) }
+            Card(Modifier.fillMaxWidth()) { Text(stringResource(R.string.pv_motion_page_text_25, i + 1), Modifier.padding(14.dp)) }
         }
     }
 }

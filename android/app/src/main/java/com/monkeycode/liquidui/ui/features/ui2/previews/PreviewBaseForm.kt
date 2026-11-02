@@ -88,7 +88,7 @@ fun PreviewF01() {
                     Spacer(Modifier.width(8.dp)); Text(stringResource(R.string.common_shared_1))
                 } else Text(stringResource(R.string.pv_form_text_4))
             }
-            Text("已点击 $count 次", style = MaterialTheme.typography.bodySmall)
+            Text(stringResource(R.string.pv_form_text_42, count), style = MaterialTheme.typography.bodySmall)
         }
         Text(stringResource(R.string.pv_form_text_5), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
@@ -306,6 +306,7 @@ private data class UploadJob(val name: String, val progress: Float, val done: Bo
 
 @Composable
 fun PreviewF11() {
+    val pvFormText43 = stringResource(R.string.pv_form_text_43, seq.jpg)
     val jobs = remember { mutableStateListOf<UploadJob>() }
     var seq by remember { mutableIntStateOf(0) }
     LaunchedEffect(jobs.size) {
@@ -318,7 +319,7 @@ fun PreviewF11() {
         }
     }
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Button(onClick = { seq++; jobs.add(UploadJob("壁纸素材_$seq.jpg", 0f, false)) }) { Text(stringResource(R.string.pv_form_text_38)) }
+        Button(onClick = { seq++; jobs.add(UploadJob(pvFormText43, 0f, false)) }) { Text(stringResource(R.string.pv_form_text_38)) }
         jobs.forEach { job ->
             Column {
                 Row(Modifier.fillMaxWidth()) {

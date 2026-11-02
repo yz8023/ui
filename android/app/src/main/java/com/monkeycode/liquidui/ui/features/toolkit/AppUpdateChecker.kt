@@ -1,5 +1,9 @@
 package com.monkeycode.liquidui.ui.features.toolkit
 
+import com.monkeycode.liquidui.R
+
+import androidx.compose.ui.res.stringResource
+
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -177,8 +181,8 @@ object AppUpdateChecker {
                 latest = info,
                 message = when {
                     tag.isBlank() -> "该仓库还没有发布 Release"
-                    newer -> "发现新版本 $tag（当前 $current）"
-                    else -> "已是最新版本 $tag"
+                    newer -> context.getString(R.string.update_text_1, tag, current)
+                    else -> context.getString(R.string.update_text_2, tag)
                 },
                 elapsedMillis = System.currentTimeMillis() - started
             )
@@ -190,8 +194,8 @@ object AppUpdateChecker {
                 latest = null,
                 message = when (t) {
                     is java.net.UnknownHostException -> "无法解析 api.github.com：检查网络或代理"
-                    is java.net.SocketTimeoutException -> "请求超时（连接 ${CONNECT_TIMEOUT}ms / 读取 ${READ_TIMEOUT}ms）"
-                    is javax.net.ssl.SSLException -> "TLS 握手失败：${t.message}"
+                    is java.net.SocketTimeoutException -> context.getString(R.string.update_text_3, CONNECT_TIMEOUT, READ_TIMEOUT)
+                    is javax.net.ssl.SSLException -> context.getString(R.string.update_text_4, t.message)
                     else -> "${t.javaClass.simpleName}: ${t.message}"
                 },
                 elapsedMillis = System.currentTimeMillis() - started
@@ -222,7 +226,7 @@ object AppUpdateChecker {
             setRequestProperty("User-Agent", "liquidui-template-updater")
         }
         val total = conn.contentLengthLong
-        AppLog.i(TAG, "下载开始 total=$total → ${tmp.absolutePath}")
+        AppLog.i(TAG, context.getString(R.string.update_text_5, total, tmp.absolutePath))
         var written = 0L
         conn.inputStream.use { input ->
             tmp.outputStream().use { output ->
@@ -239,11 +243,11 @@ object AppUpdateChecker {
         conn.disconnect()
         if (total > 0 && written != total) {
             tmp.delete()
-            throw java.io.IOException("下载不完整：$written/$total 字节")
+            throw java.io.IOException(context.getString(R.string.update_text_6, written, total))
         }
         if (dest.exists()) dest.delete()
-        if (!tmp.renameTo(dest)) throw java.io.IOException("重命名失败：${tmp.name} → ${dest.name}")
-        AppLog.i(TAG, "下载完成 ${dest.length()} 字节")
+        if (!tmp.renameTo(dest)) throw java.io.IOException(context.getString(R.string.update_text_7, tmp.name, dest.name))
+        AppLog.i(TAG, context.getString(R.string.update_text_8, dest.length()))
         return dest
     }
 
@@ -263,7 +267,7 @@ object AppUpdateChecker {
             setDataAndType(uri, "application/vnd.android.package-archive")
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
-        AppLog.i(TAG, "调起安装器 ${apk.name} ${apk.length()} 字节")
+        AppLog.i(TAG, context.getString(R.string.update_text_9, apk.name, apk.length()))
         return runCatching { context.startActivity(intent); true }
             .getOrElse { AppLog.e(TAG, "调起安装器失败", it); false }
     }

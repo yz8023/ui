@@ -33,6 +33,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
 import com.monkeycode.liquidui.R
 import com.monkeycode.liquidui.ui.components.GlassCard
@@ -242,7 +243,7 @@ fun WallpaperSettingsCard(settings: AppSettingsState) {
                         scope.launch {
                             WallpaperStore.cacheNetwork(context, url)
                                 .onSuccess {
-                                    applyCached(it.file.absolutePath, url.trim(), "网络壁纸已缓存并启用（${it.width}×${it.height}）")
+                                    applyCached(it.file.absolutePath, url.trim(), context.getString(R.string.wallpaper_text_15, it.width, it.height))
                                 }
                                 .onFailure { busy = false; message = it.message ?: "网络壁纸下载失败" }
                         }

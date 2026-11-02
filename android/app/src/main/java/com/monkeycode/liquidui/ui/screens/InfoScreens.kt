@@ -121,9 +121,9 @@ fun AboutScreen(onBack: () -> Unit) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                             Text(credit.name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
-                            Text("作者：${credit.author}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary)
+                            Text(stringResource(R.string.info_text_20, credit.author), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary)
                             Text(credit.purpose, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                            Text("许可证：${credit.license}", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text(stringResource(R.string.info_text_21, credit.license), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                         Text(context.getString(R.string.info_text_3), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
                     }

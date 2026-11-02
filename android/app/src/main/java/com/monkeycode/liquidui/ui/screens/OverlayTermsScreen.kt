@@ -99,7 +99,7 @@ fun OverlayTermsCatalogSection(onOpen: (OverlayTerm) -> Unit) {
             }
         }
         Text(
-            "共 ${filtered.size} 条 · 点卡片进入可操作演示，长按详情页按钮复制提示词",
+            stringResource(R.string.common_shared_12, filtered.size),
             Modifier.padding(horizontal = 22.dp),
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,

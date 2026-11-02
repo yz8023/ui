@@ -144,7 +144,7 @@ fun PreviewV03() {
                 Switch(checked = on[i], onCheckedChange = { on[i] = it })
             }
         }
-        Text("已启用 ${on.count { it }}/5 招——质感是开关的叠加，不是单个特效。", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
+        Text(stringResource(R.string.pv_video_text_71, on.count { it }), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
     }
 }
 
@@ -229,7 +229,7 @@ fun PreviewV06() {
                 Box(Modifier.size(20.dp).clip(RoundedCornerShape(5.dp)).background(MaterialTheme.colorScheme.primary))
             }
         }
-        Text("红框=44dp 真实热区，蓝块=20dp 视觉。已命中 $hits 次——点在框内任意处都算中。", style = MaterialTheme.typography.labelSmall)
+        Text(stringResource(R.string.pv_video_text_72, hits), style = MaterialTheme.typography.labelSmall)
     }
 }
 
@@ -372,7 +372,7 @@ fun PreviewX02() {
                 },
                 exit = fadeOut(),
             ) {
-                Card { Text("舞台卡片 · ${anims[sel]}", Modifier.padding(18.dp), fontWeight = FontWeight.Bold) }
+                Card { Text(stringResource(R.string.pv_video_text_73, anims[sel]), Modifier.padding(18.dp), fontWeight = FontWeight.Bold) }
             }
           }
             if (!show) {
@@ -448,7 +448,7 @@ fun PreviewX04() {
                     Box(Modifier.width(36.dp).height(4.dp).align(Alignment.CenterHorizontally).clip(CircleShape).background(MaterialTheme.colorScheme.outlineVariant))
                     Spacer(Modifier.height(10.dp))
                     Text(stringResource(R.string.pv_video_text_70), fontWeight = FontWeight.Bold)
-                    Text("当前档位 ${stage + 1} / 3（收起 · 半开 · 全开）", style = MaterialTheme.typography.bodySmall)
+                    Text(stringResource(R.string.pv_video_text_74, stage + 1), style = MaterialTheme.typography.bodySmall)
                 }
             }
         }

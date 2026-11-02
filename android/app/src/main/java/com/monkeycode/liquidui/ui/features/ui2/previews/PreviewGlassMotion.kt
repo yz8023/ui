@@ -106,7 +106,7 @@ fun PreviewG02() {
                 .border((1 + (glare * 2).roundToInt()).dp, Color.White.copy(alpha = 0.25f + glare * 0.6f), RoundedCornerShape(20.dp)),
             contentAlignment = Alignment.Center,
         ) {
-            Text("视角 ${angle.toInt()}° · 眩光 ${(glare * 100).toInt()}%", fontWeight = FontWeight.Bold)
+            Text(stringResource(R.string.pv_glass_text_28, angle.toInt(), (glare * 100).toInt()), fontWeight = FontWeight.Bold)
         }
         Slider(value = angle, onValueChange = { angle = it }, valueRange = 0f..90f)
         Text(stringResource(R.string.pv_glass_text_1), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -157,7 +157,7 @@ fun PreviewG04() {
             contentAlignment = Alignment.Center,
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("第 ${stage} 步：${stages[stage].substringAfter(' ')}", fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.pv_glass_text_29, stage, stages[stage].substringAfter(' ')), fontWeight = FontWeight.Bold)
                 Text(stringResource(R.string.pv_glass_text_6), style = MaterialTheme.typography.labelSmall)
             }
         }
@@ -244,6 +244,7 @@ fun PreviewM01() {
 
 @Composable
 fun PreviewM02() {
+    val pvGlassText31 = stringResource(R.string.pv_glass_text_31, plucks)
     var plucks by remember { mutableIntStateOf(0) }
     val vibes = remember { List(7) { Animatable(0f) } }
     val scope = rememberCoroutineScope()
@@ -264,10 +265,10 @@ fun PreviewM02() {
                 TextButton(onClick = {
                     plucks++
                     scope.launch { vibes[i - 1].snapTo(1f); vibes[i - 1].animateTo(0f, tween(700)) }
-                }) { Text("弦$i") }
+                }) { Text(stringResource(R.string.pv_glass_text_30, i)) }
             }
         }
-        Text("已拨弦 $plucks 次（点弦看振动衰减）", style = MaterialTheme.typography.labelSmall)
+        Text(pvGlassText31, style = MaterialTheme.typography.labelSmall)
     }
 }
 
@@ -299,7 +300,7 @@ fun PreviewM03() {
             drawLine(primary, center, Offset(center.x + cos(a) * 48f, center.y + sin(a) * 48f), 5f)
             drawCircle(primary, 6f, center)
         }
-        Text("秒针每秒弹跳带过冲：已走 $seconds 秒", style = MaterialTheme.typography.labelSmall)
+        Text(stringResource(R.string.pv_glass_text_32, seconds), style = MaterialTheme.typography.labelSmall)
     }
 }
 
@@ -319,7 +320,7 @@ fun PreviewM04() {
                     Text(title, fontWeight = FontWeight.Bold)
                 }
             }
-            items(3) { i -> Text("· $title 内容 ${i + 1}（滚到顶会被下一屏压住）", Modifier.padding(8.dp)) }
+            items(3) { i -> Text(stringResource(R.string.pv_glass_text_33, title, i + 1), Modifier.padding(8.dp)) }
         }
     }
 }
@@ -339,7 +340,7 @@ fun PreviewM05() {
                 }
             }
         }
-        Text("当前刻度 ${sel + 1}（点刻度吸附选中）", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
+        Text(stringResource(R.string.pv_glass_text_34, sel + 1), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
     }
 }
 
@@ -352,7 +353,7 @@ fun PreviewM06() {
                 .graphicsLayer { rotationY = (frame * 180f); cameraDistance = 12f * density },
             contentAlignment = Alignment.Center,
         ) {
-            Text(if ((frame * 2).toInt() % 2 == 0) "第 ${(frame * 10).toInt() + 1} 帧 · 正面" else stringResource(R.string.pv_glass_text_22), fontWeight = FontWeight.Bold)
+            Text(if ((frame * 2).toInt() % 2 == 0) stringResource(R.string.pv_glass_text_35, (frame * 10).toInt() + 1) else stringResource(R.string.pv_glass_text_22), fontWeight = FontWeight.Bold)
         }
         Slider(value = frame, onValueChange = { frame = it }, valueRange = 0f..1f)
         Text(stringResource(R.string.pv_glass_text_23), style = MaterialTheme.typography.labelSmall)

@@ -355,46 +355,39 @@ def collect(root):
 
 
 if __name__ == '__main__':
-    import pathlib, sys, collections, json
+    """打印分类结果。分类逻辑只有一份（collect()），不再在 __main__ 里重算。
+
+    此前 __main__ 自带一套分类：只把 `'${' in lit` 且属 A/C1 的算 D，
+    于是 `$name` 裸插值和 B/C3 里的插值被漏计（打印 100 条，实际 177 条），
+    迁移脚本用的却是 collect()，两边口径不一致。也顺手删掉写 /tmp/scan_all.json
+    ——本沙箱 /tmp 每轮被清空，任何依赖它的东西都不可靠。
+    """
+    import sys
+    import collections
     root = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else
                         'android/app/src/main/java/com/monkeycode/liquidui')
-    CJK = re.compile(r'[\u4e00-\u9fff]')
-    recs, per_file = [], collections.Counter()
-    for f in sorted(root.rglob('*.kt')):
-        src = f.read_text(encoding='utf-8')
-        rel = str(f.relative_to(root))
-        kinds = kinds if 'kinds' in dir() else build_lambda_kinds(root)
-        for r in scan(src, kinds):
-            if not CJK.search(r['text']):
-                continue
-            r['file'] = rel
-            recs.append(r)
-            key = ('A 组合体内' if r['scope'] == 'body' and r['comp'] else
-                   'C1 组合默认参数' if r['scope'] == 'sig' and r['comp'] else
-                   'D 组合体内带插值' if r['scope'] == 'body' and r['comp'] is True and '${' in r['lit'] else
-                   'B 普通函数体内' if r['scope'] == 'body' else
-                   'C2 普通函数默认参数' if r['scope'] == 'sig' else
-                   'C3 顶层/数据')
-            r['cat'] = key
-            per_file[key] += 1
-    # 重新归类：带插值的单独成 D
-    for r in recs:
-        if '${' in r['lit'] and r['cat'].startswith(('A', 'C1')):
-            per_file[r['cat']] -= 1
-            r['cat'] = 'D 带 ${} 插值（需格式参数）'
-            per_file[r['cat']] += 1
+    recs = collect(root)
+    per_file = collections.Counter(r['cat'] for r in recs)
     print('=== 扫描器分类结果 ===')
     for k, v in per_file.most_common():
         print(f'  {v:5d}  {k}')
     print('  总计', len(recs))
-    json.dump(recs, open('/tmp/scan_all.json', 'w'), ensure_ascii=False)
-    # 自检：三个已知现场
+    print('\n=== D 类细分（阶段 4 施工面）===')
+    D = [r for r in recs if r['cat'].startswith('D')]
+    sub = collections.Counter(
+        'scope=' + r['scope'] if r['scope'] != 'body' else
+        '组合函数体' if r.get('comp') and not r.get('noncomp') else
+        '组合函数内的非组合 lambda' if r.get('comp') else
+        '非组合函数体（B）' for r in D)
+    for k, v in sub.most_common():
+        print(f'  {v:5d}  {k}')
     print('\n=== 自检（此前被漏判的三处）===')
     for want in [('ui/features/AppIconSwitcher.kt', '桌面图标'),
                  ('ui/components/Dialogs.kt', '确定'),
                  ('ui/navigation/Screen.kt', '首页')]:
         hit = [r for r in recs if r['file'] == want[0] and r['text'] == want[1]]
-        for h in hit[:1]:
-            print(f"  {want[0]}:{h['line']} {h['text']!r} → scope={h['scope']} comp={h['comp']} fun={h['fun']} cat={h['cat']}")
-        if not hit:
-            print(f'  {want[0]} {want[1]!r} 未命中！')
+        if hit:
+            h = hit[0]
+            print(f"  {want[0]}:{h['line']} {h['text']!r} → scope={h['scope']} comp={h['comp']} cat={h['cat']}")
+        else:
+            print(f"  {want[0]} {want[1]!r} 已外置（不再出现）✓")

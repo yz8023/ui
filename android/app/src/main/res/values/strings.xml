@@ -846,4 +846,134 @@
 
     <!-- ===== ui/screens/MaterialBrowser.kt（阶段 3b） ===== -->
     <string name="material_label_1">模板素材</string>
+
+    <!-- ===== ui/features/WallpaperStore.kt（阶段 4） ===== -->
+    <string name="wallpaperstore_text_1">下载失败：HTTP %1$s</string>
+
+    <!-- ===== ui/features/adminquery/AdminQueryDemo.kt（阶段 4） ===== -->
+    <string name="aq_demo_text_48">已选「%1$s」：%2$s ~ %3$s，含首尾共 %4$s 天。</string>
+    <string name="aq_demo_text_49">超出数据保留期 %1$s 天的档位置灰不可点：最早可查 %2$s（%3$s）。</string>
+    <string name="aq_demo_text_50">所选区间超出保留期（最早 %1$s）：查询已禁用。</string>
+    <string name="aq_demo_text_51">查询 %1$s ~ %2$s</string>
+    <string name="aq_demo_text_52">口径固定：闭区间 [起, 止]，含当天 00:00–23:59；「今日」= %1$s，共 1 天。</string>
+    <string name="aq_demo_text_53">反例：%1$s 个标签 ≈ %2$s 行（每行约 %3$s 个），条件区把结果挤出首屏。</string>
+    <string name="aq_demo_text_54">聚合后 %1$s 个标签 ≈ %2$s 行，控制在 2 行内。</string>
+    <string name="aq_demo_text_55">「部门 · %1$s」展开：</string>
+    <string name="aq_demo_text_56">%1$s ~ %2$s · 命中 %3$s 条 · 金额合计 ¥%4$s（模拟数据）</string>
+    <string name="aq_demo_text_57">%1$s 笔</string>
+    <string name="aq_demo_text_58">金额合计 ¥%1$s ｜ 笔数 %2$s ｜ 占全量 %3$s%% ｜ 负责人 %4$s</string>
+    <string name="aq_demo_text_59">… 其余 %1$s 条在导出的 CSV 里</string>
+    <string name="aq_demo_text_60">导出明细（CSV · %1$s 行）</string>
+    <string name="aq_demo_text_61">转交话术（已复制，可直接粘贴给 %1$s）：</string>
+    <string name="aq_demo_text_62">当前档位超出保留期 %1$s 天（最早 %2$s）：查询已禁用。</string>
+    <string name="aq_demo_text_63">口径：含首尾，共 %1$s 天</string>
+    <string name="aq_demo_text_64">全部部门 · %1$s</string>
+    <string name="aq_demo_text_65">部门 · %1$s</string>
+    <string name="aq_demo_text_66">已选 %1$s 组</string>
+    <string name="aq_demo_text_67">%1$s ~ %2$s（%3$s 天）</string>
+    <string name="aq_demo_text_68">查询（%1$s 项待生效）</string>
+    <string name="aq_demo_text_69">命中 %1$s 条 / %2$s 条 · 金额合计 ¥%3$s · 时间 %4$s ~ %5$s（含首尾 %6$s 天）</string>
+
+    <!-- ===== ui/features/overlayterms/OverlayTermsDemo.kt（阶段 4） ===== -->
+    <string name="ot_demo_content_desc_1">未读 %1$s 条</string>
+    <string name="ot_demo_text_94">当前选中：%1$s</string>
+    <string name="ot_demo_text_95">已选择：%1$s（气泡点外部或返回键即关）</string>
+    <string name="ot_demo_text_96">正在写入，请勿退出（%1$s%%）</string>
+
+    <!-- ===== ui/features/toolkit/AppLog.kt（阶段 4） ===== -->
+    <string name="app_log_text_1">应用日志 %1$s 条</string>
+
+    <!-- ===== ui/features/toolkit/AppUpdateChecker.kt（阶段 4） ===== -->
+    <string name="update_text_1">发现新版本 %1$s（当前 %2$s）</string>
+    <string name="update_text_2">已是最新版本 %1$s</string>
+    <string name="update_text_3">请求超时（连接 %1$sms / 读取 %2$sms）</string>
+    <string name="update_text_4">TLS 握手失败：%1$s</string>
+    <string name="update_text_5">下载开始 total=%1$s → %2$s</string>
+    <string name="update_text_6">下载不完整：%1$s/%2$s 字节</string>
+    <string name="update_text_7">重命名失败：%1$s → %2$s</string>
+    <string name="update_text_8">下载完成 %1$s 字节</string>
+    <string name="update_text_9">调起安装器 %1$s %2$s 字节</string>
+
+    <!-- ===== ui/features/toolkit/ToolkitDemo.kt（阶段 4） ===== -->
+    <string name="tk_demo_text_53">模拟态 · %1$s</string>
+    <string name="tk_demo_text_54">下载中 · %1$s（服务器未给大小）</string>
+    <string name="tk_demo_text_55">%1$s/%2$s 条 · D %3$s · </string>
+    <string name="tk_demo_text_56">命中 %1$s 条（只显示最新 8 条，完整内容用复制/分享取）</string>
+    <string name="tk_demo_text_57">解析出 %1$s 个块：</string>
+    <string name="tk_demo_text_58"> · 行内节点 %1$s（链接 %2$s、行内码 %3$s）</string>
+    <string name="tk_demo_text_59">id=%1$s · 分级=%2$s · </string>
+
+    <!-- ===== ui/features/ui2/previews/PreviewBaseForm.kt（阶段 4） ===== -->
+    <string name="pv_form_text_42">已点击 %1$s 次</string>
+    <string name="pv_form_text_43">壁纸素材_%1$s</string>
+
+    <!-- ===== ui/features/ui2/previews/PreviewGlassMotion.kt（阶段 4） ===== -->
+    <string name="pv_glass_text_28">视角 %1$s° · 眩光 %2$s%%</string>
+    <string name="pv_glass_text_29">第 %1$s 步：%2$s</string>
+    <string name="pv_glass_text_30">弦%1$s</string>
+    <string name="pv_glass_text_31">已拨弦 %1$s 次（点弦看振动衰减）</string>
+    <string name="pv_glass_text_32">秒针每秒弹跳带过冲：已走 %1$s 秒</string>
+    <string name="pv_glass_text_33">· %1$s 内容 %2$s（滚到顶会被下一屏压住）</string>
+    <string name="pv_glass_text_34">当前刻度 %1$s（点刻度吸附选中）</string>
+    <string name="pv_glass_text_35">第 %1$s 帧 · 正面</string>
+
+    <!-- ===== ui/features/ui2/previews/PreviewMotionPages.kt（阶段 4） ===== -->
+    <string name="pv_motion_page_text_23">条目 %1$s（入场延迟 %2$sms，420ms 渐入上浮）</string>
+    <string name="pv_motion_page_text_24">页面 %1$s / 3</string>
+    <string name="pv_motion_page_text_25">滚动条目 %1$s</string>
+
+    <!-- ===== ui/features/ui2/previews/PreviewMotionTools.kt（阶段 4） ===== -->
+    <string name="pv_motion_tool_text_21">当前档 %1$sms（点数字即以该时长重播小球位移）</string>
+    <string name="pv_motion_tool_text_22">共 %1$s / 25 篇（标题+导读索引，深读回仓库 motion 令牌文档）。</string>
+
+    <!-- ===== ui/features/ui2/previews/PreviewNavLayout.kt（阶段 4） ===== -->
+    <string name="pv_nav_text_31">当前页：%1$s</string>
+    <string name="pv_nav_text_32">%1$s 内容区</string>
+    <string name="pv_nav_text_33">当前容器宽 %1$sdp → %2$s 列</string>
+    <string name="pv_nav_text_34">卡片 %1$s</string>
+    <string name="pv_nav_text_35">· %1$s 条目 %2$s</string>
+    <string name="pv_nav_text_36">安全区（真实 WindowInsets 读数：上 %1$s / 下 %2$s / 左 %3$s / 右 %4$s px）</string>
+
+    <!-- ===== ui/features/ui2/previews/PreviewVideoLabs.kt（阶段 4） ===== -->
+    <string name="pv_video_text_71">已启用 %1$s/5 招——质感是开关的叠加，不是单个特效。</string>
+    <string name="pv_video_text_72">红框=44dp 真实热区，蓝块=20dp 视觉。已命中 %1$s 次——点在框内任意处都算中。</string>
+    <string name="pv_video_text_73">舞台卡片 · %1$s</string>
+    <string name="pv_video_text_74">当前档位 %1$s / 3（收起 · 半开 · 全开）</string>
+
+    <!-- ===== ui/screens/AdminQueryScreen.kt（阶段 4） ===== -->
+    <string name="common_shared_12">共 %1$s 条 · 点卡片进入可操作演示，长按详情页按钮复制提示词</string>
+
+    <!-- ===== ui/screens/InfoScreens.kt（阶段 4） ===== -->
+    <string name="info_text_20">作者：%1$s</string>
+    <string name="info_text_21">许可证：%1$s</string>
+
+    <!-- ===== ui/screens/MotionScreen.kt（阶段 4） ===== -->
+    <string name="motion_text_14">阻尼 %1$s%% · </string>
+    <string name="motion_text_15">位移 %1$spx · 选择预设立即回弹</string>
+    <string name="motion_text_16">列表项 %1$s</string>
+
+    <!-- ===== ui/screens/SettingsScreen.kt（阶段 4） ===== -->
+    <string name="settings_subtitle_10">全局弹簧阻尼：%1$s%%，越低越弹</string>
+    <string name="settings_subtitle_11">背景采样模糊：%1$sdp</string>
+    <string name="settings_subtitle_12">液态透镜边缘高度：%1$sdp</string>
+    <string name="settings_subtitle_13">壁纸内容偏移幅度：%1$sdp</string>
+    <string name="settings_subtitle_14">白色玻璃涂层：%1$s%%</string>
+    <string name="settings_subtitle_15">玻璃边缘强度：%1$s%%</string>
+    <string name="settings_subtitle_16">内存缓冲 %1$s/%2$s 条 · 可过滤、复制、系统分享</string>
+    <string name="settings_text_33">生效中的 chrome：mode=%1$s · </string>
+    <string name="settings_text_34">已发送预览通知 id=1001 channel=%1$s accent=#%2$s</string>
+    <string name="settings_text_35">真实请求 api.github.com 比对版本；检查目标是本模板仓库 %1$s。</string>
+    <string name="settings_text_36">当前安装版本 %1$s。</string>
+    <string name="settings_text_37"> · %1$s · 耗时 %2$sms</string>
+    <string name="settings_text_38">下载中 · %1$s</string>
+    <string name="settings_text_39">已落盘：%1$s</string>
+    <string name="settings_text_40">命中 %1$s 条（最新在上）</string>
+    <string name="settings_text_41">已清空缓冲（原 %1$s 条）</string>
+    <string name="settings_text_42">已清空 %1$s 条</string>
+
+    <!-- ===== ui/screens/Ui2Gallery.kt（阶段 4） ===== -->
+    <string name="ui2_gallery_text_6">来源：yz8023/UI2 素材库同条目提示词；实现方案与出处见仓库 素材库/UI2体验馆/%1$s-*/。</string>
+
+    <!-- ===== ui/screens/WallpaperSettings.kt（阶段 4） ===== -->
+    <string name="wallpaper_text_15">网络壁纸已缓存并启用（%1$s×%2$s）</string>
 </resources>

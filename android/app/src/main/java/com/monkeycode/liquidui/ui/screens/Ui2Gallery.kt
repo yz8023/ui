@@ -201,7 +201,7 @@ fun Ui2DetailScreen(feature: Ui2Feature, onBack: () -> Unit) {
                         )
                     }
                     Text(
-                        "来源：yz8023/UI2 素材库同条目提示词；实现方案与出处见仓库 素材库/UI2体验馆/${feature.id}-*/。",
+                        stringResource(R.string.ui2_gallery_text_6, feature.id),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )

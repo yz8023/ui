@@ -62,7 +62,7 @@ fun PreviewF13() {
             Modifier.fillMaxWidth().height(72.dp).clip(RoundedCornerShape(12.dp))
                 .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)),
             contentAlignment = Alignment.Center,
-        ) { Text("当前页：${tabs[tab]}", fontWeight = FontWeight.SemiBold) }
+        ) { Text(stringResource(R.string.pv_nav_text_31, tabs[tab]), fontWeight = FontWeight.SemiBold) }
         NavigationBar(containerColor = MaterialTheme.colorScheme.surface) {
             tabs.forEachIndexed { i, label ->
                 NavigationBarItem(selected = tab == i, onClick = { tab = i }, icon = { Text(label.take(1)) }, label = { Text(label) })
@@ -173,7 +173,7 @@ fun PreviewF18() {
         Box(
             Modifier.weight(1f).height(140.dp).clip(RoundedCornerShape(12.dp)).background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)),
             contentAlignment = Alignment.Center,
-        ) { Text("${menu[sel]} 内容区") }
+        ) { Text(stringResource(R.string.pv_nav_text_32, menu[sel])) }
     }
 }
 
@@ -240,11 +240,11 @@ fun PreviewF22() {
             else -> 3
         }
         Column {
-            Text("当前容器宽 ${containerWidth.value.toInt()}dp → $cols 列", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
+            Text(stringResource(R.string.pv_nav_text_33, containerWidth.value.toInt(), cols), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
             Spacer(Modifier.height(8.dp))
             LazyVerticalGrid(columns = GridCells.Fixed(cols), modifier = Modifier.height(120.dp), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 items(6) { i ->
-                    Card { Box(Modifier.fillMaxWidth().height(52.dp), contentAlignment = Alignment.Center) { Text("卡片 ${i + 1}") } }
+                    Card { Box(Modifier.fillMaxWidth().height(52.dp), contentAlignment = Alignment.Center) { Text(stringResource(R.string.pv_nav_text_34, i + 1)) } }
                 }
             }
         }
@@ -266,7 +266,7 @@ fun PreviewF23() {
                     Text(group, fontWeight = FontWeight.Bold)
                 }
             }
-            items(3) { i -> Text("· $group 条目 ${i + 1}", Modifier.padding(horizontal = 8.dp, vertical = 4.dp)) }
+            items(3) { i -> Text(stringResource(R.string.pv_nav_text_35, group, i + 1), Modifier.padding(horizontal = 8.dp, vertical = 4.dp)) }
         }
     }
 }
@@ -280,7 +280,7 @@ fun PreviewF24() {
     val left = insets.getLeft(density, androidx.compose.ui.unit.LayoutDirection.Ltr)
     val right = insets.getRight(density, androidx.compose.ui.unit.LayoutDirection.Ltr)
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Text("安全区（真实 WindowInsets 读数：上 $top / 下 $bottom / 左 $left / 右 $right px）", fontWeight = FontWeight.SemiBold)
+        Text(stringResource(R.string.pv_nav_text_36, top, bottom, left, right), fontWeight = FontWeight.SemiBold)
         Box(
             Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).background(MaterialTheme.colorScheme.secondaryContainer).padding(16.dp),
         ) {

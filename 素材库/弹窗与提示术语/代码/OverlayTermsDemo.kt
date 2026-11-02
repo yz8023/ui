@@ -303,7 +303,7 @@ private fun PreviewP04() {
         ) {
             Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 Text(stringResource(R.string.ot_demo_text_25), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
-                Text("当前选中：$picked", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(stringResource(R.string.ot_demo_text_94, picked), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 OTButton(stringResource(R.string.ot_demo_text_26)) { open = true }
                 OTNote(stringResource(R.string.ot_demo_text_27))
             }
@@ -574,7 +574,7 @@ private fun PreviewP09() {
                 }
             }
         }
-        if (picked != null) OTNote("已选择：$picked（气泡点外部或返回键即关）", accent = true)
+        if (picked != null) OTNote(stringResource(R.string.ot_demo_text_95, picked), accent = true)
         OTNote(stringResource(R.string.ot_demo_text_57))
         OTNote(stringResource(R.string.ot_demo_text_58))
     }
@@ -694,7 +694,7 @@ private fun PreviewP11() {
                 Surface(shape = RoundedCornerShape(18.dp), color = MaterialTheme.colorScheme.surface) {
                     Column(Modifier.padding(20.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(10.dp)) {
                         CircularProgressIndicator()
-                        Text("正在写入，请勿退出（${(progress * 100).toInt()}%）", style = MaterialTheme.typography.labelMedium)
+                        Text(stringResource(R.string.ot_demo_text_96, (progress * 100).toInt()), style = MaterialTheme.typography.labelMedium)
                         TextButton(onClick = { running = false; progress = 0f }) { Text(stringResource(R.string.common_cancel)) }
                     }
                 }
@@ -713,7 +713,7 @@ private fun PreviewP12() {
         OTNote(stringResource(R.string.ot_demo_text_75))
         Row(horizontalArrangement = Arrangement.spacedBy(26.dp), verticalAlignment = Alignment.CenterVertically) {
             Box {
-                Icon(AppIcons.Notifications, contentDescription = "未读 $count 条", tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(30.dp))
+                Icon(AppIcons.Notifications, contentDescription = stringResource(R.string.ot_demo_content_desc_1, count), tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(30.dp))
                 if (count > 0) {
                     Surface(
                         Modifier.align(Alignment.TopEnd).offset(x = 8.dp, y = (-6).dp),

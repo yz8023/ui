@@ -204,7 +204,7 @@ private fun UpdateCheckDemo() {
                     )
                 }
                 Text(
-                    if (state.simulated) "模拟态 · ${result.message}" else result.message,
+                    if (state.simulated) stringResource(R.string.tk_demo_text_53, result.message) else result.message,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -242,7 +242,7 @@ private fun UpdateCheckDemo() {
                         )
                     } else {
                         LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-                        Text("下载中 · ${AppUpdateChecker.humanSize(written)}（服务器未给大小）", style = MaterialTheme.typography.labelMedium)
+                        Text(stringResource(R.string.tk_demo_text_54, AppUpdateChecker.humanSize(written)), style = MaterialTheme.typography.labelMedium)
                     }
                 } else {
                     TKButton(
@@ -330,7 +330,7 @@ private fun LogShareDemo() {
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
         TKKeyValue(
             stringResource(R.string.tk_demo_text_18),
-            "${all.size}/${AppLog.MAX_ENTRIES} 条 · D ${counts[AppLogLevel.DEBUG] ?: 0} · " +
+            stringResource(R.string.tk_demo_text_55, all.size, AppLog.MAX_ENTRIES, counts[AppLogLevel.DEBUG] ?: 0) +
                 "I ${counts[AppLogLevel.INFO] ?: 0} · W ${counts[AppLogLevel.WARN] ?: 0} · E ${counts[AppLogLevel.ERROR] ?: 0}"
         )
 
@@ -356,7 +356,7 @@ private fun LogShareDemo() {
             placeholder = { Text(stringResource(R.string.tk_demo_text_25)) },
             singleLine = true
         )
-        Text("命中 ${picked.size} 条（只显示最新 8 条，完整内容用复制/分享取）", style = MaterialTheme.typography.labelMedium)
+        Text(stringResource(R.string.tk_demo_text_56, picked.size), style = MaterialTheme.typography.labelMedium)
 
         // 刻意不套可滚动容器：本页外层已是纵向列表，嵌套同向滚动会互相抢手势。
         Column(
@@ -483,13 +483,15 @@ private const val MD_PRIVACY = """## 隐私说明（示例）
 
 @Composable
 private fun MarkdownDemo() {
+    val tkDemoText58 = stringResource(R.string.tk_demo_text_58, inlines.size, links, codes)
+    val tkDemoText57 = stringResource(R.string.tk_demo_text_57, blocks.size)
     var source by remember { mutableStateOf(MD_CHANGELOG) }
     var editing by remember { mutableStateOf(false) }
     var draft by remember { mutableStateOf("") }
     val blocks = remember(source) { MarkdownParser.parse(source) }
 
     val summary = buildString {
-        append("解析出 ${blocks.size} 个块：")
+        append(tkDemoText57)
         append(blocks.groupBy { it::class.simpleName ?: "?" }
             .entries.sortedByDescending { it.value.size }
             .joinToString("、") { "${it.key} × ${it.value.size}" })
@@ -505,7 +507,7 @@ private fun MarkdownDemo() {
         }
         val links = inlines.count { it is MdLink }
         val codes = inlines.count { it is MdCode }
-        append(" · 行内节点 ${inlines.size}（链接 $links、行内码 $codes）")
+        append(tkDemoText58)
     }
 
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -606,7 +608,7 @@ private fun AdaptiveNavDemo() {
                             fontWeight = FontWeight.Bold
                         )
                         Text(
-                            "id=${items[selected].id} · 分级=${windowClassOf(widthDp.toInt()).label} · " +
+                            stringResource(R.string.tk_demo_text_59, items[selected].id, windowClassOf(widthDp.toInt()).label) +
                                 if (windowClassOf(widthDp.toInt()) == AppWindowClass.COMPACT) stringResource(R.string.tk_demo_text_40) else stringResource(R.string.tk_demo_text_41),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
