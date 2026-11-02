@@ -32,6 +32,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
+import com.monkeycode.liquidui.R
 import com.monkeycode.liquidui.ui.components.CompactSwitch
 import com.monkeycode.liquidui.ui.components.GlassCard
 import com.monkeycode.liquidui.ui.components.GlassMetricCard
@@ -82,25 +84,25 @@ fun ComponentsScreen() {
                 verticalArrangement = Arrangement.spacedBy(6.dp)
             ) {
                 Text(
-                    text = "组件库",
+                    text = stringResource(R.string.components_text_1),
                     style = MaterialTheme.typography.displayMedium,
                     color = MaterialTheme.colorScheme.onBackground
                 )
                 Text(
-                    text = "每个控件的默认态、聚焦态与按下权重都已固化。",
+                    text = stringResource(R.string.components_text_2),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }
 
-        item { SectionTitle("概览 · 大卡与指标", Modifier.padding(top = 8.dp)) }
+        item { SectionTitle(stringResource(R.string.components_section_title_1), Modifier.padding(top = 8.dp)) }
         item {
             GlassHeroCard(
-                title = "液态玻璃设计系统",
-                value = "12 个功能模块",
-                badge = "实时折射",
-                subtitle = "大卡、指标、胶囊筛选与功能组件共享同一套壁纸采样和玻璃参数。",
+                title = stringResource(R.string.components_title_1),
+                value = stringResource(R.string.components_value_1),
+                badge = stringResource(R.string.components_text_3),
+                subtitle = stringResource(R.string.components_subtitle_1),
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
             )
         }
@@ -109,8 +111,8 @@ fun ComponentsScreen() {
                 Modifier.fillMaxWidth().padding(horizontal = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
             ) {
-                GlassMetricCard("组件", "完整", Modifier.weight(1f), AuroraMint, "可直接接业务")
-                GlassMetricCard("壁纸", "离线", Modifier.weight(1f), AuroraViolet, "网络图已缓存")
+                GlassMetricCard(stringResource(R.string.components_text_4), stringResource(R.string.components_text_5), Modifier.weight(1f), AuroraMint, stringResource(R.string.components_text_6))
+                GlassMetricCard(stringResource(R.string.components_text_7), stringResource(R.string.components_text_8), Modifier.weight(1f), AuroraViolet, stringResource(R.string.components_text_9))
             }
         }
         item {
@@ -118,24 +120,24 @@ fun ComponentsScreen() {
                 Modifier.fillMaxWidth().padding(horizontal = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                listOf("全部", "外观", "交互").forEachIndexed { index, label ->
+                listOf(stringResource(R.string.common_all), stringResource(R.string.common_appearance), stringResource(R.string.components_text_10)).forEachIndexed { index, label ->
                     GlassCapsuleButton(capsule == index, label, { capsule = index })
                 }
             }
         }
 
-        item { SectionTitle("按钮 · 按下权重") }
+        item { SectionTitle(stringResource(R.string.components_section_title_2)) }
         item {
             GlassCard(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(10.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    PrimaryButton(onClick = {}) { Text("主要操作") }
-                    SecondaryButton(onClick = {}) { Text("次要操作") }
+                    PrimaryButton(onClick = {}) { Text(stringResource(R.string.components_text_11)) }
+                    SecondaryButton(onClick = {}) { Text(stringResource(R.string.components_text_12)) }
                     GlassIconButton(
                         icon = AppIcons.Notifications,
-                        contentDescription = "通知",
+                        contentDescription = stringResource(R.string.common_notification),
                         onClick = {}
                     )
                 }
@@ -144,28 +146,28 @@ fun ComponentsScreen() {
                     horizontalArrangement = Arrangement.spacedBy(10.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    PrimaryButton(onClick = {}, enabled = false) { Text("禁用态") }
+                    PrimaryButton(onClick = {}, enabled = false) { Text(stringResource(R.string.components_text_13)) }
                     Tag(text = "ease-out-back · 180ms")
                 }
             }
         }
 
-        item { SectionTitle("输入 · 17dp 圆角") }
+        item { SectionTitle(stringResource(R.string.components_section_title_3)) }
         item {
             GlassCard(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
                 GlassTextField(
                     value = text,
                     onValueChange = { text = it },
-                    label = "昵称",
-                    placeholder = "输入内容",
+                    label = stringResource(R.string.components_label_1),
+                    placeholder = stringResource(R.string.components_placeholder_1),
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(Modifier.height(12.dp))
                 GlassTextField(
                     value = password,
                     onValueChange = { password = it },
-                    label = "密码",
-                    supportingText = "支持视觉转换与键盘类型",
+                    label = stringResource(R.string.components_label_2),
+                    supportingText = stringResource(R.string.components_text_14),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                     visualTransformation = PasswordVisualTransformation(),
                     modifier = Modifier.fillMaxWidth()
@@ -173,11 +175,11 @@ fun ComponentsScreen() {
             }
         }
 
-        item { SectionTitle("选择 · 弹簧滑块") }
+        item { SectionTitle(stringResource(R.string.components_section_title_4)) }
         item {
             GlassCard(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
                 SegmentedTabs(
-                    labels = listOf("系统", "浅色", "深色"),
+                    labels = listOf(stringResource(R.string.components_text_15), stringResource(R.string.common_light), stringResource(R.string.common_dark)),
                     selectedIndex = segmented,
                     onSelected = { segmented = it },
                     modifier = Modifier.fillMaxWidth()
@@ -187,21 +189,21 @@ fun ComponentsScreen() {
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Tag(text = "薄荷", accent = AuroraMint)
-                    Tag(text = "琥珀", accent = AuroraAmber)
-                    Tag(text = "玫红", accent = AuroraRose)
-                    Tag(text = "紫罗兰", accent = AuroraViolet)
+                    Tag(text = stringResource(R.string.components_text_16), accent = AuroraMint)
+                    Tag(text = stringResource(R.string.components_text_17), accent = AuroraAmber)
+                    Tag(text = stringResource(R.string.components_text_18), accent = AuroraRose)
+                    Tag(text = stringResource(R.string.components_text_19), accent = AuroraViolet)
                 }
             }
         }
 
-        item { SectionTitle("偏好行 · 设置语言") }
+        item { SectionTitle(stringResource(R.string.components_section_title_5)) }
         item {
             PreferenceCard {
                 PreferenceRow(
                     icon = AppIcons.Notifications,
-                    title = "推送通知",
-                    subtitle = "开关滑块使用弹簧回弹",
+                    title = stringResource(R.string.components_title_2),
+                    subtitle = stringResource(R.string.components_subtitle_2),
                     trailing = {
                         CompactSwitch(
                             checked = notifications,
@@ -215,8 +217,8 @@ fun ComponentsScreen() {
             PreferenceCard {
                 PreferenceRow(
                     icon = AppIcons.Shield,
-                    title = "匿名数据统计",
-                    subtitle = "默认关闭，遵循隐私优先",
+                    title = stringResource(R.string.components_title_3),
+                    subtitle = stringResource(R.string.components_subtitle_3),
                     trailing = {
                         CompactSwitch(
                             checked = analytics,
@@ -227,7 +229,7 @@ fun ComponentsScreen() {
             }
         }
 
-        item { SectionTitle("进度 · 弹簧填充") }
+        item { SectionTitle(stringResource(R.string.components_section_title_6)) }
         item {
             GlassCard(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -243,51 +245,51 @@ fun ComponentsScreen() {
                             meter < 0.7f -> 1f
                             else -> 0.18f
                         }
-                    }) { Text("切换") }
+                    }) { Text(stringResource(R.string.components_text_20)) }
                 }
                 Spacer(Modifier.height(12.dp))
                 Meter(progress = meter)
             }
         }
 
-        item { SectionTitle("状态反馈 · 加载 / 成功 / 离线 / 错误") }
+        item { SectionTitle(stringResource(R.string.components_section_title_7)) }
         item {
             GlassCard(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
                 LoadingState(
-                    title = "加载素材清单",
-                    message = "骨架线使用同一套玻璃材质，可直接放到列表、详情页或 WebView 容器里。",
+                    title = stringResource(R.string.components_title_4),
+                    message = stringResource(R.string.components_message_1),
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(Modifier.height(10.dp))
-                SuccessBanner("主题配置已导出，可粘贴给其他设备导入。")
+                SuccessBanner(stringResource(R.string.components_text_21))
                 Spacer(Modifier.height(8.dp))
-                OfflineBanner(text = "网络断开：更新检测与网页容器会自动降级为本地说明。")
+                OfflineBanner(text = stringResource(R.string.components_text_22))
             }
         }
         item {
             GlassCard(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
                 ErrorState(
-                    title = "加载失败",
-                    message = "错误态保留标题、说明和重试动作，适合网络请求、文件导入和权限失败场景。",
-                    action = { SecondaryButton(onClick = {}) { Text("重试") } }
+                    title = stringResource(R.string.components_title_5),
+                    message = stringResource(R.string.components_message_2),
+                    action = { SecondaryButton(onClick = {}) { Text(stringResource(R.string.common_retry)) } }
                 )
             }
         }
 
-        item { SectionTitle("浮层 · 玻璃对话框") }
+        item { SectionTitle(stringResource(R.string.components_section_title_8)) }
         item {
             GlassCard(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
                 Text(
-                    text = "对话框同样是玻璃材质，圆角 28dp，进出场都有过冲。",
+                    text = stringResource(R.string.components_text_23),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Spacer(Modifier.height(12.dp))
-                PrimaryButton(onClick = { showDialog = true }) { Text("打开对话框") }
+                PrimaryButton(onClick = { showDialog = true }) { Text(stringResource(R.string.components_text_24)) }
             }
         }
 
-        item { SectionTitle("配色 · 语义色板") }
+        item { SectionTitle(stringResource(R.string.components_section_title_9)) }
         item {
             GlassCard(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
                 val swatches = listOf(
@@ -329,12 +331,12 @@ fun ComponentsScreen() {
     if (showDialog) {
         GlassDialog(
             onDismissRequest = { showDialog = false },
-            title = "确认操作",
+            title = stringResource(R.string.components_title_6),
             onConfirm = { showDialog = false },
-            confirmText = "确认"
+            confirmText = stringResource(R.string.components_confirm_1)
         ) {
             Text(
-                text = "这是一个空白功能示例对话框。把 confirm 回调接到你的业务逻辑即可。",
+                text = stringResource(R.string.components_text_25),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

@@ -46,6 +46,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
+import com.monkeycode.liquidui.R
 import com.monkeycode.liquidui.ui.components.GlassCard
 import com.monkeycode.liquidui.ui.features.adminquery.AdminQueryNorms
 import com.monkeycode.liquidui.ui.features.overlayterms.OverlayTerms
@@ -126,12 +128,12 @@ fun MaterialBrowser(onOpenFeature: (FeatureTarget) -> Unit) {
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text(
-                    text = "素材库",
+                    text = stringResource(R.string.material_text_1),
                     style = MaterialTheme.typography.displayMedium,
                     color = MaterialTheme.colorScheme.onBackground
                 )
                 Text(
-                    text = "点击功能模块，直接进入真实可操作的功能；不是介绍弹窗",
+                    text = stringResource(R.string.material_text_2),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -143,11 +145,11 @@ fun MaterialBrowser(onOpenFeature: (FeatureTarget) -> Unit) {
                 modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(horizontal = 22.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                CategoryChip(label = "模板素材", selected = section == 0, onClick = { section = 0 })
-                CategoryChip(label = "UI2 体验馆 · 77", selected = section == 1, onClick = { section = 1 })
-                CategoryChip(label = "数据查询规范 · 5", selected = section == 2, onClick = { section = 2 })
-                CategoryChip(label = "弹窗提示术语 · 12", selected = section == 3, onClick = { section = 3 })
-                CategoryChip(label = "工具与基建 · 4", selected = section == 4, onClick = { section = 4 })
+                CategoryChip(label = stringResource(R.string.material_label_1), selected = section == 0, onClick = { section = 0 })
+                CategoryChip(label = stringResource(R.string.material_label_2), selected = section == 1, onClick = { section = 1 })
+                CategoryChip(label = stringResource(R.string.material_label_3), selected = section == 2, onClick = { section = 2 })
+                CategoryChip(label = stringResource(R.string.material_label_4), selected = section == 3, onClick = { section = 3 })
+                CategoryChip(label = stringResource(R.string.material_label_5), selected = section == 4, onClick = { section = 4 })
             }
         }
 
@@ -179,7 +181,7 @@ fun MaterialBrowser(onOpenFeature: (FeatureTarget) -> Unit) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 22.dp),
-                placeholder = { Text("搜索功能模块…") },
+                placeholder = { Text(stringResource(R.string.material_text_3)) },
                 leadingIcon = {
                     Icon(AppIcons.BlurOn, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
                 },
@@ -202,7 +204,7 @@ fun MaterialBrowser(onOpenFeature: (FeatureTarget) -> Unit) {
         }
 
         item {
-            SectionTitle(text = "全部分类")
+            SectionTitle(text = stringResource(R.string.material_text_4))
         }
         item {
             Row(
@@ -212,7 +214,7 @@ fun MaterialBrowser(onOpenFeature: (FeatureTarget) -> Unit) {
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 CategoryChip(
-                    label = "全部",
+                    label = stringResource(R.string.common_all),
                     selected = selectedCategory == null,
                     onClick = { selectedCategoryName = null }
                 )

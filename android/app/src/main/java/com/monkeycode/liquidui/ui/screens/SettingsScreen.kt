@@ -71,6 +71,7 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
 import com.monkeycode.liquidui.R
 import com.monkeycode.liquidui.ui.components.CompactSwitch
@@ -123,31 +124,31 @@ fun SettingsScreen(
                 verticalArrangement = Arrangement.spacedBy(6.dp)
             ) {
                 Text(
-                    text = "设置",
+                    text = stringResource(R.string.common_settings),
                     style = MaterialTheme.typography.displayMedium,
                     color = MaterialTheme.colorScheme.onBackground
                 )
                 Text(
-                    text = "所有调整实时生效。把这份状态类套到你的业务里，换肤能力即刻拥有。",
+                    text = stringResource(R.string.settings_text_1),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }
 
-        item { SectionTitle("风格") }
+        item { SectionTitle(stringResource(R.string.settings_section_title_1)) }
         item {
             PreferenceCard {
                 Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp)) {
                     Text(
-                        text = "视觉风格",
+                        text = stringResource(R.string.settings_text_2),
                         style = MaterialTheme.typography.bodyLarge,
                         fontWeight = FontWeight.Medium,
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     Spacer(Modifier.height(4.dp))
                     Text(
-                        text = "玻璃=液态玻璃面板；普通=实心 Material 布局；MD3=壁纸动态取色（Android 12+）；O神=Miuix 分组卡片+翻页+悬浮底栏",
+                        text = stringResource(R.string.settings_text_3),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -164,12 +165,12 @@ fun SettingsScreen(
             }
         }
 
-        item { SectionTitle("外观") }
+        item { SectionTitle(stringResource(R.string.common_appearance)) }
         item {
             PreferenceCard {
                 Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp)) {
                     Text(
-                        text = "主题配色",
+                        text = stringResource(R.string.settings_text_4),
                         style = MaterialTheme.typography.bodyLarge,
                         fontWeight = FontWeight.Medium,
                         color = MaterialTheme.colorScheme.onSurface
@@ -187,14 +188,14 @@ fun SettingsScreen(
             PreferenceCard {
                 Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp)) {
                     Text(
-                        text = "主题模式",
+                        text = stringResource(R.string.settings_text_5),
                         style = MaterialTheme.typography.bodyLarge,
                         fontWeight = FontWeight.Medium,
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     Spacer(Modifier.height(12.dp))
                     SegmentedTabs(
-                        labels = listOf("跟随系统", "浅色", "深色"),
+                        labels = listOf(stringResource(R.string.settings_text_6), stringResource(R.string.common_light), stringResource(R.string.common_dark)),
                         selectedIndex = when (settings.themeMode) {
                             ThemeMode.System -> 0
                             ThemeMode.Light -> 1
@@ -214,36 +215,36 @@ fun SettingsScreen(
                 }
             }
         }
-        item { SectionTitle("主题配置") }
+        item { SectionTitle(stringResource(R.string.settings_section_title_2)) }
         item { ThemeConfigTransferCard(settings) }
         item { WallpaperSettingsCard(settings) }
 
-        item { SectionTitle("首次体验") }
+        item { SectionTitle(stringResource(R.string.settings_section_title_3)) }
         item {
             PreferenceCard {
                 PreferenceRow(
                     icon = AppIcons.BlurOn,
-                    title = "重新查看欢迎引导",
-                    subtitle = "再次打开首次启动说明，适合给使用者演示项目能力",
+                    title = stringResource(R.string.settings_title_1),
+                    subtitle = stringResource(R.string.settings_subtitle_1),
                     onClick = { settings.updateOnboardingCompleted(false) }
                 )
             }
         }
 
-        item { SectionTitle("应用图标") }
+        item { SectionTitle(stringResource(R.string.common_app_icon)) }
         item {
             PreferenceCard {
                 AppIconPicker(Modifier.padding(horizontal = 16.dp, vertical = 14.dp))
             }
         }
 
-        item { SectionTitle("动效") }
+        item { SectionTitle(stringResource(R.string.settings_section_title_4)) }
         item {
             PreferenceCard {
                 PreferenceRow(
                     icon = AppIcons.Speed,
-                    title = "减少动效",
-                    subtitle = "物理动画切换为临界阻尼，内容始终处于终态可见",
+                    title = stringResource(R.string.settings_title_2),
+                    subtitle = stringResource(R.string.settings_subtitle_2),
                     trailing = {
                         CompactSwitch(
                             checked = settings.reducedMotion,
@@ -255,7 +256,7 @@ fun SettingsScreen(
         }
         item {
             SliderCard(
-                title = "动效阻尼",
+                title = stringResource(R.string.settings_title_3),
                 subtitle = "全局弹簧阻尼：${((currentChrome.motionDamping.coerceIn(0f, 1f)) * 100).toInt()}%，越低越弹",
                 value = settings.motionDamping,
                 onValueChange = settings::updateMotionDamping
@@ -263,7 +264,7 @@ fun SettingsScreen(
         }
         item {
             SliderCard(
-                title = "模糊强度",
+                title = stringResource(R.string.settings_title_4),
                 subtitle = "背景采样模糊：${settings.glassBlurRadiusDp.toInt()}dp",
                 value = settings.glassBlurRadiusDp,
                 valueRange = 0f..40f,
@@ -272,7 +273,7 @@ fun SettingsScreen(
         }
         item {
             SliderCard(
-                title = "折射高度",
+                title = stringResource(R.string.settings_title_5),
                 subtitle = "液态透镜边缘高度：${settings.glassRefractionHeightDp.toInt()}dp",
                 value = settings.glassRefractionHeightDp,
                 valueRange = 0f..40f,
@@ -281,7 +282,7 @@ fun SettingsScreen(
         }
         item {
             SliderCard(
-                title = "折射幅度",
+                title = stringResource(R.string.settings_title_6),
                 subtitle = "壁纸内容偏移幅度：${settings.glassRefractionAmountDp.toInt()}dp",
                 value = settings.glassRefractionAmountDp,
                 valueRange = 0f..60f,
@@ -290,7 +291,7 @@ fun SettingsScreen(
         }
         item {
             SliderCard(
-                title = "玻璃染色",
+                title = stringResource(R.string.settings_title_7),
                 subtitle = "白色玻璃涂层：${(settings.glassTintAlpha * 100).toInt()}%",
                 value = settings.glassTintAlpha,
                 valueRange = 0f..0.35f,
@@ -299,7 +300,7 @@ fun SettingsScreen(
         }
         item {
             SliderCard(
-                title = "高光边框",
+                title = stringResource(R.string.settings_title_8),
                 subtitle = "玻璃边缘强度：${(settings.glassBorderAlpha * 100).toInt()}%",
                 value = settings.glassBorderAlpha,
                 valueRange = 0f..0.45f,
@@ -310,8 +311,8 @@ fun SettingsScreen(
             PreferenceCard {
                 PreferenceRow(
                     icon = AppIcons.WaterDrop,
-                    title = "增强色彩层次",
-                    subtitle = "提升玻璃后的壁纸色彩通透感",
+                    title = stringResource(R.string.settings_title_9),
+                    subtitle = stringResource(R.string.settings_subtitle_3),
                     trailing = {
                         CompactSwitch(settings.glassVibrancyEnabled, settings::updateGlassVibrancyEnabled)
                     }
@@ -322,8 +323,8 @@ fun SettingsScreen(
             PreferenceCard {
                 PreferenceRow(
                     icon = AppIcons.WaterDrop,
-                    title = "色差折射",
-                    subtitle = "在液态透镜边缘显示更明显的色散",
+                    title = stringResource(R.string.settings_title_10),
+                    subtitle = stringResource(R.string.settings_subtitle_4),
                     trailing = {
                         CompactSwitch(settings.glassChromaticAberration, settings::updateGlassChromaticAberration)
                     }
@@ -332,7 +333,7 @@ fun SettingsScreen(
         }
         item {
             SliderCard(
-                title = "圆角倍率",
+                title = stringResource(R.string.settings_title_11),
                 subtitle = "整体圆角比例：${String.format("%.1f", settings.cornerScale)}×",
                 value = settings.cornerScale,
                 valueRange = 0.8f..1.5f,
@@ -343,26 +344,26 @@ fun SettingsScreen(
             PreferenceCard {
                 PreferenceRow(
                     icon = AppIcons.RotateRight,
-                    title = "恢复默认",
-                    subtitle = "重置全部外观与动效偏好",
+                    title = stringResource(R.string.settings_title_12),
+                    subtitle = stringResource(R.string.settings_subtitle_5),
                     onClick = settings::reset
                 )
             }
         }
 
-        item { SectionTitle("通知") }
+        item { SectionTitle(stringResource(R.string.common_notification)) }
         item {
             PreferenceCard {
                 Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp)) {
                     Text(
-                        text = "发送测试通知",
+                        text = stringResource(R.string.settings_text_7),
                         style = MaterialTheme.typography.bodyLarge,
                         fontWeight = FontWeight.Medium,
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     Spacer(Modifier.height(4.dp))
                     Text(
-                        text = "向系统发一条即时通知作为预览，正文使用当前主题主色着色（Android 13+ 首次需授权）",
+                        text = stringResource(R.string.settings_text_8),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -372,7 +373,7 @@ fun SettingsScreen(
             }
         }
 
-        item { SectionTitle("更新与日志") }
+        item { SectionTitle(stringResource(R.string.settings_section_title_5)) }
         item {
             PreferenceCard { UpdateCheckPanel() }
         }
@@ -380,13 +381,13 @@ fun SettingsScreen(
             PreferenceCard { AppLogPanel() }
         }
 
-        item { SectionTitle("帮助与合规") }
+        item { SectionTitle(stringResource(R.string.settings_section_title_6)) }
         item {
             PreferenceCard {
                 PreferenceRow(
                     icon = AppIcons.Shield,
-                    title = "关于与开源致谢",
-                    subtitle = "完整查看参考项目、作者、用途、链接与许可证",
+                    title = stringResource(R.string.settings_title_13),
+                    subtitle = stringResource(R.string.settings_subtitle_6),
                     onClick = onOpenAbout
                 )
             }
@@ -395,8 +396,8 @@ fun SettingsScreen(
             PreferenceCard {
                 PreferenceRow(
                     icon = AppIcons.Shield,
-                    title = "隐私说明",
-                    subtitle = "查看本地数据、权限用途和网络行为的完整说明",
+                    title = stringResource(R.string.common_privacy),
+                    subtitle = stringResource(R.string.settings_subtitle_7),
                     onClick = onOpenPrivacy
                 )
             }
@@ -405,8 +406,8 @@ fun SettingsScreen(
             PreferenceCard {
                 PreferenceRow(
                     icon = AppIcons.Shield,
-                    title = "权限管理",
-                    subtitle = "真实请求权限、检查状态，拒绝后可进入系统设置恢复",
+                    title = stringResource(R.string.common_permissions),
+                    subtitle = stringResource(R.string.settings_subtitle_8),
                     onClick = onOpenPermissions
                 )
             }
@@ -415,8 +416,8 @@ fun SettingsScreen(
             PreferenceCard {
                 PreferenceRow(
                     icon = AppIcons.BlurOn,
-                    title = "项目主页",
-                    subtitle = "打开 GitHub 仓库，查看源码、文档和构建记录",
+                    title = stringResource(R.string.settings_title_14),
+                    subtitle = stringResource(R.string.settings_subtitle_9),
                     onClick = {
                         val intent = Intent(
                             Intent.ACTION_VIEW,
@@ -545,14 +546,14 @@ private fun ThemeConfigTransferCard(settings: AppSettingsState) {
     PreferenceCard {
         Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp)) {
             Text(
-                text = "导入 / 导出主题",
+                text = stringResource(R.string.settings_text_9),
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Medium,
                 color = MaterialTheme.colorScheme.onSurface
             )
             Spacer(Modifier.height(4.dp))
             Text(
-                text = "把当前外观、玻璃参数和动效偏好保存为 JSON；可复制给别人或从剪贴板恢复。",
+                text = stringResource(R.string.settings_text_10),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -568,7 +569,7 @@ private fun ThemeConfigTransferCard(settings: AppSettingsState) {
                         Toast.makeText(context, "主题 JSON 已复制", Toast.LENGTH_SHORT).show()
                     },
                     modifier = Modifier.weight(1f)
-                ) { Text("导出") }
+                ) { Text(stringResource(R.string.settings_text_11)) }
                 PrimaryButton(
                     onClick = {
                         val json = clipboard.primaryClip
@@ -585,7 +586,7 @@ private fun ThemeConfigTransferCard(settings: AppSettingsState) {
                         ).show()
                     },
                     modifier = Modifier.weight(1f)
-                ) { Text("导入") }
+                ) { Text(stringResource(R.string.settings_text_12)) }
             }
         }
     }
@@ -613,7 +614,7 @@ private fun CustomPalettePicker(settings: AppSettingsState) {
 
     Column {
         Text(
-            text = "种子色 · 在色盘上点击/拖动取色，右侧滑条调深浅",
+            text = stringResource(R.string.settings_text_13),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -632,7 +633,7 @@ private fun CustomPalettePicker(settings: AppSettingsState) {
         )
         Spacer(Modifier.height(16.dp))
         Text(
-            text = "背景深浅",
+            text = stringResource(R.string.settings_text_14),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -660,7 +661,7 @@ private fun NotificationPreviewButton(modifier: Modifier = Modifier) {
     ) { granted ->
         AppLog.i(
             "Notification",
-            if (granted) "POST_NOTIFICATIONS 已授权，发送预览通知" else "POST_NOTIFICATIONS 被拒绝，跳过发送"
+            if (granted) stringResource(R.string.settings_text_15) else stringResource(R.string.settings_text_16)
         )
         if (granted) sendNotificationPreview(context, primary)
     }
@@ -679,7 +680,7 @@ private fun NotificationPreviewButton(modifier: Modifier = Modifier) {
         },
         modifier = modifier
     ) {
-        Text("发送")
+        Text(stringResource(R.string.settings_text_17))
     }
 }
 
@@ -728,7 +729,7 @@ private fun UpdateCheckPanel() {
     val current = remember(context) { AppUpdateChecker.currentVersionName(context) }
 
     Column(Modifier.padding(horizontal = 16.dp, vertical = 14.dp)) {
-        Text("检查更新", style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
+        Text(stringResource(R.string.settings_text_18), style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
         Spacer(Modifier.height(4.dp))
         Text(
             "真实请求 api.github.com 比对版本；检查目标是本模板仓库 ${AppUpdateChecker.DEFAULT_REPO}。" +
@@ -750,7 +751,7 @@ private fun UpdateCheckPanel() {
             },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(if (checking) "检查中…" else "检查更新")
+            Text(if (checking) stringResource(R.string.common_checking) else stringResource(R.string.settings_text_18))
         }
 
         val r = result
@@ -760,9 +761,9 @@ private fun UpdateCheckPanel() {
             Spacer(Modifier.height(10.dp))
             Text(
                 when (r.state) {
-                    UpdateState.UPDATE_AVAILABLE -> "发现新版本"
-                    UpdateState.UP_TO_DATE -> "已是最新"
-                    UpdateState.FAILED -> "检查失败"
+                    UpdateState.UPDATE_AVAILABLE -> stringResource(R.string.settings_text_19)
+                    UpdateState.UP_TO_DATE -> stringResource(R.string.settings_text_20)
+                    UpdateState.FAILED -> stringResource(R.string.settings_text_21)
                 } + " · ${r.message} · 耗时 ${r.elapsedMillis}ms",
                 style = MaterialTheme.typography.bodySmall,
                 color = if (r.state == UpdateState.FAILED) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface
@@ -772,13 +773,13 @@ private fun UpdateCheckPanel() {
                 Spacer(Modifier.height(6.dp))
                 Text(
                     "${latest.tag} · ${latest.publishedAt} · " +
-                        (latest.apkName ?: "无 APK 附件") + " · " + AppUpdateChecker.humanSize(latest.apkBytes),
+                        (latest.apkName ?: stringResource(R.string.settings_text_22)) + " · " + AppUpdateChecker.humanSize(latest.apkBytes),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 if (latest.body.isNotBlank()) {
                     Spacer(Modifier.height(10.dp))
-                    Text("更新日志（Markdown 实时渲染，见 F20/U03）", style = MaterialTheme.typography.labelMedium)
+                    Text(stringResource(R.string.settings_text_23), style = MaterialTheme.typography.labelMedium)
                     Spacer(Modifier.height(6.dp))
                     MarkdownText(
                         latest.body,
@@ -818,7 +819,7 @@ private fun UpdateCheckPanel() {
                             AppLog.w("Update", "用户取消下载")
                         },
                         modifier = Modifier.fillMaxWidth()
-                    ) { Text("取消下载") }
+                    ) { Text(stringResource(R.string.common_cancel_download)) }
                 } else {
                     PrimaryButton(
                         onClick = {
@@ -849,7 +850,7 @@ private fun UpdateCheckPanel() {
                             }
                         },
                         modifier = Modifier.fillMaxWidth()
-                    ) { Text(if (apkPath != null) "重新下载并安装" else "下载 APK 并安装") }
+                    ) { Text(if (apkPath != null) stringResource(R.string.common_redownload_install) else stringResource(R.string.common_download_install)) }
                 }
             }
 
@@ -858,12 +859,12 @@ private fun UpdateCheckPanel() {
                 SecondaryButton(
                     onClick = { AppUpdateChecker.openUnknownSourcesSettings(context) },
                     modifier = Modifier.fillMaxWidth()
-                ) { Text("去授权「安装未知应用」") }
+                ) { Text(stringResource(R.string.settings_text_24)) }
                 Spacer(Modifier.height(8.dp))
                 SecondaryButton(
                     onClick = { url?.let { AppUpdateChecker.openInBrowser(context, it) } },
                     modifier = Modifier.fillMaxWidth()
-                ) { Text("改用浏览器下载") }
+                ) { Text(stringResource(R.string.settings_text_25)) }
             }
             if (r.state == UpdateState.FAILED) {
                 Spacer(Modifier.height(8.dp))
@@ -878,7 +879,7 @@ private fun UpdateCheckPanel() {
                         }
                     },
                     modifier = Modifier.fillMaxWidth()
-                ) { Text("重试") }
+                ) { Text(stringResource(R.string.common_retry)) }
             }
             apkPath?.let {
                 Spacer(Modifier.height(6.dp))
@@ -910,7 +911,7 @@ private fun AppLogPanel() {
 
     PreferenceRow(
         icon = AppIcons.Widgets,
-        title = "运行日志",
+        title = stringResource(R.string.settings_title_15),
         subtitle = "内存缓冲 ${entries.size}/${AppLog.MAX_ENTRIES} 条 · 可过滤、复制、系统分享",
         onClick = {
             showSheet = true
@@ -922,16 +923,16 @@ private fun AppLogPanel() {
         val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
         ModalBottomSheet(onDismissRequest = { showSheet = false }, sheetState = sheetState) {
             Column(Modifier.padding(horizontal = 20.dp)) {
-                Text("运行日志", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                Text(stringResource(R.string.settings_title_15), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
                 Spacer(Modifier.height(4.dp))
                 Text(
-                    "只存内存不落盘，进程被杀即清空，因此不需要存储权限。分享前请自行确认内容不含隐私。",
+                    stringResource(R.string.settings_text_26),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Spacer(Modifier.height(12.dp))
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    FilterChip(selected = level == null, onClick = { level = null }, label = { Text("全部") })
+                    FilterChip(selected = level == null, onClick = { level = null }, label = { Text(stringResource(R.string.common_all)) })
                     AppLogLevel.entries.forEach { l ->
                         FilterChip(
                             selected = level == l,
@@ -953,7 +954,7 @@ private fun AppLogPanel() {
                     verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
                     if (picked.isEmpty()) {
-                        Text("（暂无日志：去点几次「检查更新」或「发送通知」就有了）",
+                        Text(stringResource(R.string.settings_text_27),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant)
                     } else {
@@ -976,7 +977,7 @@ private fun AppLogPanel() {
                         Toast.makeText(context, "已复制 ${picked.size} 条日志", Toast.LENGTH_SHORT).show()
                     },
                     modifier = Modifier.fillMaxWidth()
-                ) { Text("复制全文") }
+                ) { Text(stringResource(R.string.common_copy_all)) }
                 Spacer(Modifier.height(8.dp))
                 SecondaryButton(
                     onClick = {
@@ -992,7 +993,7 @@ private fun AppLogPanel() {
                         ).show()
                     },
                     modifier = Modifier.fillMaxWidth()
-                ) { Text("系统分享") }
+                ) { Text(stringResource(R.string.common_share)) }
                 Spacer(Modifier.height(8.dp))
                 SecondaryButton(
                     onClick = {
@@ -1002,7 +1003,7 @@ private fun AppLogPanel() {
                         Toast.makeText(context, "已清空 $n 条", Toast.LENGTH_SHORT).show()
                     },
                     modifier = Modifier.fillMaxWidth()
-                ) { Text("清空") }
+                ) { Text(stringResource(R.string.common_clear)) }
                 toast?.let {
                     Spacer(Modifier.height(6.dp))
                     Text(it, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)

@@ -29,8 +29,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
 import android.content.Intent
 import android.net.Uri
+import com.monkeycode.liquidui.R
 import com.monkeycode.liquidui.ui.theme.AppIcons
 
 // ============================================================
@@ -76,7 +78,7 @@ fun WelcomeGuideScreen(
             ) {
                 Icon(
                     imageVector = AppIcons.WaterDrop,
-                    contentDescription = "应用图标",
+                    contentDescription = stringResource(R.string.common_app_icon),
                     tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier
                         .size(96.dp)
@@ -86,13 +88,13 @@ fun WelcomeGuideScreen(
             }
             Spacer(modifier = Modifier.height(18.dp))
             Text(
-                text = "应用名称",
+                text = stringResource(R.string.welcome_text_1),
                 style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.SemiBold
             )
             Spacer(modifier = Modifier.height(6.dp))
             Text(
-                text = "一句话介绍你的应用",
+                text = stringResource(R.string.welcome_text_2),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -102,23 +104,23 @@ fun WelcomeGuideScreen(
             // ── 功能列表 ───────────────────────────────────────
             WelcomeGuideFeature(
                 icon = AppIcons.Widgets,
-                title = "核心功能一",
-                description = "一句话描述这个功能的亮点和价值"
+                title = stringResource(R.string.welcome_title_1),
+                description = stringResource(R.string.welcome_desc_1)
             )
             WelcomeGuideFeature(
                 icon = AppIcons.Speed,
-                title = "核心功能二",
-                description = "一句话描述这个功能的亮点和价值"
+                title = stringResource(R.string.welcome_title_2),
+                description = stringResource(R.string.welcome_desc_1)
             )
             WelcomeGuideFeature(
                 icon = AppIcons.Widgets,
-                title = "核心功能三",
-                description = "一句话描述这个功能的亮点和价值"
+                title = stringResource(R.string.welcome_title_3),
+                description = stringResource(R.string.welcome_desc_1)
             )
             WelcomeGuideFeature(
                 icon = AppIcons.Shield,
-                title = "隐私安全",
-                description = "数据仅存本地，不上传任何服务器"
+                title = stringResource(R.string.welcome_title_4),
+                description = stringResource(R.string.welcome_desc_2)
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -154,7 +156,7 @@ fun WelcomeGuideScreen(
                     .padding(horizontal = 24.dp, vertical = 16.dp)
                     .height(52.dp)
             ) {
-                Text("开始使用", style = MaterialTheme.typography.titleMedium)
+                Text(stringResource(R.string.common_get_started), style = MaterialTheme.typography.titleMedium)
             }
         }
     }
@@ -240,13 +242,13 @@ private fun FreeNoticeCard() {
             Spacer(modifier = Modifier.width(14.dp))
             Column {
                 Text(
-                    text = "完全免费",
+                    text = stringResource(R.string.welcome_text_3),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onTertiaryContainer
                 )
                 Text(
-                    text = "无广告、无内购，所有功能永久免费",
+                    text = stringResource(R.string.welcome_text_4),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onTertiaryContainer
                 )
@@ -277,9 +279,9 @@ private fun DisclaimerCard() {
             )
             Spacer(modifier = Modifier.width(10.dp))
             Text(
-                text = "免责声明：本应用仅供个人学习与技术交流，请勿用于商业用途。" +
-                    "下载内容版权归原作者所有，请于下载后 24 小时内删除。" +
-                    "使用本应用产生的任何后果由使用者自行承担。",
+                text = stringResource(R.string.welcome_text_5) +
+                    stringResource(R.string.welcome_text_6) +
+                    stringResource(R.string.welcome_text_7),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 lineHeight = 20.sp
@@ -326,7 +328,7 @@ private fun OpenSourceRepoCard(
             Spacer(modifier = Modifier.width(14.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = "开源仓库",
+                    text = stringResource(R.string.common_open_source),
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Medium
                 )

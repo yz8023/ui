@@ -33,7 +33,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
+import com.monkeycode.liquidui.R
 import com.monkeycode.liquidui.ui.components.GlassCard
 import com.monkeycode.liquidui.ui.components.GlassTextField
 import com.monkeycode.liquidui.ui.components.PrimaryButton
@@ -62,7 +64,7 @@ fun WallpaperSettingsCard(settings: AppSettingsState) {
     val documentPicker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri != null) {
             busy = true
-            message = "正在复制并缓存图片…"
+            message = stringResource(R.string.wallpaper_message_1)
             scope.launch {
                 WallpaperStore.cacheDocument(context, uri)
                     .onSuccess { applyCached(it.file.absolutePath, "", "本地图片已复制到应用内部并启用") }
@@ -78,9 +80,9 @@ fun WallpaperSettingsCard(settings: AppSettingsState) {
     // built-in default wallpaper comes back, and the root re-reads on resume.
     val legacyStoragePermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
         message = if (granted) {
-            "已切换为系统桌面壁纸"
+            stringResource(R.string.wallpaper_text_1)
         } else {
-            "未授予存储权限，将显示系统默认壁纸；也可以使用本地图片或网络壁纸"
+            stringResource(R.string.wallpaper_text_2)
         }
     }
     // Android 11+: the real system wallpaper (and any wallpaper at all on
@@ -94,9 +96,9 @@ fun WallpaperSettingsCard(settings: AppSettingsState) {
     ) {
         settings.bumpWallpaperRevision()
         message = if (hasAllFilesAccess()) {
-            "已开启所有文件访问，系统壁纸已生效"
+            stringResource(R.string.wallpaper_text_3)
         } else {
-            "仍未开启所有文件访问，系统壁纸暂时读不到；可改用本地图片或网络壁纸"
+            stringResource(R.string.wallpaper_text_4)
         }
     }
     val systemWallpaperAvailable = remember(settings.wallpaperMode, settings.wallpaperRevision) {
@@ -106,10 +108,10 @@ fun WallpaperSettingsCard(settings: AppSettingsState) {
         settings.wallpaperMode == WallpaperMode.System && !hasAllFilesAccess()
 
     GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
-        Text("壁纸与背景", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
+        Text(stringResource(R.string.wallpaper_text_5), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
         Spacer(Modifier.height(4.dp))
         Text(
-            "网络图片会下载、校验并复制到应用私有目录。即使原链接失效，已缓存壁纸仍可离线使用。",
+            stringResource(R.string.wallpaper_text_6),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
@@ -157,14 +159,14 @@ fun WallpaperSettingsCard(settings: AppSettingsState) {
             Spacer(Modifier.height(10.dp))
             when {
                 systemWallpaperAvailable -> Text(
-                    "已读取当前系统桌面壁纸作为背景（更换桌面壁纸后回到应用即会刷新）。",
+                    stringResource(R.string.wallpaper_text_7),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.primary,
                 )
 
                 needsAllFilesAccess -> {
                     Text(
-                        "系统壁纸需要先开启「所有文件访问」权限：Android 14 起系统只允许持有该权限的应用读取桌面壁纸（已自动回退极光背景）。开启后返回本页即可生效。",
+                        stringResource(R.string.wallpaper_text_8),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.error,
                     )
@@ -174,11 +176,11 @@ fun WallpaperSettingsCard(settings: AppSettingsState) {
                             allFilesAccessLauncher.launch(allFilesAccessSettingsIntent(context))
                         },
                         modifier = Modifier.fillMaxWidth(),
-                    ) { Text("去开启所有文件访问权限") }
+                    ) { Text(stringResource(R.string.wallpaper_text_9)) }
                 }
 
                 else -> Text(
-                    "当前系统未返回桌面壁纸（可能是动态壁纸或厂商限制），已自动回退极光背景；可在下方选择同一张图片做本地缓存，显示效果一致。",
+                    stringResource(R.string.wallpaper_text_10),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.error,
                 )
@@ -196,12 +198,12 @@ fun WallpaperSettingsCard(settings: AppSettingsState) {
             ) {
                 Image(
                     bitmap = preview.asImageBitmap(),
-                    contentDescription = "缓存壁纸预览",
+                    contentDescription = stringResource(R.string.wallpaper_content_desc_1),
                     modifier = Modifier.fillMaxWidth().height(176.dp),
                     contentScale = ContentScale.Crop,
                 )
                 Text(
-                    text = if (settings.wallpaperMode == WallpaperMode.Cached) "缓存壁纸使用中" else "缓存壁纸已保留",
+                    text = if (settings.wallpaperMode == WallpaperMode.Cached) stringResource(R.string.wallpaper_text_11) else stringResource(R.string.wallpaper_text_12),
                     modifier = Modifier.padding(12.dp),
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSurface,
@@ -214,17 +216,17 @@ fun WallpaperSettingsCard(settings: AppSettingsState) {
             onClick = { documentPicker.launch(arrayOf("image/*")) },
             enabled = !busy,
             modifier = Modifier.fillMaxWidth(),
-        ) { Text("选择本地图片并永久缓存") }
+        ) { Text(stringResource(R.string.wallpaper_text_13)) }
 
         Spacer(Modifier.height(14.dp))
-        Text("网络壁纸", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+        Text(stringResource(R.string.wallpaper_text_14), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
         Spacer(Modifier.height(8.dp))
         GlassTextField(
             value = url,
             onValueChange = { url = it; message = null },
-            label = "壁纸图片链接",
+            label = stringResource(R.string.wallpaper_label_1),
             placeholder = "https://example.com/wallpaper.jpg",
-            supportingText = "支持 HTTPS，最大 20MB；会缩放并缓存到本地",
+            supportingText = stringResource(R.string.wallpaper_text_15),
             enabled = !busy,
             modifier = Modifier.fillMaxWidth(),
         )
@@ -249,7 +251,7 @@ fun WallpaperSettingsCard(settings: AppSettingsState) {
                 },
                 enabled = !busy,
                 modifier = Modifier.weight(1f),
-            ) { Text(if (busy) "处理中…" else "下载并应用") }
+            ) { Text(if (busy) stringResource(R.string.common_processing) else stringResource(R.string.wallpaper_text_16)) }
             SecondaryButton(
                 onClick = {
                     WallpaperStore.clear(context)
@@ -260,7 +262,7 @@ fun WallpaperSettingsCard(settings: AppSettingsState) {
                 },
                 enabled = !busy && !settings.cachedWallpaperPath.isNullOrBlank(),
                 modifier = Modifier.weight(1f),
-            ) { Text("清除缓存") }
+            ) { Text(stringResource(R.string.wallpaper_text_17)) }
         }
 
         message?.let {

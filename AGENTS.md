@@ -28,6 +28,7 @@
 ## 1. 唯一权威来源（Single Source of Truth）
 
 - **可运行、可编译的权威实现永远是 `android/` 示例工程里的源码。**
+- **`android/app/src/main/res/values/strings.xml` 也是权威源码的一部分**：A/C1 类 UI 文案已外置到那里，`素材库/*/代码/` 的镜像会引用 `R.string.*`。摘素材时必须连同对应 strings 分组一起复制，否则编译不过。
 - `素材库/<功能>/代码/` 是它的**镜像副本**，方便按功能取用。两者不一致时以 `android/` 为准，并顺手修正镜像或报告漂移。
 - 同一能力出现多份历史实现时，只认手册标注的那一份。例如换图标只认 **F01**
   （`AppIconSwitcher.kt` + 示例 Manifest 的三 alias 方案）；`素材库/桌面图标动态切换/`、
