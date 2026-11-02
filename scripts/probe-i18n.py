@@ -14,6 +14,11 @@
   5. 委托可空属性不能直接当格式参数：`var x by remember { mutableStateOf<String?>(null) }`
      在 `if (x != null)` 里也**不能**智能转换（委托属性），当 vararg Any 传会编译失败。
      模板里 `"$x"` 不报错（可空直接插值），换成 stringResource(id, x) 才暴露，CI 实测过。
+  7. import 齐备：用了 `stringResource(` 必须 import androidx.compose.ui.res.stringResource，
+     用了 `R.string.` 必须 import com.monkeycode.liquidui.R。本地 kotlinc 没有 classpath，
+     `stringResource` 本来就是 unresolved，这类错只有 CI 能抓到（实测红过 2 条），
+     所以放进探针常驻。
+
   另外有一条**只警告不拦**的启发式：实参里的成员名若全仓只出现一次，可能是把模板的
   字面文本当成了属性访问（`$seq.jpg` 的正确解析是「表达式 seq + 字面文本 .jpg」，
   误解析成 `seq.jpg` 会 Unresolved reference，CI 实测过）。之所以不拦：
@@ -222,6 +227,23 @@ def main():
                 errs.append(f"[越界] {f.name}:{ln} fun={r['fun']} scope={r['scope']} "
                             f"comp={r.get('comp')} noncomp={r.get('noncomp')} blocks={r.get('blocks')}")
 
+    # ---- 4. import 齐备 ----
+    def strip_comments_and_strings(s: str) -> str:
+        """KDoc 里写 `stringResource(screen.titleRes)` 是说明文字，不该触发缺 import。"""
+        s = re.sub(r'""".*?"""', '""', s, flags=re.S)
+        s = re.sub(r'"(?:[^"\\]|\\.)*"', '""', s)
+        s = re.sub(r'/\*.*?\*/', '', s, flags=re.S)
+        return re.sub(r'//[^\n]*', '', s)
+
+    for f in sorted(ROOT.rglob('*.kt')):
+        s = strip_comments_and_strings(f.read_text(encoding='utf-8'))
+        rel = str(f.relative_to(ROOT))
+        if 'stringResource(' in s and 'import androidx.compose.ui.res.stringResource' not in s:
+            errs.append(f'[缺 import] {rel} 用了 stringResource 但没 import '
+                        'androidx.compose.ui.res.stringResource')
+        if 'R.string.' in s and 'import com.monkeycode.liquidui.R' not in s:
+            errs.append(f'[缺 import] {rel} 用了 R.string 但没 import com.monkeycode.liquidui.R')
+
     print(f'stringResource 调用 {nsr} 个｜getString 调用 {ngs} 个｜strings.xml {len(res)} 条')
     for w in warns:
         print('  ⚠ ' + w)
@@ -232,7 +254,7 @@ def main():
         if len(errs) > 40:
             print(f'  …另有 {len(errs) - 40} 条')
         return 1
-    print('全部通过 ✓（上下文越界 0、参数数全对、格式串合法、formatted 用法一致'
+    print('全部通过 ✓（上下文越界 0、参数数全对、格式串合法、formatted 用法一致、import 齐备'
           + (f'；另有 {len(warns)} 条启发式警告' if warns else '') + '）')
     return 0
 

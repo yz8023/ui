@@ -572,7 +572,7 @@ private fun AdaptiveNavDemo() {
 
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
         TKKeyValue(stringResource(R.string.tk_demo_text_37), "${stringResource(realClass.labelRes)}（${realClass.name}）")
-        TKKeyValue(stringResource(R.string.tk_demo_text_38), "${widthDp.toInt()} dp → ${windowClassOf(widthDp.toInt()).label}")
+        TKKeyValue(stringResource(R.string.tk_demo_text_38), "${widthDp.toInt()} dp → ${stringResource(windowClassOf(widthDp.toInt()).labelRes)}")
 
         Text(stringResource(R.string.tk_demo_text_39), style = MaterialTheme.typography.labelMedium)
         Slider(
@@ -611,7 +611,8 @@ private fun AdaptiveNavDemo() {
                             fontWeight = FontWeight.Bold
                         )
                         Text(
-                            stringResource(R.string.tk_demo_text_59, items[selected].id, windowClassOf(widthDp.toInt()).label) +
+                            stringResource(R.string.tk_demo_text_59, items[selected].id,
+                                stringResource(windowClassOf(widthDp.toInt()).labelRes)) +
                                 if (windowClassOf(widthDp.toInt()) == AppWindowClass.COMPACT) stringResource(R.string.tk_demo_text_40) else stringResource(R.string.tk_demo_text_41),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
