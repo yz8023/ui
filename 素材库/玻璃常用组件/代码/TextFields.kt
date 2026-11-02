@@ -15,7 +15,7 @@ import com.monkeycode.liquidui.ui.theme.AppShape
  * 17dp radius, primary focus border, no tonal elevation.
  */
 @Composable
-fun 玻璃文本输入框(
+fun GlassTextField(
     value: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
@@ -44,11 +44,11 @@ fun 玻璃文本输入框(
         placeholder = placeholder?.let { { Text(it, color = MaterialTheme.colorScheme.onSurfaceVariant) } },
         supportingText = supportingText?.let { { Text(it) } },
         colors = OutlinedTextFieldDefaults.colors(
-            focusedContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.55f),
-            unfocusedContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.40f),
-            disabledContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.25f),
+            focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.42f),
+            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.32f),
+            disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.24f),
             focusedBorderColor = MaterialTheme.colorScheme.primary,
-            unfocusedBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.35f),
+            unfocusedBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.50f),
             focusedTextColor = MaterialTheme.colorScheme.onSurface,
             unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
             cursorColor = MaterialTheme.colorScheme.primary,

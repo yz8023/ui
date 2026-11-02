@@ -31,26 +31,16 @@ import androidx.compose.ui.unit.dp
 import com.monkeycode.liquidui.R
 
 /**
- * 应用内切换桌面应用图标（功能编号 F01，唯一权威实现与示例工程
- * `android/.../ui/features/AppIconSwitcher.kt` 保持逻辑一致；本文件是其镜像，
- * 对象名使用中文名 [应用图标切换器]，文件内所有引用均指向本名，切勿与英文名混用）。
+ * 应用内切换桌面应用图标（素材库功能点 01）。
  *
  * 原理：Manifest 为每套图标声明一个 <activity-alias>（同一个 targetActivity、
  * 不同 android:icon），运行时用 PackageManager 互斥启用/禁用。
- * 详见同目录 `../实现方案.md` 与仓库根 `docs/功能逐项手册.md` 的 F01 节。
- *
- * 红线（历史上全踩过）：
- * 1. ComponentName 必须用完整类名：packageName + ".icon.Xxx"，禁止只写相对名拼凑猜测；
- * 2. 切换顺序必须先启用目标、再禁用其余，禁止先禁后启；
- * 3. 预览图用 foreground drawable，禁止拿 mipmap 自适应 XML 当 painterResource（会崩）；
- * 4. 图标载荷用 @mipmap/ic_launcher_* 自适应图标，不要改成裸 PNG。
  */
-object 应用图标切换器 {
+object AppIconSwitcher {
 
     data class IconOption(
         val key: String,
         val label: String,
-        /** Manifest 中 activity-alias 的相对名，如 ".icon.Default"。 */
         val className: String,
         val previewRes: Int,
     )
@@ -79,10 +69,9 @@ object 应用图标切换器 {
     private fun IconOption.component(context: Context) =
         ComponentName(context.packageName, context.packageName + className)
 
-    /** 启用 [target]，其余全部禁用。成功返回 true，系统拒绝返回 false（调用方应提示用户）。 */
     fun apply(context: Context, target: IconOption): Boolean = runCatching {
         val pm = context.packageManager
-        // 先启用新入口，保证任何瞬间都至少有一个桌面图标，避免图标消失或被系统杀进程。
+        // Enable the new launcher entry first so there is never a moment with no launcher icon.
         pm.setComponentEnabledSetting(
             target.component(context),
             PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
@@ -98,7 +87,6 @@ object 应用图标切换器 {
         true
     }.getOrDefault(false)
 
-    /** 读取当前生效的图标（直接读组件真实状态，不依赖另存的偏好）。 */
     fun current(context: Context): IconOption =
         all().firstOrNull {
             context.packageManager.getComponentEnabledSetting(it.component(context)) ==
@@ -108,11 +96,11 @@ object 应用图标切换器 {
 
 /** 设置页的图标选择区：一排图标预览，点击切换，选中项描边高亮。 */
 @Composable
-fun 应用图标选择器(modifier: Modifier = Modifier) {
+fun AppIconPicker(modifier: Modifier = Modifier) {
     val context = LocalContext.current
-    val options = remember { 应用图标切换器.all() }
+    val options = remember { AppIconSwitcher.all() }
     var selectedKey by remember {
-        mutableStateOf(应用图标切换器.current(context).key)
+        mutableStateOf(AppIconSwitcher.current(context).key)
     }
 
     Column(modifier = modifier) {
@@ -140,7 +128,7 @@ fun 应用图标选择器(modifier: Modifier = Modifier) {
                     modifier = Modifier
                         .clip(CircleShape)
                         .clickable {
-                            if (应用图标切换器.apply(context, option)) {
+                            if (AppIconSwitcher.apply(context, option)) {
                                 selectedKey = option.key
                             }
                         }

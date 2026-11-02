@@ -40,6 +40,22 @@ MIRRORS = [
     ("素材库/工具与基建/代码/ToolkitSpec.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/features/toolkit/ToolkitSpec.kt"),
     ("素材库/工具与基建/代码/ToolkitDemo.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/features/toolkit/ToolkitDemo.kt"),
     ("素材库/工具与基建/代码/ToolkitScreen.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/screens/ToolkitScreen.kt"),
+    ("素材库/动效系统/代码/Motion.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/motion/Motion.kt"),
+    ("素材库/动效系统/代码/MotionModifiers.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/motion/MotionModifiers.kt"),
+    ("素材库/动效系统/代码/InteractiveHighlight.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/motion/InteractiveHighlight.kt"),
+    ("素材库/动效系统/代码/DampedDragAnimation.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/motion/DampedDragAnimation.kt"),
+    ("素材库/动效系统/代码/DragGestureDetector.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/motion/DragGestureDetector.kt"),
+    ("素材库/底部导航栏/代码/LiquidBottomTabs.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/components/LiquidBottomTabs.kt"),
+    ("素材库/权限请求组件/代码/PermissionToolkit.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/features/PermissionToolkit.kt"),
+    ("素材库/状态反馈组件/代码/Feedback.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/components/Feedback.kt"),
+    ("素材库/玻璃常用组件/代码/Feedback.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/components/Feedback.kt"),
+    ("素材库/玻璃常用组件/代码/Dialogs.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/components/Dialogs.kt"),
+    ("素材库/玻璃常用组件/代码/StudyStyleComponents.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/components/StudyStyleComponents.kt"),
+    ("素材库/玻璃常用组件/代码/TextFields.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/components/TextFields.kt"),
+    ("素材库/玻璃常用组件/代码/Controls.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/components/Controls.kt"),
+    ("素材库/玻璃常用组件/代码/Rows.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/components/Rows.kt"),
+    ("素材库/应用图标切换/代码/AppIconSwitcher.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/features/AppIconSwitcher.kt"),
+    ("素材库/应用欢迎引导界面/代码/WelcomeGuideScreen.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/screens/WelcomeGuideScreen.kt"),
 ]
 for mirror, authoritative in MIRRORS:
     a, b = ROOT / mirror, ROOT / authoritative

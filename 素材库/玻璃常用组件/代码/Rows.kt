@@ -3,11 +3,14 @@ package com.monkeycode.liquidui.ui.components
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -19,13 +22,25 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.monkeycode.liquidui.ui.theme.AppShape
+import com.monkeycode.liquidui.ui.theme.LocalAppChrome
+import com.monkeycode.liquidui.ui.theme.VisualMode
 
 /** Section label used above a group of settings. */
 @Composable
-fun 节标题(
+fun SectionTitle(
     text: String,
     modifier: Modifier = Modifier
 ) {
+    // O神模式：Miuix 分组小标题（灰色小字，与卡片内文对齐），不再用主色。
+    if (LocalAppChrome.current.visualMode == VisualMode.OShin) {
+        Text(
+            text = text,
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = modifier.padding(start = 32.dp, bottom = 8.dp, top = 6.dp)
+        )
+        return
+    }
     Text(
         text = text,
         style = MaterialTheme.typography.labelLarge,
@@ -41,7 +56,7 @@ fun 节标题(
  * title + optional subtitle, optional trailing control.
  */
 @Composable
-fun 偏好行(
+fun PreferenceRow(
     icon: ImageVector,
     title: String,
     modifier: Modifier = Modifier,
@@ -65,12 +80,24 @@ fun 偏好行(
             .padding(horizontal = 16.dp, vertical = 14.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.size(22.dp)
-        )
+        Box(
+            modifier = Modifier
+                .size(38.dp)
+                // O神模式去掉彩色圆形底，图标直接以主色呈现（HyperOS 设置行做法）。
+                .background(
+                    if (LocalAppChrome.current.visualMode == VisualMode.OShin) androidx.compose.ui.graphics.Color.Transparent
+                    else MaterialTheme.colorScheme.primary.copy(alpha = 0.13f),
+                    CircleShape
+                ),
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(19.dp)
+            )
+        }
         Column(
             modifier = Modifier
                 .weight(1f)
@@ -97,7 +124,7 @@ fun 偏好行(
 
 /** Wraps a [PreferenceRow] in its own glass card with standard screen insets. */
 @Composable
-fun 偏好卡片(
+fun PreferenceCard(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
@@ -105,14 +132,19 @@ fun 偏好卡片(
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 4.dp)
-            .liquidGlass(shape = AppShape.card, elevation = 1.dp),
+            // O神模式：16dp 分组卡圆角（而非玻璃的 22dp）。
+            .liquidGlass(
+                shape = if (LocalAppChrome.current.visualMode == VisualMode.OShin)
+                    androidx.compose.foundation.shape.RoundedCornerShape(16.dp) else AppShape.card,
+                elevation = 1.dp
+            ),
         content = { content() }
     )
 }
 
 /** Large, bold display headline. The type-scale jump is the design. */
 @Composable
-fun 显示标题(
+fun DisplayTitle(
     text: String,
     modifier: Modifier = Modifier,
     style: androidx.compose.ui.text.TextStyle = MaterialTheme.typography.displayLarge
@@ -127,7 +159,7 @@ fun 显示标题(
 
 /** Muted supporting copy under a title. */
 @Composable
-fun 支持文本(
+fun SupportingText(
     text: String,
     modifier: Modifier = Modifier
 ) {
