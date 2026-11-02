@@ -976,4 +976,33 @@
 
     <!-- ===== ui/screens/WallpaperSettings.kt（阶段 4） ===== -->
     <string name="wallpaper_text_15">网络壁纸已缓存并启用（%1$s×%2$s）</string>
+
+    <!-- ===== 阶段 5a：数据模型的显示标签改 @StringRes Int ===== -->
+    <string name="palette_aurora">冰蓝</string>
+    <string name="palette_mint">薄荷</string>
+    <string name="palette_sunset">落日</string>
+    <string name="palette_mono">素灰</string>
+    <string name="palette_coral">珊瑚</string>
+    <string name="palette_sakura">樱花</string>
+    <string name="palette_galaxy">星夜</string>
+    <string name="palette_custom">自定义</string>
+    <string name="wallpaper_mode_aurora">极光</string>
+    <string name="wallpaper_mode_system">系统壁纸</string>
+    <string name="wallpaper_mode_cached">本地缓存</string>
+    <string name="window_class_compact">紧凑</string>
+    <string name="window_class_medium">中等</string>
+    <string name="window_class_expanded">展开</string>
+    <string name="onboarding_feature_1_title">液态玻璃主题</string>
+    <string name="onboarding_feature_1_description">玻璃面板、动态背景、折射强度、透明度与圆角都能在设置页实时调节。</string>
+    <string name="onboarding_feature_2_title">常用组件即拷即用</string>
+    <string name="onboarding_feature_2_description">按钮、输入框、开关、弹窗、状态反馈与偏好行保持统一的材质和动效。</string>
+    <string name="onboarding_feature_3_title">动效 token 系统</string>
+    <string name="onboarding_feature_3_description">弹簧、错峰入场、按压反馈和减少动效都收敛成可复用规范。</string>
+    <string name="onboarding_feature_4_title">选择式功能开发</string>
+    <string name="onboarding_feature_4_description">按需复制素材目录里的实现方案、代码、环境要求和参考来源。</string>
+    <string name="feature_category_appearance">外观</string>
+    <string name="feature_category_motion">动效</string>
+    <string name="feature_category_navigation">导航</string>
+    <string name="feature_category_settings">设置</string>
+    <string name="feature_category_components">组件</string>
 </resources>

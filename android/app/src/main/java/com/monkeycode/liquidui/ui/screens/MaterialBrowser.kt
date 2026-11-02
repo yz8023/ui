@@ -47,6 +47,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.res.stringResource
+import androidx.annotation.StringRes
+import androidx.compose.ui.platform.LocalContext
 import com.monkeycode.liquidui.R
 import com.monkeycode.liquidui.ui.components.GlassCard
 import com.monkeycode.liquidui.ui.features.adminquery.AdminQueryNorms
@@ -68,6 +70,7 @@ import com.monkeycode.liquidui.ui.theme.AppShape
  */
 @Composable
 fun MaterialBrowser(onOpenFeature: (FeatureTarget) -> Unit) {
+    val context = LocalContext.current
     val materialLabel1 = stringResource(R.string.material_label_1)
     // 状态一律提到详情分支之前、并可跨组合保存：点卡片查看（UI2 详情或跳转功能页）后
     // 返回时，列表滚动位置（条目+像素偏移）、搜索词、分类筛选都停在原处，不回到顶部。
@@ -221,7 +224,7 @@ fun MaterialBrowser(onOpenFeature: (FeatureTarget) -> Unit) {
                 )
                 FeatureCategory.entries.forEach { category ->
                     CategoryChip(
-                        label = category.label,
+                        label = context.getString(category.labelRes),
                         selected = selectedCategory == category,
                         onClick = { selectedCategoryName = if (selectedCategory == category) null else category.name }
                     )
@@ -322,13 +325,13 @@ private fun FeatureCard(
             Spacer(modifier = Modifier.width(10.dp))
             Column(horizontalAlignment = Alignment.End) {
                 Tag(
-                    text = feature.category.label,
+                    text = stringResource(feature.category.labelRes),
                     accent = when (feature.category) {
-                        FeatureCategory.外观 -> Color(0xFF4CAF50)
-                        FeatureCategory.动效 -> Color(0xFF2196F3)
-                        FeatureCategory.导航 -> Color(0xFFFF9800)
-                        FeatureCategory.设置 -> Color(0xFF9C27B0)
-                        FeatureCategory.组件 -> Color(0xFF00BCD4)
+                        FeatureCategory.Appearance -> Color(0xFF4CAF50)
+                        FeatureCategory.Motion -> Color(0xFF2196F3)
+                        FeatureCategory.Navigation -> Color(0xFFFF9800)
+                        FeatureCategory.Settings -> Color(0xFF9C27B0)
+                        FeatureCategory.Components -> Color(0xFF00BCD4)
                     }
                 )
                 Spacer(modifier = Modifier.height(4.dp))
@@ -346,12 +349,12 @@ private fun FeatureCard(
 
 enum class FeatureTarget { Components, Motion, Settings, Permissions, About, Onboarding }
 
-enum class FeatureCategory(val label: String) {
-    外观("外观"),
-    动效("动效"),
-    导航("导航"),
-    设置("设置"),
-    组件("组件")
+enum class FeatureCategory(@StringRes val labelRes: Int) {
+    Appearance(R.string.feature_category_appearance),
+    Motion(R.string.feature_category_motion),
+    Navigation(R.string.feature_category_navigation),
+    Settings(R.string.feature_category_settings),
+    Components(R.string.feature_category_components)
 }
 
 data class FeatureItem(
@@ -371,7 +374,7 @@ private fun allFeatureItems(): List<FeatureItem> = listOf(
     FeatureItem(
         name = "液态玻璃主题",
         description = "一套基于 Blur + backdrop 的玻璃拟态主题，支持多套配色和动态取色。",
-        category = FeatureCategory.外观,
+        category = FeatureCategory.Appearance,
         difficulty = "入门",
         instructions = """
             1. 复制 液态玻璃主题/代码/ 下的全部 .kt 文件到项目的 ui/theme/ 包
@@ -387,7 +390,7 @@ private fun allFeatureItems(): List<FeatureItem> = listOf(
     FeatureItem(
         name = "玻璃常用组件",
         description = "按钮、滑块、输入框、弹窗、反馈、行布局——全部自带玻璃风格。",
-        category = FeatureCategory.组件,
+        category = FeatureCategory.Components,
         difficulty = "入门",
         instructions = """
             1. 复制 玻璃常用组件/代码/ 下的全部 .kt 文件到项目的 ui/components/ 包
@@ -402,7 +405,7 @@ private fun allFeatureItems(): List<FeatureItem> = listOf(
     FeatureItem(
         name = "动效系统",
         description = "全局弹簧阻尼 token、按压回弹、常态呼吸、错峰入场——一处改全应用。",
-        category = FeatureCategory.动效,
+        category = FeatureCategory.Motion,
         difficulty = "进阶",
         instructions = """
             1. 复制 动效系统/代码/ 下的 .kt 文件到项目的 ui/motion/ 包
@@ -418,7 +421,7 @@ private fun allFeatureItems(): List<FeatureItem> = listOf(
     FeatureItem(
         name = "底部导航栏",
         description = "可拖拽、带弹簧阻尼的液态玻璃底部导航栏；玻璃模式自动降级 Material3。",
-        category = FeatureCategory.导航,
+        category = FeatureCategory.Navigation,
         difficulty = "进阶",
         instructions = """
             1. 复制 底部导航栏/代码/ 下的 .kt 文件到项目的 ui/components/ 包
@@ -434,7 +437,7 @@ private fun allFeatureItems(): List<FeatureItem> = listOf(
     FeatureItem(
         name = "主题色配置与切换",
         description = "8 套配色方案 + 自由取色盘，实时切换不重启。",
-        category = FeatureCategory.设置,
+        category = FeatureCategory.Settings,
         difficulty = "入门",
         instructions = """
             1. 复制 Theme.kt 中的 PaletteId / schemeFor / seedSchemeFor 到你的 theme 包
@@ -449,7 +452,7 @@ private fun allFeatureItems(): List<FeatureItem> = listOf(
     FeatureItem(
         name = "应用图标切换",
         description = "在应用内切换桌面图标，选择后立即生效，无需重新安装。",
-        category = FeatureCategory.设置,
+        category = FeatureCategory.Settings,
         difficulty = "进阶",
         instructions = """
             1. 复制 应用图标切换/代码/ 下的 .kt 文件到项目的 ui/features/ 包
@@ -464,7 +467,7 @@ private fun allFeatureItems(): List<FeatureItem> = listOf(
     FeatureItem(
         name = "桌面图标动态切换",
         description = "支持动态 Activity Alias 切换，含 ShortcutManager 快捷方式适配。",
-        category = FeatureCategory.设置,
+        category = FeatureCategory.Settings,
         difficulty = "进阶",
         instructions = """
             1. 复制 桌面图标动态切换/代码/ 下的 .kt 文件
@@ -479,7 +482,7 @@ private fun allFeatureItems(): List<FeatureItem> = listOf(
     FeatureItem(
         name = "应用欢迎引导界面",
         description = "首次启动展示功能介绍、免费声明、开源仓库入口，点击开始使用后进入主页。",
-        category = FeatureCategory.导航,
+        category = FeatureCategory.Navigation,
         difficulty = "入门",
         instructions = """
             1. 复制 应用欢迎引导界面/代码/ 下的 .kt 文件到项目的 ui/screens/ 包
@@ -495,7 +498,7 @@ private fun allFeatureItems(): List<FeatureItem> = listOf(
     FeatureItem(
         name = "状态反馈组件",
         description = "加载、骨架屏、空态、错误、成功与离线状态，可在组件页直接操作。",
-        category = FeatureCategory.组件,
+        category = FeatureCategory.Components,
         difficulty = "入门",
         instructions = "复制状态反馈组件代码并按业务状态切换对应 composable。",
         fileCount = 1,
@@ -506,7 +509,7 @@ private fun allFeatureItems(): List<FeatureItem> = listOf(
     FeatureItem(
         name = "权限请求组件",
         description = "真实请求运行时权限、显示授权状态，并支持拒绝后跳转系统设置。",
-        category = FeatureCategory.设置,
+        category = FeatureCategory.Settings,
         difficulty = "入门",
         instructions = "复制 PermissionToolkit，并按权限用途传入 PermissionSpec。",
         fileCount = 1,
@@ -517,7 +520,7 @@ private fun allFeatureItems(): List<FeatureItem> = listOf(
     FeatureItem(
         name = "主题配置导入导出",
         description = "把当前主题完整导出为 JSON，并从剪贴板校验、导入和恢复。",
-        category = FeatureCategory.设置,
+        category = FeatureCategory.Settings,
         difficulty = "入门",
         instructions = "复制导入导出代码并连接统一的设置状态类。",
         fileCount = 1,
@@ -528,7 +531,7 @@ private fun allFeatureItems(): List<FeatureItem> = listOf(
     FeatureItem(
         name = "协议与开源许可页面",
         description = "完整页面展示隐私说明、全部参考项目、作者、链接和许可证。",
-        category = FeatureCategory.设置,
+        category = FeatureCategory.Settings,
         difficulty = "入门",
         instructions = "复制信息页面并在设置页提供明确入口。",
         fileCount = 1,

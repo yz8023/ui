@@ -21,18 +21,20 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
+import androidx.annotation.StringRes
+import com.monkeycode.liquidui.R
 import com.monkeycode.liquidui.ui.motion.Motion
 
 /** The colour themes the settings page switches between. */
-enum class PaletteId(val label: String) {
-    Aurora("冰蓝"),
-    Mint("薄荷"),
-    Sunset("落日"),
-    Mono("素灰"),
-    Coral("珊瑚"),
-    Sakura("樱花"),
-    Galaxy("星夜"),
-    Custom("自定义")
+enum class PaletteId(@StringRes val labelRes: Int) {
+    Aurora(R.string.palette_aurora),
+    Mint(R.string.palette_mint),
+    Sunset(R.string.palette_sunset),
+    Mono(R.string.palette_mono),
+    Coral(R.string.palette_coral),
+    Sakura(R.string.palette_sakura),
+    Galaxy(R.string.palette_galaxy),
+    Custom(R.string.palette_custom)
 }
 
 /** The palette switched to when the user picks a free seed colour. */

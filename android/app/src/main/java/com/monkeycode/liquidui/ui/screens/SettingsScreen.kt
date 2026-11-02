@@ -73,6 +73,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
+import androidx.annotation.StringRes
 import com.monkeycode.liquidui.R
 import com.monkeycode.liquidui.ui.components.CompactSwitch
 import com.monkeycode.liquidui.ui.components.ColorWheel
@@ -492,7 +493,7 @@ private fun PaletteChips(settings: AppSettingsState) {
                         .background(palettePrimaryLight(palette), CircleShape)
                 )
                 Text(
-                    text = palette.label,
+                    text = stringResource(palette.labelRes),
                     style = MaterialTheme.typography.bodySmall,
                     color = if (selected) {
                         MaterialTheme.colorScheme.onPrimaryContainer

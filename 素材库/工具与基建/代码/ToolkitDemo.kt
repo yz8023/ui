@@ -46,6 +46,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.res.stringResource
+import androidx.annotation.StringRes
 import com.monkeycode.liquidui.R
 import com.monkeycode.liquidui.ui.theme.AppIcons
 import kotlinx.coroutines.Dispatchers
@@ -570,7 +571,7 @@ private fun AdaptiveNavDemo() {
     }
 
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        TKKeyValue(stringResource(R.string.tk_demo_text_37), "${realClass.label}（${realClass.name}）")
+        TKKeyValue(stringResource(R.string.tk_demo_text_37), "${stringResource(realClass.labelRes)}（${realClass.name}）")
         TKKeyValue(stringResource(R.string.tk_demo_text_38), "${widthDp.toInt()} dp → ${windowClassOf(widthDp.toInt()).label}")
 
         Text(stringResource(R.string.tk_demo_text_39), style = MaterialTheme.typography.labelMedium)

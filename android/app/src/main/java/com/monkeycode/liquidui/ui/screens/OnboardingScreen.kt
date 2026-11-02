@@ -32,6 +32,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.annotation.StringRes
 import com.monkeycode.liquidui.R
 import com.monkeycode.liquidui.ui.components.AuroraBackground
 import com.monkeycode.liquidui.ui.components.GlassCard
@@ -48,34 +49,34 @@ import com.monkeycode.liquidui.ui.theme.AuroraViolet
 
 private data class OnboardingFeature(
     val icon: ImageVector,
-    val title: String,
-    val description: String,
+    @StringRes val titleRes: Int,
+    @StringRes val descriptionRes: Int,
     val accent: Color
 )
 
 private val onboardingFeatures = listOf(
     OnboardingFeature(
         icon = AppIcons.BlurOn,
-        title = "液态玻璃主题",
-        description = "玻璃面板、动态背景、折射强度、透明度与圆角都能在设置页实时调节。",
+        titleRes = R.string.onboarding_feature_1_title,
+        descriptionRes = R.string.onboarding_feature_1_description,
         accent = AuroraMint
     ),
     OnboardingFeature(
         icon = AppIcons.Widgets,
-        title = "常用组件即拷即用",
-        description = "按钮、输入框、开关、弹窗、状态反馈与偏好行保持统一的材质和动效。",
+        titleRes = R.string.onboarding_feature_2_title,
+        descriptionRes = R.string.onboarding_feature_2_description,
         accent = AuroraViolet
     ),
     OnboardingFeature(
         icon = AppIcons.Animation,
-        title = "动效 token 系统",
-        description = "弹簧、错峰入场、按压反馈和减少动效都收敛成可复用规范。",
+        titleRes = R.string.onboarding_feature_3_title,
+        descriptionRes = R.string.onboarding_feature_3_description,
         accent = AuroraAmber
     ),
     OnboardingFeature(
         icon = AppIcons.Settings,
-        title = "选择式功能开发",
-        description = "按需复制素材目录里的实现方案、代码、环境要求和参考来源。",
+        titleRes = R.string.onboarding_feature_4_title,
+        descriptionRes = R.string.onboarding_feature_4_description,
         accent = AuroraRose
     )
 )
@@ -203,13 +204,13 @@ private fun FeatureLine(feature: OnboardingFeature) {
         }
         Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
             Text(
-                text = feature.title,
+                text = stringResource(feature.titleRes),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onSurface
             )
             Text(
-                text = feature.description,
+                text = stringResource(feature.descriptionRes),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

@@ -35,6 +35,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
+import androidx.annotation.StringRes
 import com.monkeycode.liquidui.R
 import com.monkeycode.liquidui.ui.components.GlassCard
 import com.monkeycode.liquidui.ui.components.GlassTextField
@@ -117,7 +118,7 @@ fun WallpaperSettingsCard(settings: AppSettingsState) {
         )
         Spacer(Modifier.height(14.dp))
         SegmentedTabs(
-            labels = WallpaperMode.entries.map { it.label },
+            labels = WallpaperMode.entries.map { context.getString(it.labelRes) },
             selectedIndex = settings.wallpaperMode.ordinal,
             onSelected = { index ->
                 when (val mode = WallpaperMode.entries[index]) {
