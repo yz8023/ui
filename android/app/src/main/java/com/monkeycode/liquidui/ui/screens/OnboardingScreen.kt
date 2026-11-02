@@ -110,20 +110,20 @@ fun OnboardingScreen(
                     ) {
                         Image(
                             painter = painterResource(R.mipmap.ic_launcher),
-                            contentDescription = "应用图标",
+                            contentDescription = context.getString(R.string.common_app_icon),
                             modifier = Modifier
                                 .size(88.dp)
                                 .clip(RoundedCornerShape(24.dp))
                         )
-                        Tag(text = "Android 功能素材库")
+                        Tag(text = context.getString(R.string.common_library_subtitle))
                         Text(
-                            text = "选功能，抄代码，拼出你的 App",
+                            text = context.getString(R.string.onboarding_text_1),
                             style = MaterialTheme.typography.displayMedium,
                             color = MaterialTheme.colorScheme.onBackground,
                             textAlign = TextAlign.Center
                         )
                         Text(
-                            text = "这里不是单一 UI Demo，而是一套可拆、可复制、可组合的 Compose 功能素材。",
+                            text = context.getString(R.string.onboarding_text_2),
                             style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             textAlign = TextAlign.Center
@@ -147,7 +147,7 @@ fun OnboardingScreen(
             item {
                 StaggeredReveal(index = 2, enabled = true) {
                     InfoBanner(
-                        text = "所有偏好都保存在本地。你可以随时在「设置」中重新查看本引导、导入导出主题配置。",
+                        text = context.getString(R.string.onboarding_text_3),
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
@@ -169,11 +169,11 @@ fun OnboardingScreen(
                                 runCatching { context.startActivity(intent) }
                             },
                             modifier = Modifier.weight(1f)
-                        ) { Text("开源仓库") }
+                        ) { Text(context.getString(R.string.welcome_text_6)) }
                         PrimaryButton(
                             onClick = onFinish,
                             modifier = Modifier.weight(1f)
-                        ) { Text("开始使用") }
+                        ) { Text(context.getString(R.string.common_get_started)) }
                     }
                 }
             }

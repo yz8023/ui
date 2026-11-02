@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.monkeycode.liquidui.R
 import com.monkeycode.liquidui.BuildConfig
 import com.monkeycode.liquidui.ui.components.GlassCard
 import com.monkeycode.liquidui.ui.components.PrimaryButton
@@ -90,24 +91,24 @@ private fun InfoPage(
 fun AboutScreen(onBack: () -> Unit) {
     val context = LocalContext.current
     InfoPage(
-        title = "关于",
-        subtitle = "完整列出直接参考的项目、作者、用途与许可证，尊重每一位开源作者。",
+        title = context.getString(R.string.info_title_1),
+        subtitle = context.getString(R.string.info_subtitle_1),
         onBack = onBack,
     ) {
         item {
             GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Column(Modifier.weight(1f)) {
-                        Text("Android 功能素材库", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
-                        Text("Liquid Motion UI 示例应用", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(context.getString(R.string.common_library_subtitle), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
+                        Text(context.getString(R.string.info_text_1), color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                     Text("v${BuildConfig.VERSION_NAME}", color = MaterialTheme.colorScheme.primary)
                 }
                 Spacer(Modifier.height(10.dp))
-                Text("本项目自身代码采用 MIT 许可证。若复制或分发上游代码，请同时遵守对应上游许可证并保留署名。", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(context.getString(R.string.info_text_2), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
-        item { SectionTitle("参考项目与作者") }
+        item { SectionTitle(context.getString(R.string.info_section_title_1)) }
         allCredits.forEach { credit ->
             item(key = credit.url) {
                 GlassCard(
@@ -123,7 +124,7 @@ fun AboutScreen(onBack: () -> Unit) {
                             Text(credit.purpose, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                             Text("许可证：${credit.license}", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
-                        Text("打开 ↗", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
+                        Text(context.getString(R.string.info_text_3), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
                     }
                 }
             }
@@ -135,7 +136,7 @@ fun AboutScreen(onBack: () -> Unit) {
                     runCatching { context.startActivity(intent) }
                 },
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-            ) { Text("查看本项目源码与 CREDITS.md") }
+            ) { Text(context.getString(R.string.info_text_4)) }
         }
     }
 }

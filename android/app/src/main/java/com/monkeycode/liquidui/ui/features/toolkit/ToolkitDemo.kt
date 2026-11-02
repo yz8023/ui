@@ -118,7 +118,7 @@ private fun UpdateCheckDemo() {
                     label = stringResource(R.string.common_cancel_download),
                     onClick = {
                         job?.cancel()
-                        AppLog.w("UpdateDemo", "用户取消下载")
+                        AppLog.w("UpdateDemo", context.getString(R.string.tk_demo_text_44))
                         ui = state.copy(downloading = false, written = 0, error = "已取消下载")
                     }
                 )
@@ -139,13 +139,13 @@ private fun UpdateCheckDemo() {
                         latest = ReleaseInfo(
                             tag = "v2.8.0",
                             name = "Liquid UI v2.8.0",
-                            body = "## 更新内容\n\n- 新增 **F17** 弹窗与提示术语（12 条）\n- 新增套壳上手指南\n\n> 详见仓库 `docs/`",
+                            body = context.getString(R.string.tk_demo_body_1),
                             publishedAt = "2026-11-02T08:00:00Z",
                             apkUrl = "https://example.invalid/liquidui-v2.8.0-release.apk",
                             apkName = "liquidui-v2.8.0-release.apk",
                             apkBytes = 1_979_392L
                         ),
-                        message = "发现新版本 v2.8.0（当前 2.7.0）",
+                        message = context.getString(R.string.tk_demo_message_1),
                         elapsedMillis = 412
                     )
                 )
@@ -157,7 +157,7 @@ private fun UpdateCheckDemo() {
                         state = UpdateState.UP_TO_DATE,
                         currentVersion = "2.8.0",
                         latest = ReleaseInfo("v2.8.0", "Liquid UI v2.8.0", "", "2026-11-02T08:00:00Z", null, null, -1),
-                        message = "已是最新版本 v2.8.0",
+                        message = context.getString(R.string.tk_demo_message_2),
                         elapsedMillis = 388
                     )
                 )
@@ -169,7 +169,7 @@ private fun UpdateCheckDemo() {
                         state = UpdateState.FAILED,
                         currentVersion = AppUpdateChecker.currentVersionName(context),
                         latest = null,
-                        message = "HTTP 403：多半是 API 限流（未带 token 时 60 次/小时/IP），稍后再试",
+                        message = context.getString(R.string.tk_demo_message_3),
                         elapsedMillis = 205
                     )
                 )
@@ -266,10 +266,10 @@ private fun UpdateCheckDemo() {
                                         downloading = false,
                                         apkPath = file.absolutePath,
                                         needInstallPermission = !installed,
-                                        error = if (installed) null else "已下载，但系统未授权「安装未知应用」"
+                                        error = if (installed) null else context.getString(R.string.tk_demo_text_45)
                                     )
                                 }.onFailure { t ->
-                                    AppLog.e("UpdateDemo", "下载失败", t)
+                                    AppLog.e("UpdateDemo", context.getString(R.string.tk_demo_text_46), t)
                                     ui = ui.copy(downloading = false, error = "下载失败：${t.javaClass.simpleName} ${t.message}")
                                 }
                             }
@@ -285,7 +285,7 @@ private fun UpdateCheckDemo() {
                     TKButton(stringResource(R.string.tk_demo_text_17), true) { url?.let { AppUpdateChecker.openInBrowser(context, it) } }
                 }
             }
-            state.apkPath?.let { TKKeyValue("已落盘", it) }
+            state.apkPath?.let { TKKeyValue(context.getString(R.string.tk_demo_text_47), it) }
             if (result.state == UpdateState.FAILED) {
                 TKButton(stringResource(R.string.common_retry), !state.checking) {
                     ui = state.copy(checking = true, error = null, simulated = false)
@@ -336,11 +336,11 @@ private fun LogShareDemo() {
 
         Text(stringResource(R.string.tk_demo_text_19), style = MaterialTheme.typography.labelMedium)
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            TKButton(stringResource(R.string.tk_demo_text_20), true) { AppLog.d("Demo", "用户展开日志面板") }
-            TKButton(stringResource(R.string.tk_demo_text_21), true) { AppLog.i("Demo", "切换主题为深色") }
-            TKButton(stringResource(R.string.tk_demo_text_22), true) { AppLog.w("Demo", "磁盘缓存超过 80%") }
+            TKButton(stringResource(R.string.tk_demo_text_20), true) { AppLog.d("Demo", context.getString(R.string.tk_demo_text_48)) }
+            TKButton(stringResource(R.string.tk_demo_text_21), true) { AppLog.i("Demo", context.getString(R.string.tk_demo_text_49)) }
+            TKButton(stringResource(R.string.tk_demo_text_22), true) { AppLog.w("Demo", context.getString(R.string.tk_demo_text_50)) }
             TKButton(stringResource(R.string.tk_demo_text_23), true) {
-                AppLog.e("Demo", "拉取更新失败", java.io.IOException("connect timed out"))
+                AppLog.e("Demo", context.getString(R.string.tk_demo_text_51), java.io.IOException("connect timed out"))
             }
         }
         TKNote(stringResource(R.string.tk_demo_text_24))
@@ -400,8 +400,8 @@ private fun LogShareDemo() {
             }
             TKButton(stringResource(R.string.common_share), true) {
                 val intent = AppLog.buildShareIntent(context, level, keyword)
-                val ok = runCatching { context.startActivity(Intent.createChooser(intent, "分享日志")) }.isSuccess
-                AppLog.i("Demo", if (ok) "调起分享面板" else "没有可接收分享的应用")
+                val ok = runCatching { context.startActivity(Intent.createChooser(intent, context.getString(R.string.common_shared_10))) }.isSuccess
+                AppLog.i("Demo", if (ok) context.getString(R.string.common_shared_11) else context.getString(R.string.tk_demo_text_52))
                 shareNote = if (ok) "已调起系统分享面板" else "分享失败：没有可接收的应用，请改用「复制全文」"
             }
             TKButton(if (confirmingClear) stringResource(R.string.tk_demo_text_27) else stringResource(R.string.common_clear), true) {

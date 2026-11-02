@@ -30,7 +30,8 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 SRC = ROOT / 'android/app/src/main/java/com/monkeycode/liquidui'
 STRINGS = ROOT / 'android/app/src/main/res/values/strings.xml'
 DRY = '--dry' in sys.argv
-STAGE = '2b' if '--stage' in sys.argv and '2b' in sys.argv else '2a'
+STAGE = next((a for a in sys.argv[1:] if a in ('2a', '2b', '3a', '3b')), '2a') \
+    if '--stage' in sys.argv else '2a'
 
 # ---- 文件 → slug -------------------------------------------------------------
 SLUG = {
@@ -114,7 +115,50 @@ STATE_BEFORE = re.compile(r'(?:mutableStateOf|mutableStateListOf|mutableStateMap
 CMP_BEFORE = re.compile(r'(?:==|!=|===|!==)\s*$|\b(?:in|!in)\s+$')
 
 
-def risky(src: str, r: dict) -> str:
+def state_vars(src: str) -> set:
+    """文件里用 remember/mutableStateOf 声明的状态变量名。"""
+    return set(re.findall(r'\bva[rl]\s+(\w+)\s+by\s+(?:remember|rememberSaveable|rememberMutableStateOf)', src)) | \
+           set(re.findall(r'\bva[rl]\s+(\w+)\s*=\s*(?:remember|rememberSaveable)\s*\{\s*mutable\w+StateOf', src))
+
+
+def assigns_state(src: str, r: dict, names: set) -> bool:
+    """字面量是否处在「给状态变量赋值」的语句里（含 `x = if (…) "…" else "…"`）。"""
+    if not names:
+        return False
+    # 按行回看 3 行：`x = if (c) "…" else "…"` 的 else 分支字面量，
+    # 其紧邻前缀是 `else `，只看字符窗口会漏，导致同一表达式一半硬编码一半走资源。
+    lines = src[:r['start']].split('\n')
+    window = '\n'.join(lines[-4:])
+    for v in names:
+        if re.search(r'\b' + re.escape(v) + r'\s*=', window):
+            return True
+    return False
+
+
+def find_context(src: str, fun: str, pos: int):
+    """返回在 pos 处可用的 Context 变量名，没有则 None。
+
+    必须校验**声明位置在字面量之前**：`val context = LocalContext.current` 若写在
+    使用点之后，前向引用编译不过。
+    """
+    m = re.search(r'fun\s+(?:[\w<>.]+\.)?' + re.escape(fun) + r'\s*\(', src)
+    if not m:
+        return None
+    i, d = m.end(), 1
+    while i < len(src) and d:
+        d += (src[i] == '(') - (src[i] == ')')
+        i += 1
+    sig = src[m.start():i]
+    mp = re.search(r'\b(\w+)\s*:\s*Context\b', sig)
+    if mp:
+        return mp.group(1)
+    name = None
+    for mm in re.finditer(r'\bval\s+(\w*[Cc]ontext\w*)\s*=\s*LocalContext\.current\b', src[i:pos]):
+        name = mm.group(1)
+    return name
+
+
+def risky(src: str, r: dict, allow_noncomp: bool = False, svars: set = None) -> str:
     """返回跳过原因；空串表示可安全外置。
 
     这几类不是 UI 文案，外置会改语义：
@@ -127,13 +171,15 @@ def risky(src: str, r: dict) -> str:
     after = src[r['end']:r['end'] + 12]
     if CMP_BEFORE.search(before):
         return '比较/包含操作数'
+    if svars is not None and assigns_state(src, r, svars):
+        return '给状态变量赋文案（应改存 id/枚举）'
     if RISK_AFTER.match(after):
         return 'when 分支或 map 键'
     if STATE_BEFORE.search(before):
         return '状态初值'
     if r.get('interp'):
         return '含插值（留给 D 阶段）'
-    if r.get('noncomp'):
+    if r.get('noncomp') and not allow_noncomp:
         return '非组合 lambda'
     return ''
 
@@ -149,9 +195,21 @@ def role_of(arg: str) -> str:
     return 'text'
 
 
-def xml_unescape(t: str) -> str:
-    return (t.replace('\\n', '\n').replace("\\'", "'").replace('\\"', '"')
+def xml_entity_only(t: str) -> str:
+    """只还原 XML 实体与引号转义，**不动 \\n**。
+
+    这才是 xml_escape() 对普通字符串字面量的精确逆运算：扫描器给的字面量文本里
+    `\\n` 本来就是「反斜杠 + n」两个字符，xml_escape 只替换真换行，所以写进 XML 后
+    仍是这两个字符。若在这里把它还原成真换行，「文案 → 既有资源名」反查键就错位，
+    同一文案会被重复建档（阶段 4 的插值文案转义密集，会大量复制）。
+    """
+    return (t.replace("\\'", "'").replace('\\"', '"')
              .replace('&lt;', '<').replace('&gt;', '>').replace('&amp;', '&'))
+
+
+def xml_unescape(t: str) -> str:
+    """完整还原（含 \\n → 真换行），用于匹配三引号原始字符串。"""
+    return xml_entity_only(t).replace('\\n', '\n')
 
 
 def load_existing():
@@ -161,8 +219,11 @@ def load_existing():
         return {}, {}, {}
     by_name, by_text, counters = {}, {}, {}
     for r in ET.parse(STRINGS).getroot().findall('string'):
-        nm = r.get('name'); txt = xml_unescape(r.text or '')
-        by_name[nm] = txt; by_text.setdefault(txt, nm)
+        nm = r.get('name'); raw = r.text or ''
+        txt = xml_entity_only(raw)
+        by_name[nm] = txt
+        by_text.setdefault(txt, nm)                 # 普通字符串字面量的表示
+        by_text.setdefault(xml_unescape(raw), nm)   # 三引号原始字符串的表示
         m = re.match(r'^(.+)_(text|title|subtitle|label|content_desc|section_title|message|desc|hint|'
                      r'confirm|dismiss|placeholder|name|value|caption|headline|note|empty|summary|body)_(\d+)$', nm)
         if m:
@@ -181,8 +242,8 @@ def xml_escape(text: str):
     return t, need_raw
 
 
-def add_imports(src: str) -> str:
-    if 'import androidx.compose.ui.res.stringResource' not in src:
+def add_imports(src: str, need_string_resource: bool = True) -> str:
+    if need_string_resource and 'import androidx.compose.ui.res.stringResource' not in src:
         ms = list(re.finditer(r'^import androidx\.compose\.[^\n]*\n', src, re.M))
         if ms:
             src = src[:ms[-1].end()] + 'import androidx.compose.ui.res.stringResource\n' + src[ms[-1].end():]
@@ -202,16 +263,36 @@ def main():
     import kt_scan
     recs = kt_scan.collect(SRC)
     srcs = {}
+    svars = {}
     skipped = collections.Counter()
     stage = []
     for r in recs:
-        if r['cat'] not in ('A 组合体内', 'C1 组合默认参数'):
-            continue
-        if ('/ui2/previews/' in r['file']) != (STAGE == '2b'):
-            continue
+        if STAGE == '3a':
+            if r['cat'] != 'A 组合体内' or not r.get('noncomp') or r.get('interp'):
+                continue
+            if r['file'] not in srcs:
+                srcs[r['file']] = (SRC / r['file']).read_text(encoding='utf-8')
+            ctx = find_context(srcs[r['file']], r['fun'], r['start'])
+            if not ctx:
+                skipped['宿主无 context（留给 3b 上提）'] += 1
+                continue
+            r['ctx'] = ctx
+        else:
+            if r['cat'] not in ('A 组合体内', 'C1 组合默认参数'):
+                continue
+            if r.get('noncomp'):
+                skipped['非组合 lambda'] += 1
+                continue
+            if ('/ui2/previews/' in r['file']) != (STAGE == '2b'):
+                continue
+            if r['file'] not in srcs:
+                srcs[r['file']] = (SRC / r['file']).read_text(encoding='utf-8')
         if r['file'] not in srcs:
             srcs[r['file']] = (SRC / r['file']).read_text(encoding='utf-8')
-        why = risky(srcs[r['file']], r) or ('含插值（留给 D 阶段）' if is_interp(r['lit']) else '')
+        if r['file'] not in svars:
+            svars[r['file']] = state_vars(srcs[r['file']])
+        why = risky(srcs[r['file']], r, allow_noncomp=(STAGE == '3a'), svars=svars[r['file']]) or (
+            '含插值（留给 D 阶段）' if is_interp(r['lit']) else '')
         if why:
             skipped[why] += 1
             continue
@@ -269,8 +350,10 @@ def main():
         src = p.read_text(encoding='utf-8')
         for r in sorted(rs, key=lambda x: -x['start']):
             assert src[r['start']:r['end']] == r['lit'], f'{rel}:{r["line"]} 偏移失配'
-            src = src[:r['start']] + f"stringResource(R.string.{r['res']})" + src[r['end']:]
-        p.write_text(add_imports(src), encoding='utf-8')
+            call = (f"{r['ctx']}.getString(R.string.{r['res']})" if STAGE == '3a'
+                    else f"stringResource(R.string.{r['res']})")
+            src = src[:r['start']] + call + src[r['end']:]
+        p.write_text(add_imports(src, need_string_resource=(STAGE != '3a')), encoding='utf-8')
     print(f'  改写 Kotlin 文件 {len(byfile)} 个')
 
     # ---- 写 strings.xml：保留既有条目与注释，新条目按源文件分组追加 ----

@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import com.monkeycode.liquidui.R
 import com.monkeycode.liquidui.ui.components.PreferenceCard
 import com.monkeycode.liquidui.ui.components.PreferenceRow
 import com.monkeycode.liquidui.ui.components.PrimaryButton
@@ -82,14 +83,14 @@ fun PermissionRequestCard(
             trailing = {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     if (granted) {
-                        Tag(text = "已授权", accent = MaterialTheme.colorScheme.primary)
+                        Tag(text = context.getString(R.string.permission_text_1), accent = MaterialTheme.colorScheme.primary)
                     } else {
                         SecondaryButton(onClick = { context.openAppPermissionSettings() }) {
-                            Text("设置")
+                            Text(context.getString(R.string.nav_settings))
                         }
                         Spacer(Modifier.width(8.dp))
                         PrimaryButton(onClick = { launcher.launch(spec.permission) }) {
-                            Text("授权")
+                            Text(context.getString(R.string.permission_text_2))
                         }
                     }
                 }

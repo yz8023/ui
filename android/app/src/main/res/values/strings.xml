@@ -585,4 +585,119 @@
     <string name="pv_video_text_7">顶部非模态条：不挡操作，自动消失</string>
     <string name="pv_video_text_8">悬浮球：全局入口，可拖</string>
     <string name="pv_video_text_9">边缘坞：贴边收起，滑出展开</string>
+
+    <!-- ===== ui/features/PermissionToolkit.kt（阶段 3a） ===== -->
+    <string name="permission_text_1">已授权</string>
+    <string name="permission_text_2">授权</string>
+
+    <!-- ===== ui/features/overlayterms/OverlayTermsDemo.kt（阶段 3a） ===== -->
+    <string name="ot_demo_text_85">已保存到草稿</string>
+
+    <!-- ===== ui/features/toolkit/ToolkitDemo.kt（阶段 3a） ===== -->
+    <string name="common_shared_10">分享日志</string>
+    <string name="common_shared_11">调起分享面板</string>
+    <string name="tk_demo_body_1">## 更新内容\n\n- 新增 **F17** 弹窗与提示术语（12 条）\n- 新增套壳上手指南\n\n&gt; 详见仓库 `docs/`</string>
+    <string name="tk_demo_message_1">发现新版本 v2.8.0（当前 2.7.0）</string>
+    <string name="tk_demo_message_2">已是最新版本 v2.8.0</string>
+    <string name="tk_demo_message_3">HTTP 403：多半是 API 限流（未带 token 时 60 次/小时/IP），稍后再试</string>
+    <string name="tk_demo_text_44">用户取消下载</string>
+    <string name="tk_demo_text_45">已下载，但系统未授权「安装未知应用」</string>
+    <string name="tk_demo_text_46">下载失败</string>
+    <string name="tk_demo_text_47">已落盘</string>
+    <string name="tk_demo_text_48">用户展开日志面板</string>
+    <string name="tk_demo_text_49">切换主题为深色</string>
+    <string name="tk_demo_text_50" formatted="false">磁盘缓存超过 80%</string>
+    <string name="tk_demo_text_51">拉取更新失败</string>
+    <string name="tk_demo_text_52">没有可接收分享的应用</string>
+
+    <!-- ===== ui/screens/InfoScreens.kt（阶段 3a） ===== -->
+    <string name="common_library_subtitle">Android 功能素材库</string>
+    <string name="info_section_title_1">参考项目与作者</string>
+    <string name="info_subtitle_1">完整列出直接参考的项目、作者、用途与许可证，尊重每一位开源作者。</string>
+    <string name="info_text_1">Liquid Motion UI 示例应用</string>
+    <string name="info_text_2">本项目自身代码采用 MIT 许可证。若复制或分发上游代码，请同时遵守对应上游许可证并保留署名。</string>
+    <string name="info_text_3">打开 ↗</string>
+    <string name="info_text_4">查看本项目源码与 CREDITS.md</string>
+    <string name="info_title_1">关于</string>
+
+    <!-- ===== ui/screens/OnboardingScreen.kt（阶段 3a） ===== -->
+    <string name="common_app_icon">应用图标</string>
+    <string name="common_get_started">开始使用</string>
+    <string name="onboarding_text_1">选功能，抄代码，拼出你的 App</string>
+    <string name="onboarding_text_2">这里不是单一 UI Demo，而是一套可拆、可复制、可组合的 Compose 功能素材。</string>
+    <string name="onboarding_text_3">所有偏好都保存在本地。你可以随时在「设置」中重新查看本引导、导入导出主题配置。</string>
+
+    <!-- ===== ui/screens/SettingsScreen.kt（阶段 3a） ===== -->
+    <string name="settings_section_title_1">风格</string>
+    <string name="settings_section_title_2">主题配置</string>
+    <string name="settings_section_title_3">首次体验</string>
+    <string name="settings_section_title_4">更新与日志</string>
+    <string name="settings_section_title_5">帮助与合规</string>
+    <string name="settings_subtitle_1">再次打开首次启动说明，适合给使用者演示项目能力</string>
+    <string name="settings_subtitle_2">物理动画切换为临界阻尼，内容始终处于终态可见</string>
+    <string name="settings_subtitle_3">提升玻璃后的壁纸色彩通透感</string>
+    <string name="settings_subtitle_4">在液态透镜边缘显示更明显的色散</string>
+    <string name="settings_subtitle_5">重置全部外观与动效偏好</string>
+    <string name="settings_subtitle_6">完整查看参考项目、作者、用途、链接与许可证</string>
+    <string name="settings_subtitle_7">查看本地数据、权限用途和网络行为的完整说明</string>
+    <string name="settings_subtitle_8">真实请求权限、检查状态，拒绝后可进入系统设置恢复</string>
+    <string name="settings_subtitle_9">打开 GitHub 仓库，查看源码、文档和构建记录</string>
+    <string name="settings_text_17">所有调整实时生效。把这份状态类套到你的业务里，换肤能力即刻拥有。</string>
+    <string name="settings_text_18">视觉风格</string>
+    <string name="settings_text_19">玻璃=液态玻璃面板；普通=实心 Material 布局；MD3=壁纸动态取色（Android 12+）；O神=Miuix 分组卡片+翻页+悬浮底栏</string>
+    <string name="settings_text_20">主题模式</string>
+    <string name="settings_text_21">跟随系统</string>
+    <string name="settings_text_22">发送测试通知</string>
+    <string name="settings_text_23">向系统发一条即时通知作为预览，正文使用当前主题主色着色（Android 13+ 首次需授权）</string>
+    <string name="settings_text_24">主题 JSON 已复制</string>
+    <string name="settings_text_25">主题已导入</string>
+    <string name="settings_text_26">剪贴板不是有效主题 JSON</string>
+    <string name="settings_text_27">POST_NOTIFICATIONS 已授权，发送预览通知</string>
+    <string name="settings_text_28">POST_NOTIFICATIONS 被拒绝，跳过发送</string>
+    <string name="settings_text_29">（暂无日志：去点几次「检查更新」或「发送通知」就有了）</string>
+    <string name="settings_text_30">无可接收分享的应用</string>
+    <string name="settings_text_31">已调起系统分享</string>
+    <string name="settings_text_32">没有可接收的应用，请改用复制</string>
+    <string name="settings_title_10">色差折射</string>
+    <string name="settings_title_11">圆角倍率</string>
+    <string name="settings_title_12">恢复默认</string>
+    <string name="settings_title_13">关于与开源致谢</string>
+    <string name="settings_title_14">项目主页</string>
+    <string name="settings_title_2">重新查看欢迎引导</string>
+    <string name="settings_title_3">动效阻尼</string>
+    <string name="settings_title_4">模糊强度</string>
+    <string name="settings_title_5">折射高度</string>
+    <string name="settings_title_6">折射幅度</string>
+    <string name="settings_title_7">玻璃染色</string>
+    <string name="settings_title_8">高光边框</string>
+    <string name="settings_title_9">增强色彩层次</string>
+
+    <!-- ===== ui/screens/WallpaperSettings.kt（阶段 3a） ===== -->
+    <string name="wallpaper_content_desc_1">缓存壁纸预览</string>
+    <string name="wallpaper_text_1">壁纸与背景</string>
+    <string name="wallpaper_text_10">处理中…</string>
+    <string name="wallpaper_text_11">下载并应用</string>
+    <string name="wallpaper_text_12">清除缓存</string>
+    <string name="wallpaper_text_13">请先</string>
+    <string name="wallpaper_text_14">未获得</string>
+    <string name="wallpaper_text_2">网络图片会下载、校验并复制到应用私有目录。即使原链接失效，已缓存壁纸仍可离线使用。</string>
+    <string name="wallpaper_text_3">已读取当前系统桌面壁纸作为背景（更换桌面壁纸后回到应用即会刷新）。</string>
+    <string name="wallpaper_text_4">系统壁纸需要先开启「所有文件访问」权限：Android 14 起系统只允许持有该权限的应用读取桌面壁纸（已自动回退极光背景）。开启后返回本页即可生效。</string>
+    <string name="wallpaper_text_5">去开启所有文件访问权限</string>
+    <string name="wallpaper_text_6">当前系统未返回桌面壁纸（可能是动态壁纸或厂商限制），已自动回退极光背景；可在下方选择同一张图片做本地缓存，显示效果一致。</string>
+    <string name="wallpaper_text_7">缓存壁纸使用中</string>
+    <string name="wallpaper_text_8">缓存壁纸已保留</string>
+    <string name="wallpaper_text_9">选择本地图片并永久缓存</string>
+
+    <!-- ===== ui/screens/WelcomeGuideScreen.kt（阶段 3a） ===== -->
+    <string name="welcome_desc_1">一句话描述这个功能的亮点和价值</string>
+    <string name="welcome_desc_2">数据仅存本地，不上传任何服务器</string>
+    <string name="welcome_text_7">应用名称</string>
+    <string name="welcome_text_8">一句话介绍你的应用</string>
+    <string name="welcome_title_1">核心功能一</string>
+    <string name="welcome_title_2">核心功能二</string>
+    <string name="welcome_title_3">核心功能三</string>
+    <string name="welcome_title_4">隐私安全</string>
+
+    <!-- ===== ui/features/toolkit/ToolkitDemo.kt（阶段 3a） ===== -->
 </resources>

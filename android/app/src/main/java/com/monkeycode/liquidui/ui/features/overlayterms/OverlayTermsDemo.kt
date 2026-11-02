@@ -219,7 +219,7 @@ private fun PreviewP02() {
         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
             OTNote(stringResource(R.string.ot_demo_text_9))
             OTButton(stringResource(R.string.ot_demo_text_10)) {
-                Toast.makeText(context, "已保存到草稿", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, context.getString(R.string.ot_demo_text_85), Toast.LENGTH_SHORT).show()
                 fired += 1
             }
             OTButton(stringResource(R.string.ot_demo_text_11), primary = false) {
