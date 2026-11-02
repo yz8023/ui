@@ -483,30 +483,32 @@ private const val MD_PRIVACY = """## 隐私说明（示例）
 
 @Composable
 private fun MarkdownDemo() {
-    val tkDemoText58 = stringResource(R.string.tk_demo_text_58, inlines.size, links, codes)
-    val tkDemoText57 = stringResource(R.string.tk_demo_text_57, blocks.size)
     var source by remember { mutableStateOf(MD_CHANGELOG) }
     var editing by remember { mutableStateOf(false) }
     var draft by remember { mutableStateOf("") }
     val blocks = remember(source) { MarkdownParser.parse(source) }
+    // inlines / links / codes 原先声明在 buildString 内部（非组合 lambda），
+    // 带格式参数的文案取不到它们；搬到外面来，语义不变（每次组合同样只算一遍）。
+    val inlines = blocks.flatMap { b ->
+        when (b) {
+            is MdHeading -> b.inlines
+            is MdParagraph -> b.inlines
+            is MdQuote -> b.inlines
+            is MdBulletList -> b.items.flatten()
+            is MdOrderedList -> b.items.flatten()
+            else -> emptyList()
+        }
+    }
+    val links = inlines.count { it is MdLink }
+    val codes = inlines.count { it is MdCode }
+    val tkDemoText57 = stringResource(R.string.tk_demo_text_57, blocks.size)
+    val tkDemoText58 = stringResource(R.string.tk_demo_text_58, inlines.size, links, codes)
 
     val summary = buildString {
         append(tkDemoText57)
         append(blocks.groupBy { it::class.simpleName ?: "?" }
             .entries.sortedByDescending { it.value.size }
             .joinToString("、") { "${it.key} × ${it.value.size}" })
-        val inlines = blocks.flatMap { b ->
-            when (b) {
-                is MdHeading -> b.inlines
-                is MdParagraph -> b.inlines
-                is MdQuote -> b.inlines
-                is MdBulletList -> b.items.flatten()
-                is MdOrderedList -> b.items.flatten()
-                else -> emptyList()
-            }
-        }
-        val links = inlines.count { it is MdLink }
-        val codes = inlines.count { it is MdCode }
         append(tkDemoText58)
     }
 

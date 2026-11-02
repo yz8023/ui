@@ -574,7 +574,10 @@ private fun PreviewP09() {
                 }
             }
         }
-        if (picked != null) OTNote(stringResource(R.string.ot_demo_text_95, picked), accent = true)
+        // picked 是 `var … by remember { mutableStateOf<String?>(null) }`：委托属性不做智能转换，
+        // 直接当 vararg Any 传编译不过（模板 "$picked" 不报错，换成 stringResource 才暴露）。
+        val pickedNow = picked
+        if (pickedNow != null) OTNote(stringResource(R.string.ot_demo_text_95, pickedNow), accent = true)
         OTNote(stringResource(R.string.ot_demo_text_57))
         OTNote(stringResource(R.string.ot_demo_text_58))
     }

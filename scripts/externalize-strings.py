@@ -296,6 +296,7 @@ def rewrite_interp(src: str, rs: list) -> tuple:
         if body is None:
             dropped += 1
             continue
+        # 注：候选阶段已把「非组合 lambda 且无 Context」全部跳过，这里正常不会走到。
         h = hoist.setdefault(r['fun'], {'body': body,
                                        'taken': set(re.findall(r'\b[A-Za-z_]\w*\b', src)),
                                        'decls': {}})
@@ -484,8 +485,12 @@ def main():
                 ctx = find_context(srcs[r['file']], r['fun'], r['start'])
                 if ctx:
                     r['ctx'] = ctx
-                elif not r.get('comp'):
-                    skipped['插值·非组合函数体且无 Context'] += 1
+                else:
+                    # 阶段 4 **不上提**。阶段 3b 能上提是因为纯字面量不捕获任何变量；
+                    # 带格式参数时，参数往往是函数体后半段才声明的局部变量
+                    # （实测 applied / days / inlines / links / codes / blocks / seq / plucks），
+                    # 把 val 提到函数首就落在它们声明之前 → Unresolved reference（CI 红 9 条）。
+                    skipped['插值·非组合 lambda 且无 Context（带参不能上提）'] += 1
                     continue
             elif not r.get('comp'):
                 ctx = find_context(srcs[r['file']], r['fun'], r['start'])

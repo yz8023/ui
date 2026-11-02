@@ -65,6 +65,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.platform.LocalContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withTimeout
 
@@ -306,9 +307,11 @@ private data class UploadJob(val name: String, val progress: Float, val done: Bo
 
 @Composable
 fun PreviewF11() {
-    val pvFormText43 = stringResource(R.string.pv_form_text_43, seq.jpg)
     val jobs = remember { mutableStateListOf<UploadJob>() }
     var seq by remember { mutableIntStateOf(0) }
+    // 这条文案要在**点击时**按当时的 seq 求值（onClick 里先 seq++ 再用），
+    // 上提到组合期会差一次，所以在 onClick 内用 context.getString 现取。
+    val context = LocalContext.current
     LaunchedEffect(jobs.size) {
         while (true) {
             delay(120)
@@ -319,7 +322,7 @@ fun PreviewF11() {
         }
     }
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Button(onClick = { seq++; jobs.add(UploadJob(pvFormText43, 0f, false)) }) { Text(stringResource(R.string.pv_form_text_38)) }
+        Button(onClick = { seq++; jobs.add(UploadJob(context.getString(R.string.pv_form_text_43, seq.jpg), 0f, false)) }) { Text(stringResource(R.string.pv_form_text_38)) }
         jobs.forEach { job ->
             Column {
                 Row(Modifier.fillMaxWidth()) {

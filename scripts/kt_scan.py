@@ -27,22 +27,18 @@ MODIFIERS = {'private', 'public', 'internal', 'protected', 'inline', 'suspend', 
 
 # 这些块是**非组合上下文**的 lambda：里面不能调 stringResource()。
 # 典型事故：remember { mutableStateOf("全部") } 与 onClick = { toast("已复制") }。
-NON_COMP_HEAD = re.compile(
-    r'\b(?:remember\w*|runCatching|buildString|buildList|buildMap|lazy|'
-    r'derivedStateOf|LaunchedEffect|SideEffect|DisposableEffect|produceState|snapshotFlow|launch|withContext|'
-    r'coroutineScope|runBlocking|forEach|forEachIndexed|map|mapNotNull|filter|let|apply|also|onEach|'
-    r'firstOrNull|firstNotNullOfOrNull|find|any|all|none|sumOf|sortedBy|sortedByDescending|maxByOrNull|'
-    r'associateBy|groupBy|takeIf|run|repeat|with|collect|collectLatest|launchIn|'
-    r'clickable|combinedClickable|selectable|toggleable|triStateToggleable|draggable|scrollable|'
-    r'swipeable|anchoredDraggable|pointerInput|detectTapGestures|graphicsLayer|drawWithContent|'
-    r'drawBehind|drawWithCache|onSizeChanged|onGloballyPositioned|onPlaced|layout|semantics|'
-    r'clearAndSetSemantics|'
-    # Lazy* 的作用域 lambda 是 LazyListScope/LazyGridScope.() -> Unit，**不是** @Composable；
-    # 但它们的 item/items/stickyHeader 的 content 是可组合的，所以只登记 Lazy* 本身。
-    # CI 实测：`LazyColumn { listOf(stringResource(...)).forEach { } }` 直接炸 3 条。
-    r'LazyColumn|LazyRow|LazyVerticalGrid|LazyHorizontalGrid|'
-    r'LazyVerticalStaggeredGrid|LazyHorizontalStaggeredGrid)\b[^{}]*$'
+# 非组合 lambda 的关键字表（含仓库外的 Compose 库函数）。
+# 关键字必须**紧邻** `{`，最多中间隔一个平衡括号组（如 `pointerInput(key) {`），
+# 由 block_kind 先用 _strip_tail_parens 剥掉尾部括号再锚定匹配。
+# 旧写法用 `[^{}]*$`，允许关键字与 `{` 之间有任意不含花括号的代码，于是
+# `var x by remember { … }` 之后隔两行没有花括号的 `Column {` 会被判成非组合
+# （CI 实测：PreviewGlassMotion 里 Text(stringResource(…)) 被误报越界）。
+NON_COMP_KEYWORD = re.compile(  # noqa: E501  关键词 71 个，故意单行
+    '\\b(?:remember\\w*|runCatching|buildString|buildList|buildMap|lazy|derivedStateOf|LaunchedEffect|SideEffect|DisposableEffect|produceState|snapshotFlow|launch|withContext|coroutineScope|runBlocking|forEach|forEachIndexed|map|mapNotNull|filter|let|apply|also|onEach|firstOrNull|firstNotNullOfOrNull|find|any|all|none|sumOf|sortedBy|sortedByDescending|maxByOrNull|associateBy|groupBy|takeIf|run|repeat|with|collect|collectLatest|launchIn|clickable|combinedClickable|selectable|toggleable|triStateToggleable|draggable|scrollable|swipeable|anchoredDraggable|pointerInput|detectTapGestures|graphicsLayer|drawWithContent|drawBehind|drawWithCache|onSizeChanged|onGloballyPositioned|onPlaced|layout|semantics|clearAndSetSemantics|LazyColumn|LazyRow|LazyVerticalGrid|LazyHorizontalGrid|LazyVerticalStaggeredGrid|LazyHorizontalStaggeredGrid)$'
 )
+# 具名参数形式的非组合 lambda：`onClick = { … }`。同样必须锚定在结尾，
+# 否则 300 字符窗口里任何一处 `onXxx = ` 都会把后面的块判成非组合。
+NON_COMP_PARAM = re.compile(r'\bon[A-Z]\w*\s*=\s*$')
 NON_COMP_PARAM = re.compile(r'\bon[A-Z]\w*\s*=?\s*$')
 
 
@@ -126,9 +122,9 @@ def block_kind(lead: str, kinds: dict = None) -> str:
     """判断一个 `{` 的上下文：'noncomp' / 'comp' / 'ctl'（控制流，透明）。"""
     s = lead.rstrip()
     head, _ = _strip_tail_parens(s)
-    if CTL_KEYWORD.search(head) or CTL_KEYWORD.search(s):
+    if CTL_KEYWORD.search(head):
         return 'ctl'
-    if NON_COMP_HEAD.search(s) or NON_COMP_PARAM.search(s):
+    if NON_COMP_KEYWORD.search(head) or NON_COMP_PARAM.search(s):
         return 'noncomp'
     if kinds and s.endswith(')'):
         d, i = 0, len(s) - 1

@@ -747,7 +747,6 @@ private fun PreviewQ04() {
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun PreviewQ05() {
-    val aqDemoText67 = stringResource(R.string.aq_demo_text_67, applied.start.short(), applied.end.short(), days)
     val commonAll = stringResource(R.string.common_all)
     val aqDemoText47 = stringResource(R.string.aq_demo_text_47)
     val scope = rememberCoroutineScope()
@@ -794,6 +793,9 @@ private fun PreviewQ05() {
     val presetEnabled = !presetRange.first.isBefore(earliest)
     val pending = if (presetEnabled) diffCount(draftNow(), applied) else -1
     val days = (ChronoUnit.DAYS.between(applied.start, applied.end) + 1).toInt()
+    // 不能提到函数首：applied / days 都在此之前才声明（buildList 是非组合 lambda，
+    // 里面的插值文案只能在它们声明之后、进入 buildList 之前取好）
+    val aqDemoText67 = stringResource(R.string.aq_demo_text_67, applied.start.short(), applied.end.short(), days)
 
     fun runQuery() {
         val f = draftNow()

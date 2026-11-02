@@ -11,6 +11,9 @@
      少了会 IllegalFormatException（编译期查不出，运行时才崩），多了 aapt 会警告。
   3. formatted="false" 的资源不许带实参调用（带参时 %% 不会还原成 %，界面显示两个百分号）。
   4. 格式串本身合法：每个 % 后面必须是 % 或 N$s/N$d 这类位置化占位符。
+  5. 委托可空属性不能直接当格式参数：`var x by remember { mutableStateOf<String?>(null) }`
+     在 `if (x != null)` 里也**不能**智能转换（委托属性），当 vararg Any 传会编译失败。
+     模板里 `"$x"` 不报错（可空直接插值），换成 stringResource(id, x) 才暴露，CI 实测过。
 
 用法： python3 scripts/probe-i18n.py [源码根]
 退出码非 0 表示有问题。
@@ -106,7 +109,33 @@ def main():
             name = args[0][len('R.string.'):]
             calls.append({'file': str(f.relative_to(ROOT)), 'line': src[:m.start()].count('\n') + 1,
                           'kind': 'getString' if m.group(1) else 'stringResource',
-                          'res': name, 'args': args[1:], 'start': m.start(), 'end': close})
+                          'res': name, 'args': args[1:], 'start': m.start(), 'end': close,
+                          'offset': m.start()})
+
+    # 委托可空属性的声明位置：按**最近的前置声明**判定，不能按文件收集名字。
+    # 同一文件里常有两个同名变量（OverlayTermsDemo 里 PreviewP04 的 `picked` 非空、
+    # PreviewP10 的 `picked` 可空），按文件收集会把前者误报。
+    delegated_decl = {}
+    for f in sorted(ROOT.rglob('*.kt')):
+        s = f.read_text(encoding='utf-8')
+        decls = []
+        for m in re.finditer(
+                r'\bva[rl]\s+(\w+)\s+by\s+(?:remember|rememberSaveable)\w*\s*\{\s*mutable\w*StateOf(<[^>]*\?>)?',
+                s):
+            decls.append((m.start(), m.group(1), bool(m.group(2))))
+        if decls:
+            delegated_decl[str(f.relative_to(ROOT))] = (s, decls)
+
+    def is_nullable_delegated(rel: str, name: str, pos: int) -> bool:
+        info = delegated_decl.get(rel)
+        if not info:
+            return False
+        _s, decls = info
+        best = None
+        for off, nm, nullable in decls:
+            if nm == name and off < pos and (best is None or off > best[0]):
+                best = (off, nullable)
+        return bool(best and best[1])
 
     errs = []
     # ---- 1. 资源存在性 + 参数个数 + formatted ----
@@ -125,6 +154,10 @@ def main():
         if len(c['args']) != need:
             errs.append(f"[参数数] {c['file']}:{c['line']} R.string.{c['res']} 需 {need} 个占位符、"
                         f"实给 {len(c['args'])} 个：{text[:60]!r}")
+        for a in c['args']:
+            if a.isidentifier() and is_nullable_delegated(c['file'], a, c['offset']):
+                errs.append(f"[委托属性] {c['file']}:{c['line']} 参数 {a} 是可空委托属性，"
+                            f'智能转换不成立，需先存局部 val 或用 ?: 兜底')
         if c['args'] and formatted_false:
             errs.append(f"[formatted] {c['file']}:{c['line']} R.string.{c['res']} 标了 "
                         f'formatted="false" 却带 {len(c["args"])} 个实参（%% 不会还原）')

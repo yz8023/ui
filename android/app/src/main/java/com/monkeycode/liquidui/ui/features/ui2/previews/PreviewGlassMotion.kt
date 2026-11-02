@@ -244,7 +244,6 @@ fun PreviewM01() {
 
 @Composable
 fun PreviewM02() {
-    val pvGlassText31 = stringResource(R.string.pv_glass_text_31, plucks)
     var plucks by remember { mutableIntStateOf(0) }
     val vibes = remember { List(7) { Animatable(0f) } }
     val scope = rememberCoroutineScope()
@@ -268,7 +267,7 @@ fun PreviewM02() {
                 }) { Text(stringResource(R.string.pv_glass_text_30, i)) }
             }
         }
-        Text(pvGlassText31, style = MaterialTheme.typography.labelSmall)
+        Text(stringResource(R.string.pv_glass_text_31, plucks), style = MaterialTheme.typography.labelSmall)
     }
 }
 
