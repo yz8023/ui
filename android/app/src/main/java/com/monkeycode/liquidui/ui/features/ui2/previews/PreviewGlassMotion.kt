@@ -305,8 +305,15 @@ fun PreviewM03() {
 
 @Composable
 fun PreviewM04() {
+    // LazyColumn 的作用域 lambda 是 LazyListScope.() -> Unit，不是 @Composable，
+    // stringResource 必须上提到 LazyColumn 之前（item/stickyHeader 的 content 才可组合）。
+    val glassSectionTitles = listOf(
+        stringResource(R.string.pv_glass_text_19),
+        stringResource(R.string.pv_glass_text_20),
+        stringResource(R.string.pv_glass_text_21),
+    )
     LazyColumn(Modifier.fillMaxWidth().height(190.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        listOf(stringResource(R.string.pv_glass_text_19), stringResource(R.string.pv_glass_text_20), stringResource(R.string.pv_glass_text_21)).forEach { title ->
+        glassSectionTitles.forEach { title ->
             stickyHeader {
                 Box(Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.primaryContainer).padding(10.dp)) {
                     Text(title, fontWeight = FontWeight.Bold)

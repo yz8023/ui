@@ -36,7 +36,12 @@ NON_COMP_HEAD = re.compile(
     r'clickable|combinedClickable|selectable|toggleable|triStateToggleable|draggable|scrollable|'
     r'swipeable|anchoredDraggable|pointerInput|detectTapGestures|graphicsLayer|drawWithContent|'
     r'drawBehind|drawWithCache|onSizeChanged|onGloballyPositioned|onPlaced|layout|semantics|'
-    r'clearAndSetSemantics)\b[^{}]*$'
+    r'clearAndSetSemantics|'
+    # Lazy* 的作用域 lambda 是 LazyListScope/LazyGridScope.() -> Unit，**不是** @Composable；
+    # 但它们的 item/items/stickyHeader 的 content 是可组合的，所以只登记 Lazy* 本身。
+    # CI 实测：`LazyColumn { listOf(stringResource(...)).forEach { } }` 直接炸 3 条。
+    r'LazyColumn|LazyRow|LazyVerticalGrid|LazyHorizontalGrid|'
+    r'LazyVerticalStaggeredGrid|LazyHorizontalStaggeredGrid)\b[^{}]*$'
 )
 NON_COMP_PARAM = re.compile(r'\bon[A-Z]\w*\s*=?\s*$')
 
@@ -80,9 +85,26 @@ def build_lambda_kinds(root) -> dict:
     return kinds
 
 
+# 控制流块：既不授予也不剥夺组合上下文，判定时应「透明」跳过。
+# 少了这一态，`LazyColumn { if (x) { stringResource() } }` 里的 if 会被判成 comp，
+# 把外层 LazyColumn 的 noncomp 洗白；反过来用 any() 又会把 `LazyColumn { item { … } }`
+# 里合法的 item 内容一起毒化。所以必须三态 + 取最内层非控制流块。
+CTL_BLOCK = re.compile(r'\b(?:if|else|when|for|while|do|try|catch|finally)\s*(?:\([^{}]*\))?\s*$')
+
+
+def innermost_noncomp(stack) -> bool:
+    """由最内层的**具名 lambda 块**决定组合上下文，控制流块（if/when/for…）透明跳过。"""
+    for b in reversed(stack):
+        if b[0] == 'brace' and len(b) > 2 and b[2] in ('comp', 'noncomp'):
+            return b[2] == 'noncomp'
+    return False
+
+
 def block_kind(lead: str, kinds: dict = None) -> str:
-    """判断一个 `{` 是不是非组合 lambda（看它前面那段代码）。"""
+    """判断一个 `{` 的上下文：'noncomp' / 'comp' / 'ctl'（控制流，透明）。"""
     s = lead.rstrip()
+    if CTL_BLOCK.search(s):
+        return 'ctl'
     if NON_COMP_HEAD.search(s) or NON_COMP_PARAM.search(s):
         return 'noncomp'
     if kinds and s.endswith(')'):
@@ -169,7 +191,7 @@ def scan(src: str, kinds: dict = None) -> List[Dict]:
             raw = src.startswith('"""', i)
             j, interp = _skip_string(src, i, raw)
             r = _rec(src, i, j, raw, funs, cur_fun())
-            r['noncomp'] = any(b[0] == 'brace' and len(b) > 2 and b[2] == 'noncomp' for b in stack)
+            r['noncomp'] = innermost_noncomp(stack)
             r['interp'] = interp
             out.append(r)
             i = j

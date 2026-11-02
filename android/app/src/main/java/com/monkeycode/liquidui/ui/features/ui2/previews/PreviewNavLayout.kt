@@ -253,8 +253,14 @@ fun PreviewF22() {
 
 @Composable
 fun PreviewF23() {
+    // 同上：LazyColumn 作用域不可组合，标题列表上提到外面。
+    val navSectionGroups = listOf(
+        stringResource(R.string.pv_nav_text_27),
+        stringResource(R.string.ot_demo_text_28),
+        stringResource(R.string.pv_nav_text_28),
+    )
     LazyColumn(Modifier.fillMaxWidth().height(210.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        listOf(stringResource(R.string.pv_nav_text_27), stringResource(R.string.ot_demo_text_28), stringResource(R.string.pv_nav_text_28)).forEach { group ->
+        navSectionGroups.forEach { group ->
             stickyHeader {
                 Box(Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.primaryContainer).padding(8.dp)) {
                     Text(group, fontWeight = FontWeight.Bold)
