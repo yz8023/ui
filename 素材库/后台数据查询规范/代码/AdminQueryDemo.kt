@@ -255,6 +255,8 @@ private fun LocalDate.short(): String = "$monthValue-$dayOfMonth"
 @Composable
 private fun PreviewQ01() {
     val context = LocalContext.current
+    // 「全部部门 · 20」在下面的芯片与结果标签里各用一次，hoist 出来解析一遍
+    val deptAllLabel = stringResource(R.string.aq_demo_text_64, AdminDepts.size)
     val scope = rememberCoroutineScope()
     val today = remember { LocalDate.now() }
     var batchMode by remember { mutableStateOf(true) }
@@ -334,7 +336,7 @@ private fun PreviewQ01() {
         QNote("部门（20 个小组收成一个入口，不摊开）")
         QChip(
             label = when {
-                dDepts.size == AdminDepts.size -> stringResource(R.string.aq_demo_text_64, AdminDepts.size)
+                dDepts.size == AdminDepts.size -> deptAllLabel
                 dDepts.isEmpty() -> "选择部门"
                 else -> "部门 · ${dDepts.size}"
             },
@@ -406,7 +408,7 @@ private fun PreviewQ01() {
         FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             QTag(QTagSpec("${applied.start.short()} ~ ${applied.end.short()}"))
             if (applied.statuses.isNotEmpty()) QTag(QTagSpec("状态 · ${applied.statuses.size}"))
-            if (applied.depts.size == AdminDepts.size) QTag(QTagSpec(stringResource(R.string.aq_demo_text_64, AdminDepts.size)))
+            if (applied.depts.size == AdminDepts.size) QTag(QTagSpec(deptAllLabel))
             else if (applied.depts.isNotEmpty()) QTag(QTagSpec("部门 · ${applied.depts.size}"))
             if (applied.channels.isNotEmpty()) QTag(QTagSpec("渠道 · ${applied.channels.size}"))
             if (applied.amountBucket != "amt_all") QTag(QTagSpec(stringResource(AdminValueLabels.getValue(applied.amountBucket))))
