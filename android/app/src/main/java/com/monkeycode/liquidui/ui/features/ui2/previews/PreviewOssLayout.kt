@@ -181,7 +181,8 @@ fun PreviewS03() {
                                     d.isAfter(s) -> end = d
                                     else -> start = d
                                 }
-                            }
+                            },
+                            modifier = Modifier.weight(1f)
                         )
                     }
                 }
@@ -243,7 +244,8 @@ private fun OssCalDay(
     earliest: LocalDate,
     start: LocalDate?,
     end: LocalDate?,
-    onPick: (LocalDate) -> Unit
+    onPick: (LocalDate) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val d = cell.date
     val selectable = cell.inMonth && !d.isBefore(earliest) && !d.isAfter(today)
@@ -261,8 +263,7 @@ private fun OssCalDay(
         else -> MaterialTheme.colorScheme.onSurface
     }
     Box(
-        Modifier
-            .weight(1f)
+        modifier
             .padding(vertical = 2.dp)
             .height(38.dp)
             .clip(RoundedCornerShape(10.dp))
