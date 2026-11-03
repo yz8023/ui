@@ -210,7 +210,9 @@ fun PreviewS09() {
             color = scheme.onSurfaceVariant,
         )
 
-        Box(Modifier.fillMaxWidth().padding(top = 10.dp)) {
+        // 外层必须是 Column：AnimatedVisibility 在这里会解析成 ColumnScope 的扩展，
+        // 套在 Box 里就成了「隐式接收者不可用」（CI 实测报的错），改 Column 后合法且自带纵向展开动画
+        Column(Modifier.fillMaxWidth().padding(top = 10.dp)) {
             AnimatedVisibility(visible = open) {
                 Column {
                     // 面包屑：点任意一级跳回
@@ -402,7 +404,6 @@ fun PreviewS10() {
                     val thisH = if (isTarget) rowH + (fullH - rowH) * p else rowH
                     val corner = if (isTarget) 14.dp * (1f - p) else 14.dp
                     val rowAlpha = if (!isTarget && expanding) 1f - p * (1f - EXPAND_MIN_ALPHA) else 1f
-                    val distance = if (!isTarget && expanding) abs(i - expandedIndex) else 0
 
                     Box(
                         Modifier
