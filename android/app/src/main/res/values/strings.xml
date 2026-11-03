@@ -1845,4 +1845,7 @@
     <string name="ot_demo_text_134">已触发 %1$s 次。系统 Toast 的限制：Android 12+ 应用在后台时不显示、样式不可定制、不能带按钮。</string>
     <string name="ot_demo_text_135">已复制到剪贴板</string>
     <string name="ot_demo_text_136">已确认 %1$s 次。</string>
+
+    <!-- ===== ui/features/ui2/previews/PreviewMotionTools.kt（阶段 2b） ===== -->
+    <string name="pv_motion_tool_text_23">同屏对比两条预览（左侧选单含 F01–F24，右侧含 F23–F46），找参数差异最快。</string>
 </resources>

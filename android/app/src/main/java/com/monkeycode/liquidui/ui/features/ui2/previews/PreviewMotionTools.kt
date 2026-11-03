@@ -317,6 +317,6 @@ fun PreviewT02() {
                 }
             }
         }
-        Text("同屏对比两条预览（左侧选单含 F01–F24，右侧含 F23–F46），找参数差异最快。", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(stringResource(R.string.pv_motion_tool_text_23), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }

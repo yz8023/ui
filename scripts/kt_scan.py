@@ -33,8 +33,11 @@ MODIFIERS = {'private', 'public', 'internal', 'protected', 'inline', 'suspend', 
 # 旧写法用 `[^{}]*$`，允许关键字与 `{` 之间有任意不含花括号的代码，于是
 # `var x by remember { … }` 之后隔两行没有花括号的 `Column {` 会被判成非组合
 # （CI 实测：PreviewGlassMotion 里 Text(stringResource(…)) 被误报越界）。
-NON_COMP_KEYWORD = re.compile(  # noqa: E501  关键词 71 个，故意单行
-    '\\b(?:remember\\w*|runCatching|buildString|buildList|buildMap|lazy|derivedStateOf|LaunchedEffect|SideEffect|DisposableEffect|produceState|snapshotFlow|launch|withContext|coroutineScope|runBlocking|forEach|forEachIndexed|map|mapNotNull|filter|let|apply|also|onEach|firstOrNull|firstNotNullOfOrNull|find|any|all|none|sumOf|sortedBy|sortedByDescending|maxByOrNull|associateBy|groupBy|takeIf|run|repeat|with|collect|collectLatest|launchIn|clickable|combinedClickable|selectable|toggleable|triStateToggleable|draggable|scrollable|swipeable|anchoredDraggable|pointerInput|detectTapGestures|graphicsLayer|drawWithContent|drawBehind|drawWithCache|onSizeChanged|onGloballyPositioned|onPlaced|layout|semantics|clearAndSetSemantics|LazyColumn|LazyRow|LazyVerticalGrid|LazyHorizontalGrid|LazyVerticalStaggeredGrid|LazyHorizontalStaggeredGrid)$'
+# forEach/forEachIndexed/let/also/apply/run/takeIf **不在表内**：它们是 Kotlin 的 inline 函数，
+# lambda 就地调用不逃逸，组合上下文会保留（5e 已 CI 验证 `?.let { stringResource(…) }` 合法）。
+# map/filter 这类**产出值**的仍留在表内保守处理（本仓库有过「结果当值用」踩坑记录）。
+NON_COMP_KEYWORD = re.compile(  # noqa: E501  关键词 64 个，故意单行
+    '\\b(?:remember\\w*|runCatching|buildString|buildList|buildMap|lazy|derivedStateOf|LaunchedEffect|SideEffect|DisposableEffect|produceState|snapshotFlow|launch|withContext|coroutineScope|runBlocking|map|mapNotNull|filter|onEach|firstOrNull|firstNotNullOfOrNull|find|any|all|none|sumOf|sortedBy|sortedByDescending|maxByOrNull|associateBy|groupBy|repeat|with|collect|collectLatest|launchIn|clickable|combinedClickable|selectable|toggleable|triStateToggleable|draggable|scrollable|swipeable|anchoredDraggable|pointerInput|detectTapGestures|graphicsLayer|drawWithContent|drawBehind|drawWithCache|onSizeChanged|onGloballyPositioned|onPlaced|layout|semantics|clearAndSetSemantics|LazyColumn|LazyRow|LazyVerticalGrid|LazyHorizontalGrid|LazyVerticalStaggeredGrid|LazyHorizontalStaggeredGrid)$'
 )
 # 具名参数形式的非组合 lambda：`onClick = { … }`。同样必须锚定在结尾，
 # 否则 300 字符窗口里任何一处 `onXxx = ` 都会把后面的块判成非组合。
