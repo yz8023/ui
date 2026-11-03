@@ -43,7 +43,7 @@ private data class OpenSourceCredit(
 )
 
 /**
- * 开源致谢 21 条（14–21 为批 D 开源取材八件套的来源申明）。显示字段（名字/作者/用途/许可证）都是 @StringRes，
+ * 开源致谢 27 条（14–21 为批 D 开源取材八件套、22–27 为批 E 开源取材 S09–S14 的来源申明）。显示字段（名字/作者/用途/许可证）都是 @StringRes，
  * **url 留在代码里**：它不是文案，既是 LazyColumn item 的 key，也是 Intent 的目标。
  */
 private val allCredits = listOf(
@@ -68,6 +68,12 @@ private val allCredits = listOf(
     OpenSourceCredit(R.string.info_credit_19_name, R.string.info_credit_19_author, R.string.info_credit_19_purpose, R.string.info_credit_19_license, "https://github.com/google/accompanist"),
     OpenSourceCredit(R.string.info_credit_20_name, R.string.info_credit_20_author, R.string.info_credit_20_purpose, R.string.info_credit_20_license, "https://github.com/microsoft/fluentui-android"),
     OpenSourceCredit(R.string.info_credit_21_name, R.string.info_credit_21_author, R.string.info_credit_21_purpose, R.string.info_credit_21_license, "https://github.com/google/Accessibility-Test-Framework-for-Android"),
+    OpenSourceCredit(R.string.info_credit_22_name, R.string.info_credit_22_author, R.string.info_credit_22_purpose, R.string.info_credit_22_license, "https://github.com/saket/cascade"),
+    OpenSourceCredit(R.string.info_credit_23_name, R.string.info_credit_23_author, R.string.info_credit_23_purpose, R.string.info_credit_23_license, "https://github.com/saket/InboxRecyclerView"),
+    OpenSourceCredit(R.string.info_credit_24_name, R.string.info_credit_24_author, R.string.info_credit_24_purpose, R.string.info_credit_24_license, "https://github.com/CanHub/Android-Image-Cropper"),
+    OpenSourceCredit(R.string.info_credit_25_name, R.string.info_credit_25_author, R.string.info_credit_25_purpose, R.string.info_credit_25_license, "https://github.com/MohamedRejeb/compose-rich-editor"),
+    OpenSourceCredit(R.string.info_credit_26_name, R.string.info_credit_26_author, R.string.info_credit_26_purpose, R.string.info_credit_26_license, "https://github.com/androidx/androidx"),
+    OpenSourceCredit(R.string.info_credit_27_name, R.string.info_credit_27_author, R.string.info_credit_27_purpose, R.string.info_credit_27_license, "https://github.com/mikepenz/AboutLibraries"),
 )
 
 @Composable

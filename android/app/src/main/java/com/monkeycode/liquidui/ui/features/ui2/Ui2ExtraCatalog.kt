@@ -55,5 +55,11 @@ val Ui2ExtraFeatures: List<Ui2Feature> = listOf(
     Ui2Feature("S05", "s05", R.string.ui2_s05_name, "oss_kit", "★★★", R.string.ui2_s05_summary, R.string.ui2_s05_params, R.string.ui2_s05_prompt),
     Ui2Feature("S06", "s06", R.string.ui2_s06_name, "oss_kit", "★★★", R.string.ui2_s06_summary, R.string.ui2_s06_params, R.string.ui2_s06_prompt),
     Ui2Feature("S07", "s07", R.string.ui2_s07_name, "oss_kit", "★★☆", R.string.ui2_s07_summary, R.string.ui2_s07_params, R.string.ui2_s07_prompt),
-    Ui2Feature("S08", "s08", R.string.ui2_s08_name, "oss_kit", "★★★", R.string.ui2_s08_summary, R.string.ui2_s08_params, R.string.ui2_s08_prompt)
+    Ui2Feature("S08", "s08", R.string.ui2_s08_name, "oss_kit", "★★★", R.string.ui2_s08_summary, R.string.ui2_s08_params, R.string.ui2_s08_prompt),
+    Ui2Feature("S09", "s09", R.string.ui2_s09_name, "oss_kit", "★★☆", R.string.ui2_s09_summary, R.string.ui2_s09_params, R.string.ui2_s09_prompt),
+    Ui2Feature("S10", "s10", R.string.ui2_s10_name, "oss_kit", "★★★", R.string.ui2_s10_summary, R.string.ui2_s10_params, R.string.ui2_s10_prompt),
+    Ui2Feature("S11", "s11", R.string.ui2_s11_name, "oss_kit", "★★★", R.string.ui2_s11_summary, R.string.ui2_s11_params, R.string.ui2_s11_prompt),
+    Ui2Feature("S12", "s12", R.string.ui2_s12_name, "oss_kit", "★★★", R.string.ui2_s12_summary, R.string.ui2_s12_params, R.string.ui2_s12_prompt),
+    Ui2Feature("S13", "s13", R.string.ui2_s13_name, "oss_kit", "★★☆", R.string.ui2_s13_summary, R.string.ui2_s13_params, R.string.ui2_s13_prompt),
+    Ui2Feature("S14", "s14", R.string.ui2_s14_name, "oss_kit", "★★☆", R.string.ui2_s14_summary, R.string.ui2_s14_params, R.string.ui2_s14_prompt)
 )

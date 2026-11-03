@@ -187,6 +187,12 @@ fun Ui2Preview(feature: Ui2Feature, modifier: Modifier = Modifier) {
             "S06" -> PreviewS06()
             "S07" -> PreviewS07()
             "S08" -> PreviewS08()
+            "S09" -> PreviewS09()
+            "S10" -> PreviewS10()
+            "S11" -> PreviewS11()
+            "S12" -> PreviewS12()
+            "S13" -> PreviewS13()
+            "S14" -> PreviewS14()
             else -> Text(
                 stringResource(R.string.ui2_host_text_1),
                 modifier = Modifier.align(Alignment.Center).padding(24.dp),
