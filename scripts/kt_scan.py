@@ -110,6 +110,18 @@ def _strip_tail_parens(s: str):
     return s, False
 
 
+def expr_body_noncomp(funs) -> bool:
+    """最内层活动函数是**表达式体**（`fun f() = expr`）且它自己不是 @Composable → 体内不可组合。
+
+    表达式体没有 `{ }`，所以 `innermost_noncomp(stack)` 看不到它，必须单独问一次。
+    """
+    for idx in range(len(funs) - 1, -1, -1):
+        st = funs[idx]['state']
+        if st in ('sig', 'await', 'body', 'expr'):
+            return st == 'expr' and not funs[idx]['comp']
+    return False
+
+
 def innermost_noncomp(stack) -> bool:
     """由最内层的**具名 lambda 块**决定组合上下文，控制流块（if/when/for…）透明跳过。"""
     for b in reversed(stack):
@@ -190,7 +202,7 @@ def scan(src: str, kinds: dict = None) -> List[Dict]:
 
     def cur_fun():
         for idx in range(len(funs) - 1, -1, -1):
-            if funs[idx]['state'] in ('sig', 'await', 'body'):
+            if funs[idx]['state'] in ('sig', 'await', 'body', 'expr'):
                 return idx
         return None
 
@@ -210,7 +222,7 @@ def scan(src: str, kinds: dict = None) -> List[Dict]:
             raw = src.startswith('"""', i)
             j, interp = _skip_string(src, i, raw)
             r = _rec(src, i, j, raw, funs, cur_fun())
-            r['noncomp'] = innermost_noncomp(stack)
+            r['noncomp'] = innermost_noncomp(stack) or expr_body_noncomp(funs)
             r['blocks'] = [b[3] for b in stack if b[0] == 'brace' and len(b) > 3]  # 外层块 callee 链，审计用
             r['interp'] = interp
             out.append(r)
@@ -237,11 +249,49 @@ def scan(src: str, kinds: dict = None) -> List[Dict]:
         # ---- fun 声明 ----
         m = re.match(r'fun\s+(?:<[^>]*>\s*)?(?:[\w<>.]+\.)?([A-Za-z_]\w*)\s*\(', src[i:])
         if m:
-            funs.append({'name': m.group(1), 'comp': 'Composable' in ann, 'state': 'sig'})
+            # col 必须是**行首缩进**，不是 `fun` 关键字的列：`    suspend fun f(…)` 的
+            # `fun` 在第 12 列，而表达式体的续行在第 8 列，用关键字列会把续行误判成反缩进、
+            # 提前结束函数（实测 WallpaperStore.cacheNetwork 整片被判成顶层）。
+            ls = src.rfind('\n', 0, i) + 1
+            lead_ws = src[ls:i]
+            funs.append({'name': m.group(1), 'comp': 'Composable' in ann, 'state': 'sig',
+                         'col': len(lead_ws) - len(lead_ws.lstrip())})
             ann = []
             stack.append(['paren', len(funs) - 1])
             i += m.end()
             continue
+        if c == '=' and src[i + 1:i + 2] != '=' and (i == 0 or src[i - 1] not in '=!<>+-*/%&|'):
+            # `fun f(...) = expr`：表达式体函数，**没有 `{ }` 函数体**。
+            # 不处理的话它会永远停在 'await'，于是后面第一个 `{`（比如 Column {）被当成它的
+            # 函数体，按它的非组合属性判定 → 之后一整片组合代码被误判成 B 类、探针报假越界
+            # （AdminQueryDemo 的 `fun draftNow() = AdminFilter(...)` 实测带偏 27 条）。
+            idx = cur_fun()
+            if idx is not None and funs[idx]['state'] == 'await':
+                funs[idx]['state'] = 'expr'
+            i += 1; continue
+        if c == '\n':
+            # 表达式体/无体声明的结束：下一行第一个非空字符反缩进到声明列或更左，
+            # 且不是续行（链式 `.`、`?:`、运算符、`)`、`,`）或另起一行的函数体 `{`。
+            for idx in range(len(funs) - 1, -1, -1):
+                st = funs[idx]['state']
+                if st not in ('await', 'expr'):
+                    if st in ('sig', 'body'):
+                        break
+                    continue
+                j = i + 1
+                while j < n and src[j] in ' \t':
+                    j += 1
+                if j >= n or src[j] == '\n':
+                    break                                   # 空行，继续等
+                if j - src.rfind('\n', 0, j) - 1 > funs[idx].get('col', 0):
+                    break                                   # 缩进更深的续行
+                if st == 'expr' and src[j] in '.?+,)*/&|<>':
+                    break                                   # 表达式还没写完
+                if st == 'await' and src[j] == '{':
+                    break                                   # 函数体大括号另起一行
+                funs[idx]['state'] = 'done'
+                break
+            i += 1; continue
         if c == '(':
             stack.append(['paren', None]); i += 1; continue
         if c == ')':
@@ -302,7 +352,7 @@ def _rec(src, a, b, raw, funs, idx) -> Dict:
         scope, comp, fname = 'top', None, None
     else:
         st = funs[idx]['state']
-        scope = 'sig' if st == 'sig' else ('body' if st in ('body', 'await') else 'top')
+        scope = 'sig' if st == 'sig' else ('body' if st in ('body', 'await', 'expr') else 'top')
         comp, fname = funs[idx]['comp'], funs[idx]['name']
     lit = src[a:b]
     body = lit[3:-3] if raw else lit[1:-1]
