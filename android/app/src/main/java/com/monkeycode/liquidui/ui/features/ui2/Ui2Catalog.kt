@@ -48,6 +48,7 @@ val Ui2CategoryLabels: Map<String, Int> = mapOf(
     "popup_gallery" to R.string.ui2_category_popup_gallery,
     "motion_gallery" to R.string.ui2_category_motion_gallery,
     "tools" to R.string.ui2_category_tools,
+    "oss_kit" to R.string.ui2_category_oss_kit,
 )
 
 val Ui2Features: List<Ui2Feature> = listOf(

@@ -43,7 +43,7 @@ private data class OpenSourceCredit(
 )
 
 /**
- * 开源致谢 13 条。显示字段（名字/作者/用途/许可证）都是 @StringRes，
+ * 开源致谢 21 条（14–21 为批 D 开源取材八件套的来源申明）。显示字段（名字/作者/用途/许可证）都是 @StringRes，
  * **url 留在代码里**：它不是文案，既是 LazyColumn item 的 key，也是 Intent 的目标。
  */
 private val allCredits = listOf(
@@ -60,6 +60,14 @@ private val allCredits = listOf(
     OpenSourceCredit(R.string.info_credit_11_name, R.string.info_credit_11_author, R.string.info_credit_11_purpose, R.string.info_credit_11_license, "https://fonts.google.com/icons"),
     OpenSourceCredit(R.string.info_credit_12_name, R.string.info_credit_12_author, R.string.info_credit_12_purpose, R.string.info_credit_12_license, "https://developer.android.com/guide/topics/manifest/activity-alias-element"),
     OpenSourceCredit(R.string.info_credit_13_name, R.string.info_credit_13_author, R.string.info_credit_13_purpose, R.string.info_credit_13_license, "https://www.sitepoint.com/changing-your-android-apps-icon-dynamically/"),
+    OpenSourceCredit(R.string.info_credit_14_name, R.string.info_credit_14_author, R.string.info_credit_14_purpose, R.string.info_credit_14_license, "https://github.com/material-foundation/material-color-utilities"),
+    OpenSourceCredit(R.string.info_credit_15_name, R.string.info_credit_15_author, R.string.info_credit_15_purpose, R.string.info_credit_15_license, "https://github.com/google/material-design-icons"),
+    OpenSourceCredit(R.string.info_credit_16_name, R.string.info_credit_16_author, R.string.info_credit_16_purpose, R.string.info_credit_16_license, "https://github.com/kizitonwose/Calendar"),
+    OpenSourceCredit(R.string.info_credit_17_name, R.string.info_credit_17_author, R.string.info_credit_17_purpose, R.string.info_credit_17_license, "https://github.com/android/compose-samples"),
+    OpenSourceCredit(R.string.info_credit_18_name, R.string.info_credit_18_author, R.string.info_credit_18_purpose, R.string.info_credit_18_license, "https://github.com/Calvin-LL/Reorderable"),
+    OpenSourceCredit(R.string.info_credit_19_name, R.string.info_credit_19_author, R.string.info_credit_19_purpose, R.string.info_credit_19_license, "https://github.com/google/accompanist"),
+    OpenSourceCredit(R.string.info_credit_20_name, R.string.info_credit_20_author, R.string.info_credit_20_purpose, R.string.info_credit_20_license, "https://github.com/microsoft/fluentui-android"),
+    OpenSourceCredit(R.string.info_credit_21_name, R.string.info_credit_21_author, R.string.info_credit_21_purpose, R.string.info_credit_21_license, "https://github.com/google/Accessibility-Test-Framework-for-Android"),
 )
 
 @Composable

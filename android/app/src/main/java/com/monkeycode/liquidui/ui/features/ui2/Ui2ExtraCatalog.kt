@@ -10,8 +10,8 @@ import com.monkeycode.liquidui.R
  * `category` 是稳定英文键、文案查 `Ui2CategoryLabels`。
  */
 
-/** 增补目录里进筛选芯片的分类键（只有这两类，与改造前一致；其余 4 类只在详情页显示）。 */
-val Ui2ExtraCategories = listOf("glass_breakdown", "motion_cases")
+/** 增补目录里进筛选芯片的分类键（玻璃拆解、动效案例，加批 D 的开源素材；其余只在详情页显示）。 */
+val Ui2ExtraCategories = listOf("glass_breakdown", "motion_cases", "oss_kit")
 
 val Ui2ExtraFeatures: List<Ui2Feature> = listOf(
 
@@ -46,4 +46,14 @@ val Ui2ExtraFeatures: List<Ui2Feature> = listOf(
     Ui2Feature("W03", "w03", R.string.ui2_w03_name, "motion_gallery", "★☆☆", R.string.ui2_w03_summary, R.string.ui2_w03_params, R.string.ui2_w03_prompt),
     Ui2Feature("T01", "t01", R.string.ui2_t01_name, "tools", "★★☆", R.string.ui2_t01_summary, R.string.ui2_t01_params, R.string.ui2_t01_prompt),
     Ui2Feature("T02", "t02", R.string.ui2_t02_name, "tools", "★☆☆", R.string.ui2_t02_summary, R.string.ui2_t02_params, R.string.ui2_t02_prompt),
+
+    // ─── 批 D：开源取材八件套（S01–S08），来源见 InfoScreens 的开源致谢 14–21 ───
+    Ui2Feature("S01", "s01", R.string.ui2_s01_name, "oss_kit", "★★☆", R.string.ui2_s01_summary, R.string.ui2_s01_params, R.string.ui2_s01_prompt),
+    Ui2Feature("S02", "s02", R.string.ui2_s02_name, "oss_kit", "★★☆", R.string.ui2_s02_summary, R.string.ui2_s02_params, R.string.ui2_s02_prompt),
+    Ui2Feature("S03", "s03", R.string.ui2_s03_name, "oss_kit", "★★★", R.string.ui2_s03_summary, R.string.ui2_s03_params, R.string.ui2_s03_prompt),
+    Ui2Feature("S04", "s04", R.string.ui2_s04_name, "oss_kit", "★★☆", R.string.ui2_s04_summary, R.string.ui2_s04_params, R.string.ui2_s04_prompt),
+    Ui2Feature("S05", "s05", R.string.ui2_s05_name, "oss_kit", "★★★", R.string.ui2_s05_summary, R.string.ui2_s05_params, R.string.ui2_s05_prompt),
+    Ui2Feature("S06", "s06", R.string.ui2_s06_name, "oss_kit", "★★★", R.string.ui2_s06_summary, R.string.ui2_s06_params, R.string.ui2_s06_prompt),
+    Ui2Feature("S07", "s07", R.string.ui2_s07_name, "oss_kit", "★★☆", R.string.ui2_s07_summary, R.string.ui2_s07_params, R.string.ui2_s07_prompt),
+    Ui2Feature("S08", "s08", R.string.ui2_s08_name, "oss_kit", "★★★", R.string.ui2_s08_summary, R.string.ui2_s08_params, R.string.ui2_s08_prompt)
 )
