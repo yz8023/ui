@@ -96,6 +96,12 @@ import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewS05
 import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewS06
 import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewS07
 import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewS08
+import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewS09
+import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewS10
+import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewS11
+import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewS12
+import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewS13
+import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewS14
 
 /** UI2 体验馆预览分发：每条都是真实可操作的 Compose 实现（非 HTML、非截图）。 */
 @Composable
@@ -187,6 +193,12 @@ fun Ui2Preview(feature: Ui2Feature, modifier: Modifier = Modifier) {
             "S06" -> PreviewS06()
             "S07" -> PreviewS07()
             "S08" -> PreviewS08()
+            "S09" -> PreviewS09()
+            "S10" -> PreviewS10()
+            "S11" -> PreviewS11()
+            "S12" -> PreviewS12()
+            "S13" -> PreviewS13()
+            "S14" -> PreviewS14()
             else -> Text(
                 stringResource(R.string.ui2_host_text_1),
                 modifier = Modifier.align(Alignment.Center).padding(24.dp),

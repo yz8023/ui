@@ -2101,4 +2101,149 @@
     <string name="info_credit_21_author">Google</string>
     <string name="info_credit_21_purpose">S08 无障碍检查项口径参考（未引依赖，检查逻辑独立实现）</string>
     <string name="info_credit_21_license">Apache-2.0</string>
+
+    <!-- ===== 批 E 开源取材 S09–S14（PreviewOssWidgets.kt / PreviewOssSystem.kt） ===== -->
+    <string name="pv_oss_cascade_anchor">菜单</string>
+    <string name="pv_oss_cascade_none">还没选，点开菜单逐级往下走</string>
+    <string name="pv_oss_cascade_rule">最多 %1$d 级：再深就该改成搜索或分步表单，而不是继续加级</string>
+    <string name="pv_oss_cascade_root">顶级</string>
+    <string name="pv_oss_cascade_too_deep_hint">第 %1$d 级还有子项：层级过深，规范要求改信息架构（搜索／分步／分组），不要继续加级</string>
+    <string name="pv_oss_cascade_file">文件</string>
+    <string name="pv_oss_cascade_edit">编辑</string>
+    <string name="pv_oss_cascade_view">视图</string>
+    <string name="pv_oss_cascade_new_doc">新建文档</string>
+    <string name="pv_oss_cascade_open_recent">打开最近</string>
+    <string name="pv_oss_cascade_export">导出</string>
+    <string name="pv_oss_cascade_find_replace">查找替换</string>
+    <string name="pv_oss_cascade_format_cell">格式化单元格</string>
+    <string name="pv_oss_cascade_sort">排序</string>
+    <string name="pv_oss_cascade_zoom">缩放</string>
+    <string name="pv_oss_cascade_theme">主题</string>
+    <string name="pv_oss_cascade_to_pdf">导出为 PDF</string>
+    <string name="pv_oss_cascade_to_csv">导出为 CSV</string>
+    <string name="pv_oss_cascade_to_png">导出为 PNG</string>
+    <string name="pv_oss_cascade_light">浅色</string>
+    <string name="pv_oss_cascade_dark">深色</string>
+    <string name="pv_oss_cascade_follow_system">跟随系统</string>
+    <string name="pv_oss_cascade_zoom_in">放大</string>
+    <string name="pv_oss_cascade_zoom_out">缩小</string>
+    <string name="pv_oss_cascade_zoom_fit">适应窗口</string>
+    <string name="pv_oss_cascade_too_deep">还有一层（过深演示）</string>
+    <string name="pv_oss_expand_hint">点任意一行：它原地放大成详情，其余行淡出；再点一次或按返回键缩回原位，滚动位置一并还原。</string>
+    <string name="pv_oss_expand_title_1">为什么不用页面转场</string>
+    <string name="pv_oss_expand_body_1">页面转场会把上下文整个换掉，用户回来时要重新找位置。原地展开保留了「我是从哪一行进来的」这个空间记忆，返回时缩回原行，滚动位置也还原，认知成本最低。适合邮件、消息、订单详情这类「从列表钻进一条」的场景。</string>
+    <string name="pv_oss_expand_title_2">动画的是布局高度，不是缩放</string>
+    <string name="pv_oss_expand_body_2">用 graphicsLayer 的 scaleY 放大会把详情里的文字一起纵向拉长变形。正确做法是动画布局高度（72dp 到容器高），内容在过半程时淡入；圆角同时从 14dp 插值到 0dp，视觉上就是这块卡片长成了整页。</string>
+    <string name="pv_oss_expand_title_3">滚动位置为什么要在动画后还原</string>
+    <string name="pv_oss_expand_body_3">收起动画期间列表还在重新布局，这时候调 scrollToItem 会被随后的 layout pass 打断，看起来像跳了一下。所以顺序是：先播完收起动画，再 scrollToItem(点击前记下的 index, offset)。点击那一刻就要把这两个值存下来。</string>
+    <string name="pv_oss_expand_title_4">其余行怎么处理</string>
+    <string name="pv_oss_expand_body_4">其余行按与目标行的距离做淡出（到 0.2 为止，不要完全透明，留着一点轮廓用户才知道自己还在列表里）。位移交给布局自然完成，不要手动 translationY，否则会和高度动画打架。</string>
+    <string name="pv_oss_expand_title_5">返回键与手势</string>
+    <string name="pv_oss_expand_body_5">展开态要吃掉返回键（BackHandler enabled 只在展开时为真），先收起详情再让页面处理返回。 predictive back 手势下同理：手势进行中不要立刻改布局，等取消或确认后再动，否则中途松手会留下半开状态。</string>
+    <string name="pv_oss_expand_param">progress=%1$s  height=%2$sdp  其余行alpha=%3$s</string>
+    <string name="pv_oss_expand_row_meta">第 %1$d 行 · 点我展开</string>
+    <string name="pv_oss_expand_back">再点一次或按返回键收起</string>
+    <string name="pv_oss_crop_free">自由</string>
+    <string name="pv_oss_crop_1_1">1:1</string>
+    <string name="pv_oss_crop_4_3">4:3</string>
+    <string name="pv_oss_crop_16_9">16:9</string>
+    <string name="pv_oss_crop_rotate">旋转 90°</string>
+    <string name="pv_oss_crop_readout">裁剪框 %1$d × %2$d dp｜按 1080 宽导出约 %3$d × %4$d px</string>
+    <string name="pv_oss_crop_note">拖四角或四边改大小，拖框内平移；锁比例时以对角为锚重算。裁剪矩形用 0..1 归一化存，旋转与改宽度都不用重算。</string>
+    <string name="pv_oss_rich_note">选中文字再点工具栏；没选中时作用于光标所在的词。编辑区是纯文本，样式在下方预览区实时渲染（零依赖下 BasicTextField 不能在编辑态渲染 SpanStyle，这条是如实降级）。</string>
+    <string name="pv_oss_rich_seed">选一段文字试试工具栏：加粗、斜体、下划线、删除线、链接，再按无序或有序列表给每行加前缀。</string>
+    <string name="pv_oss_rich_bold">加粗</string>
+    <string name="pv_oss_rich_italic">斜体</string>
+    <string name="pv_oss_rich_underline">下划线</string>
+    <string name="pv_oss_rich_strike">删除线</string>
+    <string name="pv_oss_rich_link">链接</string>
+    <string name="pv_oss_rich_bullet">无序列表</string>
+    <string name="pv_oss_rich_number">有序列表</string>
+    <string name="pv_oss_rich_copy">导出纯文本</string>
+    <string name="pv_oss_rich_preview_label">渲染预览（样式真实叠加在文本上）</string>
+    <string name="pv_oss_rich_stat">正文 %1$d 字｜样式区间 %2$d 段</string>
+    <string name="pv_oss_rich_copied">已复制纯文本 %1$d 字（样式已剥离）</string>
+    <string name="pv_oss_state_rule" formatted="false">M3 的交互反馈不是改颜色，而是在内容之上叠一层 onSurface 的半透明层：hover 8%、focus 12%、pressed 12%、dragged 16%。点下面的表面可直接切换 pressed。</string>
+    <string name="pv_oss_state_hover">hover</string>
+    <string name="pv_oss_state_focus">focus</string>
+    <string name="pv_oss_state_pressed">pressed</string>
+    <string name="pv_oss_state_dragged">dragged</string>
+    <string name="pv_oss_state_pct">%1$d%%</string>
+    <string name="pv_oss_state_composite">合成不透明度 %1$s%%（不是各层相加）</string>
+    <string name="pv_oss_state_surface_title">被叠层的表面</string>
+    <string name="pv_oss_state_viz_on">叠层可视化：开（染红看清边界）</string>
+    <string name="pv_oss_state_viz_off">叠层可视化：关</string>
+    <string name="pv_oss_state_dark_on">暗色海拔叠加：开</string>
+    <string name="pv_oss_state_dark_off">暗色海拔叠加：关（亮色只靠阴影）</string>
+    <string name="pv_oss_state_elev_title">海拔 0–5 的表面色</string>
+    <string name="pv_oss_state_elev_note" formatted="false">暗色主题下海拔越高表面越亮（把 surface 朝 onSurface 插值），近似式 alpha ≈ 4.5 × ln(elevation + 1)%；亮色主题不改表面色，只加阴影。这个近似式待真机与官方实现比对。</string>
+    <string name="pv_oss_state_elev_dp">%1$d dp</string>
+    <string name="pv_oss_state_pitfall" formatted="false">两个常犯的错：① 多状态同时命中时把不透明度相加（12% + 12% 写成 24%），正确是 1-(1-a)(1-b) ≈ 22.6%；② 状态层画在内容之下或被圆角切掉，顺序必须是 clip(shape) 之后再 background(层色)。</string>
+    <string name="pv_oss_lic_intro">本仓库真实依赖 + 批 D/E 真实取材来源共 %1$d 条，其中需要显式处理的 %2$d 条（无许可证或 GPL）。数据逐条经 GitHub API 核实（2026-11-04），不是编的样例。</string>
+    <string name="pv_oss_lic_apache">Apache-2.0（宽松，可商用可修改，需保留声明与变更说明）</string>
+    <string name="pv_oss_lic_mit">MIT（宽松，可商用可修改，需保留版权声明）</string>
+    <string name="pv_oss_lic_epl">EPL-1.0（弱传染，仅 testImplementation，不打进 APK）</string>
+    <string name="pv_oss_lic_gpl">GPL-3.0（强传染，代码不可复制进 MIT 仓库，只能学公开规范）</string>
+    <string name="pv_oss_lic_none">无许可证（默认保留所有权利，不可用）</string>
+    <string name="pv_oss_lic_use_dep">依赖</string>
+    <string name="pv_oss_lic_use_source">取材来源</string>
+    <string name="pv_oss_lic_use_rejected">已剔除</string>
+    <string name="pv_oss_lic_filter_all">全部</string>
+    <string name="pv_oss_lic_filter_issues">只看风险</string>
+    <string name="pv_oss_lic_dup_rule">判重要看「仓库 + 用途」而不是只看仓库：material-color-utilities 在本仓库出现两次是合法的——一次是主题的色彩科学依据，一次是 S01 的素材来源，用途不同就该各留一条，各自写清 purpose。</string>
+    <string name="pv_oss_lic_generate">生成致谢文本并复制（当前 %1$d 条）</string>
+    <string name="pv_oss_lic_copied">已复制 %1$d 条致谢文本，可直接粘进「关于」页或 NOTICE</string>
+    <string name="pv_oss_lic_flow">维护流程：加依赖或取材 → 用 GitHub API 核实许可证与归档状态 → 追加一条 OpenSourceCredit（名字／作者／用途／许可证都是 @StringRes，URL 留在代码里，因为它既是 LazyColumn 的 key 也是 Intent 目标）→ 同步 素材库/UI2体验馆/参考来源-总表.md → 无许可证或强传染的当场剔除并记下理由。</string>
+
+    <!-- 批 E：UI2 目录条目 S09–S14（name / summary / params / prompt） -->
+    <string name="ui2_s09_name">级联菜单</string>
+    <string name="ui2_s09_summary">多级下拉菜单：进下一级横向滑入、可退回上一级，面包屑能跳级，返回键先退级后关闭，第 3 级还有子项就提示改设计。</string>
+    <string name="ui2_s09_params">菜单宽 220dp｜项高 48dp｜层级动画 200ms（进入与返回方向相反）｜圆角 12dp｜最多 3 级｜数据存英文键，文案查资源</string>
+    <string name="ui2_s09_prompt">用 Jetpack Compose 实现一个级联下拉菜单（Cascade Menu），不要引入任何第三方库。要求：① 数据分三级，分类 → 子类 → 具体项，全部用稳定英文键存，显示文案走 stringResource，不许把中文写进 when 或比较操作数；② 点有子项的条目进入下一级，用 AnimatedContent 配 slideInHorizontally + fadeIn 做横向滑入，进入和返回的方向要相反，时长 200ms；③ 顶部一行面包屑显示当前路径，点任意一级可以直接跳回那一级；④ 返回键行为：还有子级时先退一级，已经在顶级时才关闭菜单，用 BackHandler(enabled = 菜单已打开) 实现；⑤ 菜单宽 220dp、条目高 48dp、容器圆角 12dp、条目圆角 8dp，菜单要有阴影并与页面其他内容分层；⑥ 最多支持 3 级，如果第 3 级的条目还有子项，不要继续展开，改为显示一条提示「层级过深应改信息架构（搜索／分步表单／分组）」并给触感反馈；⑦ 选中末级条目后关闭菜单，把完整路径（各级文案用 › 连接）回填到菜单旁边的文本里；⑧ 菜单外部可点区域点击即关闭。所有可点条目都要有按压态与触感反馈。</string>
+    <string name="ui2_s10_name">展开式列表→详情</string>
+    <string name="ui2_s10_summary">点列表行原地放大成详情页（不是页面转场），其余行按距离淡出；返回时缩回原行，并还原点击前的滚动位置。</string>
+    <string name="ui2_s10_params">动画 320ms｜FastOutSlowInEasing｜动画的是布局高度不是 graphicsLayer 缩放｜圆角 14dp→0dp｜其余行淡出到 0.2｜收起动画结束后再 scrollToItem</string>
+    <string name="ui2_s10_prompt">用 Jetpack Compose 实现「列表行原地展开成详情」的转场（参考 InboxRecyclerView 的思路），不要引入任何第三方库，也不要用共享元素 API（要兼容 minSdk 26）。要求：① 一个 5 行的 LazyColumn，行高 72dp，容器高 360dp；② 点某一行时，该行原地放大到占满容器成为详情页，关键：**动画的必须是布局高度**（Modifier.height 从 72dp 插值到容器高），不要用 graphicsLayer 的 scaleY——缩放会把详情里的文字一起纵向拉长变形；③ 圆角同步从 14dp 插值到 0dp，动画 320ms 用 FastOutSlowInEasing；④ 进度过半时把行内容切换成详情内容（标题 + 正文 + 可滚动的内层列表），并淡入；⑤ 其余行按与目标行的距离淡出到 alpha 0.2，不要完全透明，位移交给布局自然完成，不要手动 translationY；⑥ 点击那一刻记录 firstVisibleItemIndex 与 firstVisibleItemScrollOffset，收起动画**播完之后**再调 scrollToItem 还原，顺序反了会被 layout pass 打断出现跳动；⑦ 展开态要吃掉返回键（BackHandler enabled 仅在展开时为真），先收起再交给页面；⑧ 页面上实时显示 progress、当前高度、其余行 alpha 三个数值，方便调参。</string>
+    <string name="ui2_s11_name">图片裁剪框</string>
+    <string name="ui2_s11_summary">四角四边可拖、比例四档锁定、旋转 90°、三分网格线、框外遮罩，实时给出裁剪框 dp 与按 1080 宽导出的像素。</string>
+    <string name="ui2_s11_params" formatted="false">最小框 48dp｜手柄命中区 24dp｜遮罩 45% 黑｜网格线 1dp 30% 白｜比例档 自由/1:1/4:3/16:9｜裁剪矩形用 0..1 归一化存｜底图现场画不引图片资源</string>
+    <string name="ui2_s11_prompt" formatted="false">用 Jetpack Compose 实现一个图片裁剪框组件，不要引入任何第三方库，也不要引用图片资源或联网（底图用 Canvas 现场画：线性渐变 + 斜纹 + 同心圆即可）。要求：① 裁剪矩形用 0..1 的归一化坐标存，这样旋转、改比例、容器变宽都不用重算；② 支持拖四角、拖四边、拖框内平移，命中判定用 24dp 的容差，注意 detectDragGestures 的 dragAmount 是相邻两次的增量，累加会漂，应该用 change.position 减去按下时记的位置算总位移；③ 比例锁定四档：自由、1:1、4:3、16:9，锁定后以没被拖动的那条对角边为锚重算矩形，并且要在像素空间算完再归一化——在归一化空间算比例会被容器宽高比带偏；④ 约束顺序是先夹「不出界」再夹「不小于 48dp 最小尺寸」，顺序反了拖动会抖；⑤ 旋转按钮每次转 90°，容器宽高比在 1.5 与 0.667 之间切换，归一化裁剪框保持不变；⑥ 框外画 45% 黑的遮罩，遮罩挖孔用四条矩形拼，不要用 BlendMode.Clear（那个必须配 graphicsLayer 的 CompositingStrategy.Offscreen 才正确，很容易出错）；⑦ 框内画三分网格线（1dp、30% 白），四角画 L 形手柄；⑧ 底部实时显示裁剪框的 dp 尺寸，以及按 1080 宽导出时的像素尺寸；⑨ 所有颜色、文案、尺寸在组合体里上提成 val，Canvas 与 pointerInput 的 lambda 里不许出现 MaterialTheme 或 stringResource。</string>
+    <string name="ui2_s12_name">富文本编辑器</string>
+    <string name="ui2_s12_summary">工具栏八个动作（粗／斜／下划线／删除线／链接／无序列表／有序列表／导出纯文本），样式按区间存，预览区实时叠加渲染。</string>
+    <string name="ui2_s12_params">样式存 kind+start+end+SpanStyle 的区间列表｜选区为空时作用于当前词｜同 kind 相交的区间先删后加｜文本变化后区间要夹回合法范围｜导出剥离样式</string>
+    <string name="ui2_s12_prompt">用 Jetpack Compose 实现一个带工具栏的富文本编辑器，不要引入任何第三方库（不要用 compose-rich-editor）。要求：① 用 BasicTextField 承接输入，样式不进文本本身，另存一个区间列表：每段记 kind（bold/italic/underline/strike/link，稳定英文键）、start、end、SpanStyle；② 工具栏八个动作：加粗、斜体、下划线、删除线、链接、无序列表、有序列表、导出纯文本；③ 前五个是选区样式 toggle：选区已被同 kind 的区间完整覆盖就移除，否则先删掉与选区相交的同 kind 区间再加上选区这一段（这样行为可预期，不会出现半截叠加）；④ 选区为空时作用于光标所在的词（向两侧找到空白为止），这是编辑器的通行做法；⑤ 链接样式用主题色加下划线；⑥ 无序／有序列表按行处理：对选区覆盖到的每一行，在行首插入「•  」或递增的「N.  」；⑦ 文本被编辑后所有区间的下标可能越界，渲染前必须把 start/end 夹回 0..text.length，否则崩溃；⑧ 编辑区下方放一个只读预览区，用 buildAnnotatedString 把所有区间 addStyle 上去实时渲染——如实说明：零依赖下 BasicTextField 不能在编辑态渲染 SpanStyle，所以是「纯文本编辑 + 预览区渲染」，这是降级不是偷懒；⑨ 导出按钮把纯文本（剥离样式）复制到剪贴板并给触感反馈，同时显示字数与区间段数。</string>
+    <string name="ui2_s13_name">状态层与海拔叠加</string>
+    <string name="ui2_s13_summary">M3 交互态的叠层不透明度与暗色海拔提亮，多层同时命中按不透明度合成而不是相加，附常犯的两个错。</string>
+    <string name="ui2_s13_params" formatted="false">hover 8%｜focus 12%｜pressed 12%｜dragged 16%｜层色取 onSurface｜合成 1-(1-a)(1-b)｜暗色叠加近似 4.5×ln(elev+1)%｜海拔档 0–5</string>
+    <string name="ui2_s13_prompt" formatted="false">用 Jetpack Compose 实现一个「Material 3 状态层与海拔叠加」的教学组件，不要引入任何第三方库。要求：① 四个交互态可多选：hover、focus、pressed、dragged，各自的不透明度固定为 8%、12%、12%、16%，层色取 colorScheme.onSurface（在彩色容器内则取 onSurfaceVariant）；② 多个状态同时命中时按不透明度合成：composite = 1-(1-a1)(1-a2)…，绝不能相加，页面上要把合成结果实时显示出来（例如 12% 与 12% 合成约 22.6% 而不是 24%）；③ 放一块可点的表面演示 pressed，状态层必须盖在内容之上、圆角之内，顺序是 Modifier.clip(shape) 之后再 background(层色)，反过来会把圆角切掉或者盖不住内容；④ 一个「叠层可视化」开关，打开后把状态层染成 50% 红，方便看清层的边界；⑤ 海拔 0/1/2/3/4/5 六档并排：暗色主题下海拔越高表面越亮，做法是把 surface 朝 onSurface 方向插值，近似式 alpha ≈ 4.5 × ln(elevation + 1)%，并注明这是近似式、需要与官方实现比对；亮色主题不改表面色，只加阴影，用一个开关切换两种表现；⑥ 每档下面标出 elevation 的 dp 值与计算出的叠加百分比；⑦ 底部给一段「常犯的两个错」：把不透明度相加、把状态层画在内容之下或被圆角切掉；⑧ 所有颜色在组合体里上提成 val，Canvas 与 graphicsLayer 里不许出现 MaterialTheme 或 stringResource。</string>
+    <string name="ui2_s14_name">开源清单与许可证合规</string>
+    <string name="ui2_s14_summary">把真实依赖与取材来源汇成一张可筛选的表，按许可证归类统计，自动标出无许可证与 GPL 兼容风险，一键生成致谢文本。</string>
+    <string name="ui2_s14_params">许可证键 apache_2_0/mit/epl_1_0/gpl_3_0/none｜用途键 dependency/source/rejected｜条数与统计全部现算不写死｜判重看「仓库+用途」｜testImplementation 不打进 APK</string>
+    <string name="ui2_s14_prompt">用 Jetpack Compose 实现一个「开源清单与许可证合规」自检组件（参考 AboutLibraries 的思路：从依赖元数据生成库清单并归类许可证），不要引入任何第三方库。要求：① 数据是一个条目列表，每条含仓库名、URL、许可证键、用途键、标签；许可证键用稳定英文标识 apache_2_0 / mit / epl_1_0 / gpl_3_0 / none，用途键用 dependency / source / rejected，显示文案全部查 stringResource，不许把中文写进 when 或比较操作数；② 按许可证归类统计条数，统计必须现算（count），不许写死数字，否则加了依赖就会不一致；③ 风险检测两条真规则：许可证为 none 的标红并写明「默认保留所有权利，不可用」；许可证为 GPL 而本仓库是 MIT 的标红并写明「代码不可复制进来，只能学公开规范」；④ 四个筛选：全部／只看依赖／只看取材来源／只看风险；⑤ 每条卡片显示仓库名、标签、许可证一句话说明、用途、URL；⑥ 一个「生成致谢文本并复制」按钮，把当前筛选结果按「仓库名（许可证） URL」一行一条拼成文本，复制到剪贴板并给触感反馈，复制后按钮文案变成已复制并显示条数；⑦ 页面上要讲清一条容易搞错的规则：判重看「仓库 + 用途」而不是只看仓库，同一个仓库因为不同用途出现多次是合法的，各自写清 purpose；⑧ 附一段维护流程：加依赖或取材 → 用 GitHub API 核实许可证与归档状态 → 追加致谢条目 → 同步来源总表 → 无许可证或强传染的当场剔除并记下理由；⑨ 数据要用仓库真实的依赖与真实的取材来源，不要编样例。</string>
+
+    <!-- 批 E：关于页开源致谢 22–27（S09–S14 的来源申明） -->
+    <string name="info_credit_22_name">Cascade</string>
+    <string name="info_credit_22_author">Saket Narayan</string>
+    <string name="info_credit_22_purpose">S09 级联菜单：多级下拉的进级／退级、面包屑跳级与返回键行为，借鉴其公开交互规范（未复制代码）</string>
+    <string name="info_credit_22_license">Apache-2.0</string>
+    <string name="info_credit_23_name">InboxRecyclerView</string>
+    <string name="info_credit_23_author">Saket Narayan</string>
+    <string name="info_credit_23_purpose">S10 展开式列表→详情：列表行原地放大成详情、返回缩回并还原滚动位置的转场思路（未复制代码）</string>
+    <string name="info_credit_23_license">Apache-2.0</string>
+    <string name="info_credit_24_name">Android-Image-Cropper</string>
+    <string name="info_credit_24_author">CanHub（原 ArthurHub）</string>
+    <string name="info_credit_24_purpose">S11 图片裁剪框：四角四边拖拽、比例锁定、旋转与三分网格线的交互与参数（未复制代码）</string>
+    <string name="info_credit_24_license">Apache-2.0</string>
+    <string name="info_credit_25_name">Compose Rich Editor</string>
+    <string name="info_credit_25_author">Mohamed Rejeb</string>
+    <string name="info_credit_25_purpose">S12 富文本编辑器：样式区间模型与工具栏动作设计（未复制代码，本仓库为零依赖自实现的降级版）</string>
+    <string name="info_credit_25_license">Apache-2.0</string>
+    <string name="info_credit_26_name">AndroidX（Compose Material3）</string>
+    <string name="info_credit_26_author">The Android Open Source Project</string>
+    <string name="info_credit_26_purpose" formatted="false">S13 状态层与海拔叠加：状态层不透明度 8/12/12/16%、暗色海拔叠加与层色取值规格</string>
+    <string name="info_credit_26_license">Apache-2.0</string>
+    <string name="info_credit_27_name">AboutLibraries</string>
+    <string name="info_credit_27_author">Mike Penz</string>
+    <string name="info_credit_27_purpose">S14 开源清单与许可证合规：从依赖元数据生成库清单、按许可证归类并提示兼容风险的方法</string>
+    <string name="info_credit_27_license">Apache-2.0</string>
 </resources>
