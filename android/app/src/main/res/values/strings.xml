@@ -1689,4 +1689,55 @@
     <string name="home_principle_03_body">时序、缓动、错峰全部以 token 固化，可被量化核对，避免同一产品出现两套节奏。</string>
     <string name="home_principle_04_title">降级即设计</string>
     <string name="home_principle_04_body">减少动效模式是一套完整设计，而不是坏掉的页面：默认终态始终可用。</string>
+
+    <!-- ===== 阶段 5e：后台数据查询的模拟数据集（值改稳定英文键，文案进这张表） ===== -->
+    <!-- 20 个部门小组 -->
+    <string name="aq_dept_01">第01组</string>
+    <string name="aq_dept_02">第02组</string>
+    <string name="aq_dept_03">第03组</string>
+    <string name="aq_dept_04">第04组</string>
+    <string name="aq_dept_05">第05组</string>
+    <string name="aq_dept_06">第06组</string>
+    <string name="aq_dept_07">第07组</string>
+    <string name="aq_dept_08">第08组</string>
+    <string name="aq_dept_09">第09组</string>
+    <string name="aq_dept_10">第10组</string>
+    <string name="aq_dept_11">第11组</string>
+    <string name="aq_dept_12">第12组</string>
+    <string name="aq_dept_13">第13组</string>
+    <string name="aq_dept_14">第14组</string>
+    <string name="aq_dept_15">第15组</string>
+    <string name="aq_dept_16">第16组</string>
+    <string name="aq_dept_17">第17组</string>
+    <string name="aq_dept_18">第18组</string>
+    <string name="aq_dept_19">第19组</string>
+    <string name="aq_dept_20">第20组</string>
+    <!-- 渠道 / 状态 / 金额档 -->
+    <string name="aq_channel_app">App</string>
+    <string name="aq_channel_mini_program">小程序</string>
+    <string name="aq_channel_live">直播</string>
+    <string name="aq_channel_offline">线下</string>
+    <string name="aq_channel_agent">代理商</string>
+    <string name="aq_status_done">已完成</string>
+    <string name="aq_status_processing">处理中</string>
+    <string name="aq_status_refunded">已退款</string>
+    <string name="aq_status_abnormal">异常</string>
+    <string name="aq_amount_lt_1k">&lt; 1k</string>
+    <string name="aq_amount_1k_5k">1k–5k</string>
+    <string name="aq_amount_gt_5k">&gt; 5k</string>
+    <!-- 负责人（own_duty 复用 aq_demo_text_11，amt_all 复用 common_all） -->
+    <string name="aq_owner_xi">陈曦 · 增长组</string>
+    <string name="aq_owner_lin">林涛 · 平台组</string>
+    <string name="aq_owner_zhao">赵敏 · 内容电商组</string>
+    <string name="aq_owner_sun">孙浩 · 渠道组</string>
+    <string name="aq_owner_zhou">周颖 · 商务组</string>
+    <string name="aq_owner_duty_of">值班组长 · %1$s</string>
+    <string name="aq_demo_owner_of_status">数据值班 · 王磊（%1$s）</string>
+    <!-- 时间快捷档位六档 -->
+    <string name="aq_range_today">今日</string>
+    <string name="aq_range_yesterday">昨日</string>
+    <string name="aq_range_last7">近7日</string>
+    <string name="aq_range_last30">近30日</string>
+    <string name="aq_range_quarter">本季度</string>
+    <string name="aq_range_last365">近一年</string>
 </resources>
