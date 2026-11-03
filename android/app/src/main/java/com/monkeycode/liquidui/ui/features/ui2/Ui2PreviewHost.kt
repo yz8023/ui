@@ -88,6 +88,14 @@ import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewW02
 import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewW03
 import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewT01
 import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewT02
+import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewS01
+import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewS02
+import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewS03
+import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewS04
+import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewS05
+import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewS06
+import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewS07
+import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewS08
 
 /** UI2 体验馆预览分发：每条都是真实可操作的 Compose 实现（非 HTML、非截图）。 */
 @Composable
@@ -171,6 +179,14 @@ fun Ui2Preview(feature: Ui2Feature, modifier: Modifier = Modifier) {
             "W03" -> PreviewW03()
             "T01" -> PreviewT01()
             "T02" -> PreviewT02()
+            "S01" -> PreviewS01()
+            "S02" -> PreviewS02()
+            "S03" -> PreviewS03()
+            "S04" -> PreviewS04()
+            "S05" -> PreviewS05()
+            "S06" -> PreviewS06()
+            "S07" -> PreviewS07()
+            "S08" -> PreviewS08()
             else -> Text(
                 stringResource(R.string.ui2_host_text_1),
                 modifier = Modifier.align(Alignment.Center).padding(24.dp),

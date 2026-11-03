@@ -1848,4 +1848,257 @@
 
     <!-- ===== ui/features/ui2/previews/PreviewMotionTools.kt（阶段 2b） ===== -->
     <string name="pv_motion_tool_text_23">同屏对比两条预览（左侧选单含 F01–F24，右侧含 F23–F46），找参数差异最快。</string>
+
+    <!-- 批 D 开源取材 · S01 色彩令牌与对比度（PreviewOssDesign.kt） -->
+    <string name="pv_oss_color_title">色彩令牌与对比度检查</string>
+    <string name="pv_oss_color_intro">选一个种子色、拉色相，下面 13 档色调板与四组角色配对会当场重算。对比度用 WCAG 2.x 相对亮度公式精确计算；色调板的明度档是 HSL 近似——上游 material-color-utilities 走 HCT/CAM16 色适应空间，本仓库不复刻，也不冒充。</string>
+    <string name="pv_oss_color_seed_label">种子色</string>
+    <string name="pv_oss_color_hue">色相偏移 %1$d°</string>
+    <string name="pv_oss_color_copy_hint">点色块复制 HEX</string>
+    <string name="pv_oss_color_palette_title">色调板（13 档）</string>
+    <string name="pv_oss_color_palette_note">每档给出对白底／黑底中更优的那个对比度，并按 WCAG 分级。T40 是浅色主题 primary 的常规档，T80 是暗色主题的对应档。</string>
+    <string name="pv_oss_color_contrast_pair">%1$s（对%2$s）</string>
+    <string name="pv_oss_color_on_white">白底</string>
+    <string name="pv_oss_color_on_black">黑底</string>
+    <string name="pv_oss_color_luminance">种子色相对亮度 L = %1$s（0 为纯黑，1 为纯白）</string>
+    <string name="pv_oss_color_grade_aaa">AAA</string>
+    <string name="pv_oss_color_grade_aa">AA</string>
+    <string name="pv_oss_color_grade_aa_large">AA 大字</string>
+    <string name="pv_oss_color_grade_fail">不合格</string>
+    <string name="pv_oss_color_mapping_title">浅色↔暗色角色映射</string>
+    <string name="pv_oss_color_mapping_note">左边是浅色主题的前景色／背景色档位，右边是暗色主题。取两组里较低的那个对比度做评级——换主题时最容易掉档的就是它。</string>
+    <string name="pv_oss_color_tone_pair">T%1$d / T%2$d</string>
+    <string name="pv_oss_color_mapping_rule">映射口径：浅色 primary 用 T40 前景配 T100 背景，暗色翻成 T80 前景配 T20 背景；onSurface 与 surface 在暗色下互换明度档。这是 Material 3 的公开规则，不是本仓库发明。</string>
+    <string name="pv_oss_color_role_primary">primary</string>
+    <string name="pv_oss_color_role_surface">onSurface</string>
+    <string name="pv_oss_color_role_outline">outline</string>
+    <string name="pv_oss_color_role_error">error</string>
+
+    <!-- 批 D 开源取材 · S02 图标网格与四轴（PreviewOssDesign.kt） -->
+    <string name="pv_oss_icon_title">图标网格与四轴规格</string>
+    <string name="pv_oss_icon_intro">换图标是套壳第一步，但先要知道图标该画在哪个框里。下面是 24dp 视口、2dp 安全区、四条关键形状，以及 Material Symbols 的 fill／weight／grade／optical size 四轴模拟器。规格取自 material-design-icons 的公开绘制指南，图形是本页 Canvas 实绘，未使用上游图标资源。</string>
+    <string name="pv_oss_icon_grid_title">24dp 视口与关键形状</string>
+    <string name="pv_oss_icon_key_circle">圆 Ø20</string>
+    <string name="pv_oss_icon_key_square">方 18×18</string>
+    <string name="pv_oss_icon_key_vertical">竖矩 16×20</string>
+    <string name="pv_oss_icon_key_horizontal">横矩 20×16</string>
+    <string name="pv_oss_icon_toggle_grid">显示 4dp 网格与安全区</string>
+    <string name="pv_oss_icon_toggle_keyline">显示关键形状</string>
+    <string name="pv_oss_icon_axis_title">四轴模拟器（示例：铃铛）</string>
+    <string name="pv_oss_icon_axis_weight">weight %1$d</string>
+    <string name="pv_oss_icon_axis_grade">grade %1$d</string>
+    <string name="pv_oss_icon_axis_fill_on">fill 1（填充）</string>
+    <string name="pv_oss_icon_axis_fill_off">fill 0（描边）</string>
+    <string name="pv_oss_icon_axis_optical">%1$d dp 视口</string>
+    <string name="pv_oss_icon_axis_stroke">换算线宽 %1$s dp（点击复制）</string>
+    <string name="pv_oss_icon_size_title">常用尺寸对照</string>
+    <string name="pv_oss_icon_size_dp">%1$d dp</string>
+    <string name="pv_oss_icon_size_note">同一图形放进更大视口时看起来更细，所以线宽要随光学尺寸放大——这正是四轴里 optical size 存在的原因。18dp 用在密集列表，24dp 是默认，48dp 用于空态与引导。</string>
+
+    <!-- 批 D 开源取材 · S03 月历与区间选择（PreviewOssLayout.kt） -->
+    <string name="pv_oss_cal_title">月历与日期区间选择</string>
+    <string name="pv_oss_cal_intro">日期全部用 JDK java.time 真算（minSdk 26 起原生可用），不引第三方日历库。可选窗口与 Q02 时间筛选规范同源：往前回溯 90 天、结束不超过今天。</string>
+    <string name="pv_oss_cal_weekday_sun">日</string>
+    <string name="pv_oss_cal_weekday_mon">一</string>
+    <string name="pv_oss_cal_weekday_tue">二</string>
+    <string name="pv_oss_cal_weekday_wed">三</string>
+    <string name="pv_oss_cal_weekday_thu">四</string>
+    <string name="pv_oss_cal_weekday_fri">五</string>
+    <string name="pv_oss_cal_weekday_sat">六</string>
+    <string name="pv_oss_cal_prev">上个月</string>
+    <string name="pv_oss_cal_next">下个月</string>
+    <string name="pv_oss_cal_month">%1$d 年 %2$d 月</string>
+    <string name="pv_oss_cal_monday_first">周一作为每周第一天</string>
+    <string name="pv_oss_cal_result_title">当前选择</string>
+    <string name="pv_oss_cal_result_none">未选择：点一天设起点，再点一天设终点。</string>
+    <string name="pv_oss_cal_result_start_only">起点 %1$s，再点一天设终点</string>
+    <string name="pv_oss_cal_result_range">%1$s ~ %2$s · 共 %3$d 天（含首尾）</string>
+    <string name="pv_oss_cal_window">可选窗口 %1$s ~ %2$s（回溯 %3$d 天，超出置灰不可点）</string>
+    <string name="pv_oss_cal_clear">清除选择</string>
+    <string name="pv_oss_cal_rule">状态机三条：没有选择时点任何一天设起点；已有起点且新点的一天更晚则设终点，否则改设起点；已有完整区间时再点任何一天都重新设起点。跨月选择合法，起止同一天算 1 天。</string>
+
+    <!-- 批 D 开源取材 · S04 列表-详情双栏（PreviewOssLayout.kt） -->
+    <string name="pv_oss_pane_title">列表-详情双栏自适应</string>
+    <string name="pv_oss_pane_intro">断点用 BoxWithConstraints 实测宽度得出，口径与 compose-samples 的 WindowSizeClass 一致：600dp 以下单栏，以上双栏。把窗口拖过 600dp 或旋转屏幕就能看到切换。</string>
+    <string name="pv_oss_pane_metric">实测宽度 %1$d dp · %2$s · %3$s</string>
+    <string name="pv_oss_pane_class_compact">Compact</string>
+    <string name="pv_oss_pane_class_medium">Medium</string>
+    <string name="pv_oss_pane_class_expanded">Expanded</string>
+    <string name="pv_oss_pane_mode_one">单栏（列表↔详情）</string>
+    <string name="pv_oss_pane_mode_two">双栏（左列表右详情）</string>
+    <string name="pv_oss_pane_list_title">条目（本地模拟数据，不联网）</string>
+    <string name="pv_oss_pane_back">返回列表</string>
+    <string name="pv_oss_pane_detail_index">第 %1$d 条</string>
+    <string name="pv_oss_pane_detail_note">单栏返回列表时滚动位置与选中项都保留（用的是同一个 LazyListState），与素材库「返回不回顶部」同一口径。</string>
+    <string name="pv_oss_pane_empty">未选择条目</string>
+    <string name="pv_oss_pane_empty_hint">双栏下右侧常驻，选一条左边的条目就会填充</string>
+    <string name="pv_oss_pane_item_01_title">断点不是设备类型</string>
+    <string name="pv_oss_pane_item_01_body">判宽不判机型：折叠屏展开、分屏、桌面模式都会让同一个设备落到不同档位，所以断点必须来自实测宽度。</string>
+    <string name="pv_oss_pane_item_02_title">双栏要保住选中项</string>
+    <string name="pv_oss_pane_item_02_body">从单栏切到双栏时，原来选中的条目应当在右栏继续显示，而不是清空；反向切换则回到列表原位置。</string>
+    <string name="pv_oss_pane_item_03_title">右栏空态是常态</string>
+    <string name="pv_oss_pane_item_03_body">双栏首次进入必然没有选中项，右栏要给一句可执行的提示，不要留白，也不要默认选第一条造成误读。</string>
+    <string name="pv_oss_pane_item_04_title">返回栈按档位分叉</string>
+    <string name="pv_oss_pane_item_04_body">单栏下详情要压栈、系统返回回列表；双栏下详情不压栈，系统返回应退出整个页面而不是清空右栏。</string>
+    <string name="pv_oss_pane_item_05_title">列表宽度别给死值</string>
+    <string name="pv_oss_pane_item_05_body">左栏用 weight 分配（这里 0.4 / 0.6），跨档位时比例不变、绝对宽度自适应，避免中档位下详情被挤成一条。</string>
+    <string name="pv_oss_pane_item_06_title">删除选中项要有后手</string>
+    <string name="pv_oss_pane_item_06_body">双栏下删掉当前选中项，右栏应回落到空态或自动选下一条，不能继续显示已不存在的数据。</string>
+
+    <!-- 批 D 开源取材 · S05 长按拖拽排序（PreviewOssInteraction.kt） -->
+    <string name="pv_oss_reorder_title">长按拖拽排序</string>
+    <string name="pv_oss_reorder_intro">长按激活（带触感）→ 拖动时该项抬升并跟手 → 指针中心落到别项范围内就实时换位 → 松手用 animateItem 落位。拖到视口上下边缘会自动滚动，否则末位条目永远拖不上来。</string>
+    <string name="pv_oss_reorder_item">条目 %1$d</string>
+    <string name="pv_oss_reorder_handle">⠿</string>
+    <string name="pv_oss_reorder_moves">已换位 %1$d 次</string>
+    <string name="pv_oss_reorder_reset">重置顺序</string>
+    <string name="pv_oss_reorder_note">换位后布局 offset 会变，必须把差值补偿回拖动位移，否则图形会在指针下跳一格。落位动画用 Compose 1.7 的 Modifier.animateItem()（旧名 animateItemPlacement 已废弃）。</string>
+
+    <!-- 批 D 开源取材 · S06 下拉刷新（PreviewOssInteraction.kt） -->
+    <string name="pv_oss_refresh_title">下拉刷新</string>
+    <string name="pv_oss_refresh_intro">用 nestedScroll 接管：列表未到顶时完全不插手，到顶后把多余的向下位移累积成下拉量；超过 72dp 阈值松手即触发，未达阈值松手回弹。刷新中锁定，重复下拉不会二次触发。</string>
+    <string name="pv_oss_refresh_item">第 %1$d 行数据</string>
+    <string name="pv_oss_refresh_state">当前：%1$s · 下拉进度 %2$s%%</string>
+    <string name="pv_oss_refresh_state_idle">待机</string>
+    <string name="pv_oss_refresh_state_ready">已达阈值，松手刷新</string>
+    <string name="pv_oss_refresh_state_busy">刷新中</string>
+    <string name="pv_oss_refresh_count">已完成 %1$d 次刷新 · 上次耗时 %2$d ms（本地模拟，不联网）</string>
+    <string name="pv_oss_refresh_note">指示器把 0→72dp 的位移映射成 0→300° 旋转，达阈值转为实色；刷新中固定 48dp 高度并匀速转。上游 accompanist 的 SwipeRefresh 已让位给 Material 3 的 PullToRefresh，这里按同一口径自绘，不引依赖。</string>
+
+    <!-- 批 D 开源取材 · S07 教练引导气泡（PreviewOssInteraction.kt） -->
+    <string name="pv_oss_coach_title">教练引导气泡</string>
+    <string name="pv_oss_coach_intro">与 P06 Tooltip（悬停释义）、P09 Popover（锚定内容）不同，教练引导是有序列的：遮罩挖孔突出当前目标、箭头指向它、走完才消失。位置由 positionInRoot 实测得出，不写死坐标。</string>
+    <string name="pv_oss_coach_target1">目标一：主操作按钮</string>
+    <string name="pv_oss_coach_target2">目标二：状态摘要</string>
+    <string name="pv_oss_coach_target3">目标三：筛选</string>
+    <string name="pv_oss_coach_target4">目标四：导出</string>
+    <string name="pv_oss_coach_page_note">这一块是承载引导的示例页面，四个目标都是真实可点控件。</string>
+    <string name="pv_oss_coach_step1_title">第 1 步 · 主操作</string>
+    <string name="pv_oss_coach_step1_body">所有关键动作都收在这一颗按钮上，不要让用户在页面里找入口。</string>
+    <string name="pv_oss_coach_step2_title">第 2 步 · 状态摘要</string>
+    <string name="pv_oss_coach_step2_body">这一行告诉你当前生效的条件与结果规模，改完条件它会立刻重算。</string>
+    <string name="pv_oss_coach_step3_title">第 3 步 · 筛选</string>
+    <string name="pv_oss_coach_step3_body">低频条件收在这里，常用条件常显在外，不要一次性摊开。</string>
+    <string name="pv_oss_coach_step4_title">第 4 步 · 导出</string>
+    <string name="pv_oss_coach_step4_body">导出即复制到剪贴板，会有触感反馈；真实项目应在这里落一条日志。</string>
+    <string name="pv_oss_coach_skip">跳过</string>
+    <string name="pv_oss_coach_prev">上一步</string>
+    <string name="pv_oss_coach_next">下一步</string>
+    <string name="pv_oss_coach_done">完成</string>
+    <string name="pv_oss_coach_replay">重播引导</string>
+    <string name="pv_oss_coach_restart">重新开始</string>
+    <string name="pv_oss_coach_progress">第 %1$d / %2$d 步</string>
+    <string name="pv_oss_coach_note">气泡默认在目标下方，下方放不下就翻到上方、箭头跟着翻。遮罩挖孔用四块矩形围出来，没用 BlendMode.Clear（那个必须配 CompositingStrategy.Offscreen 才正确）。「不再显示」这里存 rememberSaveable，只在本次进程内有效，真实项目要落 DataStore。</string>
+
+    <!-- 批 D 开源取材 · S08 无障碍自检器（PreviewOssQuality.kt） -->
+    <string name="pv_oss_a11y_title">无障碍自检器</string>
+    <string name="pv_oss_a11y_intro">检查项口径来自 Accessibility Test Framework，但不引它的依赖（那是 JUnit 体系）。五项里四项当场真跑：实测触摸目标、算 WCAG 对比度、读系统动画开关、读字体缩放；第五项语义标签是声明式自检。</string>
+    <string name="pv_oss_a11y_sum_fail">不合格 %1$d</string>
+    <string name="pv_oss_a11y_sum_warn">提醒 %1$d</string>
+    <string name="pv_oss_a11y_sum_run">第 %1$d 次自检</string>
+    <string name="pv_oss_a11y_rerun">重新自检</string>
+    <string name="pv_oss_a11y_touch_title">一、触摸目标尺寸（实测）</string>
+    <string name="pv_oss_a11y_touch_rule">最小 %1$d dp，取控件宽高中较小的一方；下面 6 个方块都是真实控件，尺寸由 onGloballyPositioned 量出来，不是标称值。</string>
+    <string name="pv_oss_a11y_touch_value">%1$d dp</string>
+    <string name="pv_oss_a11y_touch_fix">%1$d 个控件不达标：加 padding 扩大命中区，或用 minimumInteractiveComponentSize 兜底，不要只把图标放大。</string>
+    <string name="pv_oss_a11y_contrast_title">二、文本对比度（WCAG 2.x 精算）</string>
+    <string name="pv_oss_a11y_contrast_rule">正文要求 ≥ %1$s:1（AA），大字与图标可放宽到 3:1。切到暗色主题后这里会重算。</string>
+    <string name="pv_oss_a11y_contrast_sample">示例文本</string>
+    <string name="pv_oss_a11y_contrast_value">%1$s:1</string>
+    <string name="pv_oss_a11y_contrast_fix">%1$d 组配对不达标：调暗前景或调亮背景，别指望加粗能救回来。</string>
+    <string name="pv_oss_a11y_pair_body">onSurface / surface</string>
+    <string name="pv_oss_a11y_pair_muted">onSurfaceVariant / surface</string>
+    <string name="pv_oss_a11y_pair_primary">onPrimary / primary</string>
+    <string name="pv_oss_a11y_pair_outline">outline / surface</string>
+    <string name="pv_oss_a11y_pair_error">onError / error</string>
+    <string name="pv_oss_a11y_system_title">三、四、系统动画开关与字体缩放</string>
+    <string name="pv_oss_a11y_anim_label">animator_duration_scale</string>
+    <string name="pv_oss_a11y_anim_value">%1$s×</string>
+    <string name="pv_oss_a11y_anim_on">系统动画开启：装饰性动效可以保留，但要能被时长缩放影响，不要写死 duration。</string>
+    <string name="pv_oss_a11y_anim_off">系统已关闭动画：应跳过装饰性动效，只保留必要的状态变化，否则与前庭功能障碍用户的预期冲突。</string>
+    <string name="pv_oss_a11y_font_label">fontScale</string>
+    <string name="pv_oss_a11y_font_value">%1$s×</string>
+    <string name="pv_oss_a11y_font_big">字体已放大：检查固定高度的行、单行截断的标题、以及按钮里的文字会不会被切掉。</string>
+    <string name="pv_oss_a11y_font_ok">字体缩放正常：仍建议对关键文案做一次 1.3× 抽查。</string>
+    <string name="pv_oss_a11y_semantics_title">五、语义标签（声明式自检）</string>
+    <string name="pv_oss_a11y_semantics_note">运行时遍历 SemanticsNode 需要 compose-ui-test 依赖，本仓库 0 测试依赖，所以这一项如实做成声明自检：把本页图标控件有没有传 contentDescription 逐条列出，缺的点名。</string>
+    <string name="pv_oss_a11y_semantics_ok">有标签</string>
+    <string name="pv_oss_a11y_semantics_missing">缺 contentDescription</string>
+    <string name="pv_oss_a11y_semantics_fix">%1$d 个控件缺语义标签：纯图标按钮必须给 contentDescription，装饰性图形则应显式置空以免 TalkBack 念出无意义内容。</string>
+    <string name="pv_oss_a11y_probe_ok_button">主按钮（52dp）</string>
+    <string name="pv_oss_a11y_probe_small_icon">小图标（32dp）</string>
+    <string name="pv_oss_a11y_probe_row_target">整行可点（48dp）</string>
+    <string name="pv_oss_a11y_probe_chip_target">芯片（40dp）</string>
+    <string name="pv_oss_a11y_probe_edge_icon">边缘图标（44dp）</string>
+    <string name="pv_oss_a11y_probe_big_target">大目标（64dp）</string>
+    <string name="pv_oss_a11y_measure_dp">已实测 %1$d / %2$d 个控件（首帧布局完成后填充）</string>
+
+    <!-- 批 D 开源取材 · UI2 目录条目 S01–S08 与分类 -->
+    <string name="ui2_s01_name">色彩令牌与对比度检查</string>
+    <string name="ui2_s01_summary">种子色生成 13 档色调板，每档当场算对比度并标 AA/AAA</string>
+    <string name="ui2_s01_params">WCAG 精算 · HSL 近似档</string>
+    <string name="ui2_s01_prompt">在 Android Compose 中实现「色彩令牌与对比度检查」（UI2 增补条目 S01，分类：开源素材）。要点：种子色生成 13 档色调板，每档当场算对比度并标 AA/AAA。关键参数：WCAG 精算 · HSL 近似档。要求：真实可操作实现（非静态图）；状态与视觉严格同步；边界（到端/为空/快速连点）有明确表现；完成后自检：按条目要点逐项手动操作验证，并报告与上游开源实现的机制差异。</string>
+    <string name="ui2_s02_name">图标网格与四轴规格</string>
+    <string name="ui2_s02_summary">24dp 视口、关键形状与 fill/weight/grade/optical size 四轴模拟器</string>
+    <string name="ui2_s02_params">Canvas 实绘 · 四轴联动</string>
+    <string name="ui2_s02_prompt">在 Android Compose 中实现「图标网格与四轴规格」（UI2 增补条目 S02，分类：开源素材）。要点：24dp 视口、关键形状与 fill/weight/grade/optical size 四轴模拟器。关键参数：Canvas 实绘 · 四轴联动。要求：真实可操作实现（非静态图）；状态与视觉严格同步；边界（到端/为空/快速连点）有明确表现；完成后自检：按条目要点逐项手动操作验证，并报告与上游开源实现的机制差异。</string>
+    <string name="ui2_s03_name">月历与日期区间选择</string>
+    <string name="ui2_s03_summary">java.time 真算月视图，区间选择状态机与 90 天可选窗口</string>
+    <string name="ui2_s03_params">月网格 · 区间选择 · 翻页</string>
+    <string name="ui2_s03_prompt">在 Android Compose 中实现「月历与日期区间选择」（UI2 增补条目 S03，分类：开源素材）。要点：java.time 真算月视图，区间选择状态机与 90 天可选窗口。关键参数：月网格 · 区间选择 · 翻页。要求：真实可操作实现（非静态图）；状态与视觉严格同步；边界（到端/为空/快速连点）有明确表现；完成后自检：按条目要点逐项手动操作验证，并报告与上游开源实现的机制差异。</string>
+    <string name="ui2_s04_name">列表-详情双栏自适应</string>
+    <string name="ui2_s04_summary">实测宽度按 600dp 断点切单栏↔双栏，返回保住滚动位置</string>
+    <string name="ui2_s04_params">断点 600/840dp · 双栏</string>
+    <string name="ui2_s04_prompt">在 Android Compose 中实现「列表-详情双栏自适应」（UI2 增补条目 S04，分类：开源素材）。要点：实测宽度按 600dp 断点切单栏↔双栏，返回保住滚动位置。关键参数：断点 600/840dp · 双栏。要求：真实可操作实现（非静态图）；状态与视觉严格同步；边界（到端/为空/快速连点）有明确表现；完成后自检：按条目要点逐项手动操作验证，并报告与上游开源实现的机制差异。</string>
+    <string name="ui2_s05_name">长按拖拽排序</string>
+    <string name="ui2_s05_summary">长按激活、按指针落点实时换位、边缘自动滚动、松手落位</string>
+    <string name="ui2_s05_params">换位补偿 · 边缘滚动</string>
+    <string name="ui2_s05_prompt">在 Android Compose 中实现「长按拖拽排序」（UI2 增补条目 S05，分类：开源素材）。要点：长按激活、按指针落点实时换位、边缘自动滚动、松手落位。关键参数：换位补偿 · 边缘滚动。要求：真实可操作实现（非静态图）；状态与视觉严格同步；边界（到端/为空/快速连点）有明确表现；完成后自检：按条目要点逐项手动操作验证，并报告与上游开源实现的机制差异。</string>
+    <string name="ui2_s06_name">下拉刷新</string>
+    <string name="ui2_s06_summary">nestedScroll 接管，72dp 阈值触发，指示器位移映射旋转</string>
+    <string name="ui2_s06_params">阈值 72dp · 刷新中锁定</string>
+    <string name="ui2_s06_prompt">在 Android Compose 中实现「下拉刷新」（UI2 增补条目 S06，分类：开源素材）。要点：nestedScroll 接管，72dp 阈值触发，指示器位移映射旋转。关键参数：阈值 72dp · 刷新中锁定。要求：真实可操作实现（非静态图）；状态与视觉严格同步；边界（到端/为空/快速连点）有明确表现；完成后自检：按条目要点逐项手动操作验证，并报告与上游开源实现的机制差异。</string>
+    <string name="ui2_s07_name">教练引导气泡</string>
+    <string name="ui2_s07_summary">遮罩挖孔、箭头指向实测目标、多步序列与不再显示</string>
+    <string name="ui2_s07_params">四步序列 · 箭头避让</string>
+    <string name="ui2_s07_prompt">在 Android Compose 中实现「教练引导气泡」（UI2 增补条目 S07，分类：开源素材）。要点：遮罩挖孔、箭头指向实测目标、多步序列与不再显示。关键参数：四步序列 · 箭头避让。要求：真实可操作实现（非静态图）；状态与视觉严格同步；边界（到端/为空/快速连点）有明确表现；完成后自检：按条目要点逐项手动操作验证，并报告与上游开源实现的机制差异。</string>
+    <string name="ui2_s08_name">无障碍自检器</string>
+    <string name="ui2_s08_summary">五项检查当场跑：触摸目标、对比度、动画开关、字体缩放、语义标签</string>
+    <string name="ui2_s08_params">48dp · 4.5:1 · 实测</string>
+    <string name="ui2_s08_prompt">在 Android Compose 中实现「无障碍自检器」（UI2 增补条目 S08，分类：开源素材）。要点：五项检查当场跑：触摸目标、对比度、动画开关、字体缩放、语义标签。关键参数：48dp · 4.5:1 · 实测。要求：真实可操作实现（非静态图）；状态与视觉严格同步；边界（到端/为空/快速连点）有明确表现；完成后自检：按条目要点逐项手动操作验证，并报告与上游开源实现的机制差异。</string>
+    <string name="ui2_category_oss_kit">开源素材</string>
+
+    <!-- 批 D 开源取材 · 开源致谢 14–21（InfoScreens.kt） -->
+    <string name="info_credit_14_name">material-color-utilities</string>
+    <string name="info_credit_14_author">Material Foundation</string>
+    <string name="info_credit_14_purpose">S01 色调板分档与浅暗映射口径参考（未复制源码，独立实现）</string>
+    <string name="info_credit_14_license">Apache-2.0</string>
+    <string name="info_credit_15_name">Material Design Icons</string>
+    <string name="info_credit_15_author">Google</string>
+    <string name="info_credit_15_purpose">S02 24dp 视口、2dp 安全区、关键形状与四轴规格参考（图形为本页 Canvas 实绘）</string>
+    <string name="info_credit_15_license">Apache-2.0</string>
+    <string name="info_credit_16_name">Calendar</string>
+    <string name="info_credit_16_author">Kizito Nwoke</string>
+    <string name="info_credit_16_purpose">S03 月视图网格与连续区间选择的交互口径参考（未复制源码，用 java.time 独立实现）</string>
+    <string name="info_credit_16_license">MIT</string>
+    <string name="info_credit_17_name">Compose Samples（Reply / JetNews）</string>
+    <string name="info_credit_17_author">Android / Google</string>
+    <string name="info_credit_17_purpose">S04 窗口尺寸类断点与列表-详情双栏的模式参考</string>
+    <string name="info_credit_17_license">Apache-2.0</string>
+    <string name="info_credit_18_name">Reorderable</string>
+    <string name="info_credit_18_author">Calvin Liang</string>
+    <string name="info_credit_18_purpose">S05 长按拖拽换位、落位动画与拖动抬升的交互参考</string>
+    <string name="info_credit_18_license">Apache-2.0</string>
+    <string name="info_credit_19_name">Accompanist（SwipeRefresh）</string>
+    <string name="info_credit_19_author">Google</string>
+    <string name="info_credit_19_purpose">S06 下拉刷新阈值、指示器位移-旋转映射与回弹的口径参考</string>
+    <string name="info_credit_19_license">Apache-2.0</string>
+    <string name="info_credit_20_name">Fluent UI Android（TeachingCallout）</string>
+    <string name="info_credit_20_author">Microsoft</string>
+    <string name="info_credit_20_purpose">S07 教练引导气泡的箭头指向、多步序列与不再显示参考</string>
+    <string name="info_credit_20_license">MIT</string>
+    <string name="info_credit_21_name">Accessibility Test Framework for Android</string>
+    <string name="info_credit_21_author">Google</string>
+    <string name="info_credit_21_purpose">S08 无障碍检查项口径参考（未引依赖，检查逻辑独立实现）</string>
+    <string name="info_credit_21_license">Apache-2.0</string>
 </resources>
