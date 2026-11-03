@@ -1740,4 +1740,40 @@
     <string name="aq_range_last30">近30日</string>
     <string name="aq_range_quarter">本季度</string>
     <string name="aq_range_last365">近一年</string>
+
+    <!-- ===== 阶段 6a：素材库目录 12 条（MaterialBrowser.FeatureItem） ===== -->
+    <!-- 难度只有「入门/进阶」两种，重复值共用一条资源 -->
+    <string name="mb_difficulty_beginner">入门</string>
+    <string name="mb_difficulty_advanced">进阶</string>
+    <!-- 12 条素材：名字 + 简介 -->
+    <string name="mb_feature_12_name">协议与开源许可页面</string>
+    <string name="mb_feature_12_description">完整页面展示隐私说明、全部参考项目、作者、链接和许可证。</string>
+    <string name="mb_feature_11_name">主题配置导入导出</string>
+    <string name="mb_feature_11_description">把当前主题完整导出为 JSON，并从剪贴板校验、导入和恢复。</string>
+    <string name="mb_feature_10_name">权限请求组件</string>
+    <string name="mb_feature_10_description">真实请求运行时权限、显示授权状态，并支持拒绝后跳转系统设置。</string>
+    <string name="mb_feature_09_name">状态反馈组件</string>
+    <string name="mb_feature_09_description">加载、骨架屏、空态、错误、成功与离线状态，可在组件页直接操作。</string>
+    <string name="mb_feature_08_name">应用欢迎引导界面</string>
+    <string name="mb_feature_08_description">首次启动展示功能介绍、免费声明、开源仓库入口，点击开始使用后进入主页。</string>
+    <string name="mb_feature_07_name">桌面图标动态切换</string>
+    <string name="mb_feature_07_description">支持动态 Activity Alias 切换，含 ShortcutManager 快捷方式适配。</string>
+    <string name="mb_feature_06_name">应用图标切换</string>
+    <string name="mb_feature_06_description">在应用内切换桌面图标，选择后立即生效，无需重新安装。</string>
+    <string name="mb_feature_05_name">主题色配置与切换</string>
+    <string name="mb_feature_05_description">8 套配色方案 + 自由取色盘，实时切换不重启。</string>
+    <string name="mb_feature_04_name">底部导航栏</string>
+    <string name="mb_feature_04_description">可拖拽、带弹簧阻尼的液态玻璃底部导航栏；玻璃模式自动降级 Material3。</string>
+    <string name="mb_feature_03_name">动效系统</string>
+    <string name="mb_feature_03_description">全局弹簧阻尼 token、按压回弹、常态呼吸、错峰入场——一处改全应用。</string>
+    <string name="mb_feature_02_name">玻璃常用组件</string>
+    <string name="mb_feature_02_description">按钮、滑块、输入框、弹窗、反馈、行布局——全部自带玻璃风格。</string>
+    <string name="mb_feature_01_name">液态玻璃主题</string>
+    <string name="mb_feature_01_description">一套基于 Blur + backdrop 的玻璃拟态主题，支持多套配色和动态取色。</string>
+
+    <!-- ===== 阶段 6a 补：素材库页的四个分区芯片（条数由代码实算，不写死） ===== -->
+    <string name="mb_section_ui2">UI2 体验馆 · %1$s</string>
+    <string name="mb_section_admin_query">数据查询规范 · %1$s</string>
+    <string name="mb_section_overlay_terms">弹窗提示术语 · %1$s</string>
+    <string name="mb_section_toolkit">工具与基建 · %1$s</string>
 </resources>
