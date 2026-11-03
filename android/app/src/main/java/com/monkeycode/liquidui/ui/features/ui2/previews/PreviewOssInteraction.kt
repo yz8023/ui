@@ -416,10 +416,12 @@ fun PreviewS06() {
                         },
                     contentAlignment = Alignment.Center
                 ) {
+                    // MaterialTheme.colorScheme 是 @Composable getter，DrawScope 里取不到 → 上提成 val
+                    val arcActive = MaterialTheme.colorScheme.primary
+                    val arcIdle = MaterialTheme.colorScheme.outline
                     Canvas(Modifier.size(20.dp)) {
                         drawArc(
-                            color = if (progress >= 1f || refreshing) MaterialTheme.colorScheme.primary
-                            else MaterialTheme.colorScheme.outline,
+                            color = if (progress >= 1f || refreshing) arcActive else arcIdle,
                             startAngle = rotation - 90f,
                             sweepAngle = if (refreshing) 260f else 40f + progress * 220f,
                             useCenter = false,

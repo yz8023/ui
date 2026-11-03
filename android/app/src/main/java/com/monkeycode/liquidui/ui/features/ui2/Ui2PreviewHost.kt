@@ -88,6 +88,14 @@ import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewW02
 import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewW03
 import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewT01
 import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewT02
+import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewS01
+import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewS02
+import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewS03
+import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewS04
+import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewS05
+import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewS06
+import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewS07
+import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewS08
 
 /** UI2 体验馆预览分发：每条都是真实可操作的 Compose 实现（非 HTML、非截图）。 */
 @Composable
