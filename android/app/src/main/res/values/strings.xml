@@ -1782,4 +1782,33 @@
     <string name="visual_mode_normal">普通</string>
     <string name="visual_mode_md3">MD3</string>
     <string name="visual_mode_oshin">O神</string>
+
+    <!-- ===== ui/features/adminquery/AdminQueryDemo.kt（阶段 2a） ===== -->
+    <string name="aq_demo_hint_4">单次查询模拟 450ms。即时模式下连改 10 个条件会打 10 次请求。</string>
+    <string name="aq_demo_text_70">选完一起查（推荐）</string>
+    <string name="aq_demo_text_71">即时查询（反例：每改一次查一次）</string>
+    <string name="aq_demo_text_72">状态（多选）</string>
+    <string name="aq_demo_text_73">部门（20 个小组收成一个入口，不摊开）</string>
+    <string name="aq_demo_text_74">更多筛选（不常用，收起）</string>
+    <string name="aq_demo_text_75">渠道（多选）</string>
+    <string name="aq_demo_text_76">金额区间（单选）</string>
+    <string name="aq_demo_text_77">查询</string>
+    <string name="aq_demo_text_78">无命中。建议先关掉「仅看异常」或把时间放宽到近30日——空态要给下一步动作，不只写「暂无数据」。</string>
+
+    <!-- ===== ui/features/overlayterms/OverlayTermsDemo.kt（阶段 2a） ===== -->
+    <string name="ot_demo_text_100">导出完成</string>
+    <string name="ot_demo_text_101">报表 A.csv 已生成，点击查看</string>
+    <string name="ot_demo_text_102">现在</string>
+    <string name="ot_demo_text_103">上面是通知在通知栏里的样子（应用内预览，方便没授权时也能核对文案与图标）。</string>
+    <string name="ot_demo_text_104">反例对照：应用内就能说完的事推成通知 = 白送打扰；不建渠道直接发在 API 26+ 会失败。</string>
+    <string name="ot_demo_text_97">Notification = 系统层提示，应用不在前台也能送达；因此门槛最高：要建渠道、要授权、要能被单独关掉。</string>
+    <string name="ot_demo_text_98">申请通知权限</string>
+    <string name="ot_demo_text_99">发送真实通知（走 NotificationManager）</string>
+
+    <!-- ===== ui/features/adminquery/AdminQueryDemo.kt（阶段 4） ===== -->
+    <string name="aq_demo_text_79">状态 · %1$s</string>
+    <string name="aq_demo_text_80">渠道 · %1$s</string>
+    <string name="aq_demo_text_81">命中 %1$s 条 / %2$s 条 · 上次耗时 450ms · 累计请求 %3$s 次</string>
+    <string name="aq_demo_text_82">结果为上次查询：还有 %1$s 项条件待生效，点「查询」才提交。</string>
+    <string name="aq_demo_text_83">… 其余 %1$s 条见导出（Q04）</string>
 </resources>

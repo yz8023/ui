@@ -502,12 +502,12 @@ private fun PreviewP08() {
     }
 
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        OTNote("Notification = 系统层提示，应用不在前台也能送达；因此门槛最高：要建渠道、要授权、要能被单独关掉。")
+        OTNote(stringResource(R.string.ot_demo_text_97))
         OTNote("当前系统版本 SDK ${Build.VERSION.SDK_INT}；授权状态：${if (hasPermission()) "已授权" else "未授权（Android 13+ 必须先申请 POST_NOTIFICATIONS）"}", accent = true)
         if (!hasPermission()) {
-            OTButton("申请通知权限", primary = false) { launcher.launch(Manifest.permission.POST_NOTIFICATIONS) }
+            OTButton(stringResource(R.string.ot_demo_text_98), primary = false) { launcher.launch(Manifest.permission.POST_NOTIFICATIONS) }
         }
-        OTButton("发送真实通知（走 NotificationManager）", enabled = hasPermission()) {
+        OTButton(stringResource(R.string.ot_demo_text_99), enabled = hasPermission()) {
             send()
             sent += 1
             status = "已调用 notify(2001)，去通知栏看"
@@ -520,14 +520,14 @@ private fun PreviewP08() {
                 Icon(AppIcons.Notifications, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(22.dp))
                 Spacer(Modifier.width(10.dp))
                 Column(Modifier.weight(1f)) {
-                    Text("导出完成", style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.SemiBold)
-                    Text("报表 A.csv 已生成，点击查看", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(stringResource(R.string.ot_demo_text_100), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.SemiBold)
+                    Text(stringResource(R.string.ot_demo_text_101), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
-                Text("现在", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(stringResource(R.string.ot_demo_text_102), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
-        OTNote("上面是通知在通知栏里的样子（应用内预览，方便没授权时也能核对文案与图标）。")
-        OTNote("反例对照：应用内就能说完的事推成通知 = 白送打扰；不建渠道直接发在 API 26+ 会失败。")
+        OTNote(stringResource(R.string.ot_demo_text_103))
+        OTNote(stringResource(R.string.ot_demo_text_104))
     }
 }
 

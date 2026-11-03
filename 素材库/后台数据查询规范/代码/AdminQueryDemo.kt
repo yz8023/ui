@@ -306,15 +306,15 @@ private fun PreviewQ01() {
 
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
         QSwitchRow(
-            label = if (batchMode) "选完一起查（推荐）" else "即时查询（反例：每改一次查一次）",
+            label = if (batchMode) stringResource(R.string.aq_demo_text_70) else stringResource(R.string.aq_demo_text_71),
             checked = batchMode,
-            hint = "单次查询模拟 450ms。即时模式下连改 10 个条件会打 10 次请求。",
+            hint = stringResource(R.string.aq_demo_hint_4),
         ) { batchMode = it }
 
         SectionTitle(text = "常用条件（常显）")
         QNote("时间：写明起止，口径见 Q02")
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            listOf(1 to "今日", 7 to "近7日", 30 to "近30日").forEach { (days, label) ->
+            listOf(1 to stringResource(R.string.aq_range_today), 7 to stringResource(R.string.aq_demo_text_40), 30 to stringResource(R.string.aq_demo_text_42)).forEach { (days, label) ->
                 val start = today.minusDays((days - 1).toLong())
                 QChip(
                     label = label,
@@ -324,7 +324,7 @@ private fun PreviewQ01() {
                 )
             }
         }
-        QNote("状态（多选）")
+        QNote(stringResource(R.string.aq_demo_text_72))
         FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             AdminStatuses.forEach { s ->
                 QChip(
@@ -333,14 +333,14 @@ private fun PreviewQ01() {
                 )
             }
         }
-        QNote("部门（20 个小组收成一个入口，不摊开）")
+        QNote(stringResource(R.string.aq_demo_text_73))
         QChip(
             label = when {
                 dDepts.size == AdminDepts.size -> deptAllLabel
-                dDepts.isEmpty() -> "选择部门"
-                else -> "部门 · ${dDepts.size}"
+                dDepts.isEmpty() -> stringResource(R.string.aq_demo_text_23)
+                else -> stringResource(R.string.aq_demo_text_65, dDepts.size)
             },
-            sub = if (dDepts != applied.depts) "待生效" else null,
+            sub = if (dDepts != applied.depts) stringResource(R.string.aq_demo_text_24) else null,
             selected = dDepts.isNotEmpty(),
             onClick = { deptPickerOpen = !deptPickerOpen },
         )
@@ -348,7 +348,7 @@ private fun PreviewQ01() {
             GlassCard(Modifier.fillMaxWidth(), contentPadding = PaddingValues(12.dp)) {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     QChip(
-                        "全选", selected = dDepts.size == AdminDepts.size,
+                        stringResource(R.string.aq_demo_text_25), selected = dDepts.size == AdminDepts.size,
                         onClick = { onDraftChange { dDepts = if (dDepts.size == AdminDepts.size) emptySet() else AdminDepts.toSet() } },
                     )
                     QChip("清空", selected = false, onClick = { onDraftChange { dDepts = emptySet() } })
@@ -365,17 +365,17 @@ private fun PreviewQ01() {
             }
         }
 
-        SectionTitle(text = "更多筛选（不常用，收起）")
+        SectionTitle(text = stringResource(R.string.aq_demo_text_74))
         val moreCount = listOf(dChannels.isNotEmpty(), dAmount != "amt_all", dAbnormal).count { it }
         QChip(
-            label = if (moreOpen) "收起更多筛选" else "更多筛选",
-            sub = if (moreCount > 0) "已选 $moreCount 组" else null,
+            label = if (moreOpen) stringResource(R.string.aq_demo_text_27) else stringResource(R.string.aq_demo_text_28),
+            sub = if (moreCount > 0) stringResource(R.string.aq_demo_text_66, moreCount) else null,
             selected = moreOpen,
             onClick = { moreOpen = !moreOpen },
         )
         if (moreOpen) {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                QNote("渠道（多选）")
+                QNote(stringResource(R.string.aq_demo_text_75))
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     AdminChannels.forEach { c ->
                         QChip(
@@ -384,7 +384,7 @@ private fun PreviewQ01() {
                         )
                     }
                 }
-                QNote("金额区间（单选）")
+                QNote(stringResource(R.string.aq_demo_text_76))
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     AdminAmountBuckets.forEach { b ->
                         QChip(label = stringResource(AdminValueLabels.getValue(b)), selected = dAmount == b, onClick = { onDraftChange { dAmount = b } })
@@ -396,9 +396,9 @@ private fun PreviewQ01() {
 
         QButton(
             text = when {
-                !batchMode -> "查询"
-                pending > 0 -> "查询（$pending 项待生效）"
-                else -> "查询（条件未变化）"
+                !batchMode -> stringResource(R.string.aq_demo_text_77)
+                pending > 0 -> stringResource(R.string.aq_demo_text_68, pending)
+                else -> stringResource(R.string.aq_demo_text_31)
             },
             enabled = !batchMode || pending > 0,
             loading = loading,
@@ -407,20 +407,20 @@ private fun PreviewQ01() {
         SectionTitle(text = "结果（本次生效条件）")
         FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             QTag(QTagSpec("${applied.start.short()} ~ ${applied.end.short()}"))
-            if (applied.statuses.isNotEmpty()) QTag(QTagSpec("状态 · ${applied.statuses.size}"))
+            if (applied.statuses.isNotEmpty()) QTag(QTagSpec(stringResource(R.string.aq_demo_text_79, applied.statuses.size)))
             if (applied.depts.size == AdminDepts.size) QTag(QTagSpec(deptAllLabel))
-            else if (applied.depts.isNotEmpty()) QTag(QTagSpec("部门 · ${applied.depts.size}"))
-            if (applied.channels.isNotEmpty()) QTag(QTagSpec("渠道 · ${applied.channels.size}"))
+            else if (applied.depts.isNotEmpty()) QTag(QTagSpec(stringResource(R.string.aq_demo_text_65, applied.depts.size)))
+            if (applied.channels.isNotEmpty()) QTag(QTagSpec(stringResource(R.string.aq_demo_text_80, applied.channels.size)))
             if (applied.amountBucket != "amt_all") QTag(QTagSpec(stringResource(AdminValueLabels.getValue(applied.amountBucket))))
-            if (applied.onlyAbnormal) QTag(QTagSpec("仅看异常"))
+            if (applied.onlyAbnormal) QTag(QTagSpec(stringResource(R.string.aq_demo_label_4)))
         }
-        QNote("命中 ${rows.size} 条 / ${AdminRows.size} 条 · 上次耗时 450ms · 累计请求 $queryCount 次", accent = true)
-        if (batchMode && pending > 0) QNote("结果为上次查询：还有 $pending 项条件待生效，点「查询」才提交。")
+        QNote(stringResource(R.string.aq_demo_text_81, rows.size, AdminRows.size, queryCount), accent = true)
+        if (batchMode && pending > 0) QNote(stringResource(R.string.aq_demo_text_82, pending))
         if (rows.isEmpty()) {
-            QNote("无命中。建议先关掉「仅看异常」或把时间放宽到近30日——空态要给下一步动作，不只写「暂无数据」。")
+            QNote(stringResource(R.string.aq_demo_text_78))
         } else {
             rows.take(5).forEach { QRowLine(it) }
-            if (rows.size > 5) QNote("… 其余 ${rows.size - 5} 条见导出（Q04）")
+            if (rows.size > 5) QNote(stringResource(R.string.aq_demo_text_83, rows.size - 5))
         }
     }
 }
