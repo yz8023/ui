@@ -155,7 +155,7 @@ fun SettingsScreen(
                     )
                     Spacer(Modifier.height(12.dp))
                     SegmentedTabs(
-                        labels = VisualMode.entries.map { it.label },
+                        labels = VisualMode.entries.map { context.getString(it.labelRes) },
                         selectedIndex = settings.visualMode.ordinal,
                         onSelected = { index ->
                             settings.updateVisualMode(VisualMode.entries[index])
@@ -436,7 +436,7 @@ fun SettingsScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 InfoBanner(
-                    text = stringResource(R.string.settings_text_33, currentChrome.visualMode.label) +
+                    text = stringResource(R.string.settings_text_33, stringResource(currentChrome.visualMode.labelRes)) +
                         "blur=${settings.glassBlurRadiusDp.toInt()}dp · " +
                         "lens=${settings.glassRefractionHeightDp.toInt()}/${settings.glassRefractionAmountDp.toInt()}dp · " +
                         "corner=${String.format("%.2f", currentChrome.cornerScale)} · " +

@@ -1776,4 +1776,10 @@
     <string name="mb_section_admin_query">数据查询规范 · %1$s</string>
     <string name="mb_section_overlay_terms">弹窗提示术语 · %1$s</string>
     <string name="mb_section_toolkit">工具与基建 · %1$s</string>
+
+    <!-- ===== 阶段 6b：视觉模式 enum 的显示名（Theme.VisualMode，照 5a 的 PaletteId 范式） ===== -->
+    <string name="visual_mode_glass">玻璃</string>
+    <string name="visual_mode_normal">普通</string>
+    <string name="visual_mode_md3">MD3</string>
+    <string name="visual_mode_oshin">O神</string>
 </resources>

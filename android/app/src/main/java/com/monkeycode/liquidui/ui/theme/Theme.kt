@@ -356,20 +356,21 @@ enum class ThemeMode { System, Light, Dark }
  * The three mutually-exclusive visual styles the settings page offers.
  * Replaces the old independent `glassEnabled` / `dynamicColor` booleans.
  */
-enum class VisualMode(val label: String) {
+// 显示名走 @StringRes（visual_mode_*）；持久化用的是 name（AppSettingsState 里 valueOf），两者不相干。
+enum class VisualMode(@StringRes val labelRes: Int) {
     /** Liquid-glass look: sampled-backdrop panels, glass bottom bar. */
-    Glass("玻璃"),
+    Glass(R.string.visual_mode_glass),
     /** Plain Material surfaces, solid bottom bar, no refraction. */
-    Normal("普通"),
+    Normal(R.string.visual_mode_normal),
     /** Material Design 3 dynamic colour scheme sampled from the wallpaper. */
-    Md3("MD3"),
+    Md3(R.string.visual_mode_md3),
     /**
      * OShin (Miuix) look: light-grey page, white grouped cards, system-blue
      * accent, large-title headers and a floating capsule tab bar.
      * Switching to it changes colour, shape, type AND shell layout (pager +
      * floating bottom tabs). Tokens: [oshinColorScheme] / [OShinTokens].
      */
-    OShin("O神")
+    OShin(R.string.visual_mode_oshin)
 }
 
 /**
