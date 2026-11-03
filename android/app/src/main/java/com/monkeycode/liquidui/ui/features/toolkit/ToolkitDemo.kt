@@ -45,6 +45,9 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
+import androidx.annotation.StringRes
+import com.monkeycode.liquidui.R
 import com.monkeycode.liquidui.ui.theme.AppIcons
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -95,12 +98,12 @@ private fun UpdateCheckDemo() {
     val state = ui
 
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        TKKeyValue("当前安装版本", AppUpdateChecker.currentVersionName(context))
-        TKKeyValue("检查目标仓库", AppUpdateChecker.DEFAULT_REPO)
+        TKKeyValue(stringResource(R.string.tk_demo_text_1), AppUpdateChecker.currentVersionName(context))
+        TKKeyValue(stringResource(R.string.tk_demo_text_2), AppUpdateChecker.DEFAULT_REPO)
 
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             TKButton(
-                label = if (state.checking) "检查中…" else "真实检查更新",
+                label = if (state.checking) stringResource(R.string.common_checking) else stringResource(R.string.tk_demo_text_3),
                 enabled = !state.checking && !state.downloading,
                 onClick = {
                     ui = state.copy(checking = true, error = null, simulated = false)
@@ -113,22 +116,22 @@ private fun UpdateCheckDemo() {
             )
             if (state.downloading) {
                 TKButton(
-                    label = "取消下载",
+                    label = stringResource(R.string.common_cancel_download),
                     onClick = {
                         job?.cancel()
-                        AppLog.w("UpdateDemo", "用户取消下载")
+                        AppLog.w("UpdateDemo", context.getString(R.string.tk_demo_text_44))
                         ui = state.copy(downloading = false, written = 0, error = "已取消下载")
                     }
                 )
             }
         }
 
-        TKNote("检查会真的访问 api.github.com；无网时会返回 FAILED 并给出可读原因（不是笼统的「失败」）。")
+        TKNote(stringResource(R.string.tk_demo_text_4))
 
         // 三态预览：明示为模拟数据，方便没网时也能看清界面分支。
-        Text("三态预览（模拟数据，不发请求）", style = MaterialTheme.typography.labelMedium)
+        Text(stringResource(R.string.tk_demo_text_5), style = MaterialTheme.typography.labelMedium)
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            TKChip("有新版", false) {
+            TKChip(stringResource(R.string.tk_demo_text_6), false) {
                 ui = UpdateUi(
                     simulated = true,
                     result = UpdateCheckResult(
@@ -137,37 +140,37 @@ private fun UpdateCheckDemo() {
                         latest = ReleaseInfo(
                             tag = "v2.8.0",
                             name = "Liquid UI v2.8.0",
-                            body = "## 更新内容\n\n- 新增 **F17** 弹窗与提示术语（12 条）\n- 新增套壳上手指南\n\n> 详见仓库 `docs/`",
+                            body = context.getString(R.string.tk_demo_body_1),
                             publishedAt = "2026-11-02T08:00:00Z",
                             apkUrl = "https://example.invalid/liquidui-v2.8.0-release.apk",
                             apkName = "liquidui-v2.8.0-release.apk",
                             apkBytes = 1_979_392L
                         ),
-                        message = "发现新版本 v2.8.0（当前 2.7.0）",
+                        message = context.getString(R.string.tk_demo_message_1),
                         elapsedMillis = 412
                     )
                 )
             }
-            TKChip("已最新", false) {
+            TKChip(stringResource(R.string.tk_demo_text_7), false) {
                 ui = UpdateUi(
                     simulated = true,
                     result = UpdateCheckResult(
                         state = UpdateState.UP_TO_DATE,
                         currentVersion = "2.8.0",
                         latest = ReleaseInfo("v2.8.0", "Liquid UI v2.8.0", "", "2026-11-02T08:00:00Z", null, null, -1),
-                        message = "已是最新版本 v2.8.0",
+                        message = context.getString(R.string.tk_demo_message_2),
                         elapsedMillis = 388
                     )
                 )
             }
-            TKChip("失败", false) {
+            TKChip(stringResource(R.string.tk_demo_text_8), false) {
                 ui = UpdateUi(
                     simulated = true,
                     result = UpdateCheckResult(
                         state = UpdateState.FAILED,
                         currentVersion = AppUpdateChecker.currentVersionName(context),
                         latest = null,
-                        message = "HTTP 403：多半是 API 限流（未带 token 时 60 次/小时/IP），稍后再试",
+                        message = context.getString(R.string.tk_demo_message_3),
                         elapsedMillis = 205
                     )
                 )
@@ -188,9 +191,9 @@ private fun UpdateCheckDemo() {
                 ) {
                     Text(
                         when (result.state) {
-                            UpdateState.UPDATE_AVAILABLE -> "有新版"
-                            UpdateState.UP_TO_DATE -> "已最新"
-                            UpdateState.FAILED -> "失败"
+                            UpdateState.UPDATE_AVAILABLE -> stringResource(R.string.tk_demo_text_6)
+                            UpdateState.UP_TO_DATE -> stringResource(R.string.tk_demo_text_7)
+                            UpdateState.FAILED -> stringResource(R.string.tk_demo_text_8)
                         },
                         color = when (result.state) {
                             UpdateState.UPDATE_AVAILABLE -> MaterialTheme.colorScheme.onPrimary
@@ -202,19 +205,19 @@ private fun UpdateCheckDemo() {
                     )
                 }
                 Text(
-                    if (state.simulated) "模拟态 · ${result.message}" else result.message,
+                    if (state.simulated) stringResource(R.string.tk_demo_text_53, result.message) else result.message,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
-            TKKeyValue("耗时", "${result.elapsedMillis} ms")
+            TKKeyValue(stringResource(R.string.tk_demo_text_9), "${result.elapsedMillis} ms")
             val latest = result.latest
             if (latest != null) {
-                TKKeyValue("最新 tag", latest.tag)
-                TKKeyValue("发布时间", latest.publishedAt)
-                TKKeyValue("APK 附件", (latest.apkName ?: "（该 Release 没有 APK）") + " · " + AppUpdateChecker.humanSize(latest.apkBytes))
+                TKKeyValue(stringResource(R.string.tk_demo_text_10), latest.tag)
+                TKKeyValue(stringResource(R.string.tk_demo_text_11), latest.publishedAt)
+                TKKeyValue(stringResource(R.string.tk_demo_text_12), (latest.apkName ?: stringResource(R.string.tk_demo_text_13)) + " · " + AppUpdateChecker.humanSize(latest.apkBytes))
                 if (latest.body.isNotBlank()) {
-                    Text("更新日志（Markdown 渲染，见 U03）", style = MaterialTheme.typography.labelMedium)
+                    Text(stringResource(R.string.tk_demo_text_14), style = MaterialTheme.typography.labelMedium)
                     MarkdownText(
                         latest.body,
                         Modifier
@@ -240,11 +243,11 @@ private fun UpdateCheckDemo() {
                         )
                     } else {
                         LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-                        Text("下载中 · ${AppUpdateChecker.humanSize(written)}（服务器未给大小）", style = MaterialTheme.typography.labelMedium)
+                        Text(stringResource(R.string.tk_demo_text_54, AppUpdateChecker.humanSize(written)), style = MaterialTheme.typography.labelMedium)
                     }
                 } else {
                     TKButton(
-                        label = if (state.apkPath != null) "重新下载并安装" else "下载 APK 并安装",
+                        label = if (state.apkPath != null) stringResource(R.string.common_redownload_install) else stringResource(R.string.common_download_install),
                         enabled = !state.simulated,
                         onClick = {
                             if (state.simulated) return@TKButton
@@ -264,28 +267,28 @@ private fun UpdateCheckDemo() {
                                         downloading = false,
                                         apkPath = file.absolutePath,
                                         needInstallPermission = !installed,
-                                        error = if (installed) null else "已下载，但系统未授权「安装未知应用」"
+                                        error = if (installed) null else context.getString(R.string.tk_demo_text_45)
                                     )
                                 }.onFailure { t ->
-                                    AppLog.e("UpdateDemo", "下载失败", t)
+                                    AppLog.e("UpdateDemo", context.getString(R.string.tk_demo_text_46), t)
                                     ui = ui.copy(downloading = false, error = "下载失败：${t.javaClass.simpleName} ${t.message}")
                                 }
                             }
                         }
                     )
-                    if (state.simulated) TKNote("模拟态用的是假下载地址，下载按钮已禁用；点上面的「真实检查更新」拿到真 URL 后才能下载。")
+                    if (state.simulated) TKNote(stringResource(R.string.tk_demo_text_15))
                 }
             }
 
             if (state.needInstallPermission) {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    TKButton("去授权安装未知应用", true) { AppUpdateChecker.openUnknownSourcesSettings(context) }
-                    TKButton("用浏览器下载", true) { url?.let { AppUpdateChecker.openInBrowser(context, it) } }
+                    TKButton(stringResource(R.string.tk_demo_text_16), true) { AppUpdateChecker.openUnknownSourcesSettings(context) }
+                    TKButton(stringResource(R.string.tk_demo_text_17), true) { url?.let { AppUpdateChecker.openInBrowser(context, it) } }
                 }
             }
-            state.apkPath?.let { TKKeyValue("已落盘", it) }
+            state.apkPath?.let { TKKeyValue(context.getString(R.string.tk_demo_text_47), it) }
             if (result.state == UpdateState.FAILED) {
-                TKButton("重试", !state.checking) {
+                TKButton(stringResource(R.string.common_retry), !state.checking) {
                     ui = state.copy(checking = true, error = null, simulated = false)
                     job = scope.launch {
                         val r = withContext(Dispatchers.IO) { AppUpdateChecker.check(context) }
@@ -327,34 +330,34 @@ private fun LogShareDemo() {
 
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
         TKKeyValue(
-            "缓冲",
-            "${all.size}/${AppLog.MAX_ENTRIES} 条 · D ${counts[AppLogLevel.DEBUG] ?: 0} · " +
+            stringResource(R.string.tk_demo_text_18),
+            stringResource(R.string.tk_demo_text_55, all.size, AppLog.MAX_ENTRIES, counts[AppLogLevel.DEBUG] ?: 0) +
                 "I ${counts[AppLogLevel.INFO] ?: 0} · W ${counts[AppLogLevel.WARN] ?: 0} · E ${counts[AppLogLevel.ERROR] ?: 0}"
         )
 
-        Text("写日志（真实写入 AppLog，同时进 logcat）", style = MaterialTheme.typography.labelMedium)
+        Text(stringResource(R.string.tk_demo_text_19), style = MaterialTheme.typography.labelMedium)
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            TKButton("D 调试", true) { AppLog.d("Demo", "用户展开日志面板") }
-            TKButton("I 信息", true) { AppLog.i("Demo", "切换主题为深色") }
-            TKButton("W 警告", true) { AppLog.w("Demo", "磁盘缓存超过 80%") }
-            TKButton("E 异常", true) {
-                AppLog.e("Demo", "拉取更新失败", java.io.IOException("connect timed out"))
+            TKButton(stringResource(R.string.tk_demo_text_20), true) { AppLog.d("Demo", context.getString(R.string.tk_demo_text_48)) }
+            TKButton(stringResource(R.string.tk_demo_text_21), true) { AppLog.i("Demo", context.getString(R.string.tk_demo_text_49)) }
+            TKButton(stringResource(R.string.tk_demo_text_22), true) { AppLog.w("Demo", context.getString(R.string.tk_demo_text_50)) }
+            TKButton(stringResource(R.string.tk_demo_text_23), true) {
+                AppLog.e("Demo", context.getString(R.string.tk_demo_text_51), java.io.IOException("connect timed out"))
             }
         }
-        TKNote("U01 的检查/下载流程也会往这里写日志——这就是「在真实调用点打日志」，不是自己打自己。")
+        TKNote(stringResource(R.string.tk_demo_text_24))
 
         Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            TKChip("全部", level == null) { level = null }
+            TKChip(stringResource(R.string.common_all), level == null) { level = null }
             AppLogLevel.entries.forEach { l -> TKChip(l.label, level == l) { level = if (level == l) null else l } }
         }
         OutlinedTextField(
             value = keyword,
             onValueChange = { keyword = it },
             modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text("按 tag 或正文过滤…") },
+            placeholder = { Text(stringResource(R.string.tk_demo_text_25)) },
             singleLine = true
         )
-        Text("命中 ${picked.size} 条（只显示最新 8 条，完整内容用复制/分享取）", style = MaterialTheme.typography.labelMedium)
+        Text(stringResource(R.string.tk_demo_text_56, picked.size), style = MaterialTheme.typography.labelMedium)
 
         // 刻意不套可滚动容器：本页外层已是纵向列表，嵌套同向滚动会互相抢手势。
         Column(
@@ -366,7 +369,7 @@ private fun LogShareDemo() {
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             if (picked.isEmpty()) {
-                Text("（没有符合条件的日志）", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(stringResource(R.string.tk_demo_text_26), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             } else {
                 picked.takeLast(8).reversed().forEach { e ->
                     Row(verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -391,18 +394,18 @@ private fun LogShareDemo() {
         }
 
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            TKButton("复制全文", true) {
+            TKButton(stringResource(R.string.common_copy_all), true) {
                 clipboard.setText(AnnotatedString(AppLog.dump(level, keyword)))
                 haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                 shareNote = "已复制 ${picked.size} 条到剪贴板"
             }
-            TKButton("系统分享", true) {
+            TKButton(stringResource(R.string.common_share), true) {
                 val intent = AppLog.buildShareIntent(context, level, keyword)
-                val ok = runCatching { context.startActivity(Intent.createChooser(intent, "分享日志")) }.isSuccess
-                AppLog.i("Demo", if (ok) "调起分享面板" else "没有可接收分享的应用")
+                val ok = runCatching { context.startActivity(Intent.createChooser(intent, context.getString(R.string.common_shared_10))) }.isSuccess
+                AppLog.i("Demo", if (ok) context.getString(R.string.common_shared_11) else context.getString(R.string.tk_demo_text_52))
                 shareNote = if (ok) "已调起系统分享面板" else "分享失败：没有可接收的应用，请改用「复制全文」"
             }
-            TKButton(if (confirmingClear) "确认清空？" else "清空", true) {
+            TKButton(if (confirmingClear) stringResource(R.string.tk_demo_text_27) else stringResource(R.string.common_clear), true) {
                 if (confirmingClear) {
                     AppLog.clear()
                     confirmingClear = false
@@ -414,107 +417,60 @@ private fun LogShareDemo() {
             }
         }
         shareNote?.let { TKNote(it) }
-        TKNote("隐私红线：日志里不要出现 token、密码、带 query 的完整 URL、手机号——分享出去就是泄露。")
+        TKNote(stringResource(R.string.tk_demo_text_28))
     }
 }
 
 // ---------------------------------------------------------------- U03 Markdown
 
-private const val MD_CHANGELOG = """# v2.8.0 更新日志
 
-新增 **F17 弹窗与提示术语**（P01–P12），把「加个弹窗」这种模糊需求拆成 12 个术语。
 
-## 新增
-
-- 素材库第四分区：*弹窗提示术语 · 12*
-- 每条含定义、何时用、`与邻居的区别`、反例与提示词
-- 详见 [实现方案](https://github.com/yz8023/ui)
-
-## 修复
-
-1. 列表返回不再回到顶部
-2. 提示词长按复制补上触感反馈
-
-> 术语 P01–P06 出自视频简介点名，P07–P12 为本仓库补足。
-
----
-
-```kotlin
-SnackbarHostState().showSnackbar(
-    message = "已删除",
-    actionLabel = "撤销"
-)
-```
-"""
-
-private const val MD_SYNTAX = """### 支持清单
-
-- 标题 `#`~`######`
-- **粗体** 与 *斜体*、_斜体_
-- `行内代码` 与围栏代码块
-- [链接](https://github.com/yz8023/ui)
-- 有序列表：
-
-1. 第一项
-2. 第二项
-
-> 引用：连续多行会合并成一段。
-
-***
-
-不支持：表格、图片、嵌套列表、任务列表、HTML 内联。
-需要时改引 `org.commonmark:commonmark`（约 200KB 依赖）。
-"""
-
-private const val MD_PRIVACY = """## 隐私说明（示例）
-
-本模板**不联网上传任何用户数据**。唯一的网络行为有两处：
-
-1. 更新检查：请求 `api.github.com`（U01）
-2. 壁纸缓存：请求你配置的壁纸地址
-
-日志只存内存，*不写文件*，分享由用户手动触发。
-
-- 不申请通讯录、位置、麦克风
-- 存储权限仅用于「所有文件访问」读取系统壁纸
-"""
 
 @Composable
 private fun MarkdownDemo() {
-    var source by remember { mutableStateOf(MD_CHANGELOG) }
+    // 三段演示用 Markdown 从 strings.xml 取；source 仍是**可编辑的文本**（用户可以改了写回），
+    // 所以不能把 source 换成资源 id，只在组合体首行取一次文案。
+    val mdChangelog = stringResource(R.string.tk_demo_md_changelog)
+    val mdSyntax = stringResource(R.string.tk_demo_md_syntax)
+    val mdPrivacy = stringResource(R.string.tk_demo_md_privacy)
+    var source by remember { mutableStateOf(mdChangelog) }
     var editing by remember { mutableStateOf(false) }
     var draft by remember { mutableStateOf("") }
     val blocks = remember(source) { MarkdownParser.parse(source) }
+    // inlines / links / codes 原先声明在 buildString 内部（非组合 lambda），
+    // 带格式参数的文案取不到它们；搬到外面来，语义不变（每次组合同样只算一遍）。
+    val inlines = blocks.flatMap { b ->
+        when (b) {
+            is MdHeading -> b.inlines
+            is MdParagraph -> b.inlines
+            is MdQuote -> b.inlines
+            is MdBulletList -> b.items.flatten()
+            is MdOrderedList -> b.items.flatten()
+            else -> emptyList()
+        }
+    }
+    val links = inlines.count { it is MdLink }
+    val codes = inlines.count { it is MdCode }
+    val tkDemoText57 = stringResource(R.string.tk_demo_text_57, blocks.size)
+    val tkDemoText58 = stringResource(R.string.tk_demo_text_58, inlines.size, links, codes)
 
     val summary = buildString {
-        append("解析出 ${blocks.size} 个块：")
+        append(tkDemoText57)
         append(blocks.groupBy { it::class.simpleName ?: "?" }
             .entries.sortedByDescending { it.value.size }
             .joinToString("、") { "${it.key} × ${it.value.size}" })
-        val inlines = blocks.flatMap { b ->
-            when (b) {
-                is MdHeading -> b.inlines
-                is MdParagraph -> b.inlines
-                is MdQuote -> b.inlines
-                is MdBulletList -> b.items.flatten()
-                is MdOrderedList -> b.items.flatten()
-                else -> emptyList()
-            }
-        }
-        val links = inlines.count { it is MdLink }
-        val codes = inlines.count { it is MdCode }
-        append(" · 行内节点 ${inlines.size}（链接 $links、行内码 $codes）")
+        append(tkDemoText58)
     }
 
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            TKChip("更新日志", source == MD_CHANGELOG) { source = MD_CHANGELOG }
-            TKChip("语法清单", source == MD_SYNTAX) { source = MD_SYNTAX }
-            TKChip("隐私说明", source == MD_PRIVACY) { source = MD_PRIVACY }
+            TKChip(stringResource(R.string.tk_demo_text_29), source == mdChangelog) { source = mdChangelog }
+            TKChip(stringResource(R.string.tk_demo_text_30), source == mdSyntax) { source = mdSyntax }
+            TKChip(stringResource(R.string.tk_demo_text_31), source == mdPrivacy) { source = mdPrivacy }
         }
-        TKKeyValue("解析结果", summary)
+        TKKeyValue(stringResource(R.string.tk_demo_text_32), summary)
 
-        TKButton(if (editing) "停止编辑" else "自己改文字试试", true) {
+        TKButton(if (editing) stringResource(R.string.tk_demo_text_33) else stringResource(R.string.tk_demo_text_34), true) {
             editing = !editing
             if (editing) draft = source
         }
@@ -527,7 +483,7 @@ private fun MarkdownDemo() {
                 },
                 modifier = Modifier.fillMaxWidth().heightIn(min = 160.dp),
                 textStyle = MaterialTheme.typography.bodySmall.copy(fontFamily = FontFamily.Monospace, fontSize = 12.sp),
-                label = { Text("Markdown 源码（边打字边渲染）") }
+                label = { Text(stringResource(R.string.tk_demo_text_35)) }
             )
         }
 
@@ -539,7 +495,7 @@ private fun MarkdownDemo() {
                 .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f), RoundedCornerShape(12.dp))
                 .padding(14.dp)
         )
-        TKNote("颜色全部走 MaterialTheme.colorScheme，切深色模式自动适配；链接点击交给 LocalUriHandler，代码块可长按选中复制。")
+        TKNote(stringResource(R.string.tk_demo_text_36))
     }
 }
 
@@ -547,23 +503,27 @@ private fun MarkdownDemo() {
 
 @Composable
 private fun AdaptiveNavDemo() {
+    val navHome = stringResource(R.string.nav_home)
+    val navGallery = stringResource(R.string.nav_gallery)
+    val navMotion = stringResource(R.string.nav_motion)
+    val navSettings = stringResource(R.string.nav_settings)
     val realClass = rememberAppWindowClass()
     var widthDp by remember { mutableFloatStateOf(420f) }
     var selected by remember { mutableIntStateOf(0) }
     val items = remember {
         listOf(
-            AdaptiveNavItem("home", "首页", AppIcons.BlurOn),
-            AdaptiveNavItem("gallery", "素材", AppIcons.Widgets),
-            AdaptiveNavItem("motion", "动效", AppIcons.Animation),
-            AdaptiveNavItem("settings", "设置", AppIcons.Settings)
+            AdaptiveNavItem("home", navHome, AppIcons.BlurOn),
+            AdaptiveNavItem("gallery", navGallery, AppIcons.Widgets),
+            AdaptiveNavItem("motion", navMotion, AppIcons.Animation),
+            AdaptiveNavItem("settings", navSettings, AppIcons.Settings)
         )
     }
 
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        TKKeyValue("当前真机窗口分级", "${realClass.label}（${realClass.name}）")
-        TKKeyValue("演示容器宽度", "${widthDp.toInt()} dp → ${windowClassOf(widthDp.toInt()).label}")
+        TKKeyValue(stringResource(R.string.tk_demo_text_37), "${stringResource(realClass.labelRes)}（${realClass.name}）")
+        TKKeyValue(stringResource(R.string.tk_demo_text_38), "${widthDp.toInt()} dp → ${stringResource(windowClassOf(widthDp.toInt()).labelRes)}")
 
-        Text("拖动滑杆改变容器宽度，观察底部栏与侧边栏的切换", style = MaterialTheme.typography.labelMedium)
+        Text(stringResource(R.string.tk_demo_text_39), style = MaterialTheme.typography.labelMedium)
         Slider(
             value = widthDp,
             onValueChange = { widthDp = it },
@@ -600,12 +560,13 @@ private fun AdaptiveNavDemo() {
                             fontWeight = FontWeight.Bold
                         )
                         Text(
-                            "id=${items[selected].id} · 分级=${windowClassOf(widthDp.toInt()).label} · " +
-                                if (windowClassOf(widthDp.toInt()) == AppWindowClass.COMPACT) "底部 NavigationBar" else "侧边 NavigationRail",
+                            stringResource(R.string.tk_demo_text_59, items[selected].id,
+                                stringResource(windowClassOf(widthDp.toInt()).labelRes)) +
+                                if (windowClassOf(widthDp.toInt()) == AppWindowClass.COMPACT) stringResource(R.string.tk_demo_text_40) else stringResource(R.string.tk_demo_text_41),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
-                        TKNote("内容区永远占满剩余空间：宿主不需要为两种布局各写一套内边距。")
+                        TKNote(stringResource(R.string.tk_demo_text_42))
                         Icon(
                             items[selected].icon,
                             contentDescription = null,
@@ -616,7 +577,7 @@ private fun AdaptiveNavDemo() {
                 }
             }
         }
-        TKNote("真机分级由 LocalConfiguration.screenWidthDp 决定：旋转、分屏、折叠屏展开都会自动重算，不需要监听器。")
+        TKNote(stringResource(R.string.tk_demo_text_43))
     }
 }
 

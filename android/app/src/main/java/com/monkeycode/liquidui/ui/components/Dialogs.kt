@@ -33,9 +33,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 import com.kyant.backdrop.backdrops.layerBackdrop
 import com.kyant.backdrop.backdrops.rememberLayerBackdrop
-import com.monkeycode.liquidui.ui.motion.运动
+import com.monkeycode.liquidui.R
+import com.monkeycode.liquidui.ui.motion.Motion
 import com.monkeycode.liquidui.ui.theme.AppShape
 import kotlinx.coroutines.launch
 
@@ -76,8 +78,8 @@ fun GlassDialog(
     title: String,
     onConfirm: () -> Unit,
     modifier: Modifier = Modifier,
-    confirmText: String = "确定",
-    dismissText: String? = "取消",
+    confirmText: String = stringResource(R.string.dialog_confirm_1),
+    dismissText: String? = stringResource(R.string.common_cancel),
     confirmEnabled: Boolean = true,
     content: @Composable ColumnScope.() -> Unit
 ) {
@@ -118,8 +120,8 @@ private fun DialogOverlay(
     val cardScale = remember { Animatable(0.88f) }
     val cardAlpha = remember { Animatable(0f) }
     LaunchedEffect(Unit) {
-        launch { cardAlpha.animateTo(1f, tween(运动.Duration.Fast)) }
-        launch { cardScale.animateTo(1f, spring(运动.DampedRatio(0.7f), 320f, 0.63f)) }
+        launch { cardAlpha.animateTo(1f, tween(Motion.Duration.Fast)) }
+        launch { cardScale.animateTo(1f, spring(Motion.DampedRatio(0.7f), 320f, 0.63f)) }
     }
 
     val scrimBackdrop = rememberLayerBackdrop { drawRect(Color.Black.copy(alpha = 0.42f)) }

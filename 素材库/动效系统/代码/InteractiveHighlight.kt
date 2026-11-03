@@ -15,8 +15,6 @@ import androidx.compose.ui.util.fastCoerceIn
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-typealias InteractiveHighlight = 交互高亮
-
 /**
  * Pointer-following specular highlight for glass surfaces.
  *
@@ -25,13 +23,13 @@ typealias InteractiveHighlight = 交互高亮
  * the finger. Both fade with `pressProgress`, so the highlight has weight and
  * never appears instantly.
  */
-class 交互高亮(
+class InteractiveHighlight(
     private val animationScope: CoroutineScope,
     private val position: (size: Size, offset: Offset) -> Offset = { _, offset -> offset }
 ) {
-    private val pressProgressAnimationSpec = spring(运动.DampedRatio(0.5f), 300f, 0.001f)
+    private val pressProgressAnimationSpec = spring(Motion.DampedRatio(0.5f), 300f, 0.001f)
     private val positionAnimationSpec =
-        spring(运动.DampedRatio(0.5f), 300f, Offset.VisibilityThreshold)
+        spring(Motion.DampedRatio(0.5f), 300f, Offset.VisibilityThreshold)
     private val pressProgressAnimation = Animatable(0f, 0.001f)
     private val positionAnimation =
         Animatable(Offset.Zero, Offset.VectorConverter, Offset.VisibilityThreshold)

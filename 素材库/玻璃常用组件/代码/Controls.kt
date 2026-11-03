@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -53,9 +54,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
-import com.monkeycode.liquidui.ui.motion.运动
+import com.monkeycode.liquidui.ui.motion.Motion
 import com.monkeycode.liquidui.ui.motion.pressScale
 import com.monkeycode.liquidui.ui.theme.AppShape
+import com.monkeycode.liquidui.ui.theme.LocalAppChrome
+import com.monkeycode.liquidui.ui.theme.VisualMode
 import kotlin.math.PI
 import kotlin.math.atan2
 import kotlin.math.cos
@@ -66,51 +69,83 @@ import kotlinx.coroutines.launch
 
 /** Primary action. Snappy press weight, no ripple. */
 @Composable
-fun 主按钮(
+fun PrimaryButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     content: @Composable RowScope.() -> Unit
 ) {
     val interaction = remember { MutableInteractionSource() }
-    Button(
-        onClick = onClick,
-        modifier = modifier.pressScale(interaction, 0.96f, enabled),
-        enabled = enabled,
-        shape = AppShape.control,
-        interactionSource = interaction,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.onPrimary,
-            disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-            disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant
-        ),
-        content = content
-    )
+    if (LocalAppChrome.current.visualMode == VisualMode.Glass) {
+        Row(
+            modifier = modifier
+                .pressScale(interaction, 0.96f, enabled)
+                .liquidGlass(
+                    shape = AppShape.control,
+                    tint = MaterialTheme.colorScheme.primary.copy(alpha = if (enabled) 0.18f else 0.05f),
+                    elevation = 1.dp,
+                )
+                .clickable(enabled = enabled, interactionSource = interaction, indication = null, onClick = onClick)
+                .defaultMinSize(minHeight = 48.dp)
+                .padding(horizontal = 20.dp, vertical = 12.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+            content = content,
+        )
+    } else {
+        Button(
+            onClick = onClick,
+            modifier = modifier.pressScale(interaction, 0.96f, enabled),
+            enabled = enabled,
+            shape = AppShape.control,
+            interactionSource = interaction,
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+                disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant
+            ),
+            content = content
+        )
+    }
 }
 
 /** Secondary action. */
 @Composable
-fun 次要按钮(
+fun SecondaryButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     content: @Composable RowScope.() -> Unit
 ) {
     val interaction = remember { MutableInteractionSource() }
-    OutlinedButton(
-        onClick = onClick,
-        modifier = modifier.pressScale(interaction, 0.96f, enabled),
-        enabled = enabled,
-        shape = AppShape.control,
-        interactionSource = interaction,
-        content = content
-    )
+    if (LocalAppChrome.current.visualMode == VisualMode.Glass) {
+        Row(
+            modifier = modifier
+                .pressScale(interaction, 0.96f, enabled)
+                .liquidGlass(shape = AppShape.control, elevation = 0.dp, borderAlpha = 0.6f)
+                .clickable(enabled = enabled, interactionSource = interaction, indication = null, onClick = onClick)
+                .defaultMinSize(minHeight = 48.dp)
+                .padding(horizontal = 20.dp, vertical = 12.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+            content = content,
+        )
+    } else {
+        OutlinedButton(
+            onClick = onClick,
+            modifier = modifier.pressScale(interaction, 0.96f, enabled),
+            enabled = enabled,
+            shape = AppShape.control,
+            interactionSource = interaction,
+            content = content
+        )
+    }
 }
 
 /** Circular glass icon button with the same press weight. */
 @Composable
-fun 玻璃图标按钮(
+fun GlassIconButton(
     icon: ImageVector,
     contentDescription: String?,
     onClick: () -> Unit,
@@ -140,7 +175,7 @@ fun 玻璃图标按钮(
  * the track colour cross-fades — so toggling reads as one physical motion.
  */
 @Composable
-fun 紧凑开关(
+fun CompactSwitch(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
@@ -156,7 +191,7 @@ fun 紧凑开关(
     val dragging = remember { mutableStateOf(false) }
 
     LaunchedEffect(checked) {
-        if (!dragging.value) fraction.animateTo(if (checked) 1f else 0f, 运动.snappy(0.01f))
+        if (!dragging.value) fraction.animateTo(if (checked) 1f else 0f, Motion.snappy(0.01f))
     }
 
     val thumbOffset = offsetDp(fraction.value, travelPx, trackWidth, thumbSize, inset)
@@ -167,7 +202,7 @@ fun 紧凑开关(
             checked -> MaterialTheme.colorScheme.primary
             else -> MaterialTheme.colorScheme.surfaceVariant
         },
-        animationSpec = androidx.compose.animation.core.tween(运动.Duration.Fast),
+        animationSpec = androidx.compose.animation.core.tween(Motion.Duration.Fast),
         label = "switchTrack"
     )
     val trackBorder by animateColorAsState(
@@ -176,12 +211,12 @@ fun 紧凑开关(
             checked -> MaterialTheme.colorScheme.primary.copy(alpha = 0.9f)
             else -> MaterialTheme.colorScheme.outlineVariant
         },
-        animationSpec = androidx.compose.animation.core.tween(运动.Duration.Fast),
+        animationSpec = androidx.compose.animation.core.tween(Motion.Duration.Fast),
         label = "switchTrackBorder"
     )
     val thumbScale by animateFloatAsState(
         targetValue = if (checked) 1f else 0.94f,
-        animationSpec = 运动.snappy(0.001f),
+        animationSpec = Motion.snappy(0.001f),
         label = "switchThumbScale"
     )
 
@@ -205,7 +240,7 @@ fun 紧凑开关(
                             dragging.value = false
                             val newState = fraction.value > 0.5f
                             scope.launch {
-                                fraction.animateTo(if (newState) 1f else 0f, 运动.snappy(0.01f))
+                                fraction.animateTo(if (newState) 1f else 0f, Motion.snappy(0.01f))
                             }
                             if (newState != checked) onCheckedChange(newState)
                         }
@@ -214,7 +249,7 @@ fun 紧凑开关(
                         if (enabled) {
                             dragging.value = false
                             scope.launch {
-                                fraction.animateTo(if (checked) 1f else 0f, 运动.snappy(0.01f))
+                                fraction.animateTo(if (checked) 1f else 0f, Motion.snappy(0.01f))
                             }
                         }
                     },
@@ -258,7 +293,7 @@ private fun offsetDp(fraction: Float, travelPx: Float, trackWidth: Dp, thumbSize
  * thumb. Tap anywhere or drag the thumb; both translate to a value in 0..1.
  */
 @Composable
-fun 渐变色条(
+fun GradientBar(
     colors: List<Color>,
     fraction: Float,
     onFractionChange: (Float) -> Unit,
@@ -322,7 +357,7 @@ fun 渐变色条(
  * for continuous hue/saturation picking; drag the rail for 0..1 value.
  */
 @Composable
-fun 颜色选择器(
+fun ColorWheel(
     hue: Float,
     saturation: Float,
     value: Float,
@@ -526,7 +561,7 @@ fun 颜色选择器(
  * segment.
  */
 @Composable
-fun 分段标签(
+fun SegmentedTabs(
     labels: List<String>,
     selectedIndex: Int,
     onSelected: (Int) -> Unit,
@@ -538,7 +573,7 @@ fun 分段标签(
     val dragging = remember { mutableStateOf(false) }
 
     LaunchedEffect(selectedIndex) {
-        if (!dragging.value) fraction.animateTo(selectedIndex.toFloat(), 运动.snappy(0.001f))
+        if (!dragging.value) fraction.animateTo(selectedIndex.toFloat(), Motion.snappy(0.001f))
     }
 
     Row(
@@ -555,14 +590,14 @@ fun 分段标签(
                         dragging.value = false
                         val target = fraction.value.roundToInt().coerceIn(0, labels.lastIndex)
                         scope.launch {
-                            fraction.animateTo(target.toFloat(), 运动.snappy(0.001f))
+                            fraction.animateTo(target.toFloat(), Motion.snappy(0.001f))
                         }
                         if (target != selectedIndex) onSelected(target)
                     },
                     onDragCancel = {
                         dragging.value = false
                         scope.launch {
-                            fraction.animateTo(selectedIndex.toFloat(), 运动.snappy(0.001f))
+                            fraction.animateTo(selectedIndex.toFloat(), Motion.snappy(0.001f))
                         }
                     },
                     onHorizontalDrag = { change, dragAmount ->
@@ -611,7 +646,7 @@ fun 分段标签(
 
 /** Small labelled chip. */
 @Composable
-fun 标签(
+fun Tag(
     text: String,
     accent: Color = MaterialTheme.colorScheme.primary,
     modifier: Modifier = Modifier
@@ -638,14 +673,14 @@ fun 标签(
 
 /** A thin progress meter with a spring-animated fill. */
 @Composable
-fun 进度计(
+fun Meter(
     progress: Float,
     modifier: Modifier = Modifier,
     accent: Color = MaterialTheme.colorScheme.primary
 ) {
     val animated by animateFloatAsState(
         targetValue = progress.coerceIn(0f, 1f),
-        animationSpec = 运动.gentle(0.001f),
+        animationSpec = Motion.gentle(0.001f),
         label = "meter"
     )
     Box(

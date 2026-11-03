@@ -22,7 +22,7 @@ import androidx.compose.ui.util.lerp
  * same token feels identical across the whole app. Keep every animation in the
  * template reading from this file — no ad-hoc `spring(...)` at call sites.
  */
-object 运动 {
+object Motion {
 
     /**
      * Global spring damping, 0f..1f (0.5 = design default).

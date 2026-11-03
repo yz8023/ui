@@ -21,18 +21,20 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
-import com.monkeycode.liquidui.ui.motion.运动
+import androidx.annotation.StringRes
+import com.monkeycode.liquidui.R
+import com.monkeycode.liquidui.ui.motion.Motion
 
 /** The colour themes the settings page switches between. */
-enum class PaletteId(val label: String) {
-    Aurora("冰蓝"),
-    Mint("薄荷"),
-    Sunset("落日"),
-    Mono("素灰"),
-    Coral("珊瑚"),
-    Sakura("樱花"),
-    Galaxy("星夜"),
-    Custom("自定义")
+enum class PaletteId(@StringRes val labelRes: Int) {
+    Aurora(R.string.palette_aurora),
+    Mint(R.string.palette_mint),
+    Sunset(R.string.palette_sunset),
+    Mono(R.string.palette_mono),
+    Coral(R.string.palette_coral),
+    Sakura(R.string.palette_sakura),
+    Galaxy(R.string.palette_galaxy),
+    Custom(R.string.palette_custom)
 }
 
 /** The palette switched to when the user picks a free seed colour. */
@@ -354,20 +356,21 @@ enum class ThemeMode { System, Light, Dark }
  * The three mutually-exclusive visual styles the settings page offers.
  * Replaces the old independent `glassEnabled` / `dynamicColor` booleans.
  */
-enum class VisualMode(val label: String) {
+// 显示名走 @StringRes（visual_mode_*）；持久化用的是 name（AppSettingsState 里 valueOf），两者不相干。
+enum class VisualMode(@StringRes val labelRes: Int) {
     /** Liquid-glass look: sampled-backdrop panels, glass bottom bar. */
-    Glass("玻璃"),
+    Glass(R.string.visual_mode_glass),
     /** Plain Material surfaces, solid bottom bar, no refraction. */
-    Normal("普通"),
+    Normal(R.string.visual_mode_normal),
     /** Material Design 3 dynamic colour scheme sampled from the wallpaper. */
-    Md3("MD3"),
+    Md3(R.string.visual_mode_md3),
     /**
      * OShin (Miuix) look: light-grey page, white grouped cards, system-blue
      * accent, large-title headers and a floating capsule tab bar.
      * Switching to it changes colour, shape, type AND shell layout (pager +
      * floating bottom tabs). Tokens: [oshinColorScheme] / [OShinTokens].
      */
-    OShin("O神")
+    OShin(R.string.visual_mode_oshin)
 }
 
 /**
@@ -399,7 +402,7 @@ data class AppChrome(
     /** Global escape hatch — motion demos honour this per animation. */
     val reducedMotion: Boolean = false,
     /**
-     * Spring damping, 0f..1f. Pushed into [com.monkeycode.liquidui.ui.motion.运动.motionDamping]
+     * Spring damping, 0f..1f. Pushed into [com.monkeycode.liquidui.ui.motion.Motion.motionDamping]
      * so one slider retunes every spring token in the app.
      */
     val motionDamping: Float = 0.5f,
@@ -491,7 +494,7 @@ private fun rememberAnimatedColorScheme(target: ColorScheme, reducedMotion: Bool
     val spec = if (reducedMotion) {
         androidx.compose.animation.core.tween<Color>(0)
     } else {
-        androidx.compose.animation.core.tween<Color>(运动.Duration.Standard)
+        androidx.compose.animation.core.tween<Color>(Motion.Duration.Standard)
     }
     @Composable
     fun animated(role: Color, label: String): Color =

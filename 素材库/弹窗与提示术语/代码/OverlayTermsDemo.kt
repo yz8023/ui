@@ -69,6 +69,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.res.stringResource
 import com.monkeycode.liquidui.R
 import com.monkeycode.liquidui.ui.theme.AppIcons
 import kotlinx.coroutines.delay
@@ -130,6 +131,7 @@ private fun OTChip(label: String, selected: Boolean, enabled: Boolean = true, on
 
 @Composable
 private fun OTButton(text: String, enabled: Boolean = true, primary: Boolean = true, loading: Boolean = false, onClick: () -> Unit) {
+    val wallpaperText10 = stringResource(R.string.wallpaper_text_10)
     val bg = when {
         !enabled -> MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
         primary -> MaterialTheme.colorScheme.primary
@@ -154,7 +156,7 @@ private fun OTButton(text: String, enabled: Boolean = true, primary: Boolean = t
             CircularProgressIndicator(Modifier.size(16.dp), strokeWidth = 2.dp, color = fg)
             Spacer(Modifier.width(8.dp))
         }
-        Text(if (loading) "处理中…" else text, color = fg, fontWeight = FontWeight.SemiBold, style = MaterialTheme.typography.titleSmall)
+        Text(if (loading) wallpaperText10 else text, color = fg, fontWeight = FontWeight.SemiBold, style = MaterialTheme.typography.titleSmall)
     }
 }
 
@@ -175,14 +177,14 @@ private fun PreviewP01() {
     var blocked by remember { mutableStateOf(true) }
     var seen by remember { mutableIntStateOf(0) }
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        OTNote("Alert = 阻塞式告知：只有一个「知道了」，不征求选择。")
+        OTNote(stringResource(R.string.ot_demo_text_1))
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            OTChip("不可绕过（点外面/返回键都关不掉）", selected = blocked, onClick = { blocked = true })
-            OTChip("可绕过", selected = !blocked, onClick = { blocked = false })
+            OTChip(stringResource(R.string.ot_demo_text_2), selected = blocked, onClick = { blocked = true })
+            OTChip(stringResource(R.string.ot_demo_text_3), selected = !blocked, onClick = { blocked = false })
         }
-        OTButton("弹出 Alert：存储即将写满") { open = true }
-        OTNote("已确认 $seen 次。")
-        OTNote("反例对照：把「保存成功」做成 Alert 就是滥用——那该是 Toast（P02）。")
+        OTButton(stringResource(R.string.ot_demo_text_4)) { open = true }
+        OTNote(stringResource(R.string.ot_demo_text_136, seen))
+        OTNote(stringResource(R.string.ot_demo_text_5))
     }
     if (open) {
         AlertDialog(
@@ -191,10 +193,10 @@ private fun PreviewP01() {
                 dismissOnBackPress = !blocked,
                 dismissOnClickOutside = !blocked,
             ),
-            title = { Text("存储即将写满") },
-            text = { Text("剩余空间不足 200MB，继续录制可能中断。这是 Alert：只告知事实，不让你选。") },
+            title = { Text(stringResource(R.string.ot_demo_text_6)) },
+            text = { Text(stringResource(R.string.ot_demo_text_7)) },
             confirmButton = {
-                TextButton(onClick = { open = false; seen += 1 }) { Text("知道了") }
+                TextButton(onClick = { open = false; seen += 1 }) { Text(stringResource(R.string.ot_demo_text_8)) }
             },
         )
     }
@@ -205,6 +207,8 @@ private fun PreviewP01() {
 @Composable
 private fun PreviewP02() {
     val context = LocalContext.current
+    // 赋值点在 OTButton 的 onClick 里（非组合上下文），文案上提到组合体首行
+    val copiedLabel = stringResource(R.string.ot_demo_text_135)
     var light by remember { mutableStateOf<String?>(null) }
     var fired by remember { mutableIntStateOf(0) }
     LaunchedEffect(light) {
@@ -216,18 +220,18 @@ private fun PreviewP02() {
     }
     Box {
         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            OTNote("Toast = 最弱反馈：不打断、无按钮、自动消失。")
-            OTButton("发一条系统 Toast（真 Toast.makeText）") {
-                Toast.makeText(context, "已保存到草稿", Toast.LENGTH_SHORT).show()
+            OTNote(stringResource(R.string.ot_demo_text_9))
+            OTButton(stringResource(R.string.ot_demo_text_10)) {
+                Toast.makeText(context, context.getString(R.string.ot_demo_text_85), Toast.LENGTH_SHORT).show()
                 fired += 1
             }
-            OTButton("显示自绘轻提示（可定制样式，2.2s 自动消失）", primary = false) {
-                light = "已复制到剪贴板"
+            OTButton(stringResource(R.string.ot_demo_text_11), primary = false) {
+                light = copiedLabel
                 fired += 1
             }
-            OTNote("已触发 $fired 次。系统 Toast 的限制：Android 12+ 应用在后台时不显示、样式不可定制、不能带按钮。")
-            OTNote("要品牌样式/多条堆叠就自绘，但语义不能变：仍然不可交互、自动消失。")
-            OTNote("反例对照：报错别用 Toast（读不完且无法重试）——该用 Snackbar（P07）或内联错误。")
+            OTNote(stringResource(R.string.ot_demo_text_134, fired))
+            OTNote(stringResource(R.string.ot_demo_text_12))
+            OTNote(stringResource(R.string.ot_demo_text_13))
         }
         if (light != null) {
             Surface(
@@ -249,17 +253,19 @@ private fun PreviewP03() {
     var open by remember { mutableStateOf(false) }
     var name by remember { mutableStateOf("") }
     var saved by remember { mutableStateOf<String?>(null) }
+    val unnamedDefault = stringResource(R.string.ot_demo_text_133)
     var outsideClosable by remember { mutableStateOf(false) }
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        OTNote("Modal = 带遮罩的小房间：必须在里面完成或明确放弃，才能回主流程。")
+        OTNote(stringResource(R.string.ot_demo_text_14))
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            OTChip("点外面不可关（防丢数据）", selected = !outsideClosable, onClick = { outsideClosable = false })
-            OTChip("点外面可关", selected = outsideClosable, onClick = { outsideClosable = true })
+            OTChip(stringResource(R.string.ot_demo_text_15), selected = !outsideClosable, onClick = { outsideClosable = false })
+            OTChip(stringResource(R.string.ot_demo_text_16), selected = outsideClosable, onClick = { outsideClosable = true })
         }
-        OTButton("打开 Modal：重命名项目") { name = saved ?: "未命名项目"; open = true }
-        if (saved != null) OTNote("当前名称：$saved", accent = true)
-        OTNote("含输入框的 Modal 一定要给「取消」，且主按钮在内容为空时禁用。")
-        OTNote("反例对照：Modal 里装长列表/设置页 → 该用 Drawer（P04）或 BottomSheet（P10）。")
+        OTButton(stringResource(R.string.ot_demo_text_17)) { name = saved ?: unnamedDefault; open = true }
+        val savedNow = saved
+        if (savedNow != null) OTNote(stringResource(R.string.ot_demo_text_132, savedNow), accent = true)
+        OTNote(stringResource(R.string.ot_demo_text_18))
+        OTNote(stringResource(R.string.ot_demo_text_19))
     }
     if (open) {
         Dialog(
@@ -268,16 +274,16 @@ private fun PreviewP03() {
         ) {
             Surface(shape = RoundedCornerShape(20.dp), color = MaterialTheme.colorScheme.surface) {
                 Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    Text("重命名项目", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                    Text(stringResource(R.string.ot_demo_text_20), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
                     OutlinedTextField(
                         value = name, onValueChange = { name = it },
-                        label = { Text("项目名称") }, singleLine = true,
+                        label = { Text(stringResource(R.string.ot_demo_text_21)) }, singleLine = true,
                         modifier = Modifier.fillMaxWidth(),
                     )
-                    OTNote("这是 Modal：背景被遮罩挡住、焦点关在框内，必须处理完才能回去。")
+                    OTNote(stringResource(R.string.ot_demo_text_22))
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                        TextButton(onClick = { open = false }) { Text("取消") }
-                        TextButton(onClick = { saved = name; open = false }, enabled = name.isNotBlank()) { Text("保存") }
+                        TextButton(onClick = { open = false }) { Text(stringResource(R.string.common_cancel)) }
+                        TextButton(onClick = { saved = name; open = false }, enabled = name.isNotBlank()) { Text(stringResource(R.string.ot_demo_text_23)) }
                     }
                 }
             }
@@ -290,20 +296,22 @@ private fun PreviewP03() {
 @Composable
 private fun PreviewP04() {
     var open by remember { mutableStateOf(false) }
-    var picked by remember { mutableStateOf("概览") }
+    // 初值必须与抽屉第一项**同一个资源**，否则打开就选中不上
+    val drawerFirst = stringResource(R.string.ot_demo_text_29)
+    var picked by remember { mutableStateOf(drawerFirst) }
     val progress by animateFloatAsState(if (open) 1f else 0f, tween(260), label = "drawer")
     BackHandler(enabled = open) { open = false }
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        OTNote("Drawer = 从边缘滑出的面板，承载导航或一批内容；遮罩透明度与面板位移共用同一 progress。")
+        OTNote(stringResource(R.string.ot_demo_text_24))
         Box(
             Modifier.fillMaxWidth().height(280.dp).clip(RoundedCornerShape(14.dp))
                 .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.25f))
         ) {
             Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                Text("主页面内容", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
-                Text("当前选中：$picked", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                OTButton("打开抽屉") { open = true }
-                OTNote("点遮罩、按返回键都能关；面板宽 210dp 固定，不用百分比像素写死。")
+                Text(stringResource(R.string.ot_demo_text_25), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
+                Text(stringResource(R.string.ot_demo_text_94, picked), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                OTButton(stringResource(R.string.ot_demo_text_26)) { open = true }
+                OTNote(stringResource(R.string.ot_demo_text_27))
             }
             if (progress > 0.001f) {
                 Box(
@@ -318,8 +326,8 @@ private fun PreviewP04() {
                     tonalElevation = 8.dp,
                 ) {
                     Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                        Text("导航", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                        listOf("概览", "订单", "报表", "成员", "设置").forEach { item ->
+                        Text(stringResource(R.string.ot_demo_text_28), style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        listOf(drawerFirst, stringResource(R.string.ot_demo_text_30), stringResource(R.string.ot_demo_text_31), stringResource(R.string.ot_demo_text_32), stringResource(R.string.ot_demo_text_33)).forEach { item ->
                             Text(
                                 item,
                                 style = MaterialTheme.typography.bodyMedium,
@@ -333,7 +341,7 @@ private fun PreviewP04() {
                 }
             }
         }
-        OTNote("反例对照：手机竖屏用左侧 Drawer 装长表单 → 该用 BottomSheet（P10）或独立页。")
+        OTNote(stringResource(R.string.ot_demo_text_34))
     }
 }
 
@@ -341,27 +349,35 @@ private fun PreviewP04() {
 
 @Composable
 private fun PreviewP05() {
-    var items by remember { mutableStateOf(listOf("报表 A", "报表 B", "报表 C")) }
+    val context = LocalContext.current
+    // 循环体（forEachIndexed）按非组合上下文处理：固定文案上提到这里，
+    // 只有带循环变量的格式串用 context.getString
+    val deleteLabel = stringResource(R.string.ot_demo_text_63)
+    val cancelLabel = stringResource(R.string.common_cancel)
+    val otDemoText86 = stringResource(R.string.ot_demo_text_86)
+    val otDemoText87 = stringResource(R.string.ot_demo_text_87)
+    val otDemoText88 = stringResource(R.string.ot_demo_text_88)
+    var items by remember { mutableStateOf(listOf(otDemoText86, otDemoText87, otDemoText88)) }
     var pending by remember { mutableStateOf<String?>(null) }
     var undo by remember { mutableStateOf<Pair<Int, String>?>(null) }
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        OTNote("Popconfirm = 贴着按钮的小气泡，就地二次确认轻量操作，不遮整页。")
-        if (items.isEmpty()) OTNote("列表已空。点下面的「恢复全部」再来一遍。")
+        OTNote(stringResource(R.string.ot_demo_text_35))
+        if (items.isEmpty()) OTNote(stringResource(R.string.ot_demo_text_36))
         items.forEachIndexed { index, name ->
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 Text(name, Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
                 Box {
-                    TextButton(onClick = { pending = name }) { Text("删除") }
+                    TextButton(onClick = { pending = name }) { Text(deleteLabel) }
                     DropdownMenu(expanded = pending == name, onDismissRequest = { pending = null }) {
                         Column(Modifier.padding(horizontal = 14.dp, vertical = 10.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                            Text("确定删除「$name」？", style = MaterialTheme.typography.bodyMedium)
+                            Text(context.getString(R.string.ot_demo_text_131, name), style = MaterialTheme.typography.bodyMedium)
                             Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                                TextButton(onClick = { pending = null }) { Text("取消") }
+                                TextButton(onClick = { pending = null }) { Text(cancelLabel) }
                                 TextButton(onClick = {
                                     undo = index to name
                                     items = items.filterNot { it == name }
                                     pending = null
-                                }) { Text("删除", color = MaterialTheme.colorScheme.error) }
+                                }) { Text(deleteLabel, color = MaterialTheme.colorScheme.error) }
                             }
                         }
                     }
@@ -369,15 +385,22 @@ private fun PreviewP05() {
             }
         }
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            OTChip("恢复全部", selected = false, onClick = { items = listOf("报表 A", "报表 B", "报表 C"); undo = null })
-            undo?.let { (i, n) ->
-                OTChip("撤销上一次（$n 回到第 ${i + 1} 位）", selected = false, onClick = {
+            OTChip(stringResource(R.string.ot_demo_text_37), selected = false, onClick = { items = listOf(otDemoText86, otDemoText87, otDemoText88); undo = null })
+            // 委托属性不做智能转换（本文件 P09 已有同样注释）：先取值再判空。
+            // if 是控制流块，里面仍是组合上下文，可以直接 stringResource
+            val undoNow = undo
+            if (undoNow != null) {
+                // 用 first/second 而不是解构 `val (i, n) = …`：委托属性取出来的 Pair，
+                // 解构要靠 component1()/component2() 扩展，直白写法少一层依赖
+                val i = undoNow.first
+                val n = undoNow.second
+                OTChip(stringResource(R.string.ot_demo_text_130, n, i + 1), selected = false, onClick = {
                     val list = items.toMutableList(); list.add(i.coerceAtMost(list.size), n); items = list; undo = null
                 })
             }
         }
-        OTNote("Android 对应：DropdownMenu 自动锚定并在空间不足时翻到上方；要自定义箭头/位置才用底层 Popup。")
-        OTNote("反例对照：确认「清空全部数据」这种重操作 → 该用 Modal（P03）写清后果。")
+        OTNote(stringResource(R.string.ot_demo_text_38))
+        OTNote(stringResource(R.string.ot_demo_text_39))
     }
 }
 
@@ -394,12 +417,12 @@ private fun PreviewP06() {
         }
     }
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        OTNote("Tooltip = 纯文字注解，长按出现、自动消失、不可交互。移动端没有 hover，等价触发是长按。")
+        OTNote(stringResource(R.string.ot_demo_text_40))
         Row(horizontalArrangement = Arrangement.spacedBy(18.dp), verticalAlignment = Alignment.CenterVertically) {
             listOf(
-                "notif" to ("通知" to "控制是否推送与免打扰时段"),
-                "sync" to ("同步" to "上次同步 12 分钟前，仅 Wi-Fi 下自动"),
-                "lock" to ("锁定" to "已禁用：需要先完成实名认证"),
+                "notif" to (stringResource(R.string.ot_demo_text_129) to stringResource(R.string.ot_demo_text_41)),
+                "sync" to (stringResource(R.string.ot_demo_text_128) to stringResource(R.string.ot_demo_text_42)),
+                "lock" to (stringResource(R.string.ot_demo_text_127) to stringResource(R.string.ot_demo_text_43)),
             ).forEach { (key, pair) ->
                 val (label, text) = pair
                 Box {
@@ -418,9 +441,9 @@ private fun PreviewP06() {
                 }
             }
         }
-        OTNote("长按任意图标试试：1.8s 后自动消失，点外部也可关。")
-        OTNote("无障碍要点：图标已设 contentDescription，读屏拿得到同样信息——必要说明不能只藏在 Tooltip 里。")
-        OTNote("反例对照：Tooltip 里塞按钮/链接 → 那是 Popover（P09）。")
+        OTNote(stringResource(R.string.ot_demo_text_44))
+        OTNote(stringResource(R.string.ot_demo_text_45))
+        OTNote(stringResource(R.string.ot_demo_text_46))
     }
 }
 
@@ -428,14 +451,20 @@ private fun PreviewP06() {
 
 @Composable
 private fun PreviewP07() {
+    val context = LocalContext.current
+    // 循环体（forEachIndexed）按非组合上下文处理：固定文案上提到这里
+    val deleteLabel = stringResource(R.string.ot_demo_text_63)
+    val otDemoText89 = stringResource(R.string.ot_demo_text_89)
+    val otDemoText90 = stringResource(R.string.ot_demo_text_90)
+    val otDemoText91 = stringResource(R.string.ot_demo_text_91)
     val scope = rememberCoroutineScope()
     val host = remember { SnackbarHostState() }
-    var items by remember { mutableStateOf(listOf("草稿 1", "草稿 2", "草稿 3")) }
+    var items by remember { mutableStateOf(listOf(otDemoText89, otDemoText90, otDemoText91)) }
     Box(Modifier.fillMaxWidth().height(230.dp)) {
         Column(Modifier.padding(bottom = 56.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            OTNote("Snackbar = 应用内底部条幅，可带一个操作；删除后给「撤销」是它的典型用法。")
+            OTNote(stringResource(R.string.ot_demo_text_47))
             if (items.isEmpty()) {
-                OTNote("三条草稿都删完了。等 Snackbar 消失后重进本页可复位。")
+                OTNote(stringResource(R.string.ot_demo_text_48))
             }
             items.forEachIndexed { index, name ->
                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
@@ -445,18 +474,18 @@ private fun PreviewP07() {
                             val list = items.toMutableList()
                             list.removeAt(index)
                             items = list
-                            val result = host.showSnackbar("已删除「$name」", actionLabel = "撤销", duration = SnackbarDuration.Short)
+                            val result = host.showSnackbar(context.getString(R.string.ot_demo_text_125, name), actionLabel = context.getString(R.string.ot_demo_text_126), duration = SnackbarDuration.Short)
                             if (result == SnackbarResult.ActionPerformed) {
                                 val back = items.toMutableList()
                                 back.add(index.coerceAtMost(back.size), name)
                                 items = back
                             }
                         }
-                    }) { Text("删除") }
+                    }) { Text(deleteLabel) }
                 }
             }
-            OTChip("恢复全部草稿", selected = false, onClick = { items = listOf("草稿 1", "草稿 2", "草稿 3") })
-            OTNote("反例对照：Snackbar 里放两个以上操作 → 那已经是工具栏了；报致命错误 → 用 Modal（P03）。")
+            OTChip(stringResource(R.string.ot_demo_text_49), selected = false, onClick = { items = listOf(otDemoText89, otDemoText90, otDemoText91) })
+            OTNote(stringResource(R.string.ot_demo_text_50))
         }
         SnackbarHost(hostState = host, modifier = Modifier.align(Alignment.BottomCenter))
     }
@@ -467,10 +496,12 @@ private fun PreviewP07() {
 @Composable
 private fun PreviewP08() {
     val context = LocalContext.current
-    var status by remember { mutableStateOf<String?>(null) }
+    // 状态存 @StringRes id 而不是文案：赋值点在 launcher 回调与 onClick 里（都不是组合上下文），
+    // 存 id 就不需要 Context；显示点再 stringResource 解析
+    var status by remember { mutableStateOf<Int?>(null) }
     var sent by remember { mutableIntStateOf(0) }
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-        status = if (granted) "已授权，现在点「发送真实通知」能收到" else "被拒绝：Android 13+ 通知发不出去，需到系统设置手动开启"
+        status = if (granted) R.string.ot_demo_text_123 else R.string.ot_demo_text_124
     }
     fun hasPermission(): Boolean =
         Build.VERSION.SDK_INT < 33 ||
@@ -480,13 +511,13 @@ private fun PreviewP08() {
         val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val channelId = "overlay_terms_demo"
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(channelId, "术语演示", NotificationManager.IMPORTANCE_DEFAULT)
-            channel.description = "弹窗与提示术语 P08 的演示通知渠道"
+            val channel = NotificationChannel(channelId, context.getString(R.string.ot_demo_text_122), NotificationManager.IMPORTANCE_DEFAULT)
+            channel.description = context.getString(R.string.ot_demo_text_121)
             manager.createNotificationChannel(channel)
         }
         val notification = Notification.Builder(context, channelId)
-            .setContentTitle("导出完成")
-            .setContentText("报表 A.csv 已生成，点击查看")
+            .setContentTitle(context.getString(R.string.ot_demo_text_100))
+            .setContentText(context.getString(R.string.ot_demo_text_101))
             .setSmallIcon(R.drawable.ic_stat_launcher)
             .setAutoCancel(true)
             .build()
@@ -494,32 +525,34 @@ private fun PreviewP08() {
     }
 
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        OTNote("Notification = 系统层提示，应用不在前台也能送达；因此门槛最高：要建渠道、要授权、要能被单独关掉。")
-        OTNote("当前系统版本 SDK ${Build.VERSION.SDK_INT}；授权状态：${if (hasPermission()) "已授权" else "未授权（Android 13+ 必须先申请 POST_NOTIFICATIONS）"}", accent = true)
+        OTNote(stringResource(R.string.ot_demo_text_97))
+        val authStateText = if (hasPermission()) stringResource(R.string.ot_demo_text_118) else stringResource(R.string.ot_demo_text_119)
+        OTNote(stringResource(R.string.ot_demo_text_120, Build.VERSION.SDK_INT, authStateText), accent = true)
         if (!hasPermission()) {
-            OTButton("申请通知权限", primary = false) { launcher.launch(Manifest.permission.POST_NOTIFICATIONS) }
+            OTButton(stringResource(R.string.ot_demo_text_98), primary = false) { launcher.launch(Manifest.permission.POST_NOTIFICATIONS) }
         }
-        OTButton("发送真实通知（走 NotificationManager）", enabled = hasPermission()) {
+        OTButton(stringResource(R.string.ot_demo_text_99), enabled = hasPermission()) {
             send()
             sent += 1
-            status = "已调用 notify(2001)，去通知栏看"
+            status = R.string.ot_demo_text_117
         }
-        if (status != null) OTNote(status!!, accent = true)
-        OTNote("本机已发送 $sent 次。未授权时点按钮是禁用态，不会静默失败——这是规范要求。")
+        val statusNow = status
+        if (statusNow != null) OTNote(stringResource(statusNow), accent = true)
+        OTNote(stringResource(R.string.ot_demo_text_116, sent))
 
         Surface(Modifier.fillMaxWidth(), shape = RoundedCornerShape(14.dp), color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)) {
             Row(Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
                 Icon(AppIcons.Notifications, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(22.dp))
                 Spacer(Modifier.width(10.dp))
                 Column(Modifier.weight(1f)) {
-                    Text("导出完成", style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.SemiBold)
-                    Text("报表 A.csv 已生成，点击查看", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(stringResource(R.string.ot_demo_text_100), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.SemiBold)
+                    Text(stringResource(R.string.ot_demo_text_101), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
-                Text("现在", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(stringResource(R.string.ot_demo_text_102), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
-        OTNote("上面是通知在通知栏里的样子（应用内预览，方便没授权时也能核对文案与图标）。")
-        OTNote("反例对照：应用内就能说完的事推成通知 = 白送打扰；不建渠道直接发在 API 26+ 会失败。")
+        OTNote(stringResource(R.string.ot_demo_text_103))
+        OTNote(stringResource(R.string.ot_demo_text_104))
     }
 }
 
@@ -531,13 +564,13 @@ private fun PreviewP09() {
     var notifyOn by remember { mutableStateOf(true) }
     var picked by remember { mutableStateOf<String?>(null) }
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        OTNote("Popover = 锚定的富内容气泡：可放菜单项、开关、输入；Tooltip 的「能干活」版本。")
+        OTNote(stringResource(R.string.ot_demo_text_51))
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
             Box {
-                OTChip("更多操作 ⋯", selected = open, onClick = { open = !open })
+                OTChip(stringResource(R.string.ot_demo_text_52), selected = open, onClick = { open = !open })
                 DropdownMenu(expanded = open, onDismissRequest = { open = false }) {
                     Column(Modifier.padding(vertical = 4.dp)) {
-                        listOf("分享" to "生成链接发给同事", "导出" to "CSV / PDF 两种格式", "归档" to "从列表移走但可恢复").forEach { (title, sub) ->
+                        listOf(stringResource(R.string.ot_demo_text_115) to stringResource(R.string.ot_demo_text_53), stringResource(R.string.ot_demo_text_114) to stringResource(R.string.ot_demo_text_54), stringResource(R.string.ot_demo_text_113) to stringResource(R.string.ot_demo_text_55)).forEach { (title, sub) ->
                             Row(
                                 Modifier.fillMaxWidth().clickable { picked = title; open = false }.padding(horizontal = 16.dp, vertical = 10.dp),
                                 verticalAlignment = Alignment.CenterVertically,
@@ -552,7 +585,7 @@ private fun PreviewP09() {
                         }
                         HorizontalDivider(Modifier.padding(vertical = 4.dp))
                         Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 6.dp), verticalAlignment = Alignment.CenterVertically) {
-                            Text("接收通知", Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
+                            Text(stringResource(R.string.ot_demo_text_56), Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
                             Box(
                                 Modifier.size(width = 42.dp, height = 26.dp).clip(RoundedCornerShape(percent = 50))
                                     .background(if (notifyOn) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant)
@@ -566,9 +599,12 @@ private fun PreviewP09() {
                 }
             }
         }
-        if (picked != null) OTNote("已选择：$picked（气泡点外部或返回键即关）", accent = true)
-        OTNote("气泡内每行热区 ≥44dp；内容超过 6 项或需要滚动时改用 BottomSheet（P10）。")
-        OTNote("反例对照：气泡里再弹气泡、或点外部不关闭，都是常见错法。")
+        // picked 是 `var … by remember { mutableStateOf<String?>(null) }`：委托属性不做智能转换，
+        // 直接当 vararg Any 传编译不过（模板 "$picked" 不报错，换成 stringResource 才暴露）。
+        val pickedNow = picked
+        if (pickedNow != null) OTNote(stringResource(R.string.ot_demo_text_95, pickedNow), accent = true)
+        OTNote(stringResource(R.string.ot_demo_text_57))
+        OTNote(stringResource(R.string.ot_demo_text_58))
     }
 }
 
@@ -577,21 +613,24 @@ private fun PreviewP09() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun PreviewP10() {
+    val otDemoText92 = stringResource(R.string.ot_demo_text_92)
+    val otDemoText93 = stringResource(R.string.ot_demo_text_93)
     var open by remember { mutableStateOf(false) }
     var chosen by remember { mutableStateOf<String?>(null) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
     val scope = rememberCoroutineScope()
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        OTNote("BottomSheet / ActionSheet = 从底部升起的面板；移动端比 Drawer 顺手，拇指够得到。")
-        OTButton("打开动作面板（ActionSheet）") { open = true }
-        if (chosen != null) OTNote("已选择：$chosen", accent = true)
-        OTNote("面板可半展开（露一半）与全展开两档，拖把手可切换；下拉关闭与内部滚动不打架。")
-        OTNote("反例对照：ActionSheet 不给「取消」项，或把整页内容塞进面板造成滚动嵌套。")
+        OTNote(otDemoText92)
+        OTButton(otDemoText93) { open = true }
+        val chosenNow = chosen
+        if (chosenNow != null) OTNote(stringResource(R.string.ot_demo_text_112, chosenNow), accent = true)
+        OTNote(stringResource(R.string.ot_demo_text_110))
+        OTNote(stringResource(R.string.ot_demo_text_111))
     }
     if (open) {
         ModalBottomSheet(onDismissRequest = { open = false }, sheetState = sheetState) {
             Column(Modifier.padding(bottom = 20.dp)) {
-                listOf("分享到微信", "复制链接", "导出 PDF", "移动到归档").forEach { action ->
+                listOf(stringResource(R.string.ot_demo_text_59), stringResource(R.string.ot_demo_text_60), stringResource(R.string.ot_demo_text_61), stringResource(R.string.ot_demo_text_62)).forEach { action ->
                     Text(
                         action,
                         style = MaterialTheme.typography.bodyLarge,
@@ -602,19 +641,21 @@ private fun PreviewP10() {
                         }.padding(horizontal = 24.dp, vertical = 15.dp),
                     )
                 }
+                // 文案上提到 lambda 外：clickable {} 不是组合上下文，里面不能调 stringResource()
+                val deleteLabel = stringResource(R.string.ot_demo_text_63)
                 Text(
-                    "删除",
+                    deleteLabel,
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.error,
                     modifier = Modifier.fillMaxWidth().clickable {
-                        chosen = "删除"
+                        chosen = deleteLabel
                         scope.launch { sheetState.hide() }
                         open = false
                     }.padding(horizontal = 24.dp, vertical = 15.dp),
                 )
                 HorizontalDivider()
                 Text(
-                    "取消",
+                    stringResource(R.string.common_cancel),
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.fillMaxWidth().clickable {
@@ -629,9 +670,15 @@ private fun PreviewP10() {
 
 // ─── P11 Loading / Progress 三档 ────────────────────────────────────────────
 
+// P11 的三个模式既是芯片文案、又被 6 处 == / != 与 when 分支当条件用（「拿显示文案当分支条件」
+// 是本仓库反复踩的那类 bug），所以状态只存稳定英文键，文案在组合体里解析。
+private const val MODE_NON_BLOCKING = "non_blocking"
+private const val MODE_IN_BUTTON = "in_button"
+private const val MODE_GLOBAL_SCRIM = "global_scrim"
+
 @Composable
 private fun PreviewP11() {
-    var mode by remember { mutableStateOf("按钮内") }
+    var mode by remember { mutableStateOf(MODE_IN_BUTTON) }
     var running by remember { mutableStateOf(false) }
     var progress by remember { mutableStateOf(0f) }
     var done by remember { mutableIntStateOf(0) }
@@ -647,34 +694,39 @@ private fun PreviewP11() {
     }
     Box {
         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            OTNote("加载反馈分三档强度：非阻塞 → 按钮内 → 全局遮罩。强度越高越要给进度与取消。")
+            OTNote(stringResource(R.string.ot_demo_text_64))
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                listOf("非阻塞", "按钮内", "全局遮罩").forEach { m ->
-                    OTChip(m, selected = mode == m, onClick = { mode = m })
-                }
+                // 文案在 lambda 外解析成 (键 to 文案)，lambda 里只用值（本文件既有惯例）
+                listOf(MODE_NON_BLOCKING to stringResource(R.string.ot_demo_text_65),
+                    MODE_IN_BUTTON to stringResource(R.string.ot_demo_text_66),
+                    MODE_GLOBAL_SCRIM to stringResource(R.string.ot_demo_text_67))
+                    .forEach { (key, label) ->
+                        OTChip(label, selected = mode == key, onClick = { mode = key })
+                    }
             }
-            if (mode == "非阻塞") {
+            if (mode == MODE_NON_BLOCKING) {
                 LinearProgressIndicator(progress = { progress }, modifier = Modifier.fillMaxWidth())
-                OTNote("顶部细进度条：用户仍可继续操作，适合后台刷新/分页加载。", accent = true)
+                OTNote(stringResource(R.string.ot_demo_text_68), accent = true)
             }
             OTButton(
                 text = when (mode) {
-                    "按钮内" -> "提交表单"
-                    "全局遮罩" -> "开始关键操作"
-                    else -> "后台刷新"
+                    MODE_IN_BUTTON -> stringResource(R.string.ot_demo_text_69)
+                    MODE_GLOBAL_SCRIM -> stringResource(R.string.ot_demo_text_70)
+                    else -> stringResource(R.string.ot_demo_text_71)
                 },
-                loading = mode == "按钮内" && running,
-                enabled = !running || mode != "按钮内",
+                loading = mode == MODE_IN_BUTTON && running,
+                enabled = !running || mode != MODE_IN_BUTTON,
             ) {
                 progress = 0f
                 running = true
             }
-            OTNote(if (running) "进行中：${(progress * 100).toInt()}%" else "已完成 $done 次任务。", accent = running)
-            if (mode == "按钮内") OTNote("按钮加载态：宽度不变（只换文案 + 16dp 圆环），防止布局跳动；同时禁止重复提交。")
-            if (mode == "全局遮罩") OTNote("全局遮罩必须给取消或超时兜底，否则网络一断就永远转圈。")
-            OTNote("反例对照：点一下按钮就整页转圈；加载完不给结果反馈（应接 Toast/Snackbar）。")
+            OTNote(if (running) stringResource(R.string.ot_demo_text_108, (progress * 100).toInt())
+                else stringResource(R.string.ot_demo_text_109, done), accent = running)
+            if (mode == MODE_IN_BUTTON) OTNote(stringResource(R.string.ot_demo_text_72))
+            if (mode == MODE_GLOBAL_SCRIM) OTNote(stringResource(R.string.ot_demo_text_73))
+            OTNote(stringResource(R.string.ot_demo_text_74))
         }
-        if (mode == "全局遮罩" && running) {
+        if (mode == MODE_GLOBAL_SCRIM && running) {
             Box(
                 Modifier.matchParentSize().background(Color.Black.copy(alpha = 0.4f)),
                 contentAlignment = Alignment.Center,
@@ -682,8 +734,8 @@ private fun PreviewP11() {
                 Surface(shape = RoundedCornerShape(18.dp), color = MaterialTheme.colorScheme.surface) {
                     Column(Modifier.padding(20.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(10.dp)) {
                         CircularProgressIndicator()
-                        Text("正在写入，请勿退出（${(progress * 100).toInt()}%）", style = MaterialTheme.typography.labelMedium)
-                        TextButton(onClick = { running = false; progress = 0f }) { Text("取消") }
+                        Text(stringResource(R.string.ot_demo_text_96, (progress * 100).toInt()), style = MaterialTheme.typography.labelMedium)
+                        TextButton(onClick = { running = false; progress = 0f }) { Text(stringResource(R.string.common_cancel)) }
                     }
                 }
             }
@@ -698,10 +750,10 @@ private fun PreviewP12() {
     var count by remember { mutableIntStateOf(5) }
     var dot by remember { mutableStateOf(true) }
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        OTNote("Badge = 附着在图标上的持续状态：不弹出、不打断，被消费后才消失。")
+        OTNote(stringResource(R.string.ot_demo_text_75))
         Row(horizontalArrangement = Arrangement.spacedBy(26.dp), verticalAlignment = Alignment.CenterVertically) {
             Box {
-                Icon(AppIcons.Notifications, contentDescription = "未读 $count 条", tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(30.dp))
+                Icon(AppIcons.Notifications, contentDescription = stringResource(R.string.ot_demo_content_desc_1, count), tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(30.dp))
                 if (count > 0) {
                     Surface(
                         Modifier.align(Alignment.TopEnd).offset(x = 8.dp, y = (-6).dp),
@@ -719,25 +771,27 @@ private fun PreviewP12() {
                 }
             }
             Box {
-                Icon(AppIcons.Settings, contentDescription = if (dot) "有更新" else "无更新", tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(30.dp))
+                Icon(AppIcons.Settings, contentDescription = if (dot) stringResource(R.string.ot_demo_text_76) else stringResource(R.string.ot_demo_text_77), tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(30.dp))
                 if (dot) {
                     Box(Modifier.align(Alignment.TopEnd).offset(x = 2.dp, y = (-2).dp).size(9.dp).background(MaterialTheme.colorScheme.error, CircleShape))
                 }
             }
             Column {
-                Text("计数角标 vs 红点", style = MaterialTheme.typography.labelMedium)
-                Text("数字用于「有多少」，红点用于「有更新但不计数」", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(stringResource(R.string.ot_demo_text_78), style = MaterialTheme.typography.labelMedium)
+                Text(stringResource(R.string.ot_demo_text_79), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             OTChip("+1", selected = false, onClick = { count += 1 })
             OTChip("−1", selected = false, enabled = count > 0, onClick = { count -= 1 })
-            OTChip("设为 100", selected = false, onClick = { count = 100 })
-            OTChip("清零", selected = false, onClick = { count = 0; dot = false })
-            OTChip("红点开", selected = dot, onClick = { dot = true })
+            OTChip(stringResource(R.string.ot_demo_text_80), selected = false, onClick = { count = 100 })
+            OTChip(stringResource(R.string.ot_demo_text_81), selected = false, onClick = { count = 0; dot = false })
+            OTChip(stringResource(R.string.ot_demo_text_82), selected = dot, onClick = { dot = true })
         }
-        OTNote("当前 count = $count → 显示 ${if (count == 0) "（不渲染角标）" else if (count > 99) "99+" else "$count"}", accent = true)
-        OTNote("规则：count > 99 显示「99+」；count == 0 时整个角标不渲染，不是显示「0」。")
-        OTNote("反例对照：红点永远消不掉（没有消费逻辑）、角标遮住图标主体超过 1/3。")
+        val badgePreview = if (count == 0) stringResource(R.string.ot_demo_text_105)
+            else if (count > 99) stringResource(R.string.ot_demo_text_106) else count.toString()
+        OTNote(stringResource(R.string.ot_demo_text_107, count, badgePreview), accent = true)
+        OTNote(stringResource(R.string.ot_demo_text_83))
+        OTNote(stringResource(R.string.ot_demo_text_84))
     }
 }

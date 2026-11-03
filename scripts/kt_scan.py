@@ -1,0 +1,442 @@
+#!/usr/bin/env python3
+"""Kotlin 轻量扫描器：定位每个字符串字面量，并判定它所处的上下文。
+
+为什么要自己写：用 head.count('{') 这种朴素深度统计会把**字符串与注释里的花括号**
+一并算进去，实测导致 AppIconSwitcher.kt / Dialogs.kt 的 @Composable 上下文被误判、
+整批字面量被漏掉。本扫描器逐字符推进，跳过注释、字符串、字符字面量后再维护括号栈。
+
+对每个字面量给出：
+  scope  = 'body'    在函数体内
+           'sig'     在函数签名的默认参数值里
+           'top'     不在任何函数内（顶层属性 / data class / object 成员 / enum 项）
+  comp   = 所属函数是否 @Composable（scope='top' 时为 None）
+  fun    = 所属函数名
+"""
+import pathlib
+import re
+from typing import List, Dict, Optional
+
+DECL_KEYWORDS = {'val', 'var', 'class', 'object', 'interface', 'enum', 'return',
+                 'if', 'for', 'while', 'when', 'do', 'else', 'try', 'catch', 'finally',
+                 'throw', 'package', 'import', 'typealias'}
+MODIFIERS = {'private', 'public', 'internal', 'protected', 'inline', 'suspend', 'operator',
+             'infix', 'external', 'expect', 'actual', 'override', 'open', 'abstract',
+             'final', 'data', 'sealed', 'annotation', 'companion', 'const', 'lateinit',
+             'vararg', 'noinline', 'crossinline', 'tailrec', 'get', 'set'}
+
+
+# 这些块是**非组合上下文**的 lambda：里面不能调 stringResource()。
+# 典型事故：remember { mutableStateOf("全部") } 与 onClick = { toast("已复制") }。
+# 非组合 lambda 的关键字表（含仓库外的 Compose 库函数）。
+# 关键字必须**紧邻** `{`，最多中间隔一个平衡括号组（如 `pointerInput(key) {`），
+# 由 block_kind 先用 _strip_tail_parens 剥掉尾部括号再锚定匹配。
+# 旧写法用 `[^{}]*$`，允许关键字与 `{` 之间有任意不含花括号的代码，于是
+# `var x by remember { … }` 之后隔两行没有花括号的 `Column {` 会被判成非组合
+# （CI 实测：PreviewGlassMotion 里 Text(stringResource(…)) 被误报越界）。
+# forEach/forEachIndexed/let/also/apply/run/takeIf **不在表内**：它们是 Kotlin 的 inline 函数，
+# lambda 就地调用不逃逸，组合上下文会保留（5e 已 CI 验证 `?.let { stringResource(…) }` 合法）。
+# map/filter 这类**产出值**的仍留在表内保守处理（本仓库有过「结果当值用」踩坑记录）。
+NON_COMP_KEYWORD = re.compile(  # noqa: E501  关键词 64 个，故意单行
+    '\\b(?:remember\\w*|runCatching|buildString|buildList|buildMap|lazy|derivedStateOf|LaunchedEffect|SideEffect|DisposableEffect|produceState|snapshotFlow|launch|withContext|coroutineScope|runBlocking|map|mapNotNull|filter|onEach|firstOrNull|firstNotNullOfOrNull|find|any|all|none|sumOf|sortedBy|sortedByDescending|maxByOrNull|associateBy|groupBy|repeat|with|collect|collectLatest|launchIn|clickable|combinedClickable|selectable|toggleable|triStateToggleable|draggable|scrollable|swipeable|anchoredDraggable|pointerInput|detectTapGestures|graphicsLayer|drawWithContent|drawBehind|drawWithCache|onSizeChanged|onGloballyPositioned|onPlaced|layout|semantics|clearAndSetSemantics|LazyColumn|LazyRow|LazyVerticalGrid|LazyHorizontalGrid|LazyVerticalStaggeredGrid|LazyHorizontalStaggeredGrid)$'
+)
+# 具名参数形式的非组合 lambda：`onClick = { … }`。同样必须锚定在结尾，
+# 否则 300 字符窗口里任何一处 `onXxx = ` 都会把后面的块判成非组合。
+NON_COMP_PARAM = re.compile(r'\bon[A-Z]\w*\s*=\s*$')
+NON_COMP_PARAM = re.compile(r'\bon[A-Z]\w*\s*=?\s*$')
+
+
+def _split_top(s: str):
+    parts, d, cur = [], 0, ''
+    for ch in s:
+        if ch in '(<[': d += 1
+        elif ch in ')>]': d -= 1
+        if ch == ',' and d == 0:
+            parts.append(cur); cur = ''
+        else:
+            cur += ch
+    if cur.strip(): parts.append(cur)
+    return parts
+
+
+def build_lambda_kinds(root) -> dict:
+    """{函数名: 尾随 lambda 是否 @Composable}。
+
+    为什么必须解析签名而不能靠关键词表：PrimaryButton/SecondaryButton 的尾参是
+    `content: @Composable RowScope.() -> Unit`（可组合），而 TKChip/TKButton/OTButton/
+    QButton 的尾参是 `onClick: () -> Unit`（不可组合）。两者写法看起来一样：
+    `XxxButton(...) { ... }`，只有被调函数的签名能区分。CI 曾因此报 30 条
+    "@Composable invocations can only happen from the context of a @Composable function"。
+    """
+    kinds = {}
+    for f in pathlib.Path(root).rglob('*.kt'):
+        src = f.read_text(encoding='utf-8')
+        for m in re.finditer(r'fun\s+(?:<[^>]*>\s*)?(?:[\w<>.]+\.)?([A-Za-z_]\w*)\s*\(', src):
+            i, d = m.end(), 1
+            while i < len(src) and d:
+                if src[i] == '(': d += 1
+                elif src[i] == ')': d -= 1
+                i += 1
+            parts = _split_top(src[m.end():i - 1])
+            if not parts: continue
+            last = parts[-1]
+            if '->' not in last: continue
+            kinds.setdefault(m.group(1), '@Composable' in last)
+    return kinds
+
+
+# 控制流块：既不授予也不剥夺组合上下文，判定时应「透明」跳过。
+# 少了这一态，`LazyColumn { if (x) { stringResource() } }` 里的 if 会被判成 comp，
+# 把外层 LazyColumn 的 noncomp 洗白；反过来用 any() 又会把 `LazyColumn { item { … } }`
+# 里合法的 item 内容一起毒化。所以必须三态 + 取最内层非控制流块。
+CTL_KEYWORD = re.compile(r'\b(?:if|else|when|for|while|do|try|catch|finally)$')
+
+
+def _strip_tail_parens(s: str):
+    r"""剥掉结尾一个**平衡的**括号组，返回 (剩余, 是否剥掉了)。
+
+    不能用 `\([^{}]*\)` 这种写法：`[^{}]` 允许嵌套圆括号，于是
+    `QButton(text = if (handed) stringResource(…), enabled = x != null,) {`
+    里的 `if (` 会一路吃到最后那个 `)`，把整个调用误判成 if 控制流块，
+    从而把 onClick 尾随 lambda 洗白成可组合（CI run 41521727701 实测红 1 条）。
+    """
+    s = s.rstrip()
+    if s.endswith(')'):
+        d, i = 0, len(s) - 1
+        while i >= 0:
+            if s[i] == ')':
+                d += 1
+            elif s[i] == '(':
+                d -= 1
+                if d == 0:
+                    return s[:i].rstrip(), True
+            i -= 1
+    return s, False
+
+
+def expr_body_noncomp(funs) -> bool:
+    """最内层活动函数是**表达式体**（`fun f() = expr`）且它自己不是 @Composable → 体内不可组合。
+
+    表达式体没有 `{ }`，所以 `innermost_noncomp(stack)` 看不到它，必须单独问一次。
+    """
+    for idx in range(len(funs) - 1, -1, -1):
+        st = funs[idx]['state']
+        if st in ('sig', 'await', 'body', 'expr'):
+            return st == 'expr' and not funs[idx]['comp']
+    return False
+
+
+def innermost_noncomp(stack) -> bool:
+    """由最内层的**具名 lambda 块**决定组合上下文，控制流块（if/when/for…）透明跳过。"""
+    for b in reversed(stack):
+        if b[0] == 'brace' and len(b) > 2 and b[2] in ('comp', 'noncomp'):
+            return b[2] == 'noncomp'
+    return False
+
+
+def block_kind(lead: str, kinds: dict = None) -> str:
+    """判断一个 `{` 的上下文：'noncomp' / 'comp' / 'ctl'（控制流，透明）。"""
+    s = lead.rstrip()
+    head, _ = _strip_tail_parens(s)
+    if CTL_KEYWORD.search(head):
+        return 'ctl'
+    if NON_COMP_KEYWORD.search(head) or NON_COMP_PARAM.search(s):
+        return 'noncomp'
+    if kinds and s.endswith(')'):
+        d, i = 0, len(s) - 1
+        while i >= 0:
+            if s[i] == ')': d += 1
+            elif s[i] == '(':
+                d -= 1
+                if d == 0: break
+            i -= 1
+        mc = re.search(r'([A-Za-z_]\w*)\s*$', s[:i])
+        if mc and mc.group(1) in kinds and not kinds[mc.group(1)]:
+            return 'noncomp'
+    return 'comp'
+
+
+def _skip_string(src: str, i: int, raw: bool) -> tuple:
+    """从引号处扫到字符串结束，正确跳过 `${...}` 模板表达式（其中可能再嵌套字符串）。
+
+    此前不跳模板，导致 `"已导出 ${"%.1f".format(x)} MB"` 被切成三段假字面量，
+    替换后把外层模板撕开（kotlinc 报 syntax error: Expecting '"'）。
+    返回 (结束位置, 是否含插值)。模板内的字面量一律不单独记录，留给 D 阶段处理。
+    """
+    n = len(src)
+    quote = '"""' if raw else '"'
+    j = i + len(quote)
+    interp = False
+    while j < n:
+        c = src[j]
+        if not raw and c == '\\':
+            j += 2; continue
+        if src.startswith(quote, j):
+            return j + len(quote), interp
+        if not raw and c == '\n':
+            return j, interp          # 未闭合，保底
+        if c == '$' and j + 1 < n and (src[j + 1] == '{' or src[j + 1].isalpha() or src[j + 1] == '_'):
+            if not (src.startswith("${'$'}", j)):
+                interp = True
+            if src[j + 1] == '{':
+                k, d = j + 2, 1
+                while k < n and d:
+                    if src[k] == '"':
+                        k, _ = _skip_string(src, k, src.startswith('"""', k))
+                        continue
+                    if src[k] == '\'':
+                        k += 2 if src[k + 1:k + 2] == '\\' else 2
+                        continue
+                    if src[k] == '{': d += 1
+                    elif src[k] == '}': d -= 1
+                    k += 1
+                j = k; continue
+            j += 2; continue
+        j += 1
+    return n, interp
+
+def scan(src: str, kinds: dict = None) -> List[Dict]:
+    i, n = 0, len(src)
+    out: List[Dict] = []
+    ann: List[str] = []
+    # 栈元素: ('brace', fun_index_or_None) | ('paren', fun_index_or_None)
+    stack: List[list] = []
+    funs: List[Dict] = []          # {'name','comp','state'}  state: sig/await/body
+    top_fun: Optional[int] = None  # 当前最内层函数在 funs 里的下标
+
+    def cur_fun():
+        for idx in range(len(funs) - 1, -1, -1):
+            if funs[idx]['state'] in ('sig', 'await', 'body', 'expr'):
+                return idx
+        return None
+
+    while i < n:
+        c = src[i]
+        # ---- 注释 ----
+        if src.startswith('/*', i):
+            j = src.find('*/', i + 2)
+            i = n if j < 0 else j + 2
+            continue
+        if src.startswith('//', i):
+            j = src.find('\n', i)
+            i = n if j < 0 else j
+            continue
+        # ---- 字符串（记录并跳过；模板 ${} 内的代码本阶段不参与判定）----
+        if src.startswith('"""', i) or c == '"':
+            raw = src.startswith('"""', i)
+            j, interp = _skip_string(src, i, raw)
+            r = _rec(src, i, j, raw, funs, cur_fun())
+            r['noncomp'] = innermost_noncomp(stack) or expr_body_noncomp(funs)
+            r['blocks'] = [b[3] for b in stack if b[0] == 'brace' and len(b) > 3]  # 外层块 callee 链，审计用
+            r['interp'] = interp
+            out.append(r)
+            i = j
+            continue
+        # ---- 字符字面量 ----
+        if c == "'":
+            j = i + 1
+            while j < n:
+                if src[j] == '\\':
+                    j += 2; continue
+                if src[j] == "'":
+                    j += 1; break
+                if src[j] == '\n':
+                    break
+                j += 1
+            i = j
+            continue
+        # ---- 注解 ----
+        if c == '@':
+            m = re.match(r'@([A-Za-z_]\w*)', src[i:])
+            if m:
+                ann.append(m.group(1)); i += m.end(); continue
+        # ---- fun 声明 ----
+        m = re.match(r'fun\s+(?:<[^>]*>\s*)?(?:[\w<>.]+\.)?([A-Za-z_]\w*)\s*\(', src[i:])
+        if m:
+            # col 必须是**行首缩进**，不是 `fun` 关键字的列：`    suspend fun f(…)` 的
+            # `fun` 在第 12 列，而表达式体的续行在第 8 列，用关键字列会把续行误判成反缩进、
+            # 提前结束函数（实测 WallpaperStore.cacheNetwork 整片被判成顶层）。
+            ls = src.rfind('\n', 0, i) + 1
+            lead_ws = src[ls:i]
+            funs.append({'name': m.group(1), 'comp': 'Composable' in ann, 'state': 'sig',
+                         'col': len(lead_ws) - len(lead_ws.lstrip())})
+            ann = []
+            stack.append(['paren', len(funs) - 1])
+            i += m.end()
+            continue
+        if c == '=' and src[i + 1:i + 2] != '=' and (i == 0 or src[i - 1] not in '=!<>+-*/%&|'):
+            # `fun f(...) = expr`：表达式体函数，**没有 `{ }` 函数体**。
+            # 不处理的话它会永远停在 'await'，于是后面第一个 `{`（比如 Column {）被当成它的
+            # 函数体，按它的非组合属性判定 → 之后一整片组合代码被误判成 B 类、探针报假越界
+            # （AdminQueryDemo 的 `fun draftNow() = AdminFilter(...)` 实测带偏 27 条）。
+            idx = cur_fun()
+            if idx is not None and funs[idx]['state'] == 'await':
+                funs[idx]['state'] = 'expr'
+            i += 1; continue
+        if c == '\n':
+            # 表达式体/无体声明的结束：下一行第一个非空字符反缩进到声明列或更左，
+            # 且不是续行（链式 `.`、`?:`、运算符、`)`、`,`）或另起一行的函数体 `{`。
+            for idx in range(len(funs) - 1, -1, -1):
+                st = funs[idx]['state']
+                if st not in ('await', 'expr'):
+                    if st in ('sig', 'body'):
+                        break
+                    continue
+                j = i + 1
+                while j < n and src[j] in ' \t':
+                    j += 1
+                if j >= n or src[j] == '\n':
+                    break                                   # 空行，继续等
+                if j - src.rfind('\n', 0, j) - 1 > funs[idx].get('col', 0):
+                    break                                   # 缩进更深的续行
+                if st == 'expr' and src[j] in '.?+,)*/&|<>':
+                    break                                   # 表达式还没写完
+                if st == 'await' and src[j] == '{':
+                    break                                   # 函数体大括号另起一行
+                funs[idx]['state'] = 'done'
+                break
+            i += 1; continue
+        if c == '(':
+            stack.append(['paren', None]); i += 1; continue
+        if c == ')':
+            for k in range(len(stack) - 1, -1, -1):
+                if stack[k][0] == 'paren':
+                    fi = stack[k][1]
+                    del stack[k]
+                    if fi is not None and funs[fi]['state'] == 'sig':
+                        funs[fi]['state'] = 'await'
+                    break
+            i += 1; continue
+        if c == '{':
+            fi = None
+            idx = cur_fun()
+            if idx is not None and funs[idx]['state'] == 'await':
+                funs[idx]['state'] = 'body'; fi = idx
+            lead = src[max(0, i - 300):i]
+            _m = re.search(r'([A-Za-z_][\w.]*)\s*(?:\([^{}]*?\))?\s*$', lead.rstrip())
+            if fi is not None:
+                # 这个 `{` 是**函数体**，不是尾随 lambda。必须由函数自身的可组合性决定，
+                # 不能走 block_kind 回溯 callee：`private fun QButton(…, onClick: () -> Unit) {`
+                # 会被查成「QButton 的尾随 lambda 不可组合」，从而把它 @Composable 函数体
+                # 里的合法 stringResource 误判为越界（CI 实测合法）。
+                kind = 'comp' if funs[fi]['comp'] else 'noncomp'
+            else:
+                kind = block_kind(lead, kinds)
+            stack.append(['brace', fi, kind, _m.group(1) if _m else '?'])
+            i += 1; continue
+        if c == '}':
+            for k in range(len(stack) - 1, -1, -1):
+                if stack[k][0] == 'brace':
+                    fi = stack[k][1]
+                    del stack[k]
+                    if fi is not None:
+                        funs[fi]['state'] = 'done'
+                    break
+            ann = []
+            i += 1; continue
+        if c == ';':
+            ann = []; i += 1; continue
+        # ---- 标识符 / 关键字 ----
+        m = re.match(r'[A-Za-z_]\w*', src[i:])
+        if m:
+            tok = m.group(0)
+            if tok in DECL_KEYWORDS:
+                ann = []
+            elif tok not in MODIFIERS:
+                # 普通标识符出现即说明注解不再修饰紧随其后的声明
+                if ann and tok not in ('Composable',):
+                    pass
+            i += m.end(); continue
+        i += 1
+    return out
+
+
+def _rec(src, a, b, raw, funs, idx) -> Dict:
+    if idx is None:
+        scope, comp, fname = 'top', None, None
+    else:
+        st = funs[idx]['state']
+        scope = 'sig' if st == 'sig' else ('body' if st in ('body', 'await', 'expr') else 'top')
+        comp, fname = funs[idx]['comp'], funs[idx]['name']
+    lit = src[a:b]
+    body = lit[3:-3] if raw else lit[1:-1]
+    line = src[:a].count('\n') + 1
+    ls = src.rfind('\n', 0, a) + 1
+    prefix = src[ls:a]
+    ma = re.search(r'([A-Za-z_]\w*)\s*(?::[^=()]{0,80})?=\s*$', prefix)
+    if ma:
+        arg = ma.group(1)
+    else:
+        mc = re.search(r'([A-Z][A-Za-z]*)\s*\(\s*$', prefix)
+        arg = (mc.group(1)[0].lower() + mc.group(1)[1:]) if mc else 'text'
+    return dict(start=a, end=b, line=line, raw=raw, lit=lit, text=body,
+                scope=scope, comp=comp, fun=fname, arg=arg)
+
+
+CJK = re.compile(r'[\u4e00-\u9fff]')
+
+
+def collect(root):
+    """扫全仓，返回所有含中文的字面量记录（带 cat 分类）。不依赖任何临时文件。"""
+    root = pathlib.Path(root)
+    kinds = build_lambda_kinds(root)
+    recs = []
+    for f in sorted(root.rglob('*.kt')):
+        src = f.read_text(encoding='utf-8')
+        rel = str(f.relative_to(root))
+        for r in scan(src, kinds):
+            if not CJK.search(r['text']):
+                continue
+            r['file'] = rel
+            if r['scope'] == 'body' and r['comp']:
+                r['cat'] = 'A 组合体内'
+            elif r['scope'] == 'sig' and r['comp']:
+                r['cat'] = 'C1 组合默认参数'
+            elif r['scope'] == 'body':
+                r['cat'] = 'B 普通函数体内'
+            elif r['scope'] == 'sig':
+                r['cat'] = 'C2 普通函数默认参数'
+            else:
+                r['cat'] = 'C3 顶层/数据'
+            if r.get('interp'):
+                r['cat'] = 'D 带插值（需格式参数）'
+            recs.append(r)
+    return recs
+
+
+if __name__ == '__main__':
+    """打印分类结果。分类逻辑只有一份（collect()），不再在 __main__ 里重算。
+
+    此前 __main__ 自带一套分类：只把 `'${' in lit` 且属 A/C1 的算 D，
+    于是 `$name` 裸插值和 B/C3 里的插值被漏计（打印 100 条，实际 177 条），
+    迁移脚本用的却是 collect()，两边口径不一致。也顺手删掉写 /tmp/scan_all.json
+    ——本沙箱 /tmp 每轮被清空，任何依赖它的东西都不可靠。
+    """
+    import sys
+    import collections
+    root = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else
+                        'android/app/src/main/java/com/monkeycode/liquidui')
+    recs = collect(root)
+    per_file = collections.Counter(r['cat'] for r in recs)
+    print('=== 扫描器分类结果 ===')
+    for k, v in per_file.most_common():
+        print(f'  {v:5d}  {k}')
+    print('  总计', len(recs))
+    print('\n=== D 类细分（阶段 4 施工面）===')
+    D = [r for r in recs if r['cat'].startswith('D')]
+    sub = collections.Counter(
+        'scope=' + r['scope'] if r['scope'] != 'body' else
+        '组合函数体' if r.get('comp') and not r.get('noncomp') else
+        '组合函数内的非组合 lambda' if r.get('comp') else
+        '非组合函数体（B）' for r in D)
+    for k, v in sub.most_common():
+        print(f'  {v:5d}  {k}')
+    print('\n=== 自检（此前被漏判的三处）===')
+    for want in [('ui/features/AppIconSwitcher.kt', '桌面图标'),
+                 ('ui/components/Dialogs.kt', '确定'),
+                 ('ui/navigation/Screen.kt', '首页')]:
+        hit = [r for r in recs if r['file'] == want[0] and r['text'] == want[1]]
+        if hit:
+            h = hit[0]
+            print(f"  {want[0]}:{h['line']} {h['text']!r} → scope={h['scope']} comp={h['comp']} cat={h['cat']}")
+        else:
+            print(f"  {want[0]} {want[1]!r} 已外置（不再出现）✓")

@@ -28,6 +28,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 import com.monkeycode.liquidui.R
 
 /**
@@ -105,13 +106,13 @@ fun AppIconPicker(modifier: Modifier = Modifier) {
 
     Column(modifier = modifier) {
         Text(
-            text = "桌面图标",
+            text = stringResource(R.string.app_icon_text_1),
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurface,
         )
         Spacer(Modifier.height(4.dp))
         Text(
-            text = "选择后桌面图标立即更换（个别桌面需稍等刷新）",
+            text = stringResource(R.string.app_icon_text_2),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )

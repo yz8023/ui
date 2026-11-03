@@ -60,7 +60,7 @@ import com.kyant.backdrop.shadow.Shadow
 import com.kyant.shapes.Capsule
 import com.monkeycode.liquidui.ui.motion.DampedDragAnimation
 import com.monkeycode.liquidui.ui.motion.InteractiveHighlight
-import com.monkeycode.liquidui.ui.motion.运动
+import com.monkeycode.liquidui.ui.motion.Motion
 import com.monkeycode.liquidui.ui.theme.LocalAppChrome
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.drop
@@ -84,7 +84,7 @@ import kotlin.math.sign
  *  - the specular highlight follows the finger (`InteractiveHighlight`)
  */
 @Composable
-fun 液态玻璃底部标签栏(
+fun LiquidBottomTabs(
     selectedTabIndex: () -> Int,
     onTabSelected: (index: Int) -> Unit,
     backdrop: Backdrop,
@@ -123,11 +123,11 @@ fun 液态玻璃底部标签栏(
     var currentIndex by remember(selectedTabIndex) {
         mutableIntStateOf(selectedTabIndex())
     }
-    class DampedDragAnimationHolder {
+    class DampedDragHolder {
         var instance: DampedDragAnimation? = null
     }
-    val animationHolder = remember { DampedDragAnimationHolder() }
-    val damping = 运动.motionDamping.floatValue
+    val animationHolder = remember { DampedDragHolder() }
+    val damping = Motion.motionDamping.floatValue
     val dampedDragAnimation = remember(animationScope, tabsCount, density, isLtr, damping) {
         DampedDragAnimation(
             animationScope = animationScope,
@@ -156,7 +156,7 @@ fun 液态玻璃底部标签栏(
                 currentIndex = targetIndex
                 animateToValue(targetIndex.toFloat())
                 animationScope.launch {
-                    offsetAnimation.animateTo(0f, spring(运动.DampedRatio(1f), 300f, 0.5f))
+                    offsetAnimation.animateTo(0f, spring(Motion.DampedRatio(1f), 300f, 0.5f))
                 }
             },
             onDrag = { _, dragAmount ->
@@ -361,7 +361,7 @@ internal val LocalLiquidBottomTabOriginalAlpha =
     staticCompositionLocalOf { { _: Int -> 1f } }
 
 @Composable
-fun RowScope.液态玻璃底部标签(
+fun RowScope.LiquidBottomTab(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     index: Int = -1,

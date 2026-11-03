@@ -1,4 +1,1851 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  本文件是套壳时改文案的唯一入口。命名约定：
+    nav_*                 底部导航与页面标题（对应 ui/navigation/Screen.kt）
+    common_*              跨页面共用文案（取消 / 确认 / 全部 / 提示词 …）
+    <文件 slug>_<角色>_<序号>  某个页面内部的文案，slug 见 scripts/externalize-strings.py
+  角色取自代码里的具名参数：title / subtitle / text / label / content_desc …
+  还有 B/C2/D/C3 四类共约 1250 条尚未外置（顶层数据需先改 @StringRes 模型），
+  进度见 docs/把本仓库当壳用-套壳上手指南.md 第 8 项。
+-->
 <resources>
     <string name="app_name">Android 素材库示例</string>
+    <string name="nav_home">首页</string>
+    <string name="nav_home_subtitle">设计系统概览</string>
+    <string name="nav_components">组件</string>
+    <string name="nav_components_subtitle">控件与状态</string>
+    <string name="nav_motion">动效</string>
+    <string name="nav_motion_subtitle">交互物理演示</string>
+    <string name="nav_settings">设置</string>
+    <string name="nav_settings_subtitle">主题与偏好</string>
+    <string name="nav_gallery">素材</string>
+    <string name="nav_gallery_subtitle">功能点目录</string>
+
+    <!-- ===== ui/components/Dialogs.kt ===== -->
+    <string name="common_cancel">取消</string>
+    <string name="dialog_confirm_1">确定</string>
+
+    <!-- ===== ui/components/Feedback.kt ===== -->
+    <string name="feedback_message_1">正在准备内容，请稍候。</string>
+    <string name="feedback_text_1">当前网络不可用，内容会在恢复连接后自动刷新。</string>
+    <string name="feedback_title_1">加载中</string>
+
+    <!-- ===== ui/features/AppIconSwitcher.kt ===== -->
+    <string name="app_icon_text_1">桌面图标</string>
+    <string name="app_icon_text_2">选择后桌面图标立即更换（个别桌面需稍等刷新）</string>
+
+    <!-- ===== ui/features/adminquery/AdminQueryDemo.kt ===== -->
+    <string name="aq_demo_hint_1">开启后按钮只写「近7天」，不写起止——同一句文案两个人能算出两个数。</string>
+    <string name="aq_demo_hint_2">开启后快捷档位失效，按下面的起止算</string>
+    <string name="aq_demo_hint_3">开启后把已选部门逐个平铺，看条件区被撑成几行。</string>
+    <string name="aq_demo_label_1">模糊文案（反例）</string>
+    <string name="aq_demo_label_2">使用自定义区间</string>
+    <string name="aq_demo_label_3">摊开所有标签（反例）</string>
+    <string name="aq_demo_label_4">仅看异常</string>
+    <string name="aq_demo_text_1">快捷区间（写明起止 · 含首尾）</string>
+    <string name="aq_demo_text_10">清空全部条件</string>
+    <string name="aq_demo_text_11">值班组长</string>
+    <string name="aq_demo_text_12">看板（点柱子只看这块）</string>
+    <string name="aq_demo_text_13">渠道</string>
+    <string name="aq_demo_text_14">部门</string>
+    <string name="aq_demo_text_15">状态</string>
+    <string name="aq_demo_text_16">下钻详情</string>
+    <string name="aq_demo_text_17">点任意一根柱子，这里只看这块：维度标题、金额、笔数、占比、明细一起联动。</string>
+    <string name="aq_demo_text_18">（空态给下一步动作，不写「暂无数据」。）</string>
+    <string name="aq_demo_text_19">✓ 转交话术已复制</string>
+    <string name="aq_demo_text_2">自定义起止（±1 天步进）</string>
+    <string name="aq_demo_text_20">转给负责人（复制交接话术）</string>
+    <string name="aq_demo_text_21">① 时间（写明起止 · 超限置灰）</string>
+    <string name="aq_demo_text_22">② 常用条件（常显）</string>
+    <string name="aq_demo_text_23">选择部门</string>
+    <string name="aq_demo_text_24">待生效</string>
+    <string name="aq_demo_text_25">全选</string>
+    <string name="aq_demo_text_26">③ 更多筛选（收起）</string>
+    <string name="aq_demo_text_27">收起更多筛选</string>
+    <string name="aq_demo_text_28">更多筛选</string>
+    <string name="aq_demo_text_29">④ 已选条件标签（聚合 · 可删）</string>
+    <string name="aq_demo_text_3">开始</string>
+    <string name="aq_demo_text_30">⑤ 查询（批量提交）</string>
+    <string name="aq_demo_text_31">查询（条件未变化）</string>
+    <string name="aq_demo_text_32">⑥ 结果概览</string>
+    <string name="aq_demo_text_33">⑦ 看板下钻</string>
+    <string name="aq_demo_text_34">当前条件无命中：先放宽时间或清空「仅看异常」，再来看板。</string>
+    <string name="aq_demo_text_35">⑧ 明细（当前切片）</string>
+    <string name="aq_demo_text_36">未下钻：显示全部命中前 8 行。点柱子可只看某一维度。</string>
+    <string name="aq_demo_text_37">⑨ 导出与转交</string>
+    <string name="aq_demo_text_38">未选切片时「转给负责人」禁用：不知道转哪块就不该让人转。</string>
+    <string name="aq_demo_text_4">结束</string>
+    <string name="aq_demo_text_5">开始日期晚于结束日期：查询已禁用，请修正起止。</string>
+    <string name="aq_demo_text_6">查询口径回显</string>
+    <string name="aq_demo_text_7">尚未查询。点上方按钮后这里回显明确口径。</string>
+    <string name="aq_demo_text_8">选条件（20 个部门 + 状态 + 渠道）</string>
+    <string name="aq_demo_text_9">已选条件（聚合规则）</string>
+    <string name="common_clear">清空</string>
+
+    <!-- ===== ui/features/overlayterms/OverlayTermsDemo.kt ===== -->
+    <string name="ot_demo_text_1">Alert = 阻塞式告知：只有一个「知道了」，不征求选择。</string>
+    <string name="ot_demo_text_10">发一条系统 Toast（真 Toast.makeText）</string>
+    <string name="ot_demo_text_11">显示自绘轻提示（可定制样式，2.2s 自动消失）</string>
+    <string name="ot_demo_text_12">要品牌样式/多条堆叠就自绘，但语义不能变：仍然不可交互、自动消失。</string>
+    <string name="ot_demo_text_13">反例对照：报错别用 Toast（读不完且无法重试）——该用 Snackbar（P07）或内联错误。</string>
+    <string name="ot_demo_text_14">Modal = 带遮罩的小房间：必须在里面完成或明确放弃，才能回主流程。</string>
+    <string name="ot_demo_text_15">点外面不可关（防丢数据）</string>
+    <string name="ot_demo_text_16">点外面可关</string>
+    <string name="ot_demo_text_17">打开 Modal：重命名项目</string>
+    <string name="ot_demo_text_18">含输入框的 Modal 一定要给「取消」，且主按钮在内容为空时禁用。</string>
+    <string name="ot_demo_text_19">反例对照：Modal 里装长列表/设置页 → 该用 Drawer（P04）或 BottomSheet（P10）。</string>
+    <string name="ot_demo_text_2">不可绕过（点外面/返回键都关不掉）</string>
+    <string name="ot_demo_text_20">重命名项目</string>
+    <string name="ot_demo_text_21">项目名称</string>
+    <string name="ot_demo_text_22">这是 Modal：背景被遮罩挡住、焦点关在框内，必须处理完才能回去。</string>
+    <string name="ot_demo_text_23">保存</string>
+    <string name="ot_demo_text_24">Drawer = 从边缘滑出的面板，承载导航或一批内容；遮罩透明度与面板位移共用同一 progress。</string>
+    <string name="ot_demo_text_25">主页面内容</string>
+    <string name="ot_demo_text_26">打开抽屉</string>
+    <string name="ot_demo_text_27">点遮罩、按返回键都能关；面板宽 210dp 固定，不用百分比像素写死。</string>
+    <string name="ot_demo_text_28">导航</string>
+    <string name="ot_demo_text_29">概览</string>
+    <string name="ot_demo_text_3">可绕过</string>
+    <string name="ot_demo_text_30">订单</string>
+    <string name="ot_demo_text_31">报表</string>
+    <string name="ot_demo_text_32">成员</string>
+    <string name="ot_demo_text_33">设置</string>
+    <string name="ot_demo_text_34">反例对照：手机竖屏用左侧 Drawer 装长表单 → 该用 BottomSheet（P10）或独立页。</string>
+    <string name="ot_demo_text_35">Popconfirm = 贴着按钮的小气泡，就地二次确认轻量操作，不遮整页。</string>
+    <string name="ot_demo_text_36">列表已空。点下面的「恢复全部」再来一遍。</string>
+    <string name="ot_demo_text_37">恢复全部</string>
+    <string name="ot_demo_text_38">Android 对应：DropdownMenu 自动锚定并在空间不足时翻到上方；要自定义箭头/位置才用底层 Popup。</string>
+    <string name="ot_demo_text_39">反例对照：确认「清空全部数据」这种重操作 → 该用 Modal（P03）写清后果。</string>
+    <string name="ot_demo_text_4">弹出 Alert：存储即将写满</string>
+    <string name="ot_demo_text_40">Tooltip = 纯文字注解，长按出现、自动消失、不可交互。移动端没有 hover，等价触发是长按。</string>
+    <string name="ot_demo_text_41">控制是否推送与免打扰时段</string>
+    <string name="ot_demo_text_42">上次同步 12 分钟前，仅 Wi-Fi 下自动</string>
+    <string name="ot_demo_text_43">已禁用：需要先完成实名认证</string>
+    <string name="ot_demo_text_44">长按任意图标试试：1.8s 后自动消失，点外部也可关。</string>
+    <string name="ot_demo_text_45">无障碍要点：图标已设 contentDescription，读屏拿得到同样信息——必要说明不能只藏在 Tooltip 里。</string>
+    <string name="ot_demo_text_46">反例对照：Tooltip 里塞按钮/链接 → 那是 Popover（P09）。</string>
+    <string name="ot_demo_text_47">Snackbar = 应用内底部条幅，可带一个操作；删除后给「撤销」是它的典型用法。</string>
+    <string name="ot_demo_text_48">三条草稿都删完了。等 Snackbar 消失后重进本页可复位。</string>
+    <string name="ot_demo_text_49">恢复全部草稿</string>
+    <string name="ot_demo_text_5">反例对照：把「保存成功」做成 Alert 就是滥用——那该是 Toast（P02）。</string>
+    <string name="ot_demo_text_50">反例对照：Snackbar 里放两个以上操作 → 那已经是工具栏了；报致命错误 → 用 Modal（P03）。</string>
+    <string name="ot_demo_text_51">Popover = 锚定的富内容气泡：可放菜单项、开关、输入；Tooltip 的「能干活」版本。</string>
+    <string name="ot_demo_text_52">更多操作 ⋯</string>
+    <string name="ot_demo_text_53">生成链接发给同事</string>
+    <string name="ot_demo_text_54">CSV / PDF 两种格式</string>
+    <string name="ot_demo_text_55">从列表移走但可恢复</string>
+    <string name="ot_demo_text_56">接收通知</string>
+    <string name="ot_demo_text_57">气泡内每行热区 ≥44dp；内容超过 6 项或需要滚动时改用 BottomSheet（P10）。</string>
+    <string name="ot_demo_text_58">反例对照：气泡里再弹气泡、或点外部不关闭，都是常见错法。</string>
+    <string name="ot_demo_text_59">分享到微信</string>
+    <string name="ot_demo_text_6">存储即将写满</string>
+    <string name="ot_demo_text_60">复制链接</string>
+    <string name="ot_demo_text_61">导出 PDF</string>
+    <string name="ot_demo_text_62">移动到归档</string>
+    <string name="ot_demo_text_63">删除</string>
+    <string name="ot_demo_text_64">加载反馈分三档强度：非阻塞 → 按钮内 → 全局遮罩。强度越高越要给进度与取消。</string>
+    <string name="ot_demo_text_65">非阻塞</string>
+    <string name="ot_demo_text_66">按钮内</string>
+    <string name="ot_demo_text_67">全局遮罩</string>
+    <string name="ot_demo_text_68">顶部细进度条：用户仍可继续操作，适合后台刷新/分页加载。</string>
+    <string name="ot_demo_text_69">提交表单</string>
+    <string name="ot_demo_text_7">剩余空间不足 200MB，继续录制可能中断。这是 Alert：只告知事实，不让你选。</string>
+    <string name="ot_demo_text_70">开始关键操作</string>
+    <string name="ot_demo_text_71">后台刷新</string>
+    <string name="ot_demo_text_72">按钮加载态：宽度不变（只换文案 + 16dp 圆环），防止布局跳动；同时禁止重复提交。</string>
+    <string name="ot_demo_text_73">全局遮罩必须给取消或超时兜底，否则网络一断就永远转圈。</string>
+    <string name="ot_demo_text_74">反例对照：点一下按钮就整页转圈；加载完不给结果反馈（应接 Toast/Snackbar）。</string>
+    <string name="ot_demo_text_75">Badge = 附着在图标上的持续状态：不弹出、不打断，被消费后才消失。</string>
+    <string name="ot_demo_text_76">有更新</string>
+    <string name="ot_demo_text_77">无更新</string>
+    <string name="ot_demo_text_78">计数角标 vs 红点</string>
+    <string name="ot_demo_text_79">数字用于「有多少」，红点用于「有更新但不计数」</string>
+    <string name="ot_demo_text_8">知道了</string>
+    <string name="ot_demo_text_80">设为 100</string>
+    <string name="ot_demo_text_81">清零</string>
+    <string name="ot_demo_text_82">红点开</string>
+    <string name="ot_demo_text_83">规则：count &gt; 99 显示「99+」；count == 0 时整个角标不渲染，不是显示「0」。</string>
+    <string name="ot_demo_text_84">反例对照：红点永远消不掉（没有消费逻辑）、角标遮住图标主体超过 1/3。</string>
+    <string name="ot_demo_text_9">Toast = 最弱反馈：不打断、无按钮、自动消失。</string>
+
+    <!-- ===== ui/features/toolkit/ToolkitDemo.kt ===== -->
+    <string name="common_all">全部</string>
+    <string name="common_cancel_download">取消下载</string>
+    <string name="common_checking">检查中…</string>
+    <string name="common_copy_all">复制全文</string>
+    <string name="common_download_install">下载 APK 并安装</string>
+    <string name="common_redownload_install">重新下载并安装</string>
+    <string name="common_retry">重试</string>
+    <string name="common_share">系统分享</string>
+    <string name="tk_demo_text_1">当前安装版本</string>
+    <string name="tk_demo_text_10">最新 tag</string>
+    <string name="tk_demo_text_11">发布时间</string>
+    <string name="tk_demo_text_12">APK 附件</string>
+    <string name="tk_demo_text_13">（该 Release 没有 APK）</string>
+    <string name="tk_demo_text_14">更新日志（Markdown 渲染，见 U03）</string>
+    <string name="tk_demo_text_15">模拟态用的是假下载地址，下载按钮已禁用；点上面的「真实检查更新」拿到真 URL 后才能下载。</string>
+    <string name="tk_demo_text_16">去授权安装未知应用</string>
+    <string name="tk_demo_text_17">用浏览器下载</string>
+    <string name="tk_demo_text_18">缓冲</string>
+    <string name="tk_demo_text_19">写日志（真实写入 AppLog，同时进 logcat）</string>
+    <string name="tk_demo_text_2">检查目标仓库</string>
+    <string name="tk_demo_text_20">D 调试</string>
+    <string name="tk_demo_text_21">I 信息</string>
+    <string name="tk_demo_text_22">W 警告</string>
+    <string name="tk_demo_text_23">E 异常</string>
+    <string name="tk_demo_text_24">U01 的检查/下载流程也会往这里写日志——这就是「在真实调用点打日志」，不是自己打自己。</string>
+    <string name="tk_demo_text_25">按 tag 或正文过滤…</string>
+    <string name="tk_demo_text_26">（没有符合条件的日志）</string>
+    <string name="tk_demo_text_27">确认清空？</string>
+    <string name="tk_demo_text_28">隐私红线：日志里不要出现 token、密码、带 query 的完整 URL、手机号——分享出去就是泄露。</string>
+    <string name="tk_demo_text_29">更新日志</string>
+    <string name="tk_demo_text_3">真实检查更新</string>
+    <string name="tk_demo_text_30">语法清单</string>
+    <string name="tk_demo_text_31">隐私说明</string>
+    <string name="tk_demo_text_32">解析结果</string>
+    <string name="tk_demo_text_33">停止编辑</string>
+    <string name="tk_demo_text_34">自己改文字试试</string>
+    <string name="tk_demo_text_35">Markdown 源码（边打字边渲染）</string>
+    <string name="tk_demo_text_36">颜色全部走 MaterialTheme.colorScheme，切深色模式自动适配；链接点击交给 LocalUriHandler，代码块可长按选中复制。</string>
+    <string name="tk_demo_text_37">当前真机窗口分级</string>
+    <string name="tk_demo_text_38">演示容器宽度</string>
+    <string name="tk_demo_text_39">拖动滑杆改变容器宽度，观察底部栏与侧边栏的切换</string>
+    <string name="tk_demo_text_4">检查会真的访问 api.github.com；无网时会返回 FAILED 并给出可读原因（不是笼统的「失败」）。</string>
+    <string name="tk_demo_text_40">底部 NavigationBar</string>
+    <string name="tk_demo_text_41">侧边 NavigationRail</string>
+    <string name="tk_demo_text_42">内容区永远占满剩余空间：宿主不需要为两种布局各写一套内边距。</string>
+    <string name="tk_demo_text_43">真机分级由 LocalConfiguration.screenWidthDp 决定：旋转、分屏、折叠屏展开都会自动重算，不需要监听器。</string>
+    <string name="tk_demo_text_5">三态预览（模拟数据，不发请求）</string>
+    <string name="tk_demo_text_6">有新版</string>
+    <string name="tk_demo_text_7">已最新</string>
+    <string name="tk_demo_text_8">失败</string>
+    <string name="tk_demo_text_9">耗时</string>
+
+    <!-- ===== ui/features/ui2/Ui2PreviewHost.kt ===== -->
+    <string name="ui2_host_text_1">预览建设中</string>
+
+    <!-- ===== ui/screens/ComponentsScreen.kt ===== -->
+    <string name="components_confirm_1">确认</string>
+    <string name="components_content_desc_1">通知</string>
+    <string name="components_label_1">昵称</string>
+    <string name="components_label_2">密码</string>
+    <string name="components_message_1">骨架线使用同一套玻璃材质，可直接放到列表、详情页或 WebView 容器里。</string>
+    <string name="components_message_2">错误态保留标题、说明和重试动作，适合网络请求、文件导入和权限失败场景。</string>
+    <string name="components_placeholder_1">输入内容</string>
+    <string name="components_section_title_1">概览 · 大卡与指标</string>
+    <string name="components_section_title_2">按钮 · 按下权重</string>
+    <string name="components_section_title_3">输入 · 17dp 圆角</string>
+    <string name="components_section_title_4">选择 · 弹簧滑块</string>
+    <string name="components_section_title_5">偏好行 · 设置语言</string>
+    <string name="components_section_title_6">进度 · 弹簧填充</string>
+    <string name="components_section_title_7">状态反馈 · 加载 / 成功 / 离线 / 错误</string>
+    <string name="components_section_title_8">浮层 · 玻璃对话框</string>
+    <string name="components_section_title_9">配色 · 语义色板</string>
+    <string name="components_subtitle_1">大卡、指标、胶囊筛选与功能组件共享同一套壁纸采样和玻璃参数。</string>
+    <string name="components_subtitle_2">开关滑块使用弹簧回弹</string>
+    <string name="components_subtitle_3">默认关闭，遵循隐私优先</string>
+    <string name="components_text_1">组件库</string>
+    <string name="components_text_10">外观</string>
+    <string name="components_text_11">交互</string>
+    <string name="components_text_12">主要操作</string>
+    <string name="components_text_13">次要操作</string>
+    <string name="components_text_14">禁用态</string>
+    <string name="components_text_15">支持视觉转换与键盘类型</string>
+    <string name="components_text_16">系统</string>
+    <string name="components_text_17">浅色</string>
+    <string name="components_text_18">深色</string>
+    <string name="components_text_19">薄荷</string>
+    <string name="components_text_2">每个控件的默认态、聚焦态与按下权重都已固化。</string>
+    <string name="components_text_20">琥珀</string>
+    <string name="components_text_21">玫红</string>
+    <string name="components_text_22">紫罗兰</string>
+    <string name="components_text_23">切换</string>
+    <string name="components_text_24">主题配置已导出，可粘贴给其他设备导入。</string>
+    <string name="components_text_25">网络断开：更新检测与网页容器会自动降级为本地说明。</string>
+    <string name="components_text_26">对话框同样是玻璃材质，圆角 28dp，进出场都有过冲。</string>
+    <string name="components_text_27">打开对话框</string>
+    <string name="components_text_28">这是一个空白功能示例对话框。把 confirm 回调接到你的业务逻辑即可。</string>
+    <string name="components_text_3">实时折射</string>
+    <string name="components_text_4">组件</string>
+    <string name="components_text_5">完整</string>
+    <string name="components_text_6">可直接接业务</string>
+    <string name="components_text_7">壁纸</string>
+    <string name="components_text_8">离线</string>
+    <string name="components_text_9">网络图已缓存</string>
+    <string name="components_title_1">液态玻璃设计系统</string>
+    <string name="components_title_2">推送通知</string>
+    <string name="components_title_3">匿名数据统计</string>
+    <string name="components_title_4">加载素材清单</string>
+    <string name="components_title_5">加载失败</string>
+    <string name="components_title_6">确认操作</string>
+    <string name="components_value_1">12 个功能模块</string>
+
+    <!-- ===== ui/screens/MotionScreen.kt ===== -->
+    <string name="motion_section_title_1">弹簧阻尼 · 拖动后释放</string>
+    <string name="motion_section_title_2">错峰入场 · 列表编排</string>
+    <string name="motion_section_title_3">冲击反馈 · 屏幕轻微抖动</string>
+    <string name="motion_section_title_4">常态呼吸 · 画面永不静止</string>
+    <string name="motion_text_1">动效实验室</string>
+    <string name="motion_text_10">碰撞</string>
+    <string name="motion_text_11">落地</string>
+    <string name="motion_text_12">多个事件同帧触发时取最大值，绝不叠加——否则「有冲击力」会变成「抖成一团糊」。</string>
+    <string name="motion_text_13">不同频率、不同相位，避免同频脉冲。</string>
+    <string name="motion_text_2">拖动、点击、重播——每段动画都对应一个可复用的 token。</string>
+    <string name="motion_text_3">当前为「减少动效」模式：物理动画已替换为无过冲的临界阻尼，内容默认处于终态。</string>
+    <string name="motion_text_4">在「设置」中开启「减少动效」可查看降级方案：内容保持可读，交互动效被收敛。</string>
+    <string name="motion_text_5">拖</string>
+    <string name="motion_text_6">70ms / 项</string>
+    <string name="motion_text_7">重播</string>
+    <string name="motion_text_8">token: shake.max-not-sum · 双频率 47/31Hz</string>
+    <string name="motion_text_9">拾取</string>
+
+    <!-- ===== ui/screens/SettingsScreen.kt ===== -->
+    <string name="settings_text_1">导入 / 导出主题</string>
+    <string name="settings_text_10">已是最新</string>
+    <string name="settings_text_11">检查失败</string>
+    <string name="settings_text_12">无 APK 附件</string>
+    <string name="settings_text_13">更新日志（Markdown 实时渲染，见 F20/U03）</string>
+    <string name="settings_text_14">去授权「安装未知应用」</string>
+    <string name="settings_text_15">改用浏览器下载</string>
+    <string name="settings_text_16">只存内存不落盘，进程被杀即清空，因此不需要存储权限。分享前请自行确认内容不含隐私。</string>
+    <string name="settings_text_2">把当前外观、玻璃参数和动效偏好保存为 JSON；可复制给别人或从剪贴板恢复。</string>
+    <string name="settings_text_3">导出</string>
+    <string name="settings_text_4">导入</string>
+    <string name="settings_text_5">种子色 · 在色盘上点击/拖动取色，右侧滑条调深浅</string>
+    <string name="settings_text_6">背景深浅</string>
+    <string name="settings_text_7">发送</string>
+    <string name="settings_text_8">检查更新</string>
+    <string name="settings_text_9">发现新版本</string>
+    <string name="settings_title_1">运行日志</string>
+
+    <!-- ===== ui/screens/WelcomeGuideScreen.kt ===== -->
+    <string name="welcome_text_1">完全免费</string>
+    <string name="welcome_text_2">无广告、无内购，所有功能永久免费</string>
+    <string name="welcome_text_3">免责声明：本应用仅供个人学习与技术交流，请勿用于商业用途。</string>
+    <string name="welcome_text_4">下载内容版权归原作者所有，请于下载后 24 小时内删除。</string>
+    <string name="welcome_text_5">使用本应用产生的任何后果由使用者自行承担。</string>
+    <string name="welcome_text_6">开源仓库</string>
+
+    <!-- ===== ui/features/ui2/previews/PreviewBaseForm.kt（阶段 2b） ===== -->
+    <string name="common_liquid_glass">液态玻璃</string>
+    <string name="common_shared_1">提交中…</string>
+    <string name="common_shared_2">图标切换</string>
+    <string name="common_shared_3">动效系统</string>
+    <string name="common_shared_4">O神主题</string>
+    <string name="common_shared_5">网络壁纸</string>
+    <string name="common_shared_6">权限中心</string>
+    <string name="common_shared_7">玻璃</string>
+    <string name="common_system_wallpaper">系统壁纸</string>
+    <string name="common_wallpaper_bg">壁纸背景</string>
+    <string name="pv_form_text_1">主要按钮</string>
+    <string name="pv_form_text_10">拖动看数值气泡（此处常显数值），两端不越界。</string>
+    <string name="pv_form_text_11">全部权限（三态）</string>
+    <string name="pv_form_text_12">读取壁纸</string>
+    <string name="pv_form_text_13">发送通知</string>
+    <string name="pv_form_text_14">访问网络</string>
+    <string name="pv_form_text_15">极光</string>
+    <string name="pv_form_text_16">本地缓存</string>
+    <string name="pv_form_text_17">张</string>
+    <string name="pv_form_text_18">李</string>
+    <string name="pv_form_text_19">王</string>
+    <string name="pv_form_text_2">次要</string>
+    <string name="pv_form_text_20">邮</string>
+    <string name="pv_form_text_21">头像组重叠 8dp + 未读徽标；点任意头像无动作，纯展示组件。</string>
+    <string name="pv_form_text_22">邮箱</string>
+    <string name="pv_form_text_23">邮箱格式不正确</string>
+    <string name="pv_form_text_24">密码（≥6位）</string>
+    <string name="pv_form_text_25">密码至少 6 位</string>
+    <string name="pv_form_text_26">确认密码</string>
+    <string name="pv_form_text_27">两次输入不一致</string>
+    <string name="pv_form_text_28">注册（演示校验）</string>
+    <string name="pv_form_text_29">✓ 格式检查通过（演示，未创建账号）</string>
+    <string name="pv_form_text_3">幽灵</string>
+    <string name="pv_form_text_30">改密码后确认密码会重新判不一致——联动校验。</string>
+    <string name="pv_form_text_31">单击 ±1，长按连发（到端自动停）；范围 0–9。</string>
+    <string name="pv_form_text_32">日</string>
+    <string name="pv_form_text_33">周</string>
+    <string name="pv_form_text_34">月</string>
+    <string name="pv_form_text_35">搜索功能…</string>
+    <string name="pv_form_text_36">图标</string>
+    <string name="pv_form_text_37">无结果，换个关键词试试</string>
+    <string name="pv_form_text_38">添加图片（模拟上传）</string>
+    <string name="pv_form_text_39">队列为空——先添加一张。</string>
+    <string name="pv_form_text_4">加载态演示</string>
+    <string name="pv_form_text_5">按压缩放 0.955 + 弹簧回弹（左一）；加载态尺寸不变。</string>
+    <string name="pv_form_text_6">超出字数上限</string>
+    <string name="pv_form_text_7">浮动标签 + 清除键 + 计数</string>
+    <string name="pv_form_text_8">连点开关试试：状态与位置始终同步。</string>
+    <string name="pv_form_text_9">音量</string>
+
+    <!-- ===== ui/features/ui2/previews/PreviewFeedbackData.kt（阶段 2b） ===== -->
+    <string name="common_shared_8">提交</string>
+    <string name="pv_feedback_text_1">弹出 Toast</string>
+    <string name="pv_feedback_text_10">暂无收藏</string>
+    <string name="pv_feedback_text_11">点过的素材会在这里聚合，方便下次直接体验。</string>
+    <string name="pv_feedback_text_12">添加一条演示数据</string>
+    <string name="pv_feedback_text_13">已有一条演示收藏（点下方可清空回空态）</string>
+    <string name="pv_feedback_text_14">上一步</string>
+    <string name="pv_feedback_text_15">下一步</string>
+    <string name="pv_feedback_text_16">✓ 成功</string>
+    <string name="pv_feedback_text_17">切换数据集（真实重绘）</string>
+    <string name="pv_feedback_text_18">点按钮高亮对应柱</string>
+    <string name="pv_feedback_text_19" formatted="false">玻璃 45%</string>
+    <string name="pv_feedback_text_2">✓ 已复制到剪贴板</string>
+    <string name="pv_feedback_text_20" formatted="false">动效 30%</string>
+    <string name="pv_feedback_text_21" formatted="false">导航 25%</string>
+    <string name="pv_feedback_text_22">今日步数</string>
+    <string name="pv_feedback_text_23">专注时长</string>
+    <string name="pv_feedback_text_24">功能</string>
+    <string name="pv_feedback_text_25">版本</string>
+    <string name="pv_feedback_text_26">已接入</string>
+    <string name="pv_feedback_text_27">已修复</string>
+    <string name="pv_feedback_text_28">UI2体验馆</string>
+    <string name="pv_feedback_text_29">新增</string>
+    <string name="pv_feedback_text_3">清除缓存壁纸？</string>
+    <string name="pv_feedback_text_30">提交需求</string>
+    <string name="pv_feedback_text_31">CI 构建通过</string>
+    <string name="pv_feedback_text_32">真机验收</string>
+    <string name="pv_feedback_text_33">发布 v2.5</string>
+    <string name="pv_feedback_text_34">推进时间线</string>
+    <string name="pv_feedback_text_4">清除后将回退到极光背景，网络原图不会受影响。</string>
+    <string name="pv_feedback_text_5">清除</string>
+    <string name="pv_feedback_text_6">打开底部弹层</string>
+    <string name="pv_feedback_text_7">壁纸来源</string>
+    <string name="pv_feedback_text_8">本地图片</string>
+    <string name="pv_feedback_text_9">网络链接</string>
+
+    <!-- ===== ui/features/ui2/previews/PreviewGlassMotion.kt（阶段 2b） ===== -->
+    <string name="pv_glass_text_1">菲涅尔：越斜着看，边缘反光越强——玻璃与塑料的分界线。</string>
+    <string name="pv_glass_text_10">折射位移</string>
+    <string name="pv_glass_text_11">染色+高光描边</string>
+    <string name="pv_glass_text_12">当前效果：</string>
+    <string name="pv_glass_text_13">无采样 → 只能退化成半透明蒙层</string>
+    <string name="pv_glass_text_14">边缘锯齿、无磨砂</string>
+    <string name="pv_glass_text_15">是磨砂玻璃，但没有液态感</string>
+    <string name="pv_glass_text_16">发灰发闷，像塑料片</string>
+    <string name="pv_glass_text_17">完整液态玻璃</string>
+    <string name="pv_glass_text_18">拉开幕布（重播）</string>
+    <string name="pv_glass_text_19">第一屏</string>
+    <string name="pv_glass_text_2">0 原图</string>
+    <string name="pv_glass_text_20">第二屏</string>
+    <string name="pv_glass_text_21">第三屏</string>
+    <string name="pv_glass_text_22">背面</string>
+    <string name="pv_glass_text_23">拖动翻页：角度驱动帧，过了 90° 看到背面。</string>
+    <string name="pv_glass_text_24">暂停自转</string>
+    <string name="pv_glass_text_25">继续自转（从当前角度重新转一圈）</string>
+    <string name="pv_glass_text_3">1 横向模糊</string>
+    <string name="pv_glass_text_4">2 纵向模糊</string>
+    <string name="pv_glass_text_5">3 合成 + 高光</string>
+    <string name="pv_glass_text_6">模糊必须分横/纵两趟（可分离卷积），一次二维卷积贵 4 倍。</string>
+    <string name="pv_glass_text_7">在区域内拖动：玻璃用弹簧追你，永远慢半拍</string>
+    <string name="pv_glass_text_8">采样 backdrop</string>
+    <string name="pv_glass_text_9">双向模糊</string>
+
+    <!-- ===== ui/features/ui2/previews/PreviewMotionPages.kt（阶段 2b） ===== -->
+    <string name="pv_motion_page_text_1">重置</string>
+    <string name="pv_motion_page_text_10">忘记密码</string>
+    <string name="pv_motion_page_text_11">注册账号</string>
+    <string name="pv_motion_page_text_12">系统壁纸背景</string>
+    <string name="pv_motion_page_text_13">减少动效</string>
+    <string name="pv_motion_page_text_14">Liquid 用户</string>
+    <string name="pv_motion_page_text_15">已体验 12 / 46 条素材</string>
+    <string name="pv_motion_page_text_16">我的收藏</string>
+    <string name="pv_motion_page_text_17">浏览历史</string>
+    <string name="pv_motion_page_text_2">播放错峰入场</string>
+    <string name="pv_motion_page_text_3">上一页</string>
+    <string name="pv_motion_page_text_4">下一页</string>
+    <string name="pv_motion_page_text_5">46 条素材全部可现场体验</string>
+    <string name="pv_motion_page_text_6">每条提示词长按即复制给 AI</string>
+    <string name="pv_motion_page_text_7">点完成回到素材列表</string>
+    <string name="pv_motion_page_text_8">登录</string>
+    <string name="pv_motion_page_text_9">手机号 / 邮箱</string>
+
+    <!-- ===== ui/features/ui2/previews/PreviewMotionTools.kt（阶段 2b） ===== -->
+    <string name="common_theme_palette">主题配色</string>
+    <string name="pv_motion_tool_text_1">20 条配方共用一个舞台骨架（选配方即以 700ms 重播其主动画通道）。</string>
+    <string name="pv_motion_tool_text_10">搜索规范…（如 弹簧 / 错峰）</string>
+    <string name="pv_motion_tool_text_11">底栏导航</string>
+    <string name="pv_motion_tool_text_12">引导页</string>
+    <string name="pv_motion_tool_text_13">主题导入导出</string>
+    <string name="pv_motion_tool_text_14">纯静态页</string>
+    <string name="pv_motion_tool_text_15">✓ 已复制结构</string>
+    <string name="pv_motion_tool_text_16">复制结构到剪贴板</string>
+    <string name="pv_motion_tool_text_17">勾选实时重算目录树；映射到模板功能编号请对照手册 F01–F15。</string>
+    <string name="pv_motion_tool_text_2">时长</string>
+    <string name="pv_motion_tool_text_3">曲线</string>
+    <string name="pv_motion_tool_text_4">弹簧</string>
+    <string name="pv_motion_tool_text_5">错峰</string>
+    <string name="pv_motion_tool_text_6">沿曲线重播</string>
+    <string name="pv_motion_tool_text_7">展示 FastOutSlowIn；9 条曲线同理可换 Easing 重播。</string>
+    <string name="pv_motion_tool_text_8">重播错峰</string>
+    <string name="pv_motion_tool_text_9">5 个方块以 80ms 间隔依次入场——错峰就是给每个元素排队。</string>
+
+    <!-- ===== ui/features/ui2/previews/PreviewNavLayout.kt（阶段 2b） ===== -->
+    <string name="common_shared_9">抽屉</string>
+    <string name="pv_nav_text_1">发现</string>
+    <string name="pv_nav_text_10">主页</string>
+    <string name="pv_nav_text_11">收藏</string>
+    <string name="pv_nav_text_12">关闭抽屉</string>
+    <string name="pv_nav_text_13">抽屉从左侧滑出，内容区仍可见。</string>
+    <string name="pv_nav_text_14">导航类</string>
+    <string name="pv_nav_text_15">深入一层</string>
+    <string name="pv_nav_text_16">回首页</string>
+    <string name="pv_nav_text_17">点任意一段可跳回该层级。</string>
+    <string name="pv_nav_text_18">参数</string>
+    <string name="pv_nav_text_19">出处</string>
+    <string name="pv_nav_text_2">我的</string>
+    <string name="pv_nav_text_20">这里是功能概览内容</string>
+    <string name="pv_nav_text_21">关键参数与取值范围</string>
+    <string name="pv_nav_text_22">参考项目与许可证</string>
+    <string name="pv_nav_text_23">工作台</string>
+    <string name="pv_nav_text_24">团队</string>
+    <string name="pv_nav_text_25">权限管理</string>
+    <string name="pv_nav_text_26">关于本机</string>
+    <string name="pv_nav_text_27">基础组件</string>
+    <string name="pv_nav_text_28">反馈</string>
+    <string name="pv_nav_text_29">本卡已避开状态栏/手势区绘制；刘海与手势条区域不会压住内容。insets 类型：safeDrawing</string>
+    <string name="pv_nav_text_3">素材库</string>
+    <string name="pv_nav_text_30">实现要点：根布局用 safeDrawingPadding / statusBarsPadding，底栏叠加导航栏 inset。</string>
+    <string name="pv_nav_text_4">素材库 · UI2 体验馆</string>
+    <string name="pv_nav_text_5">46 条真实预览</string>
+    <string name="pv_nav_text_6">分享  收藏</string>
+    <string name="pv_nav_text_7">展开顶栏</string>
+    <string name="pv_nav_text_8">折叠顶栏</string>
+    <string name="pv_nav_text_9">抽屉菜单</string>
+
+    <!-- ===== ui/features/ui2/previews/PreviewVideoLabs.kt（阶段 2b） ===== -->
+    <string name="pv_video_label_1">虎先锋 · 慢速判定条</string>
+    <string name="pv_video_label_2">寅虎 · 快速判定条 + 连击</string>
+    <string name="pv_video_text_1">非模态条</string>
+    <string name="pv_video_text_10">横幅：图+文+按钮，强运营位</string>
+    <string name="pv_video_text_11">迷你窗：小窗播放/导航，可拖动</string>
+    <string name="pv_video_text_12">灵动岛：状态胶囊，点开扩展</string>
+    <string name="pv_video_text_13">分隔不用阴影，用最细的线</string>
+    <string name="pv_video_text_14">角不是圆弧拼接，是连续过渡</string>
+    <string name="pv_video_text_15">浮层身后实时模糊，不是灰蒙版</string>
+    <string name="pv_video_text_16">动画带过冲与速度继承</string>
+    <string name="pv_video_text_17">关键动作配轻震，眼睛耳朵手指一起确认</string>
+    <string name="pv_video_text_18">流式输出时，文字像打字一样逐段到达；思考时有三点脉冲；随时能停；不满意可重新生成；长按可复制——五个细节缺一不可。</string>
+    <string name="pv_video_text_19">点「生成」看流式输出…</string>
+    <string name="pv_video_text_2">悬浮球</string>
+    <string name="pv_video_text_20">重新生成</string>
+    <string name="pv_video_text_21">生成</string>
+    <string name="pv_video_text_22">停止</string>
+    <string name="pv_video_text_23">✓ 已完成（可长按复制）</string>
+    <string name="pv_video_text_24">北京</string>
+    <string name="pv_video_text_25">上海</string>
+    <string name="pv_video_text_26">广州</string>
+    <string name="pv_video_text_27">深圳</string>
+    <string name="pv_video_text_28">Dropdown（菜单）</string>
+    <string name="pv_video_text_29">轻量、就近、选项少时用</string>
+    <string name="pv_video_text_3">边缘坞</string>
+    <string name="pv_video_text_30">Select（选择器）</string>
+    <string name="pv_video_text_31">表单字段、要校验/回显时用</string>
+    <string name="pv_video_text_32">选择城市</string>
+    <string name="pv_video_text_33">显示热区透视</string>
+    <string name="pv_video_text_34">中文最短，按钮游刃有余</string>
+    <string name="pv_video_text_35">英文变长，固定宽按钮开始挤</string>
+    <string name="pv_video_text_36">德语最长——写死宽度的按钮必爆，这就是要弹性布局的原因</string>
+    <string name="pv_video_text_37">阿拉伯语 RTL：布局镜像，起点在右侧</string>
+    <string name="pv_video_text_38">判定！</string>
+    <string name="pv_video_text_39">点任意一型，立刻真弹（点外部/返回可关）：</string>
+    <string name="pv_video_text_4">横幅</string>
+    <string name="pv_video_text_40">确认弹窗</string>
+    <string name="pv_video_text_41">asConfirm 的原生等价：模态确认。</string>
+    <string name="pv_video_text_42">输入弹窗</string>
+    <string name="pv_video_text_43">加载中…</string>
+    <string name="pv_video_text_44">请稍候</string>
+    <string name="pv_video_text_47">选项一</string>
+    <string name="pv_video_text_48">选项二</string>
+    <string name="pv_video_text_49">选项三</string>
+    <string name="pv_video_text_5">迷你窗</string>
+    <string name="pv_video_text_50">关闭</string>
+    <string name="pv_video_text_53">条目一</string>
+    <string name="pv_video_text_54">条目二</string>
+    <string name="pv_video_text_55">条目三</string>
+    <string name="pv_video_text_56">淡入</string>
+    <string name="pv_video_text_57">缩放</string>
+    <string name="pv_video_text_58">上滑</string>
+    <string name="pv_video_text_59">下滑</string>
+    <string name="pv_video_text_6">灵动岛</string>
+    <string name="pv_video_text_60">左滑入</string>
+    <string name="pv_video_text_61">右滑入</string>
+    <string name="pv_video_text_62">缩放+淡入</string>
+    <string name="pv_video_text_63">无动画</string>
+    <string name="pv_video_text_64">XPopup 的 20 个 PopupAnimation 在此映射为 8 类过渡族（原生等价）。</string>
+    <string name="pv_video_text_65">点外部可关闭</string>
+    <string name="pv_video_text_66">深色弹窗</string>
+    <string name="pv_video_text_67">用当前设置弹一个</string>
+    <string name="pv_video_text_68">浅色弹窗</string>
+    <string name="pv_video_text_69">这就是设置直连运行时的效果。</string>
+    <string name="pv_video_text_7">顶部非模态条：不挡操作，自动消失</string>
+    <string name="pv_video_text_8">悬浮球：全局入口，可拖</string>
+    <string name="pv_video_text_9">边缘坞：贴边收起，滑出展开</string>
+
+    <!-- ===== ui/features/PermissionToolkit.kt（阶段 3a） ===== -->
+    <string name="permission_text_1">已授权</string>
+    <string name="permission_text_2">授权</string>
+
+    <!-- ===== ui/features/overlayterms/OverlayTermsDemo.kt（阶段 3a） ===== -->
+    <string name="ot_demo_text_85">已保存到草稿</string>
+
+    <!-- ===== ui/features/toolkit/ToolkitDemo.kt（阶段 3a） ===== -->
+    <string name="common_shared_10">分享日志</string>
+    <string name="common_shared_11">调起分享面板</string>
+    <string name="tk_demo_body_1">## 更新内容\n\n- 新增 **F17** 弹窗与提示术语（12 条）\n- 新增套壳上手指南\n\n&gt; 详见仓库 `docs/`</string>
+    <string name="tk_demo_message_1">发现新版本 v2.8.0（当前 2.7.0）</string>
+    <string name="tk_demo_message_2">已是最新版本 v2.8.0</string>
+    <string name="tk_demo_message_3">HTTP 403：多半是 API 限流（未带 token 时 60 次/小时/IP），稍后再试</string>
+    <string name="tk_demo_text_44">用户取消下载</string>
+    <string name="tk_demo_text_45">已下载，但系统未授权「安装未知应用」</string>
+    <string name="tk_demo_text_46">下载失败</string>
+    <string name="tk_demo_text_47">已落盘</string>
+    <string name="tk_demo_text_48">用户展开日志面板</string>
+    <string name="tk_demo_text_49">切换主题为深色</string>
+    <string name="tk_demo_text_50" formatted="false">磁盘缓存超过 80%</string>
+    <string name="tk_demo_text_51">拉取更新失败</string>
+    <string name="tk_demo_text_52">没有可接收分享的应用</string>
+
+    <!-- ===== ui/screens/InfoScreens.kt（阶段 3a） ===== -->
+    <string name="common_library_subtitle">Android 功能素材库</string>
+    <string name="info_section_title_1">参考项目与作者</string>
+    <string name="info_subtitle_1">完整列出直接参考的项目、作者、用途与许可证，尊重每一位开源作者。</string>
+    <string name="info_text_1">Liquid Motion UI 示例应用</string>
+    <string name="info_text_2">本项目自身代码采用 MIT 许可证。若复制或分发上游代码，请同时遵守对应上游许可证并保留署名。</string>
+    <string name="info_text_3">打开 ↗</string>
+    <string name="info_text_4">查看本项目源码与 CREDITS.md</string>
+    <string name="info_title_1">关于</string>
+
+    <!-- ===== ui/screens/OnboardingScreen.kt（阶段 3a） ===== -->
+    <string name="common_app_icon">应用图标</string>
+    <string name="common_get_started">开始使用</string>
+    <string name="onboarding_text_1">选功能，抄代码，拼出你的 App</string>
+    <string name="onboarding_text_2">这里不是单一 UI Demo，而是一套可拆、可复制、可组合的 Compose 功能素材。</string>
+    <string name="onboarding_text_3">所有偏好都保存在本地。你可以随时在「设置」中重新查看本引导、导入导出主题配置。</string>
+
+    <!-- ===== ui/screens/SettingsScreen.kt（阶段 3a） ===== -->
+    <string name="settings_section_title_1">风格</string>
+    <string name="settings_section_title_2">主题配置</string>
+    <string name="settings_section_title_3">首次体验</string>
+    <string name="settings_section_title_4">更新与日志</string>
+    <string name="settings_section_title_5">帮助与合规</string>
+    <string name="settings_subtitle_1">再次打开首次启动说明，适合给使用者演示项目能力</string>
+    <string name="settings_subtitle_2">物理动画切换为临界阻尼，内容始终处于终态可见</string>
+    <string name="settings_subtitle_3">提升玻璃后的壁纸色彩通透感</string>
+    <string name="settings_subtitle_4">在液态透镜边缘显示更明显的色散</string>
+    <string name="settings_subtitle_5">重置全部外观与动效偏好</string>
+    <string name="settings_subtitle_6">完整查看参考项目、作者、用途、链接与许可证</string>
+    <string name="settings_subtitle_7">查看本地数据、权限用途和网络行为的完整说明</string>
+    <string name="settings_subtitle_8">真实请求权限、检查状态，拒绝后可进入系统设置恢复</string>
+    <string name="settings_subtitle_9">打开 GitHub 仓库，查看源码、文档和构建记录</string>
+    <string name="settings_text_17">所有调整实时生效。把这份状态类套到你的业务里，换肤能力即刻拥有。</string>
+    <string name="settings_text_18">视觉风格</string>
+    <string name="settings_text_19">玻璃=液态玻璃面板；普通=实心 Material 布局；MD3=壁纸动态取色（Android 12+）；O神=Miuix 分组卡片+翻页+悬浮底栏</string>
+    <string name="settings_text_20">主题模式</string>
+    <string name="settings_text_21">跟随系统</string>
+    <string name="settings_text_22">发送测试通知</string>
+    <string name="settings_text_23">向系统发一条即时通知作为预览，正文使用当前主题主色着色（Android 13+ 首次需授权）</string>
+    <string name="settings_text_24">主题 JSON 已复制</string>
+    <string name="settings_text_25">主题已导入</string>
+    <string name="settings_text_26">剪贴板不是有效主题 JSON</string>
+    <string name="settings_text_27">POST_NOTIFICATIONS 已授权，发送预览通知</string>
+    <string name="settings_text_28">POST_NOTIFICATIONS 被拒绝，跳过发送</string>
+    <string name="settings_text_29">（暂无日志：去点几次「检查更新」或「发送通知」就有了）</string>
+    <string name="settings_text_30">无可接收分享的应用</string>
+    <string name="settings_text_31">已调起系统分享</string>
+    <string name="settings_text_32">没有可接收的应用，请改用复制</string>
+    <string name="settings_title_10">色差折射</string>
+    <string name="settings_title_11">圆角倍率</string>
+    <string name="settings_title_12">恢复默认</string>
+    <string name="settings_title_13">关于与开源致谢</string>
+    <string name="settings_title_14">项目主页</string>
+    <string name="settings_title_2">重新查看欢迎引导</string>
+    <string name="settings_title_3">动效阻尼</string>
+    <string name="settings_title_4">模糊强度</string>
+    <string name="settings_title_5">折射高度</string>
+    <string name="settings_title_6">折射幅度</string>
+    <string name="settings_title_7">玻璃染色</string>
+    <string name="settings_title_8">高光边框</string>
+    <string name="settings_title_9">增强色彩层次</string>
+
+    <!-- ===== ui/screens/WallpaperSettings.kt（阶段 3a） ===== -->
+    <string name="wallpaper_content_desc_1">缓存壁纸预览</string>
+    <string name="wallpaper_text_1">壁纸与背景</string>
+    <string name="wallpaper_text_10">处理中…</string>
+    <string name="wallpaper_text_11">下载并应用</string>
+    <string name="wallpaper_text_12">清除缓存</string>
+    <string name="wallpaper_text_13">请先</string>
+    <string name="wallpaper_text_14">未获得</string>
+    <string name="wallpaper_text_2">网络图片会下载、校验并复制到应用私有目录。即使原链接失效，已缓存壁纸仍可离线使用。</string>
+    <string name="wallpaper_text_3">已读取当前系统桌面壁纸作为背景（更换桌面壁纸后回到应用即会刷新）。</string>
+    <string name="wallpaper_text_4">系统壁纸需要先开启「所有文件访问」权限：Android 14 起系统只允许持有该权限的应用读取桌面壁纸（已自动回退极光背景）。开启后返回本页即可生效。</string>
+    <string name="wallpaper_text_5">去开启所有文件访问权限</string>
+    <string name="wallpaper_text_6">当前系统未返回桌面壁纸（可能是动态壁纸或厂商限制），已自动回退极光背景；可在下方选择同一张图片做本地缓存，显示效果一致。</string>
+    <string name="wallpaper_text_7">缓存壁纸使用中</string>
+    <string name="wallpaper_text_8">缓存壁纸已保留</string>
+    <string name="wallpaper_text_9">选择本地图片并永久缓存</string>
+
+    <!-- ===== ui/screens/WelcomeGuideScreen.kt（阶段 3a） ===== -->
+    <string name="welcome_desc_1">一句话描述这个功能的亮点和价值</string>
+    <string name="welcome_desc_2">数据仅存本地，不上传任何服务器</string>
+    <string name="welcome_text_7">应用名称</string>
+    <string name="welcome_text_8">一句话介绍你的应用</string>
+    <string name="welcome_title_1">核心功能一</string>
+    <string name="welcome_title_2">核心功能二</string>
+    <string name="welcome_title_3">核心功能三</string>
+    <string name="welcome_title_4">隐私安全</string>
+
+    <!-- ===== ui/features/toolkit/ToolkitDemo.kt（阶段 3a） ===== -->
+
+    <!-- ===== ui/screens/AdminQueryScreen.kt（阶段 2a） ===== -->
+    <string name="admin_query_text_1">规范条文（照着做）</string>
+    <string name="admin_query_text_2">点按查看全文，长按按钮把整段提示词复制到剪贴板，可直接粘贴给 AI 复现这条规范。</string>
+    <string name="admin_query_text_3">来源：B 站 KD一对A《查数据查到崩溃？这套烂后台连改了四刀》（BV1Vuxr6BEDp）公开表述提炼；条文与提示词为本仓库独立撰写，实现方案见 素材库/后台数据查询规范/。</string>
+    <string name="common_anti_pattern">反例（别这么做）</string>
+    <string name="common_back_to_library">‹ 返回素材库</string>
+    <string name="common_category">分类</string>
+    <string name="common_copied_hint">✓ 已复制，去粘贴给 AI 吧</string>
+    <string name="common_demo_section_hint">功能体验（真实实现，可直接操作）</string>
+    <string name="common_long_press_to_copy">长按复制提示词</string>
+    <string name="common_prompt">提示词</string>
+
+    <!-- ===== ui/screens/HomeScreen.kt（阶段 2a） ===== -->
+    <string name="home_label_1">设计 token</string>
+    <string name="home_label_2">玻璃组件</string>
+    <string name="home_label_3">动效预设</string>
+    <string name="home_text_1">功能素材库\n选择式开发</string>
+    <string name="home_text_2">把常用功能拆成中文功能点：应用图标切换、液态玻璃主题、</string>
+    <string name="home_text_3">玻璃底栏、动效系统。一个个选着搭，拼出你的 App。</string>
+    <string name="home_text_4">浏览组件</string>
+    <string name="home_text_5">体验动效</string>
+    <string name="home_text_6">设计原则</string>
+    <string name="home_text_7">功能素材清单</string>
+    <string name="home_text_8">提示：主题、玻璃强度、圆角倍率与主题 JSON 都能在「设置」页实时调整。</string>
+
+    <!-- ===== ui/screens/InfoScreens.kt（阶段 2a） ===== -->
+    <string name="info_desc_1">用于你主动触发的主题预览通知。</string>
+    <string name="info_desc_2">仅在启用桌面壁纸背景时读取系统返回的壁纸图像。</string>
+    <string name="info_section_title_1_2">数据处理</string>
+    <string name="info_text_10">仅在你点击“发送测试通知”时申请通知权限并创建本地通知，不向服务器发送数据。</string>
+    <string name="info_text_11">网络与账号</string>
+    <string name="info_text_12">应用没有账号、分析、广告、遥测或后台上传功能。点击项目链接时会交给系统浏览器打开。</string>
+    <string name="info_text_13">权限撤回</string>
+    <string name="info_text_14">可随时在 Android 系统设置的“应用信息 → 权限”中撤回授权；撤回不影响其他离线功能。</string>
+    <string name="info_text_15">系统壁纸权限</string>
+    <string name="info_text_16">读取系统壁纸不使用媒体图片权限（该权限对 WallpaperManager 无效，旧版曾误用）。Android 14 起系统只允许持有「所有文件访问」的 app 读取桌面壁纸——请在设置页「壁纸与背景 → 系统壁纸」处点按钮，跳到系统设置里为本 app 开启；开启后返回即生效，不需要时可随时关闭。</string>
+    <string name="info_text_17">Android 12 及以下无需单独申请通知运行时权限。</string>
+    <string name="info_text_18">最小权限原则</string>
+    <string name="info_text_19">应用不申请位置、相机、麦克风、通讯录或电话权限。所有权限均由明确的用户操作触发。</string>
+    <string name="info_text_5">‹ 返回</string>
+    <string name="info_text_6">本地偏好</string>
+    <string name="info_text_7">主题、动效、桌面图标与引导完成状态仅保存在设备本地 SharedPreferences，不会上传。</string>
+    <string name="info_text_8">壁纸读取</string>
+    <string name="info_text_9">系统壁纸仅通过 WallpaperManager 在本机读取并绘制，不保存、不上传。Android 12 及以下读取真实壁纸需要存储读取权限；Android 14 起系统只允许持有「所有文件访问」的 app 读取桌面壁纸，应用会在系统壁纸设置处引导你在系统设置中开启（可随时关闭），未开启前自动回退内置背景，本地图片与网络壁纸不受影响。</string>
+    <string name="info_title_2">通知权限</string>
+    <string name="info_title_3">存储读取权限</string>
+
+    <!-- ===== ui/screens/MaterialBrowser.kt（阶段 2a） ===== -->
+    <string name="material_text_1">点击功能模块，直接进入真实可操作的功能；不是介绍弹窗</string>
+    <string name="material_text_2">搜索功能模块…</string>
+    <string name="material_text_3">全部分类</string>
+
+    <!-- ===== ui/screens/OverlayTermsScreen.kt（阶段 2a） ===== -->
+    <string name="overlaytermsscreen_text_1">强度速查（从最强打断到最弱）</string>
+    <string name="overlaytermsscreen_text_10">点按查看全文，长按按钮把整段提示词复制到剪贴板。提示词同时给了 Web 与 Android/Compose 两套写法，跟 AI 说的时候用对术语，它就不会给你做成四不像。</string>
+    <string name="overlaytermsscreen_text_11">来源：P01–P06 术语出自 B 站 ZTough《Vibe Coding 术语课：别再管所有弹窗都叫「弹窗」了》(BV14Utf6QEnB) 页面公开简介；P07–P12 为本仓库补足的同族术语。定义/区别/反例/提示词均为本仓库独立撰写，详见 素材库/弹窗与提示术语/参考来源.md。</string>
+    <string name="overlaytermsscreen_text_2">Alert（必须点掉）&gt; Modal（要你在里面做完）&gt; Drawer / BottomSheet（边缘面板）&gt; </string>
+    <string name="overlaytermsscreen_text_3">Popconfirm / Popover（锚定气泡）&gt; Snackbar（可撤销条幅）&gt; Toast（自动消失）；</string>
+    <string name="overlaytermsscreen_text_4">Loading 是过程反馈、Badge 是持续状态，两者不弹但同属提示族。</string>
+    <string name="overlaytermsscreen_text_5">选型口诀：要不要打断？打断完要不要用户做事？事情发生在哪个元素旁边？错过这条信息会不会有损失？</string>
+    <string name="overlaytermsscreen_text_6">定义</string>
+    <string name="overlaytermsscreen_text_7">什么时候用</string>
+    <string name="overlaytermsscreen_text_8">和邻居的区别（术语课的重点）</string>
+    <string name="overlaytermsscreen_text_9">Android / Compose 对应</string>
+
+    <!-- ===== ui/screens/ToolkitScreen.kt（阶段 2a） ===== -->
+    <string name="toolkit_text_1">这四条是「基建」，不是样式</string>
+    <string name="toolkit_text_10">参数与默认值</string>
+    <string name="toolkit_text_11">点按查看全文，长按按钮把整段提示词复制到剪贴板。整段可以直接发给 AI，</string>
+    <string name="toolkit_text_12">里面的接口名、超时值、权限项、失败分支都已写死，不用你再补细节。</string>
+    <string name="toolkit_text_13">实现全部在本仓库 `ui/features/toolkit/` 内（AppUpdateChecker / AppLog / MarkdownText / AdaptiveNav），</string>
+    <string name="toolkit_text_14">零第三方依赖；接入与替换说明见 素材库/工具与基建/实现方案.md。</string>
+    <string name="toolkit_text_2">更新检查、日志分享、Markdown 渲染、大屏适配——做完一个 App 迟早都要写，</string>
+    <string name="toolkit_text_3">而且写法一旦错了就是线上事故（拿不到日志、装不上更新、大屏布局塌）。</string>
+    <string name="toolkit_text_4">四条都是真实可运行代码：真的发请求、真的下载、真的分享、真的切布局，不是示意图。</string>
+    <string name="toolkit_text_5">示例 App 自己也用上了：设置页有真实的「检查更新」与「运行日志」，</string>
+    <string name="toolkit_text_6">更新检查打的就是本模板仓库的 GitHub Releases。</string>
+    <string name="toolkit_text_7">为什么需要</string>
+    <string name="toolkit_text_8">关键实现（照抄要点）</string>
+    <string name="toolkit_text_9">坑与反例</string>
+
+    <!-- ===== ui/screens/Ui2Gallery.kt（阶段 2a） ===== -->
+    <string name="ui2_gallery_text_1">视频专题</string>
+    <string name="ui2_gallery_text_2">弹层馆</string>
+    <string name="ui2_gallery_text_3">动效馆</string>
+    <string name="ui2_gallery_text_4">工具</string>
+    <string name="ui2_gallery_text_5">点按查看全文，长按按钮把整段提示词复制到剪贴板，可直接粘贴给 AI 复现此功能。</string>
+
+    <!-- ===== ui/features/ui2/previews/PreviewBaseForm.kt（阶段 2b） ===== -->
+    <string name="pv_form_text_40">完成</string>
+
+    <!-- ===== ui/features/ui2/previews/PreviewGlassMotion.kt（阶段 2b） ===== -->
+    <string name="pv_glass_text_26">液态玻璃不是贴图：透镜边缘把背后的字掰弯，中心保持清晰，边缘带一点 RGB 色散。拖动透镜看放大与色散边。</string>
+    <string name="pv_glass_text_27">透镜可拖（色散红边为近似示意，真实折射需 backdrop 采样）。</string>
+
+    <!-- ===== ui/features/ui2/previews/PreviewMotionPages.kt（阶段 2b） ===== -->
+    <string name="pv_motion_page_text_18">拖我</string>
+    <string name="pv_motion_page_text_19">← 左右拖动我，超过阈值就划走 →</string>
+    <string name="pv_motion_page_text_20">头图（以 0.5× 速度视差后移）</string>
+    <string name="pv_motion_page_text_21">演示行，切换即时生效</string>
+
+    <!-- ===== ui/features/ui2/previews/PreviewVideoLabs.kt（阶段 2b） ===== -->
+    <string name="pv_video_text_70">拖我上下移动，松手吸附到最近档位</string>
+
+    <!-- ===== ui/features/adminquery/AdminQueryDemo.kt（阶段 3b） ===== -->
+    <string name="aq_demo_text_39">查询中…</string>
+    <string name="aq_demo_text_40">近7日</string>
+    <string name="aq_demo_text_41">近7天</string>
+    <string name="aq_demo_text_42">近30日</string>
+    <string name="aq_demo_text_43">近30天</string>
+    <string name="aq_demo_text_44">近一年</string>
+    <string name="aq_demo_text_45">近1年</string>
+    <string name="aq_demo_text_46">全选部门（20）</string>
+    <string name="aq_demo_text_47">部门前8</string>
+
+    <!-- ===== ui/features/overlayterms/OverlayTermsDemo.kt（阶段 3b） ===== -->
+    <string name="ot_demo_text_86">报表 A</string>
+    <string name="ot_demo_text_87">报表 B</string>
+    <string name="ot_demo_text_88">报表 C</string>
+    <string name="ot_demo_text_89">草稿 1</string>
+    <string name="ot_demo_text_90">草稿 2</string>
+    <string name="ot_demo_text_91">草稿 3</string>
+    <string name="ot_demo_text_92">BottomSheet / ActionSheet = 从底部升起的面板；移动端比 Drawer 顺手，拇指够得到。</string>
+    <string name="ot_demo_text_93">打开动作面板（ActionSheet）</string>
+
+    <!-- ===== ui/features/ui2/previews/PreviewBaseForm.kt（阶段 3b） ===== -->
+    <string name="pv_form_text_41">下拉选择器 + 系统日期选择器，均为真实组件。</string>
+
+    <!-- ===== ui/features/ui2/previews/PreviewFeedbackData.kt（阶段 3b） ===== -->
+    <string name="pv_feedback_text_35">内容已加载：真实数据替换骨架（同一布局位置）。</string>
+
+    <!-- ===== ui/features/ui2/previews/PreviewMotionPages.kt（阶段 3b） ===== -->
+    <string name="pv_motion_page_text_22">卡片已划走。</string>
+
+    <!-- ===== ui/features/ui2/previews/PreviewMotionTools.kt（阶段 3b） ===== -->
+    <string name="pv_motion_tool_text_18">无匹配规范</string>
+    <string name="pv_motion_tool_text_19">├─ src/  入口与导航</string>
+    <string name="pv_motion_tool_text_20">└─ docs/  实现方案 · 参考来源 · 环境要求</string>
+
+    <!-- ===== ui/screens/InfoScreens.kt（阶段 3b） ===== -->
+    <string name="info_subtitle_2">逐项说明数据保存位置、权限用途和网络行为。</string>
+    <string name="info_subtitle_3">权限不是介绍弹窗：可在这里真实请求、检查授权状态，并在拒绝后进入系统设置恢复。</string>
+
+    <!-- ===== ui/screens/MaterialBrowser.kt（阶段 3b） ===== -->
+    <string name="material_label_1">模板素材</string>
+
+    <!-- ===== ui/features/WallpaperStore.kt（阶段 4） ===== -->
+    <string name="wallpaperstore_text_1">下载失败：HTTP %1$s</string>
+
+    <!-- ===== ui/features/adminquery/AdminQueryDemo.kt（阶段 4） ===== -->
+    <string name="aq_demo_text_48">已选「%1$s」：%2$s ~ %3$s，含首尾共 %4$s 天。</string>
+    <string name="aq_demo_text_49">超出数据保留期 %1$s 天的档位置灰不可点：最早可查 %2$s（%3$s）。</string>
+    <string name="aq_demo_text_50">所选区间超出保留期（最早 %1$s）：查询已禁用。</string>
+    <string name="aq_demo_text_51">查询 %1$s ~ %2$s</string>
+    <string name="aq_demo_text_52">口径固定：闭区间 [起, 止]，含当天 00:00–23:59；「今日」= %1$s，共 1 天。</string>
+    <string name="aq_demo_text_53">反例：%1$s 个标签 ≈ %2$s 行（每行约 %3$s 个），条件区把结果挤出首屏。</string>
+    <string name="aq_demo_text_54">聚合后 %1$s 个标签 ≈ %2$s 行，控制在 2 行内。</string>
+    <string name="aq_demo_text_55">「部门 · %1$s」展开：</string>
+    <string name="aq_demo_text_56">%1$s ~ %2$s · 命中 %3$s 条 · 金额合计 ¥%4$s（模拟数据）</string>
+    <string name="aq_demo_text_57">%1$s 笔</string>
+    <string name="aq_demo_text_58">金额合计 ¥%1$s ｜ 笔数 %2$s ｜ 占全量 %3$s%% ｜ 负责人 %4$s</string>
+    <string name="aq_demo_text_59">… 其余 %1$s 条在导出的 CSV 里</string>
+    <string name="aq_demo_text_60">导出明细（CSV · %1$s 行）</string>
+    <string name="aq_demo_text_61">转交话术（已复制，可直接粘贴给 %1$s）：</string>
+    <string name="aq_demo_text_62">当前档位超出保留期 %1$s 天（最早 %2$s）：查询已禁用。</string>
+    <string name="aq_demo_text_63">口径：含首尾，共 %1$s 天</string>
+    <string name="aq_demo_text_64">全部部门 · %1$s</string>
+    <string name="aq_demo_text_65">部门 · %1$s</string>
+    <string name="aq_demo_text_66">已选 %1$s 组</string>
+    <string name="aq_demo_text_67">%1$s ~ %2$s（%3$s 天）</string>
+    <string name="aq_demo_text_68">查询（%1$s 项待生效）</string>
+    <string name="aq_demo_text_69">命中 %1$s 条 / %2$s 条 · 金额合计 ¥%3$s · 时间 %4$s ~ %5$s（含首尾 %6$s 天）</string>
+
+    <!-- ===== ui/features/overlayterms/OverlayTermsDemo.kt（阶段 4） ===== -->
+    <string name="ot_demo_content_desc_1">未读 %1$s 条</string>
+    <string name="ot_demo_text_94">当前选中：%1$s</string>
+    <string name="ot_demo_text_95">已选择：%1$s（气泡点外部或返回键即关）</string>
+    <string name="ot_demo_text_96">正在写入，请勿退出（%1$s%%）</string>
+
+    <!-- ===== ui/features/toolkit/AppLog.kt（阶段 4） ===== -->
+    <string name="app_log_text_1">应用日志 %1$s 条</string>
+
+    <!-- ===== ui/features/toolkit/AppUpdateChecker.kt（阶段 4） ===== -->
+    <string name="update_text_1">发现新版本 %1$s（当前 %2$s）</string>
+    <string name="update_text_2">已是最新版本 %1$s</string>
+    <string name="update_text_3">请求超时（连接 %1$sms / 读取 %2$sms）</string>
+    <string name="update_text_4">TLS 握手失败：%1$s</string>
+    <string name="update_text_5">下载开始 total=%1$s → %2$s</string>
+    <string name="update_text_6">下载不完整：%1$s/%2$s 字节</string>
+    <string name="update_text_7">重命名失败：%1$s → %2$s</string>
+    <string name="update_text_8">下载完成 %1$s 字节</string>
+    <string name="update_text_9">调起安装器 %1$s %2$s 字节</string>
+
+    <!-- ===== ui/features/toolkit/ToolkitDemo.kt（阶段 4） ===== -->
+    <string name="tk_demo_text_53">模拟态 · %1$s</string>
+    <string name="tk_demo_text_54">下载中 · %1$s（服务器未给大小）</string>
+    <string name="tk_demo_text_55">%1$s/%2$s 条 · D %3$s · </string>
+    <string name="tk_demo_text_56">命中 %1$s 条（只显示最新 8 条，完整内容用复制/分享取）</string>
+    <string name="tk_demo_text_57">解析出 %1$s 个块：</string>
+    <string name="tk_demo_text_58"> · 行内节点 %1$s（链接 %2$s、行内码 %3$s）</string>
+    <string name="tk_demo_text_59">id=%1$s · 分级=%2$s · </string>
+
+    <!-- ===== ui/features/ui2/previews/PreviewBaseForm.kt（阶段 4） ===== -->
+    <string name="pv_form_text_42">已点击 %1$s 次</string>
+    <string name="pv_form_text_43">壁纸素材_%1$s.jpg</string>
+
+    <!-- ===== ui/features/ui2/previews/PreviewGlassMotion.kt（阶段 4） ===== -->
+    <string name="pv_glass_text_28">视角 %1$s° · 眩光 %2$s%%</string>
+    <string name="pv_glass_text_29">第 %1$s 步：%2$s</string>
+    <string name="pv_glass_text_30">弦%1$s</string>
+    <string name="pv_glass_text_31">已拨弦 %1$s 次（点弦看振动衰减）</string>
+    <string name="pv_glass_text_32">秒针每秒弹跳带过冲：已走 %1$s 秒</string>
+    <string name="pv_glass_text_33">· %1$s 内容 %2$s（滚到顶会被下一屏压住）</string>
+    <string name="pv_glass_text_34">当前刻度 %1$s（点刻度吸附选中）</string>
+    <string name="pv_glass_text_35">第 %1$s 帧 · 正面</string>
+
+    <!-- ===== ui/features/ui2/previews/PreviewMotionPages.kt（阶段 4） ===== -->
+    <string name="pv_motion_page_text_23">条目 %1$s（入场延迟 %2$sms，420ms 渐入上浮）</string>
+    <string name="pv_motion_page_text_24">页面 %1$s / 3</string>
+    <string name="pv_motion_page_text_25">滚动条目 %1$s</string>
+
+    <!-- ===== ui/features/ui2/previews/PreviewMotionTools.kt（阶段 4） ===== -->
+    <string name="pv_motion_tool_text_21">当前档 %1$sms（点数字即以该时长重播小球位移）</string>
+    <string name="pv_motion_tool_text_22">共 %1$s / 25 篇（标题+导读索引，深读回仓库 motion 令牌文档）。</string>
+
+    <!-- ===== ui/features/ui2/previews/PreviewNavLayout.kt（阶段 4） ===== -->
+    <string name="pv_nav_text_31">当前页：%1$s</string>
+    <string name="pv_nav_text_32">%1$s 内容区</string>
+    <string name="pv_nav_text_33">当前容器宽 %1$sdp → %2$s 列</string>
+    <string name="pv_nav_text_34">卡片 %1$s</string>
+    <string name="pv_nav_text_35">· %1$s 条目 %2$s</string>
+    <string name="pv_nav_text_36">安全区（真实 WindowInsets 读数：上 %1$s / 下 %2$s / 左 %3$s / 右 %4$s px）</string>
+
+    <!-- ===== ui/features/ui2/previews/PreviewVideoLabs.kt（阶段 4） ===== -->
+    <string name="pv_video_text_71">已启用 %1$s/5 招——质感是开关的叠加，不是单个特效。</string>
+    <string name="pv_video_text_72">红框=44dp 真实热区，蓝块=20dp 视觉。已命中 %1$s 次——点在框内任意处都算中。</string>
+    <string name="pv_video_text_73">舞台卡片 · %1$s</string>
+    <string name="pv_video_text_74">当前档位 %1$s / 3（收起 · 半开 · 全开）</string>
+
+    <!-- ===== ui/screens/AdminQueryScreen.kt（阶段 4） ===== -->
+    <string name="common_shared_12">共 %1$s 条 · 点卡片进入可操作演示，长按详情页按钮复制提示词</string>
+
+    <!-- ===== ui/screens/InfoScreens.kt（阶段 4） ===== -->
+    <string name="info_text_20">作者：%1$s</string>
+    <string name="info_text_21">许可证：%1$s</string>
+
+    <!-- ===== ui/screens/MotionScreen.kt（阶段 4） ===== -->
+    <string name="motion_text_14">阻尼 %1$s%% · </string>
+    <string name="motion_text_15">位移 %1$spx · 选择预设立即回弹</string>
+    <string name="motion_text_16">列表项 %1$s</string>
+
+    <!-- ===== ui/screens/SettingsScreen.kt（阶段 4） ===== -->
+    <string name="settings_subtitle_10">全局弹簧阻尼：%1$s%%，越低越弹</string>
+    <string name="settings_subtitle_11">背景采样模糊：%1$sdp</string>
+    <string name="settings_subtitle_12">液态透镜边缘高度：%1$sdp</string>
+    <string name="settings_subtitle_13">壁纸内容偏移幅度：%1$sdp</string>
+    <string name="settings_subtitle_14">白色玻璃涂层：%1$s%%</string>
+    <string name="settings_subtitle_15">玻璃边缘强度：%1$s%%</string>
+    <string name="settings_subtitle_16">内存缓冲 %1$s/%2$s 条 · 可过滤、复制、系统分享</string>
+    <string name="settings_text_33">生效中的 chrome：mode=%1$s · </string>
+    <string name="settings_text_34">已发送预览通知 id=1001 channel=%1$s accent=#%2$s</string>
+    <string name="settings_text_35">真实请求 api.github.com 比对版本；检查目标是本模板仓库 %1$s。</string>
+    <string name="settings_text_36">当前安装版本 %1$s。</string>
+    <string name="settings_text_37"> · %1$s · 耗时 %2$sms</string>
+    <string name="settings_text_38">下载中 · %1$s</string>
+    <string name="settings_text_39">已落盘：%1$s</string>
+    <string name="settings_text_40">命中 %1$s 条（最新在上）</string>
+    <string name="settings_text_41">已清空缓冲（原 %1$s 条）</string>
+    <string name="settings_text_42">已清空 %1$s 条</string>
+
+    <!-- ===== ui/screens/Ui2Gallery.kt（阶段 4） ===== -->
+    <string name="ui2_gallery_text_6">来源：yz8023/UI2 素材库同条目提示词；实现方案与出处见仓库 素材库/UI2体验馆/%1$s-*/。</string>
+
+    <!-- ===== ui/screens/WallpaperSettings.kt（阶段 4） ===== -->
+    <string name="wallpaper_text_15">网络壁纸已缓存并启用（%1$s×%2$s）</string>
+
+    <!-- ===== 阶段 5a：数据模型的显示标签改 @StringRes Int ===== -->
+    <string name="palette_aurora">冰蓝</string>
+    <string name="palette_mint">薄荷</string>
+    <string name="palette_sunset">落日</string>
+    <string name="palette_mono">素灰</string>
+    <string name="palette_coral">珊瑚</string>
+    <string name="palette_sakura">樱花</string>
+    <string name="palette_galaxy">星夜</string>
+    <string name="palette_custom">自定义</string>
+    <string name="wallpaper_mode_aurora">极光</string>
+    <string name="wallpaper_mode_system">系统壁纸</string>
+    <string name="wallpaper_mode_cached">本地缓存</string>
+    <string name="window_class_compact">紧凑</string>
+    <string name="window_class_medium">中等</string>
+    <string name="window_class_expanded">展开</string>
+    <string name="onboarding_feature_1_title">液态玻璃主题</string>
+    <string name="onboarding_feature_1_description">玻璃面板、动态背景、折射强度、透明度与圆角都能在设置页实时调节。</string>
+    <string name="onboarding_feature_2_title">常用组件即拷即用</string>
+    <string name="onboarding_feature_2_description">按钮、输入框、开关、弹窗、状态反馈与偏好行保持统一的材质和动效。</string>
+    <string name="onboarding_feature_3_title">动效 token 系统</string>
+    <string name="onboarding_feature_3_description">弹簧、错峰入场、按压反馈和减少动效都收敛成可复用规范。</string>
+    <string name="onboarding_feature_4_title">选择式功能开发</string>
+    <string name="onboarding_feature_4_description">按需复制素材目录里的实现方案、代码、环境要求和参考来源。</string>
+    <string name="feature_category_appearance">外观</string>
+    <string name="feature_category_motion">动效</string>
+    <string name="feature_category_navigation">导航</string>
+    <string name="feature_category_settings">设置</string>
+    <string name="feature_category_components">组件</string>
+
+    <!-- ===== ui/features/ui2/Ui2Catalog.kt + Ui2ExtraCatalog.kt（阶段 5b） ===== -->
+    <!-- 分类键文案（Ui2CategoryLabels 查表用） -->
+    <string name="ui2_category_basic_components">基础组件</string>
+    <string name="ui2_category_form_input">表单输入</string>
+    <string name="ui2_category_navigation">导航</string>
+    <string name="ui2_category_layout">布局</string>
+    <string name="ui2_category_feedback">反馈</string>
+    <string name="ui2_category_data_display">数据展示</string>
+    <string name="ui2_category_motion">动效</string>
+    <string name="ui2_category_app_templates">应用模板</string>
+    <string name="ui2_category_glass_breakdown">玻璃拆解</string>
+    <string name="ui2_category_motion_cases">动效案例</string>
+    <string name="ui2_category_video_topics">视频专题</string>
+    <string name="ui2_category_popup_gallery">弹层馆</string>
+    <string name="ui2_category_motion_gallery">动效馆</string>
+    <string name="ui2_category_tools">工具</string>
+    <!-- 46 条主目录 + 31 条增补目录：name / summary / params / prompt -->
+    <string name="ui2_f01_name">按钮</string>
+    <string name="ui2_f01_summary">三档层级（primary / secondary / ghost）+ 图标按钮；按下用 0.955 缩放 + 120ms 弹簧回弹代替水波纹，加载态在原地把文字换成三点脉冲，尺寸一像素不动。</string>
+    <string name="ui2_f01_params">高度 40 / 32（sm）/ 44（lg）· 圆角 12 · 按压 scale .955 · 回弹 160ms cubic-bezier(.2,.9,.3,1.15)</string>
+    <string name="ui2_f01_prompt">做一个零依赖的按钮组件，三档层级 + 图标按钮 + 加载态。\n【结构】&lt;button class=\"btn btn--primary|secondary|ghost\"&gt;，可选 data-icon、data-loading。\n【规格】高度 40（sm 32 / lg 44），圆角 12，左右 padding 16，字号 13，字重 600。\n【交互】按下 scale(.955)，160ms cubic-bezier(.2,.9,.3,1.15) 回弹；悬停只改亮度不改尺寸；\n加载态把文字换成三个脉冲点，按钮宽度保持不变；禁用态 aria-disabled=\"true\" 且不可聚焦。\n【自检】按键 Tab 能聚焦且焦点环 2px；连续点 10 次不累积位移；加载态宽度与常态一致（截图叠对比）。</string>
+    <string name="ui2_f02_name">输入框</string>
+    <string name="ui2_f02_summary">浮动标签 + 焦点环 + 右侧清除键 + 字数计数 + 错误态五件套；标签用 transform 上浮而不是切换两个 DOM，光标与边框走同一组 token。</string>
+    <string name="ui2_f02_params">高度 48 · 圆角 12 · 标签上浮 13px→10px · 焦点环 2px · 错误色 #ff8fa3</string>
+    <string name="ui2_f02_prompt">做浮动标签输入框，含清除键、字数计数、错误态。\n【规格】高 48，圆角 12，标签初始居中，获得焦点或有值时上浮到左上（13px→10px，透明底）。\n【状态】normal / focus（2px 焦点环）/ filled / error（环变红 + 下方一行错误文案 + aria-invalid）/ disabled。\n【交互】有值时右侧出现清除键，点击清空并保持聚焦；右下角显示 n/max 计数并超出变红。\n【自检】空值失焦标签落回；错误态颜色 + 文案 + 图标三重表达；键盘 Tab 顺序正确。</string>
+    <string name="ui2_f03_name">开关</string>
+    <string name="ui2_f03_summary">轨道颜色渐变 + 滑块 220ms 弹簧位移 + 按下时滑块横向拉长（更像实体键），关闭态滑块回位有轻微过冲。</string>
+    <string name="ui2_f03_params">尺寸 46×28 / 38×22 · 滑块 22 · 位移 20 · 曲线 cubic-bezier(.2,.9,.3,1.15)</string>
+    <string name="ui2_f03_prompt" formatted="false">做开关组件：46×28 轨道 + 22 滑块，开启时滑块右移 20px，220ms 弹簧曲线；按下瞬间滑块横向拉长 1.15 倍。\n【要求】role=\"switch\" + aria-checked；空格与回车可切换；轨道颜色从 rgba(255,255,255,.14) 过渡到主题色；\n快速连点 10 次后滑块必须停在正确端点（截图验证）。\n【自检】键盘可操作；状态位与视觉 100% 同步；减少动效模式下位移变 0ms 但位置仍正确。</string>
+    <string name="ui2_f04_name">滑块</string>
+    <string name="ui2_f04_summary">原生 range + 自绘填充条与数值气泡：拖动时滑块放大 1.15、气泡跟随，松手 300ms 后气泡淡出。</string>
+    <string name="ui2_f04_params">轨道 4px · 滑块 18→21（拖动）· 填充用 linear-gradient 实时算百分比</string>
+    <string name="ui2_f04_prompt">做滑块：4px 轨道 + 18px 圆形滑块，拖动时滑块放大到 21px 并浮出数值气泡，松手 300ms 气泡淡出。\n【要求】基于 input[type=range] 保底键盘可访问；填充用 background-size 百分比实现；\n气泡位置在两端做钳制，不出容器；aria-valuenow 与显示一致；支持双滑块（可选）。\n【自检】键盘 ←/→ 每次 ±1；拖到最左/最右气泡不越界；数值变化时填充无缝跟随。</string>
+    <string name="ui2_f05_name">复选与单选</string>
+    <string name="ui2_f05_summary">勾选用 SVG path 的 stroke-dashoffset 画出来（180ms），单选用内点缩放；点击热区 44px，视觉只有 20px。</string>
+    <string name="ui2_f05_params">视觉 20 · 热区 44 · 勾线 180ms · 单选内点 6→8px</string>
+    <string name="ui2_f05_prompt">做复选框与单选框（各 3 个），视觉 20px、热区 44px。\n【勾选动画】用 SVG path 的 stroke-dasharray/stroke-dashoffset 在 180ms 内\"画出\"对勾；\n【单选】外圈 20px 描边 + 内点从 6px 弹到 8px（弹簧曲线）；\n【可访问】原生 input 保留（可 Tab、可用空格），视觉层用 span[aria-hidden]；\n【自检】点击整行都能切换；单选框同组互斥；连续快速点击 10 次状态与视觉不脱节。</string>
+    <string name="ui2_f06_name">头像与徽标</string>
+    <string name="ui2_f06_summary">纯 CSS 头像：无图时用姓名首字 + 由名字哈希出的双色渐变；状态点用 2px 描边把头像\"挖\"出来；徽标数字超过 99 显示 99+，宽度随位数自适应。</string>
+    <string name="ui2_f06_params">尺寸 28/36/48/64 · 状态点 10 · 徽标高 18 · 渐变由 hash(name) 决定色相</string>
+    <string name="ui2_f06_prompt">做头像 + 状态点 + 数量徽标。\n【头像】无图时显示姓名首字；背景色由名字哈希出两个色相做 135° 渐变，保证同名恒色。\n【尺寸】28 / 36 / 48 / 64 四档，字号按尺寸线性缩放。\n【状态】右下角 10px 圆点，2px 深色描边把头像\"挖\"出来；支持 online/busy/offline 三色。\n【徽标】18px 高，min-width 18 + padding 4，超过 99 显示 99+；用 translate 挂在右上角，不遮挡人脸。\n【自检】同名同色；两位数徽标不变形；无图不破图。</string>
+    <string name="ui2_f07_name">表单校验</string>
+    <string name="ui2_f07_summary">即时校验 + 失焦才报错 + 提交时全量校验：输入中只给正向提示，blur 后才显示错误，提交时把第一个错误滚进视野并聚焦。</string>
+    <string name="ui2_f07_params">校验时机 = blur / submit · 错误文案 1 行 · 提交按钮在无效时 aria-disabled 但可点（点了给提示）</string>
+    <string name="ui2_f07_prompt">做三步式表单校验（姓名 / 邮箱 / 密码）。\n【时机】输入中不报错，只清错；失焦校验该字段；提交时校验全部并把焦点移到第一个错误。\n【反馈】错误字段边框变红 + 下方一行文案 + aria-invalid=\"true\" + aria-describedby 关联；\n正确时字段尾部出现绿色对勾。\n【提交】全部通过后按钮进入 loading → 成功态（对勾 + 文案变化）。\n【自检】输入过程中无红色；失焦立刻报错；提交无效时焦点正确；截图对比错误/成功两态。</string>
+    <string name="ui2_f08_name">步进器</string>
+    <string name="ui2_f08_summary">加减按钮 + 数字滚动：数字用 translateY 的列表做滑动切换（不是直接改文本），长按每 80ms 连加。</string>
+    <string name="ui2_f08_params">高 36 · 按钮 32 正方形 · 连发 80ms · 数字切换 220ms</string>
+    <string name="ui2_f08_prompt">做步进器（可用于商品数量 / 字号选择）。\n【结构】[−] 数字 [+]，高 36，按钮 32×32，圆角 10。\n【交互】单击 ±1；长按 400ms 后每 80ms 连发；到达 min/max 时按钮变灰并停止；\n数字切换用竖排列表 translateY 滑动（220ms，带方向）；支持键盘 ↑/↓。\n【自检】长按 2 秒能到上限；到端点无越界；数字切换方向正确；字体等宽不抖动。</string>
+    <string name="ui2_f09_name">分段控件</string>
+    <string name="ui2_f09_summary">选中块是一个绝对定位的白色胶囊，用 transform 在选项之间滑动（320ms 弹簧），文字颜色同时切换，避免每个选项自己变形。</string>
+    <string name="ui2_f09_params">容器高 34 · 胶囊与选项同高 · 位移 320ms cubic-bezier(.3,.9,.3,1.12)</string>
+    <string name="ui2_f09_prompt">做分段控件（iOS 风格）：容器 34 高、圆角 10，内部选项等分。\n【选中块】一个绝对定位的胶囊，在选项间用 translateX 滑动，320ms cubic-bezier(.3,.9,.3,1.12)。\n【状态】选中项文字加深、加粗；未选中为次级色；支持键盘 ←/→ 与 Home/End。\n【自检】切换时无重排（Performance 面板里只看到 transform）；选项文字长度不同也不错位；窄屏 320px 不溢出。</string>
+    <string name="ui2_f10_name">搜索框</string>
+    <string name="ui2_f10_summary">点击图标展开输入区 + 防抖 180ms 联想 + 命中词高亮 + 空结果提示；结果列表用键盘上下选择。</string>
+    <string name="ui2_f10_params" formatted="false">防抖 180ms · 折叠宽 40 → 展开 100% · 最多 5 条建议</string>
+    <string name="ui2_f10_prompt">做可展开搜索框：折叠态 40×40 圆形图标，点击展开为整行输入，带 180ms 防抖联想与命中高亮。\n【交互】输入防抖 180ms 后查询（本地数组模拟）；结果最多 5 条，命中词用 &lt;mark&gt; 高亮；\n↑↓ 移动选中项，Enter 提交，Esc 清空并收起；无结果时显示一行「没有匹配」。\n【自检】快速连打 10 个字符只触发 1 次查询；高亮不破坏 DOM；键盘全流程可完成。</string>
+    <string name="ui2_f11_name">文件上传</string>
+    <string name="ui2_f11_summary">拖拽区 + 队列 + 单文件进度条：拖入高亮、逐个上传、失败可重试；上传用分片模拟，进度条只改 transform。</string>
+    <string name="ui2_f11_params">拖拽高亮 120ms · 进度条用 scaleX · 队列串行（同时 1 个）</string>
+    <string name="ui2_f11_prompt">做文件上传：可点击 / 可拖拽的区域 + 文件队列 + 单文件进度 + 失败重试。\n【区域】虚线边框，拖入时描边变主题色并轻微放大（120ms）。\n【队列】串行上传，每项显示文件名、大小、进度条（用 transform: scaleX 驱动，不写 width）；\n失败项显示红色与「重试」；全部完成后按钮文字变「✓ 已上传 3 个」。\n【自检】拖拽高亮进出正常；进度条 60fps 不抖动；失败重试只重跑该项；无文件时按钮禁用。</string>
+    <string name="ui2_f12_name">选择器</string>
+    <string name="ui2_f12_summary">底部弹出 + 滚动吸附 + 选中态描边：列表项在滚动容器中心时高亮放大，确认后回填到触发器。</string>
+    <string name="ui2_f12_params" formatted="false">弹层 60% 高 · 吸附项 scale 1.06 · 确认后回填 + 关闭 260ms</string>
+    <string name="ui2_f12_prompt" formatted="false">做底部弹出的选择器：触发器显示当前值，点击从底部升起 60% 高的列表。\n【交互】滚动停止后最接近中心的项被吸附（scale 1.06 + 描边），上下有渐隐遮罩；\n选中项有勾；「取消 / 确认」；确认后回填到触发器并关闭（260ms）。\n【自检】未选中时确认禁用；快速滚动不卡顿；回填后再次打开仍停在原选项。</string>
+    <string name="ui2_f13_name">底部标签栏</string>
+    <string name="ui2_f13_summary">液态玻璃底栏 + 胶囊指示器：指示器宽度由文字宽度算、位置用 transform 平移 420ms 弹簧；点击时图标上浮 1px 并回弹。</string>
+    <string name="ui2_f13_params">高 64 · 圆角 24 · 指示器高 34 · 位移 420ms cubic-bezier(.3,.9,.3,1.12)</string>
+    <string name="ui2_f13_prompt" formatted="false">做液态玻璃底部标签栏（4 个 tab）。\n【结构】固定底部、宽 min(520px, 100%-28px)、高 64、圆角 24、backdrop-filter: blur(24px) saturate(1.5)；\n内部一个绝对定位胶囊指示器（高 34），当前项图标 + 文字。\n【动效】指示器宽 = 选中项宽 - 16，位移用 transform，420ms cubic-bezier(.3,.9,.3,1.12)；\n点击时图标 translateY(-1px) 回弹；切页时内容淡入 180ms。\n【自检】切换 10 次指示器不错位；安全区留白正确；毛玻璃在深色背景上有可见的高光边缘。</string>
+    <string name="ui2_f14_name">顶栏（大标题折叠）</string>
+    <string name="ui2_f14_summary">滚动时大标题缩小并淡出、小标题淡入、底部分割线出现：三件事用同一个滚动进度 p 驱动，避免各写一套。</string>
+    <string name="ui2_f14_params">折叠区间 0–64px · 大标题 20px→0 · 小标题 0→13px · 透明度线性映射</string>
+    <string name="ui2_f14_prompt">做可折叠顶栏：滚动容器内的内容把大标题顶出去。\n【效果】滚动 0→64px 期间：大标题 font-size 20→0、opacity 1→0；小标题 opacity 0→1、font-size 0→13px；\n分割线在 p&gt;0.7 时出现。全部由同一个 --p 驱动。\n【自检】缓慢滚动来回无跳变；p 到 1 时只剩小标题；滚动停止 3 秒仍稳定。</string>
+    <string name="ui2_f15_name">抽屉导航</string>
+    <string name="ui2_f15_summary" formatted="false">左侧抽屉 + 遮罩 + 手势：拖拽超过 30% 或速度 &gt;0.4 才关闭，否则弹簧回位；抽屉内容错峰入场。</string>
+    <string name="ui2_f15_params" formatted="false">宽度 62% · 打开 300ms · 关闭阈值位移 30% / 速度 0.4px·ms⁻¹</string>
+    <string name="ui2_f15_prompt" formatted="false">做左侧抽屉导航：宽 62%，遮罩 40% 黑，内容项错峰入场（每项延迟 40ms）。\n【手势】从任意位置向右拖拽关闭；位移 &gt;30% 宽 或 速度 &gt;0.4px/ms 判定关闭，否则 300ms 弹簧回位；\n拖拽过程中遮罩透明度跟随位移线性变化。\n【自检】小幅拖拽回弹、快速轻扫关闭；打开时按 Esc 关闭；遮罩点击关闭；错峰入场不抖动。</string>
+    <string name="ui2_f16_name">面包屑</string>
+    <string name="ui2_f16_summary">空间不足时折叠中间层级（首层 + … + 末层），hover 省略号弹出被折叠的部分；分隔符用伪元素，不占 DOM。</string>
+    <string name="ui2_f16_params" formatted="false">最多显示 3 段 · 折叠后 首/…/末 · 分隔符 10px 透明度 40%</string>
+    <string name="ui2_f16_prompt" formatted="false">做自适应面包屑：层级为 首页 / 素材库 / 组件 / 表单 / 输入框。\n【折叠】容器不够宽时保留首层与末层，中间折叠成「…」，点击省略号弹出被折叠的层级列表。\n【样式】分隔符用 ::after（10px、透明度 40%），当前页加粗且不可点，其余 hover 变亮。\n【自检】320px 宽时折叠正确；省略号浮层可点；当前页无 hover 反馈。</string>
+    <string name="ui2_f17_name">标签页</string>
+    <string name="ui2_f17_summary">墨条跟随 + 面板横向滑动：墨条宽度等于标签文字宽，切换时平移 300ms；面板用 translateX 整排滑动，支持左右滑动切换。</string>
+    <string name="ui2_f17_params">墨条高 2px · 位移 300ms · 面板滑动 320ms · 滑动阈值 60px</string>
+    <string name="ui2_f17_prompt" formatted="false">做标签页（3 个）：墨条指示器 + 横向滑动的面板。\n【墨条】宽 = 标签文字宽，高 2，圆角，切换 300ms；初始位置在第一个标签下。\n【面板】容器宽 300%，内部每页 100%，用 translateX(-i*100%) 切换（320ms）；\n支持在内容区左右拖动超过 60px 切换（松手回弹）。\n【自检】点击与滑动结果一致；墨条不错位；切换时只有 transform 变化。</string>
+    <string name="ui2_f18_name">侧边栏</string>
+    <string name="ui2_f18_summary">图标轨（rail）与展开态互切：宽度 56 ↔ 200，文字用 opacity + 位移错峰出现，展开状态记忆在 localStorage。</string>
+    <string name="ui2_f18_params">宽度 56/200 · 过渡 260ms · 文字延迟 60ms · 激活项有左侧 3px 高亮条</string>
+    <string name="ui2_f18_prompt">做可折叠侧边栏：收起 56px 只显示图标，展开 200px 显示图标 + 文字。\n【动效】宽度 260ms；文字 opacity 0→1 并右移 6px，逐项延迟 60ms；图标位置始终不变。\n【状态】当前项左侧 3px 主题色高亮条 + 背景 tint；折叠按钮在底部；状态写入 localStorage。\n【自检】展开/收起 10 次不抖动；刷新保持状态；图标 x 坐标全程不变（用 JS 打印验证）。</string>
+    <string name="ui2_f19_name">卡片网格</string>
+    <string name="ui2_f19_summary">Bento 栅格：跨列 / 跨行的卡片用 grid-column: span 2 组合，hover 时整卡上浮 3px + 阴影加深 + 内部高光跟随指针。</string>
+    <string name="ui2_f19_params">gap 10 · 圆角 16 · hover 上浮 3px/180ms · 高光半径 160px</string>
+    <string name="ui2_f19_prompt">做 Bento 卡片网格：6 张卡，尺寸组合 2×2 + 2×1 + 1×1 等。\n【布局】CSS Grid，grid-auto-rows: 56px，卡片用 grid-area/span 组合；gap 10；圆角 16。\n【交互】hover：translateY(-3px)、阴影加深、内部径向高光跟随指针（--mx/--my CSS 变量）。\n【响应】&lt;520px 时全部 span 归 1，不留空洞。\n【自检】任意宽度下无空洞；hover 只动当前卡；指针高光平滑。</string>
+    <string name="ui2_f20_name">分组列表</string>
+    <string name="ui2_f20_summary">iOS 风格 inset grouped list：分组圆角 14、组间标题 12px 大写、组内行 44px 高、分割线从文字起点开始（不顶到左边）。</string>
+    <string name="ui2_f20_params">行高 44 · 分组圆角 14 · 分割线 inset 16 · 组间距 18</string>
+    <string name="ui2_f20_prompt">做 iOS 风格分组列表：两组（账户 / 偏好），每组 3 行。\n【样式】分组卡片圆角 14、背景 #161f28；组标题 11px 大写次级色，左右各 6px；\n行高 44，左侧图标 18px，右侧值 + 箭头；分割线从文字起点开始（left:38px），最后一行无线。\n【交互】整行可点，按下 120ms 高亮；长文案单行省略。\n【自检】最后一行无分割线；分割线不跨图标；按下高亮不超过 150ms。</string>
+    <string name="ui2_f21_name">瀑布流</string>
+    <string name="ui2_f21_summary">CSS columns 实现的瀑布流：列宽 110px、gap 8，卡片高度由内容决定；配图用渐变块占位，避免加载抖动。</string>
+    <string name="ui2_f21_params">columns: 110px · column-gap 8 · break-inside avoid</string>
+    <string name="ui2_f21_prompt">做瀑布流：8 张不同高度的卡片（渐变占位 + 标题 + 时长）。\n【实现】CSS columns: 110px，column-gap 8，卡片 break-inside: avoid，圆角 10。\n【要求】窗口从 320 到 900 宽度变化时列数自动调整，无断卡；卡片 hover 轻微上浮。\n【自检】任意宽度下无卡片被切断；滚动 60fps；卡片间距均匀。</string>
+    <string name="ui2_f22_name">响应式栅格</string>
+    <string name="ui2_f22_summary">断点标尺可视化：拖动容器宽度，实时显示当前断点（xs/sm/md/lg）与列数；列用 minmax + auto-fit 自适应。</string>
+    <string name="ui2_f22_params">断点 360 / 560 / 760 · 列宽 minmax(64px,1fr) · gap 8</string>
+    <string name="ui2_f22_prompt" formatted="false">做响应式栅格演示：一个可拖动宽度的容器（260–100%）+ 内部 8 个格子。\n【行为】grid-template-columns: repeat(auto-fit, minmax(64px, 1fr))；容器宽度变化时列数实时变化；\n顶部标尺显示当前宽度、断点（&lt;360 xs / &lt;560 sm / &lt;760 md / 其他 lg）与列数。\n【自检】拖到任意宽度无横向滚动；列数 = floor((w+gap)/(64+gap))；断点标签实时更新。</string>
+    <string name="ui2_f23_name">粘性堆叠</string>
+    <string name="ui2_f23_summary">原生滚动 + sticky 叠压：每屏 sticky top:0，下一屏压上来时用滚动位置反算进度，驱动封面缩放与标题擦除。</string>
+    <string name="ui2_f23_params" formatted="false">sticky top 0 · 每屏高 100% · 缩放 1→0.9 随进度</string>
+    <string name="ui2_f23_prompt" formatted="false">做粘性堆叠：4 屏，每屏 sticky top:0，下一屏滚上来压住上一屏。\n【效果】每屏封面随被覆盖进度从 1 缩到 0.9、透明度轻微下降；上一屏标题在进度 &gt;60% 时淡出。\n【实现】原生滚动 + position: sticky，进度用 getBoundingClientRect 计算，禁止 transform 模拟滚动。\n【自检】滚动到任意位置缩放正确；反向滚动对称；滚动时无闪烁（父级不要 overflow:hidden）。</string>
+    <string name="ui2_f24_name">安全区与折叠</string>
+    <string name="ui2_f24_summary">刘海 / 底部指示条模拟：内容必须避开 notch 与 home indicator，用 env(safe-area-inset-*) 与 padding 折叠；错误示范用红色标出被遮挡区域。</string>
+    <string name="ui2_f24_params">顶部 notch 28px · 底部 20px · 安全区 inset 8px</string>
+    <string name="ui2_f24_prompt">做安全区演示：一个手机外框（带刘海与底部指示条），内部顶部标题 + 内容 + 底部操作条。\n【开关】「安全区」开：容器顶部 padding 28、底部 20，内容完全避开；\n关：内容贴边，用红色描出被遮挡区域并显示「被遮挡」标记。\n【要求】用 CSS 变量 --sat/--sab 模拟 env(safe-area-inset-*)；外框圆角 28、边框 1px。\n【自检】开/关两态遮挡区域差异肉眼可见；底部按钮不被指示条压住；切换无抖动。</string>
+    <string name="ui2_f25_name">轻提示</string>
+    <string name="ui2_f25_summary">顶部浮入 + 自动消失：进入用 translateY(-10px)→0 + 缩放 0.96→1，退出用同曲线反向；多条 Toast 竖直堆叠，最多 3 条，超出时挤掉最老的。</string>
+    <string name="ui2_f25_params">进入 260ms 弹簧 · 停留 2.2s · 退出 200ms · 同时最多 3 条</string>
+    <string name="ui2_f25_prompt">做轻提示（toast）系统：API 为 toast(msg, type)，type = info/success/warn。\n【动效】进入：opacity 0→1、translateY(-10px)→0、scale .96→1，260ms 弹簧；\n退出：反向 200ms；自动停留 2.2s。\n【堆叠】多条竖直堆叠（gap 6），最多同时 3 条，超出的挤掉最老的；每条独立计时器。\n【自检】连点 8 次最多 3 条且不会一起消失；成功/警告图标颜色不同；动画期间不抖动。</string>
+    <string name="ui2_f26_name">对话框</string>
+    <string name="ui2_f26_summary">缩放淡入 + 焦点圈定：对话框用 scale(.92)→1 弹簧入场；打开时把焦点移到主按钮，Esc 关闭，遮罩点击关闭（危险操作不允许点遮罩关闭）。</string>
+    <string name="ui2_f26_params" formatted="false">入场 280ms cubic-bezier(.2,.9,.3,1.2) · 遮罩 45% · 圆角 16</string>
+    <string name="ui2_f26_prompt">做确认对话框：标题 + 说明 + 取消/确认（危险色）。\n【动效】遮罩 200ms 淡入；卡片 scale(.92)→1 + 透明度，280ms cubic-bezier(.2,.9,.3,1.2)；\n关闭反向 160ms。打开时焦点移到「取消」，Esc 关闭；点遮罩也关闭，但 danger=true 时禁止点遮罩关闭。\n【自检】连开 10 次无残影；Esc 生效；背景不可滚动；按钮有 focus-visible 轮廓。</string>
+    <string name="ui2_f27_name">底部操作面板</string>
+    <string name="ui2_f27_summary" formatted="false">从底部上滑的面板：拖动把手可下拉关闭，位移超过 35% 或速度达标时关闭；选项逐项上浮入场。</string>
+    <string name="ui2_f27_params" formatted="false">圆角 20 · 入场 320ms 弹簧 · 关闭阈值 35% · 选项错峰 35ms</string>
+    <string name="ui2_f27_prompt" formatted="false">做底部操作面板（action sheet）：一个把手 + 4 个操作项 + 取消。\n【动效】从 translateY(100%) 上滑到 0，320ms 弹簧；遮罩淡入 40% 黑；选项每项延迟 35ms 上浮入场。\n【手势】按住把手下拉，位移 &gt;35% 或速度 &gt;0.5px/ms 关闭，否则回弹。\n【自检】半程松手回弹；阈值一下关闭；选项点击后面板收起；拖拽时遮罩同步变淡。</string>
+    <string name="ui2_f28_name">骨架屏</string>
+    <string name="ui2_f28_summary">骨架 → 内容的无缝替换：骨架用 1.6s 横向扫光，真内容带入 220ms 淡入，两者尺寸完全一致，避免布局跳动。</string>
+    <string name="ui2_f28_params">扫光 1.6s linear 无限 · 骨架圆角 6 · 内容淡入 220ms</string>
+    <string name="ui2_f28_prompt" formatted="false">做骨架屏：卡片含头像（32 圆）、标题条、两行正文。\n【扫光】骨架背景 linear-gradient 105deg 从 -20% 扫到 120%，1.6s linear 无限；圆角 6。\n【切换】1.6s 后换成真实内容，淡入 220ms；骨架与内容的行高 / 内边距必须一致。\n【自检】切换瞬间用 offsetHeight 打印高度差为 0；扫光无卡顿；连续切换 3 次都对齐。</string>
+    <string name="ui2_f29_name">空状态</string>
+    <string name="ui2_f29_summary">空状态的插画用 SVG 描边路径 + 逐段绘制动画（stroke-dashoffset），配一行说明与一个主操作；文案要给出下一步，不要只说「暂无数据」。</string>
+    <string name="ui2_f29_params">描边 1.6s 一次 · 插画 84px · 主按钮在说明下方 14px</string>
+    <string name="ui2_f29_prompt">做空状态页：SVG 线描插画（盒子 + 星星）+ 标题「还没有素材」+ 说明「创建第一条素材，或从模板导入」+\n主按钮「新建素材」+ 次按钮「浏览模板」。\n【动效】插画 pathLength=1，stroke-dashoffset 1→0，1.6s ease-out 一次；随后整块淡入 180ms。\n【自检】线条全部画完不残留；两个按钮都可点；宽度 280 时不换行溢出。</string>
+    <string name="ui2_f30_name">进度与环形</string>
+    <string name="ui2_f30_summary" formatted="false">环形进度用 stroke-dashoffset 表示，数值用 requestAnimationFrame 缓动到目标值（避免百分比跳格）；线性进度条在 &gt;100% 时显示条纹。</string>
+    <string name="ui2_f30_params">环 r=22 · 周长 138 · 缓动 700ms ease-out · 值域 0–100</string>
+    <string name="ui2_f30_prompt" formatted="false">做两种进度：环形（SVG）+ 线性（div）。\n【环形】r=22、周长 2πr、起点 12 点（rotate(-90)）、圆头端点、渐变描边。\n【数字】0→88% 用 rAF + easeOutCubic 缓动 700ms，数字与弧长同源。\n【线性】宽度按同一数值；达到 100% 时切换成条纹动画。\n【自检】边界 0 与 100 正确；缓动结束数值精确等于目标；中途重启不叠加。</string>
+    <string name="ui2_f31_name">加载按钮</string>
+    <string name="ui2_f31_summary">按钮进入 loading 时宽度锁定（避免塌陷），文字换成三点脉冲 + 进度描边；完成后打勾回弹 1.06 再复原。</string>
+    <string name="ui2_f31_params">宽度锁定用 min-width · 三点脉冲 1.1s · 成功回弹 220ms scale 1.06</string>
+    <string name="ui2_f31_prompt">做加载按钮：三态 idle → loading → success → idle。\n【要求】进入 loading 前记录按钮 offsetWidth 并设为 min-width（宽度不跳）；loading 时文字替换为三点脉冲动画；\n1.4s 后变 success（打勾 + scale 1.06 回弹 220ms），再过 900ms 回到 idle。\n【约束】loading 期间 disabled 且 cursor 为 progress；重复点击只触发一次。\n【自检】三态切换宽度差 0；连点 5 次只发一次请求；成功动画只播一次。</string>
+    <string name="ui2_f32_name">折线图</string>
+    <string name="ui2_f32_summary">SVG 折线 + 面积渐变 + 描边生长：path 用 pathLength=1 把 dashoffset 从 1 动画到 0（1.2s），面积同时淡入；悬停时用二分查找最近的点，垂直参考线跟随。</string>
+    <string name="ui2_f32_params">描边 2px · 生长 1.2s ease-out · 面积渐变 0.22→0 · 点半径 3.2</string>
+    <string name="ui2_f32_prompt">做折线图（7 个数据点）。\n【绘制】SVG viewBox 0 0 260 110；用 Catmull-Rom 转三次贝塞尔让折线平滑且必须穿过每个真实点；\n描边 2px、圆头；下方面积用同一条路径闭合到底部，填充线性渐变（0.22 → 0）。\n【动效】pathLength=1，stroke-dashoffset 1→0，1.2s ease-out；面积 opacity 0→1 延迟 0.3s。\n【交互】pointermove 时按 x 找最近点，画垂直虚线 + 高亮点 + 数值气泡；离开时淡出。\n【自检】曲线穿过 7 个点；描边一次流畅画完；气泡吸附最近点不抖动。</string>
+    <string name="ui2_f33_name">柱状图</string>
+    <string name="ui2_f33_summary" formatted="false">柱子按序错峰生长（每根延迟 55ms），高度用 transform: scaleY 从底部展开（不用 height，避免重排）；悬停时同组其它柱降到 45% 亮度。</string>
+    <string name="ui2_f33_params">错峰 55ms · 生长 640ms cubic-bezier(.2,.9,.3,1) · origin bottom · 悬停压暗 0.45</string>
+    <string name="ui2_f33_prompt">做柱状图（6 根，双色区分「本周 / 上周」）。\n【生长】每根柱 transform: scaleY(0)→1，transform-origin: bottom，640ms cubic-bezier(.2,.9,.3,1)，\n逐根延迟 55ms；柱顶数值淡入延迟到该柱长完后。\n【交互】悬停某根柱：该柱提亮 + 顶部显示数值气泡；同组其它柱 opacity 0.45。\n【自检】柱子从底部生长；6 根全部长完约 1s；悬停不会让布局抖动（用 outline 不用 border）。</string>
+    <string name="ui2_f34_name">环形图</string>
+    <string name="ui2_f34_summary">多段弧按占比顺序绘制：每段 stroke-dashoffset 从整周长收紧到自己的可见长度，段间留 3° 间隙；中心数字同步缓动；悬停某段时该段半径外扩 3px。</string>
+    <string name="ui2_f34_params">r=26 · 描边 8 · 间隙 3° · 每段 520ms 延迟 90ms · 外扩 3px</string>
+    <string name="ui2_f34_prompt" formatted="false">做环形图（4 段，占比 38 / 27 / 20 / 15）。\n【结构】SVG r=26、stroke-width 8、圆头端点；从 12 点开始，顺时针排列；\n每段用 stroke-dasharray = (段长, 周长)、stroke-dashoffset = -前段累计，段间留 3° 间隙。\n【动效】打开时每段从整周长收紧到自身长度（520ms，逐段延迟 90ms）；中心数字从 0 缓动到 38%。\n【交互】悬停某段：该段 stroke-width 8→11 + 轻微外扩，其它段降到 40% 不透明；离开复原。\n【自检】四段合计 360°；间隙均匀；悬停不改变整体外框尺寸。</string>
+    <string name="ui2_f35_name">数据卡</string>
+    <string name="ui2_f35_summary">数字滚动 + 迷你趋势线：数值用 rAF 从 0 滚到目标（easeOutExpo），趋势线同步描边生长，变化率用颜色与箭头双重编码（不只靠颜色）。</string>
+    <string name="ui2_f35_params" formatted="false">滚动 1.1s easeOutExpo · 趋势线 24px 高 · 变化率 ±% 带箭头</string>
+    <string name="ui2_f35_prompt" formatted="false">做数据卡：标题「本月活跃」+ 数字 12,480 + 变化率 +8.2%（绿）+ 迷你趋势线。\n【数字】rAF 1.1s easeOutExpo 从 0 滚到 12480，千分位用 Intl.NumberFormat(\'zh-CN\')；\n【趋势线】24px 高的 SVG 折线，pathLength 描边生长 1s，末端一个脉冲点。\n【变化率】+8.2% 用绿色 + ↑ 箭头（箭头与颜色双重编码）；负值时红色 + ↓。\n【自检】最终值精确 12,480；千分位正确；箭头与符号一致；卡内无溢出。</string>
+    <string name="ui2_f36_name">数据表格</string>
+    <string name="ui2_f36_summary">表头吸顶 + 行错峰入场 + 排序指示器；行高 34、粘性表头带描边阴影（滚动时才出现）。</string>
+    <string name="ui2_f36_params">行高 34 · 入场 240ms 错峰 28ms · 表头 shadow 在 scrollTop&gt;2 时出现</string>
+    <string name="ui2_f36_prompt" formatted="false">做数据表格：5 列（名称 / 分类 / 状态 / 更新 / 操作），6 行。\n【样式】行高 34、表头 10.5px 大写字距、斑马纹极弱（3%）、状态用色点 + 文字；\n【行为】表头 position:sticky top:0 且不透明；容器 scrollTop&gt;2 时给表头加深阴影；\n点击「更新」列排序，箭头升/降切换；行入场 opacity+translateY(6px)，逐行 28ms 延迟。\n【自检】表头滚动时始终遮住内容；排序结果正确；行入场不引起横向抖动。</string>
+    <string name="ui2_f37_name">时间线</string>
+    <string name="ui2_f37_summary" formatted="false">左侧竖线随滚动生长：线用 scaleY 从 0 长到当前可见进度，节点在进入视口 20% 时点亮并弹一下。</string>
+    <string name="ui2_f37_params" formatted="false">线宽 2 · 节点 9px · 点亮 320ms 弹簧 · 触发线 20%</string>
+    <string name="ui2_f37_prompt" formatted="false">做时间线：5 个节点（版本 v1.0 → v1.4），左侧竖线 + 圆点 + 右侧卡片。\n【生长】竖线 transform: scaleY 从 0 到当前进度（transform-origin: top），随容器滚动更新；\n【点亮】节点进入视口 20% 时圆点放大 1→1.35→1（320ms 弹簧），卡片淡入上移 6px；\n【样式】最新节点用主题色 + 发光，旧节点灰色；卡片显示版本、日期、两条变更。\n【自检】向下滚线只长不缩；节点只点亮一次；向上滚不重放。</string>
+    <string name="ui2_f38_name">弹簧拖拽</string>
+    <string name="ui2_f38_summary">真正的弹簧积分（不是 CSS 过渡猜的）：每帧 v += (目标-当前)×刚度×dt - v×阻尼×dt，松手后靠速度自然回弹；拖拽时记录指针速度作为初始速度，甩出去才有惯性。</string>
+    <string name="ui2_f38_params">刚度 k=170 · 阻尼 c=18 · dt 上限 1/30s · 甩出速度 = 最近 60ms 平均</string>
+    <string name="ui2_f38_prompt">做一个可拖拽的球，用真正的弹簧物理回位。\n【物理】每帧：a = -k*(x - target) - c*v；v += a*dt；x += v*dt；k=170、c=18，dt 夹在 1/120~1/30。\n【拖拽】pointerdown 抓取，move 时直接把 x 设为指针位置并记录速度（最近 60ms 的平均），松手时把该速度注入 v。\n【易用】限制在容器内，越界时给 target 加软约束（回弹）。\n【自检】松手后停在目标点；回弹过冲不超过 2 次；快速甩出能看到明显惯性；切后台回来不炸。</string>
+    <string name="ui2_f39_name">错峰入场</string>
+    <string name="ui2_f39_summary">列表错峰：每项延迟 = index × 40ms，位移 14px + 透明度，用 cubic-bezier(.2,.9,.3,1.12) 收尾带回弹；同一批只播一次，滚动进入视口时触发。</string>
+    <string name="ui2_f39_params">单次 420ms · 错峰 40ms · 位移 14px · 上限 12 项（超过后延迟封顶）</string>
+    <string name="ui2_f39_prompt" formatted="false">做错峰入场列表（9 项）。\n【动效】每项 opacity 0→1、translateY(14px)→0，420ms cubic-bezier(.2,.9,.3,1.12)，逐项延迟 40ms\n（超过 12 项后延迟封顶在 480ms，避免长列表尾巴太长）。\n【触发】进入视口 15% 才播，且只播一次；提供「重播」按钮。\n【自检】首项与末项延迟差正确；重播无残留；滚动回来不重放。</string>
+    <string name="ui2_f40_name">手势卡片</string>
+    <string name="ui2_f40_summary">滑动卡片的双阶段判定：拖拽时卡片旋转 = 位移×0.05、遮罩左右两色透明度随位移变化；超过阈值飞出并复位下一张；未超过则弹簧回位。</string>
+    <string name="ui2_f40_params">旋转系数 0.05 · 飞出阈值 80px · 飞出 340ms · 阈值内回弹 k=200 c=22</string>
+    <string name="ui2_f40_prompt" formatted="false">做可滑动卡片（3 张），左滑「跳过」绿，右滑「收藏」蓝。\n【拖拽】pointermove 时卡片跟着走，旋转 = dx*0.05 度；左/右标记透明度 = |dx|/100；\n背后两张卡按 index 反向偏移（translateY 8*i、scale 1-0.04*i）形成层次。\n【判定】|dx|&gt;80 飞出（340ms，位移到 ±140%），否则 340ms 弹簧回位（k=200/c=22）。\n【自检】连甩 3 张都有下一张顶上；飞出后卡片被移到栈底并复位；旋转不超过 ±18°。</string>
+    <string name="ui2_f41_name">页面转场</string>
+    <string name="ui2_f41_summary">共享元素转场（简化版）：缩略图先飞到详情位置（FLIP），页面内容随后淡入；返回时反向飞回。FLIP 用 getBoundingClientRect 前后差值 + transform 反推，避免重排。</string>
+    <string name="ui2_f41_params">飞行 380ms cubic-bezier(.3,.9,.3,1) · 内容淡入延迟 120ms · 背景遮罩 220ms</string>
+    <string name="ui2_f41_prompt">做共享元素转场：列表里一个小卡片，点击后放大飞入详情页。\n【FLIP】点击时记录卡片 rect，切到详情布局，读详情容器 rect，用 transform: translate+scale 把详情\n\"放\"回原位，next frame 归零 transition 380ms cubic-bezier(.3,.9,.3,1)；详情内容 120ms 后淡入。\n【返回】反向飞行，结束后显示列表卡片；背景遮罩 220ms 淡入。\n【自检】飞行过程无拉伸变形；连续进入/返回 5 次不错位；Esc 可返回。</string>
+    <string name="ui2_f42_name">滚动视差</string>
+    <string name="ui2_f42_summary">多层视差 + 帧内归一化：每层 translateY = 滚动量 × 系数，系数用 data 属性声明；所有更新在一次 rAF 里完成，读一次 scrollY 写多份 transform。</string>
+    <string name="ui2_f42_params">层系数 0.15 / 0.35 / 0.6 · rAF 单帧批处理 · 惯性 0.12</string>
+    <string name="ui2_f42_prompt">做滚动视差：一个可滚动区域，背景 3 层（远山/中景/近景）以不同速度平移。\n【系数】远 0.15、中 0.35、近 0.6；滚动时每层 translateY = -scrollTop * 系数。\n【性能】所有更新在同一个 rAF 内完成，先读后写；层加 will-change: transform。\n【自检】滚动时无卡顿（Chrome Performance 面板 60fps）；到底部时层间差距肉眼明显；反向滚动一致。</string>
+    <string name="ui2_f43_name">引导页</string>
+    <string name="ui2_f43_summary">三屏引导：横向滑动 + 插画逐屏入场（同屏元素错峰 70ms）+ 底部进度胶囊；最后一屏按钮变「开始使用」。</string>
+    <string name="ui2_f43_params" formatted="false">每屏 100% 宽 · 滑动 380ms · 元素错峰 70ms · 进度胶囊 18/6px</string>
+    <string name="ui2_f43_prompt" formatted="false">做三屏引导页：每屏插图（SVG 线描/渐变）+ 标题 + 一句说明。\n【滑动】容器宽 300%，track 用 translateX(-i*100%)，380ms；支持手指左右拖拽超过 50px 切换。\n【入场】每屏激活时内部元素 opacity+translateY(10px) 逐项 70ms 错峰进入。\n【底部】进度胶囊：当前项宽 18 其余 6，颜色主题色；按钮末屏文案改为「开始使用」。\n【自检】三屏内容不串；进度与当前屏一致；拖拽与点击结果一致；末屏按钮文案正确。</string>
+    <string name="ui2_f44_name">登录页</string>
+    <string name="ui2_f44_summary">登录表单的负向反馈：字段聚焦时标签上浮，错误时输入框描边抖动 320ms 并显示行内错误；提交中按钮锁宽 + 三点脉冲。</string>
+    <string name="ui2_f44_params">标签上浮 200ms · 抖动 320ms ±6px · 按钮锁宽 · 错误描边 1.5px</string>
+    <string name="ui2_f44_prompt">做登录页：邮箱 + 密码 + 记住我 + 登录按钮 + 「用验证码登录」。\n【焦点】输入框聚焦时标签从占位位置缩到左上 9.5px（200ms），描边变主题色。\n【错误】提交时校验：空/格式错误 → 输入框描边红色 + 抖动 320ms（±6px，只播一次）+ 行内错误文案（预留高度）。\n【提交】校验通过后按钮锁宽并显示三点脉冲 1.2s，期间不可重复点击。\n【自检】两个字段同时错误时抖动不叠加；错误文案出现不推动布局；连点只提交一次。</string>
+    <string name="ui2_f45_name">设置页</string>
+    <string name="ui2_f45_summary">设置项的组合：开关行（点击整行切换）、带值行、危险行；分组标题小写字母间距；切换开关有 200ms 弹性位移。</string>
+    <string name="ui2_f45_params">行高 38 · 开关 34×19 · 圆钮位移 15px/220ms 弹簧 · 分组间距 14</string>
+    <string name="ui2_f45_prompt">做设置页：三个分组（通用 / 通知 / 危险区）。\n【开关】34×19 圆角 99，圆钮 15px，切换 220ms 弹簧；点击整行可切换（用 label 包裹），键盘空格也能切。\n【行样式】行高 38，左侧标题 + 右侧值/开关/箭头，分割线从标题起点开始，最后一行无线。\n【危险】「清除全部数据」红色文字，点击弹二次确认。\n【自检】点整行切换生效；连续点击 20 次状态不丢；键盘可达；危险项必须二次确认。</string>
+    <string name="ui2_f46_name">个人主页</string>
+    <string name="ui2_f46_summary">头图视差 + 头像重叠 + 数字统计：滚动时头图按 0.35 系数上移并轻微放大，头像与内容卡上浮，数字错峰滚动到目标值。</string>
+    <string name="ui2_f46_params">头图视差 0.35 · 头图缩放 1→1.08 · 头像 52px 边框 2px · 数字错峰 90ms</string>
+    <string name="ui2_f46_prompt">做个人主页：头图（渐变）+ 头像 + 昵称 + 三个统计数字 + 内容列表。\n【视差】页面滚动时头图 translateY(scrollTop*0.35) 且 scale 从 1 增到 1.08（补偿位移，不露边）；标题透明度随滚动降低。\n【层次】头像 52px、边框 2px 深色、margin-top -26px 压在两层之间；内容卡圆角 14。\n【数字】三个统计（素材 46 / 分类 8 / 收藏 12）从 0 滚到目标，逐项 90ms 错峰。\n【自检】滚到 120px 时头图无空隙；头像层级正确；数字最终准确。</string>
+    <string name="ui2_g01_name">折射与色散</string>
+    <string name="ui2_g01_summary">把边缘掰弯：可拖动透镜，边缘折射+RGB色散演示</string>
+    <string name="ui2_g01_params">透镜可拖 · 放大1.4× · 色散边</string>
+    <string name="ui2_g01_prompt">在 Android Compose 中实现「折射与色散」（UI2 增补条目 G01，分类：玻璃拆解）。要点：把边缘掰弯：可拖动透镜，边缘折射+RGB色散演示。关键参数：透镜可拖 · 放大1.4× · 色散边。要求：真实可操作实现（非静态图）；状态与视觉严格同步；边界（到端/为空/快速连点）有明确表现；完成后自检：按条目要点逐项手动操作验证，并报告与 Web 版机制的差异。</string>
+    <string name="ui2_g02_name">菲涅尔与眩光</string>
+    <string name="ui2_g02_summary">无菲涅尔不成玻璃：视角滑杆驱动眩光与边缘反光</string>
+    <string name="ui2_g02_params">角度0-90° · 眩光强度随视角</string>
+    <string name="ui2_g02_prompt">在 Android Compose 中实现「菲涅尔与眩光」（UI2 增补条目 G02，分类：玻璃拆解）。要点：无菲涅尔不成玻璃：视角滑杆驱动眩光与边缘反光。关键参数：角度0-90° · 眩光强度随视角。要求：真实可操作实现（非静态图）；状态与视觉严格同步；边界（到端/为空/快速连点）有明确表现；完成后自检：按条目要点逐项手动操作验证，并报告与 Web 版机制的差异。</string>
+    <string name="ui2_g03_name">超椭圆与融球</string>
+    <string name="ui2_g03_summary">超椭圆角参数化 + 两块玻璃靠近融合成一滴</string>
+    <string name="ui2_g03_params">指数n可调 · 间距可调</string>
+    <string name="ui2_g03_prompt">在 Android Compose 中实现「超椭圆与融球」（UI2 增补条目 G03，分类：玻璃拆解）。要点：超椭圆角参数化 + 两块玻璃靠近融合成一滴。关键参数：指数n可调 · 间距可调。要求：真实可操作实现（非静态图）；状态与视觉严格同步；边界（到端/为空/快速连点）有明确表现；完成后自检：按条目要点逐项手动操作验证，并报告与 Web 版机制的差异。</string>
+    <string name="ui2_g04_name">模糊管线</string>
+    <string name="ui2_g04_summary">模糊分步：原图→横向→纵向→合成，顺序不可换</string>
+    <string name="ui2_g04_params">4 pass · 半径分档</string>
+    <string name="ui2_g04_prompt">在 Android Compose 中实现「模糊管线」（UI2 增补条目 G04，分类：玻璃拆解）。要点：模糊分步：原图→横向→纵向→合成，顺序不可换。关键参数：4 pass · 半径分档。要求：真实可操作实现（非静态图）；状态与视觉严格同步；边界（到端/为空/快速连点）有明确表现；完成后自检：按条目要点逐项手动操作验证，并报告与 Web 版机制的差异。</string>
+    <string name="ui2_g05_name">弹簧跟随</string>
+    <string name="ui2_g05_summary">玻璃不直跟手指：弹簧滞后跟随，松手过冲回稳</string>
+    <string name="ui2_g05_params">低刚度弹簧 · 速度注入</string>
+    <string name="ui2_g05_prompt">在 Android Compose 中实现「弹簧跟随」（UI2 增补条目 G05，分类：玻璃拆解）。要点：玻璃不直跟手指：弹簧滞后跟随，松手过冲回稳。关键参数：低刚度弹簧 · 速度注入。要求：真实可操作实现（非静态图）；状态与视觉严格同步；边界（到端/为空/快速连点）有明确表现；完成后自检：按条目要点逐项手动操作验证，并报告与 Web 版机制的差异。</string>
+    <string name="ui2_g06_name">渲染分层剥开</string>
+    <string name="ui2_g06_summary">4 个 pass 逐层开关：采样/模糊/折射/高光</string>
+    <string name="ui2_g06_params">逐层开关 · 顺序固定</string>
+    <string name="ui2_g06_prompt">在 Android Compose 中实现「渲染分层剥开」（UI2 增补条目 G06，分类：玻璃拆解）。要点：4 个 pass 逐层开关：采样/模糊/折射/高光。关键参数：逐层开关 · 顺序固定。要求：真实可操作实现（非静态图）；状态与视觉严格同步；边界（到端/为空/快速连点）有明确表现；完成后自检：按条目要点逐项手动操作验证，并报告与 Web 版机制的差异。</string>
+    <string name="ui2_m01_name">字符幕布</string>
+    <string name="ui2_m01_summary">标题逐字升起如幕布拉开，可重播</string>
+    <string name="ui2_m01_params">逐字60ms错峰</string>
+    <string name="ui2_m01_prompt">在 Android Compose 中实现「字符幕布」（UI2 增补条目 M01，分类：动效案例）。要点：标题逐字升起如幕布拉开，可重播。关键参数：逐字60ms错峰。要求：真实可操作实现（非静态图）；状态与视觉严格同步；边界（到端/为空/快速连点）有明确表现；完成后自检：按条目要点逐项手动操作验证，并报告与 Web 版机制的差异。</string>
+    <string name="ui2_m02_name">竖琴与乌鸦</string>
+    <string name="ui2_m02_summary">拨弦发声：点弦振动，计数你的拨弦</string>
+    <string name="ui2_m02_params">7弦 · 振动衰减</string>
+    <string name="ui2_m02_prompt">在 Android Compose 中实现「竖琴与乌鸦」（UI2 增补条目 M02，分类：动效案例）。要点：拨弦发声：点弦振动，计数你的拨弦。关键参数：7弦 · 振动衰减。要求：真实可操作实现（非静态图）；状态与视觉严格同步；边界（到端/为空/快速连点）有明确表现；完成后自检：按条目要点逐项手动操作验证，并报告与 Web 版机制的差异。</string>
+    <string name="ui2_m03_name">弹性指针时钟</string>
+    <string name="ui2_m03_summary">秒针是根会晃的绳：每秒弹跳带过冲</string>
+    <string name="ui2_m03_params">弹簧秒针 · 实时走字</string>
+    <string name="ui2_m03_prompt">在 Android Compose 中实现「弹性指针时钟」（UI2 增补条目 M03，分类：动效案例）。要点：秒针是根会晃的绳：每秒弹跳带过冲。关键参数：弹簧秒针 · 实时走字。要求：真实可操作实现（非静态图）；状态与视觉严格同步；边界（到端/为空/快速连点）有明确表现；完成后自检：按条目要点逐项手动操作验证，并报告与 Web 版机制的差异。</string>
+    <string name="ui2_m04_name">粘性堆叠</string>
+    <string name="ui2_m04_summary">滚动时屏与屏互相压上去的粘性堆叠</string>
+    <string name="ui2_m04_params">吸顶+压缩</string>
+    <string name="ui2_m04_prompt">在 Android Compose 中实现「粘性堆叠」（UI2 增补条目 M04，分类：动效案例）。要点：滚动时屏与屏互相压上去的粘性堆叠。关键参数：吸顶+压缩。要求：真实可操作实现（非静态图）；状态与视觉严格同步；边界（到端/为空/快速连点）有明确表现；完成后自检：按条目要点逐项手动操作验证，并报告与 Web 版机制的差异。</string>
+    <string name="ui2_m05_name">滚轮轨道</string>
+    <string name="ui2_m05_summary">横向滚轮选择器，滑动吸附到刻度</string>
+    <string name="ui2_m05_params">吸附 · 刻度高亮</string>
+    <string name="ui2_m05_prompt">在 Android Compose 中实现「滚轮轨道」（UI2 增补条目 M05，分类：动效案例）。要点：横向滚轮选择器，滑动吸附到刻度。关键参数：吸附 · 刻度高亮。要求：真实可操作实现（非静态图）；状态与视觉严格同步；边界（到端/为空/快速连点）有明确表现；完成后自检：按条目要点逐项手动操作验证，并报告与 Web 版机制的差异。</string>
+    <string name="ui2_m06_name">翻页动画玩具</string>
+    <string name="ui2_m06_summary">拖动翻页：帧随角度走，正反面切换</string>
+    <string name="ui2_m06_params">rotationY · 帧号</string>
+    <string name="ui2_m06_prompt">在 Android Compose 中实现「翻页动画玩具」（UI2 增补条目 M06，分类：动效案例）。要点：拖动翻页：帧随角度走，正反面切换。关键参数：rotationY · 帧号。要求：真实可操作实现（非静态图）；状态与视觉严格同步；边界（到端/为空/快速连点）有明确表现；完成后自检：按条目要点逐项手动操作验证，并报告与 Web 版机制的差异。</string>
+    <string name="ui2_m07_name">手绘3D线框</string>
+    <string name="ui2_m07_summary">手绘风线框立方体缓慢自转，可暂停</string>
+    <string name="ui2_m07_params">Canvas线框 · 自转</string>
+    <string name="ui2_m07_prompt">在 Android Compose 中实现「手绘3D线框」（UI2 增补条目 M07，分类：动效案例）。要点：手绘风线框立方体缓慢自转，可暂停。关键参数：Canvas线框 · 自转。要求：真实可操作实现（非静态图）；状态与视觉严格同步；边界（到端/为空/快速连点）有明确表现；完成后自检：按条目要点逐项手动操作验证，并报告与 Web 版机制的差异。</string>
+    <string name="ui2_v01_name">弹窗选型</string>
+    <string name="ui2_v01_summary">别都叫弹窗：Dialog/Sheet/Toast/Popover/Drawer 各弹一次对比</string>
+    <string name="ui2_v01_params">6 类浮层同台</string>
+    <string name="ui2_v01_prompt">在 Android Compose 中实现「弹窗选型」（UI2 增补条目 V01，分类：视频专题）。要点：别都叫弹窗：Dialog/Sheet/Toast/Popover/Drawer 各弹一次对比。关键参数：6 类浮层同台。要求：真实可操作实现（非静态图）；状态与视觉严格同步；边界（到端/为空/快速连点）有明确表现；完成后自检：按条目要点逐项手动操作验证，并报告与 Web 版机制的差异。</string>
+    <string name="ui2_v02_name">6种高级浮层</string>
+    <string name="ui2_v02_summary">Modal 之外：非模态条/悬浮球/边缘坞/画中画/横幅/岛</string>
+    <string name="ui2_v02_params">6 种逐个体验</string>
+    <string name="ui2_v02_prompt">在 Android Compose 中实现「6种高级浮层」（UI2 增补条目 V02，分类：视频专题）。要点：Modal 之外：非模态条/悬浮球/边缘坞/画中画/横幅/岛。关键参数：6 种逐个体验。要求：真实可操作实现（非静态图）；状态与视觉严格同步；边界（到端/为空/快速连点）有明确表现；完成后自检：按条目要点逐项手动操作验证，并报告与 Web 版机制的差异。</string>
+    <string name="ui2_v03_name">大厂质感5招</string>
+    <string name="ui2_v03_summary">发丝线/连续曲率/动态模糊/物理弹簧/触觉反馈，逐招开关对比</string>
+    <string name="ui2_v03_params">5 招可开关</string>
+    <string name="ui2_v03_prompt">在 Android Compose 中实现「大厂质感5招」（UI2 增补条目 V03，分类：视频专题）。要点：发丝线/连续曲率/动态模糊/物理弹簧/触觉反馈，逐招开关对比。关键参数：5 招可开关。要求：真实可操作实现（非静态图）；状态与视觉严格同步；边界（到端/为空/快速连点）有明确表现；完成后自检：按条目要点逐项手动操作验证，并报告与 Web 版机制的差异。</string>
+    <string name="ui2_v04_name">AI界面5细节</string>
+    <string name="ui2_v04_summary">流式输出/思考点/停止生成/重新生成/复制，聊天界面全细节</string>
+    <string name="ui2_v04_params">打字机流式</string>
+    <string name="ui2_v04_prompt">在 Android Compose 中实现「AI界面5细节」（UI2 增补条目 V04，分类：视频专题）。要点：流式输出/思考点/停止生成/重新生成/复制，聊天界面全细节。关键参数：打字机流式。要求：真实可操作实现（非静态图）；状态与视觉严格同步；边界（到端/为空/快速连点）有明确表现；完成后自检：按条目要点逐项手动操作验证，并报告与 Web 版机制的差异。</string>
+    <string name="ui2_v05_name">下拉 vs 选择器</string>
+    <string name="ui2_v05_summary">Dropdown 与 Select 不是一回事：同台对比适用场景</string>
+    <string name="ui2_v05_params">同数据两种控件</string>
+    <string name="ui2_v05_prompt">在 Android Compose 中实现「下拉 vs 选择器」（UI2 增补条目 V05，分类：视频专题）。要点：Dropdown 与 Select 不是一回事：同台对比适用场景。关键参数：同数据两种控件。要求：真实可操作实现（非静态图）；状态与视觉严格同步；边界（到端/为空/快速连点）有明确表现；完成后自检：按条目要点逐项手动操作验证，并报告与 Web 版机制的差异。</string>
+    <string name="ui2_v06_name">热区与误触</string>
+    <string name="ui2_v06_summary">视觉 20px、热区 44px：打开热区透视看为什么点得中</string>
+    <string name="ui2_v06_params">热区可视化开关</string>
+    <string name="ui2_v06_prompt">在 Android Compose 中实现「热区与误触」（UI2 增补条目 V06，分类：视频专题）。要点：视觉 20px、热区 44px：打开热区透视看为什么点得中。关键参数：热区可视化开关。要求：真实可操作实现（非静态图）；状态与视觉严格同步；边界（到端/为空/快速连点）有明确表现；完成后自检：按条目要点逐项手动操作验证，并报告与 Web 版机制的差异。</string>
+    <string name="ui2_v07_name">全球化布局</string>
+    <string name="ui2_v07_summary">切语言看长单词与 RTL 如何撑爆/翻转布局</string>
+    <string name="ui2_v07_params">4 语言含RTL</string>
+    <string name="ui2_v07_prompt">在 Android Compose 中实现「全球化布局」（UI2 增补条目 V07，分类：视频专题）。要点：切语言看长单词与 RTL 如何撑爆/翻转布局。关键参数：4 语言含RTL。要求：真实可操作实现（非静态图）；状态与视觉严格同步；边界（到端/为空/快速连点）有明确表现；完成后自检：按条目要点逐项手动操作验证，并报告与 Web 版机制的差异。</string>
+    <string name="ui2_v08_name">节奏判定·虎先锋</string>
+    <string name="ui2_v08_summary">无伤实录的节奏拆解：判定条到完美区时点击计分</string>
+    <string name="ui2_v08_params">节奏小游戏</string>
+    <string name="ui2_v08_prompt">在 Android Compose 中实现「节奏判定·虎先锋」（UI2 增补条目 V08，分类：视频专题）。要点：无伤实录的节奏拆解：判定条到完美区时点击计分。关键参数：节奏小游戏。要求：真实可操作实现（非静态图）；状态与视觉严格同步；边界（到端/为空/快速连点）有明确表现；完成后自检：按条目要点逐项手动操作验证，并报告与 Web 版机制的差异。</string>
+    <string name="ui2_v09_name">节奏判定·寅虎</string>
+    <string name="ui2_v09_summary">更快节奏与连击判定，节奏感进阶</string>
+    <string name="ui2_v09_params">连击计数</string>
+    <string name="ui2_v09_prompt">在 Android Compose 中实现「节奏判定·寅虎」（UI2 增补条目 V09，分类：视频专题）。要点：更快节奏与连击判定，节奏感进阶。关键参数：连击计数。要求：真实可操作实现（非静态图）；状态与视觉严格同步；边界（到端/为空/快速连点）有明确表现；完成后自检：按条目要点逐项手动操作验证，并报告与 Web 版机制的差异。</string>
+    <string name="ui2_x01_name">弹窗20型实验室</string>
+    <string name="ui2_x01_summary">确认/输入/加载/列表/勾选/抽屉/依附/气泡等逐型真弹</string>
+    <string name="ui2_x01_params">选型即弹 · 可关</string>
+    <string name="ui2_x01_prompt">在 Android Compose 中实现「弹窗20型实验室」（UI2 增补条目 X01，分类：弹层馆）。要点：确认/输入/加载/列表/勾选/抽屉/依附/气泡等逐型真弹。关键参数：选型即弹 · 可关。要求：真实可操作实现（非静态图）；状态与视觉严格同步；边界（到端/为空/快速连点）有明确表现；完成后自检：按条目要点逐项手动操作验证，并报告与 Web 版机制的差异。</string>
+    <string name="ui2_x02_name">进出场动画舞台</string>
+    <string name="ui2_x02_summary">20 种 PopupAnimation 枚举映射为舞台动画，点选即播</string>
+    <string name="ui2_x02_params">动画预设选择</string>
+    <string name="ui2_x02_prompt">在 Android Compose 中实现「进出场动画舞台」（UI2 增补条目 X02，分类：弹层馆）。要点：20 种 PopupAnimation 枚举映射为舞台动画，点选即播。关键参数：动画预设选择。要求：真实可操作实现（非静态图）；状态与视觉严格同步；边界（到端/为空/快速连点）有明确表现；完成后自检：按条目要点逐项手动操作验证，并报告与 Web 版机制的差异。</string>
+    <string name="ui2_x03_name">弹窗设置实验室</string>
+    <string name="ui2_x03_summary">点外部关闭/背景变暗/模糊/深色/可拖拽，改完下个弹窗立刻生效</string>
+    <string name="ui2_x03_params">设置直连运行时</string>
+    <string name="ui2_x03_prompt">在 Android Compose 中实现「弹窗设置实验室」（UI2 增补条目 X03，分类：弹层馆）。要点：点外部关闭/背景变暗/模糊/深色/可拖拽，改完下个弹窗立刻生效。关键参数：设置直连运行时。要求：真实可操作实现（非静态图）；状态与视觉严格同步；边界（到端/为空/快速连点）有明确表现；完成后自检：按条目要点逐项手动操作验证，并报告与 Web 版机制的差异。</string>
+    <string name="ui2_x04_name">弹窗手势实验室</string>
+    <string name="ui2_x04_summary">拖拽关闭与三阶吸附：把弹层拖到不同档位松手吸附</string>
+    <string name="ui2_x04_params">三阶档位</string>
+    <string name="ui2_x04_prompt">在 Android Compose 中实现「弹窗手势实验室」（UI2 增补条目 X04，分类：弹层馆）。要点：拖拽关闭与三阶吸附：把弹层拖到不同档位松手吸附。关键参数：三阶档位。要求：真实可操作实现（非静态图）；状态与视觉严格同步；边界（到端/为空/快速连点）有明确表现；完成后自检：按条目要点逐项手动操作验证，并报告与 Web 版机制的差异。</string>
+    <string name="ui2_w01_name">动效配方20条</string>
+    <string name="ui2_w01_summary">20 条配方同台：选一条，舞台立刻按配方动一次</string>
+    <string name="ui2_w01_params">配方选择即播</string>
+    <string name="ui2_w01_prompt">在 Android Compose 中实现「动效配方20条」（UI2 增补条目 W01，分类：动效馆）。要点：20 条配方同台：选一条，舞台立刻按配方动一次。关键参数：配方选择即播。要求：真实可操作实现（非静态图）；状态与视觉严格同步；边界（到端/为空/快速连点）有明确表现；完成后自检：按条目要点逐项手动操作验证，并报告与 Web 版机制的差异。</string>
+    <string name="ui2_w02_name">令牌实验室</string>
+    <string name="ui2_w02_summary">时长7档/曲线9条/弹簧6组/错峰5种，点一下重播对比</string>
+    <string name="ui2_w02_params">四组令牌</string>
+    <string name="ui2_w02_prompt">在 Android Compose 中实现「令牌实验室」（UI2 增补条目 W02，分类：动效馆）。要点：时长7档/曲线9条/弹簧6组/错峰5种，点一下重播对比。关键参数：四组令牌。要求：真实可操作实现（非静态图）；状态与视觉严格同步；边界（到端/为空/快速连点）有明确表现；完成后自检：按条目要点逐项手动操作验证，并报告与 Web 版机制的差异。</string>
+    <string name="ui2_w03_name">动效规范索引25</string>
+    <string name="ui2_w03_summary">25 篇规范标题+导读，可搜索，先看导读再决定深读</string>
+    <string name="ui2_w03_params">可搜索列表</string>
+    <string name="ui2_w03_prompt">在 Android Compose 中实现「动效规范索引25」（UI2 增补条目 W03，分类：动效馆）。要点：25 篇规范标题+导读，可搜索，先看导读再决定深读。关键参数：可搜索列表。要求：真实可操作实现（非静态图）；状态与视觉严格同步；边界（到端/为空/快速连点）有明确表现；完成后自检：按条目要点逐项手动操作验证，并报告与 Web 版机制的差异。</string>
+    <string name="ui2_t01_name">项目结构生成器</string>
+    <string name="ui2_t01_summary">3 平台 × 11 功能开关 → 目录树 + 素材映射 + 开工提示词</string>
+    <string name="ui2_t01_params">勾选实时生成</string>
+    <string name="ui2_t01_prompt">在 Android Compose 中实现「项目结构生成器」（UI2 增补条目 T01，分类：工具）。要点：3 平台 × 11 功能开关 → 目录树 + 素材映射 + 开工提示词。关键参数：勾选实时生成。要求：真实可操作实现（非静态图）；状态与视觉严格同步；边界（到端/为空/快速连点）有明确表现；完成后自检：按条目要点逐项手动操作验证，并报告与 Web 版机制的差异。</string>
+    <string name="ui2_t02_name">并排对比</string>
+    <string name="ui2_t02_summary">任选两条素材同屏对比预览，找差异最快</string>
+    <string name="ui2_t02_params">双选双预览</string>
+    <string name="ui2_t02_prompt">在 Android Compose 中实现「并排对比」（UI2 增补条目 T02，分类：工具）。要点：任选两条素材同屏对比预览，找差异最快。关键参数：双选双预览。要求：真实可操作实现（非静态图）；状态与视觉严格同步；边界（到端/为空/快速连点）有明确表现；完成后自检：按条目要点逐项手动操作验证，并报告与 Web 版机制的差异。</string>
+
+    <!-- ===== ui/features/toolkit/ToolkitSpec.kt（阶段 5c） ===== -->
+    <!-- 分类键文案（ToolkitCategoryLabels 查表用） -->
+    <string name="tk_category_network_release">联网与发布</string>
+    <string name="tk_category_observability">可观测性</string>
+    <string name="tk_category_content_render">内容渲染</string>
+    <string name="tk_category_layout_adapt">布局适配</string>
+    <!-- 4 条条目的 name / summary / why / keyImpl / pitfalls / params / prompt -->
+    <string name="tk_u01_name">应用内更新检查</string>
+    <string name="tk_u01_summary">拉 GitHub Releases 最新版，比版本号，给「有新版/已最新/失败」三态，能真下载真安装。</string>
+    <string name="tk_u01_why">侧载分发（不上应用商店）的 App 必须有自更新，否则用户永远停在旧版。常见错误是只做「打开网页让用户自己下」，或者只比 versionCode 不比语义版本，再或者请求失败时什么都不显示——用户分不清「已是最新」和「网断了」。</string>
+    <string name="tk_u01_key_impl">① `HttpURLConnection` GET `api.github.com/repos/{owner}/{repo}/releases/latest`，`org.json` 解析（都是框架自带，不加依赖）；② 版本号比较按 `.` 拆段逐位比，忽略前导 v、缺位补 0，这样 2.10.0 &gt; 2.9.0 才不会判错；③ 当前版本从 `PackageManager.getPackageInfo().versionName` 读，不依赖 BuildConfig，宿主不用开 `buildConfig = true`；④ 从 assets 里挑 `.apk` 附件拿 `browser_download_url` 与 `size`；⑤ 下载写应用私有 `cacheDir/updates/`，先写 `.part` 再 `renameTo`，边下边报进度，下完比对 `Content-Length` 防半包；⑥ 安装走 `FileProvider.getUriForFile` + `ACTION_VIEW` + `application/vnd.android.package-archive` + `FLAG_GRANT_READ_URI_PERMISSION`；⑦ Android 8+ 先查 `packageManager.canRequestPackageInstalls()`，未授权就跳`ACTION_MANAGE_UNKNOWN_APP_SOURCES` 授权页，并提供「用浏览器下载」兜底。</string>
+    <string name="tk_u01_pitfalls">× 用 versionCode 或字符串直接比大小（\"2.9.0\" &gt; \"2.10.0\" 会判错）；× 把网络请求写在主线程（NetworkOnMainThreadException）；× 失败态与最新态共用一句文案，用户无法判断该重试还是该放心；× APK 下到公共下载目录（Android 10+ 分区存储要权限，且卸载不清理）；× 直接用 `Uri.fromFile` 传 APK（Android 7+ 抛 FileUriExposedException）；× 未授权「安装未知应用」时静默失败，用户点了没反应；× 把 GitHub token 硬编码进客户端（等于公开，谁都能拿来打你的 API 额度）。</string>
+    <string name="tk_u01_params">连接超时 8s / 读取超时 12s；下载读取超时 60s、缓冲 64KB；APK 匹配规则：优先 `.apk` 后缀，其次名字含 release；默认仓库 `yz8023/ui`（示例 App 检查的就是本模板自己的 Release）；未带 token 时 GitHub API 限流 60 次/小时/IP，失败文案里已写明这一点。</string>
+    <string name="tk_u01_prompt">给 Android App 加「应用内更新检查 + 下载安装」，分发渠道是 GitHub Releases（不是应用商店）。\n\n需求要点：\n1. 请求 GET https://api.github.com/repos/{owner}/{repo}/releases/latest，用 HttpURLConnection + org.json，不要引第三方网络库；请求必须在 Dispatchers.IO 上。\n2. 当前版本用 PackageManager.getPackageInfo(packageName, 0).versionName 读取，不要依赖 BuildConfig。\n3. 版本比较按语义化版本：去掉前导 v，按 \".\" 拆成整数段逐位比较，缺位补 0（保证 2.10.0 比 2.9.0 新）。\n4. 结果必须是显式三态枚举：UP_TO_DATE / UPDATE_AVAILABLE / FAILED，每种态给不同文案；FAILED 要区分无网（UnknownHostException）、超时（SocketTimeoutException）、TLS 失败、HTTP 403（API 限流）、HTTP 404（没有 Release），不要笼统写「检查失败」。\n5. 从 assets 数组里挑 APK：优先 name 以 .apk 结尾，其次 name 含 release；取 browser_download_url 与 size，用 size 做进度分母。\n6. 下载写到 context.cacheDir/updates/ 下，先写 xxx.apk.part，完成后 renameTo 正式名；边下边回调 (written, total)；total 为 -1（服务器没给 Content-Length）时进度条改为不确定态；下载完校验 written == total，不等就删文件并报错。\n7. 安装用 FileProvider.getUriForFile(context, packageName + \".fileprovider\", file) + Intent.ACTION_VIEW + setDataAndType(uri, \"application/vnd.android.package-archive\") + FLAG_ACTIVITY_NEW_TASK or FLAG_GRANT_READ_URI_PERMISSION。禁止 Uri.fromFile（Android 7+ 会抛 FileUriExposedException）。\n8. Android 8+ 安装前先 packageManager.canRequestPackageInstalls()；未授权时不要静默失败：跳 Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES（data 为 package:包名）引导授权，并同时给一个「用浏览器下载」的兜底按钮。\n9. 需要改的配置一并给出：Manifest 加 REQUEST_INSTALL_PACKAGES 权限、FileProvider 声明（authorities 为 包名.fileprovider，exported=false，grantUriPermissions=true）、res/xml/file_paths.xml 里加 &lt;cache-path name=\"updates\" path=\"updates/\" /&gt;。\n10. 界面：一张卡片显示「当前版本 / 最新版本 / 发布时间 / APK 大小 / 更新日志（Markdown）」，一个检查按钮（检查中转圈且禁用）、一个下载按钮（下载中显示百分比与已下 MB，可取消），下载完成自动调起安装。检查失败时卡片内显示错误原因与「重试」。\n\n约束：GitHub token 不许硬编码进客户端；不要把 APK 下到公共目录；所有失败都要有用户可读的原因。</string>
+    <string name="tk_u02_name">运行日志与分享</string>
+    <string name="tk_u02_summary">内存环形缓冲存应用自己的日志，可按级别/关键词过滤，一键复制或系统分享。</string>
+    <string name="tk_u02_why">用户报「点了没反应」时，logcat 你拿不到——Android 4.1 起普通应用读不了完整 logcat，所以想让远程用户帮你复现问题，必须**应用自己存一份**再让他分享出来。这也是 Kit 类模板把「日志分享」列为核心功能的原因。</string>
+    <string name="tk_u02_key_impl">① 单例 `object AppLog` 持一个 `mutableStateListOf&lt;AppLogEntry&gt;`（SnapshotStateList，Compose 界面能直接观察，写入即刷新）；② 上限 400 条，超出丢最旧的（环形缓冲语义）；③ 四个级别 D/I/W/E，写入时**同时**打一份到 `android.util.Log`，开发期两边都能看到；④ 每条带单调递增 seq，导出文本首行写明「共 n 条（缓冲 m/400）· 时间范围」，对方一眼能看出日志有没有被截断；⑤ `dump(level, keyword)` 生成纯文本，`buildShareIntent` 返回 `ACTION_SEND` + `text/plain` 的 Intent，调用方用 `Intent.createChooser` 包一层并 `runCatching`（用户可能没装能接收的应用）；⑥ 异常入日志时带 `javaClass.simpleName: message`，比只记一句「失败了」有用得多；⑦ 需要跨进程/重启留存时，把 `AppLog.persist` 换成写 `getExternalFilesDir(null)` 的实现，自己处理轮转与体积上限。</string>
+    <string name="tk_u02_pitfalls">× 只打 logcat 就指望用户能给你日志（拿不到）；× 无上限地往列表里塞（长时间运行内存涨）；× 把 token、密码、手机号、完整 URL 带 query 一起记进日志再分享出去（隐私事故）；× 日志写公共目录（要存储权限，卸载还不清理）；× 分享时不包 `runCatching`，用户没装邮件/聊天应用就直接崩；× 用 `String` 拼接后 `mutableStateOf` 整块替换（大日志时每次写入都重建全文，界面卡顿）。</string>
+    <string name="tk_u02_params">缓冲上限 400 条；时间格式 `MM-dd HH:mm:ss.SSS`（Locale.US，避免设备上非公历导致解析歧义）；导出为 `text/plain`，分享主题「应用日志 n 条」；默认不落盘（`persist` 为 null）。</string>
+    <string name="tk_u02_prompt">给 Android App 加「运行日志收集 + 一键分享」，目的是让用户报 bug 时能把日志发给我。\n\n需求要点：\n1. 单例 object AppLog，内部用 androidx.compose.runtime.mutableStateListOf 存日志条目，让 Compose 界面能直接观察并自动刷新；不要用 String 拼接后整体替换 state。\n2. 条目字段：seq（单调递增 Long）、timeMillis、level（枚举 D/I/W/E）、tag、message。提供 d/i/w/e 四个便捷方法，e 支持传 Throwable，记录为 \"message\\n异常类名: message\"。\n3. 环形缓冲：上限 400 条，超出时移除最旧的一条；写入用 @Synchronized 保证多线程安全。\n4. 每条日志同时写一份到 android.util.Log（对应 d/i/w/e），开发期 logcat 也能看到。\n5. 只存内存不写文件，因此不需要任何存储权限；但要留一个 var persist: ((AppLogEntry) -&gt; Unit)? 钩子，宿主需要落盘时可以换成写 getExternalFilesDir 的实现。\n6. dump(level: AppLogLevel?, keyword: String): String 导出纯文本：首行是摘要「应用日志导出 · 共 n 条（缓冲 m/400） · 起始时间 → 结束时间」，可选带「仅 X 级」「关键词「xx」」；之后每行格式为 \"MM-dd HH:mm:ss.SSS seq L/tag: message\"，时间格式用 SimpleDateFormat + Locale.US。\n7. buildShareIntent(context, level, keyword) 返回 Intent.ACTION_SEND、type = \"text/plain\"、EXTRA_SUBJECT 为「应用日志 n 条」、EXTRA_TEXT 为 dump 结果，并加 FLAG_ACTIVITY_NEW_TASK。调用方用 Intent.createChooser 包一层，外面套 runCatching（用户可能没装能接收的应用），失败时提示改用「复制」。\n8. 界面：一个日志面板（底部弹窗或独立页），顶部显示各级别条数统计（如 共 128 · E 2 · W 5），可按级别筛选（全部/D/I/W/E）与关键词搜索，列表倒序（最新在上），底部三个动作：复制到剪贴板、系统分享、清空。清空要有二次确认或提供撤销。\n9. 隐私：日志里不许出现 token、密码、完整带 query 的 URL、手机号；在代码注释里写明这条红线，并在导出文本首行提示「日志可能包含设备信息，请自行确认后再发送」。\n10. 在真实调用点打日志：网络请求起止与耗时、权限授予/拒绝结果、异常捕获、关键用户动作（如切换主题、发送通知）。不要只在日志页自己打自己。\n\n约束：不要引第三方日志库；不要写公共存储目录；分享失败必须有兜底（复制）。</string>
+    <string name="tk_u03_name">Markdown 渲染</string>
+    <string name="tk_u03_summary">自写解析器 + Compose 渲染：标题/粗斜体/行内码/链接/围栏代码/列表/引用/分隔线，零第三方依赖。</string>
+    <string name="tk_u03_why">更新日志、说明页、隐私政策、README 展示都要渲染 Markdown。常见做法是塞一个 WebView 显示 HTML——那样主题不跟随、字体不统一、深色模式要另写一套 CSS，还得处理 WebView 的初始化开销与安全设置。用 Compose 直接渲染，颜色全部走 `MaterialTheme.colorScheme`，主题切换零成本。</string>
+    <string name="tk_u03_key_impl">① 解析分两层：块级（按行扫描）+ 行内（按字符扫描）；块级产出密封接口 `MdBlock`（Heading/Paragraph/BulletList/OrderedList/CodeBlock/Quote/Rule），行内产出 `MdInline`（Text/Bold/Italic/Code/Link）；② 围栏代码块（``` 或 ~~~）内部**原样保留**，不进块级解析，否则代码里的 `#` 会被当标题；③ 列表/引用是连续行聚合，聚合完要把行号回退一格（`i--`）交回外层自增，避免吃掉下一行；④ 行内优先级：行内码 → 链接 → 粗体 → 斜体，用 `indexOf` 找闭合符，找不到就按普通字符处理（这样未闭合的 `*` 不会把后文全吞成斜体）；⑤ 渲染用 `buildAnnotatedString` + `withStyle(SpanStyle(...))`，链接用 `withLink(LinkAnnotation.Url(url))`（Compose 1.7+ 稳定 API），点击自动走 `LocalUriHandler`，不用自己写 Intent；⑥ 代码块用 `SelectionContainer` 包住，长按可选中复制；横向超宽用 `horizontalScroll` 而不是折行；⑦ 解析结果 `remember(source)` 缓存，同一篇文档不会每帧重解析。</string>
+    <string name="tk_u03_pitfalls">× 用 WebView 渲 Markdown（主题不跟随、深色模式另写一套、初始化开销大）；× 围栏代码块内容也走块级解析（代码里的 `#`/`-` 被当成标题和列表）；× 用正则一次性替换全部行内语法（嵌套与未闭合情况会互相踩，越改越乱）；× 链接用 `ClickableText` + 手算 offset（已废弃，且 offset 计算容易错行）；× 代码块不设横向滚动（长行把布局撑破或强行折行，代码没法读）；× 每帧重新 parse（列表里滚动时明显掉帧）。</string>
+    <string name="tk_u03_params">支持：`#`~`######` 标题、`**粗**`、`*斜*`/`_斜_`、`` `行内码` ``、`[文字](链接)`、``` / ~~~ 围栏代码块（带语言名）、`- * +` 无序列表、`1.`/`1)` 有序列表（支持起始编号）、`&gt;` 引用（连续行合并）、`---`/`***`/`___` 分隔线。**不支持**：表格、图片、嵌套列表、任务列表、HTML 内联、脚注——需要时要么扩解析器，要么引 `org.commonmark:commonmark`（约 200KB）。行内代码 13sp 等宽、代码块 12sp/行高 18sp、引用左侧竖条 3dp。</string>
+    <string name="tk_u03_prompt">用 Jetpack Compose 实现一个 Markdown 渲染组件，不要引第三方库，也不要用 WebView。\n\n需求要点：\n1. 解析分两层。块级：按行扫描，产出密封接口 MdBlock 的实现——MdHeading(level, inlines)、MdParagraph(inlines)、MdBulletList(items)、MdOrderedList(items, start)、MdCodeBlock(language, code)、MdQuote(inlines)、MdRule。行内：产出密封接口 MdInline 的实现——MdText、MdBold、MdItalic、MdCode、MdLink(text, url)。\n2. 支持的语法：# 到 ###### 标题；**粗体**；*斜体* 与 _斜体_；`行内代码`；[文字](链接)；``` 与 ~~~ 围栏代码块（可带语言名）；- * + 无序列表；1. 与 1) 有序列表（保留起始编号）；&gt; 引用（连续多行合并成一段）；--- *** ___ 分隔线。\n3. 围栏代码块内部原样保留，不要再做块级或行内解析（代码里的 # 和 - 不是标题和列表）。\n4. 列表与引用要把连续行聚合成一个块，聚合结束后把行索引回退一格，交回外层循环自增，避免吃掉下一行。\n5. 行内解析按优先级扫描：行内码 → 链接 → 粗体 → 斜体；用 indexOf 找闭合符，找不到闭合符就把当前字符当普通文本追加（未闭合的 * 不能把后文全吞成斜体）。斜体的 _ 只在后面不是字母数字时才闭合（避免把 snake_case 拆开）。\n6. 渲染：块级用 Column + Arrangement.spacedBy(10.dp)；标题按级别映射 MaterialTheme.typography（1→headlineSmall、2→titleLarge、3→titleMedium、其余→titleSmall）并加粗；行内用 buildAnnotatedString + withStyle(SpanStyle(...))；链接用 withLink(LinkAnnotation.Url(url))，点击交给 LocalUriHandler，不要自己写 Intent；引用渲染为左侧 3dp 主色竖条 + 次要色文字（Row 用 height(IntrinsicSize.Min) + 竖条 fillMaxHeight）。\n7. 代码块：等宽字体 12sp、行高 18sp，外层用 SelectionContainer 让长按可选中复制，横向用 horizontalScroll(rememberScrollState()) 而不是折行；有语言名时在块顶部显示语言标签；背景用 surfaceVariant 半透明 + 10dp 圆角。\n8. 解析结果用 remember(source) 缓存，source 不变不重复解析。\n9. 对外只暴露一个 @Composable fun MarkdownText(source: String, modifier: Modifier = Modifier)。\n10. 明确写清不支持的语法（表格、图片、嵌套列表、任务列表、HTML 内联），并在 KDoc 里给出「需要时改引 org.commonmark:commonmark」的提示。\n\n约束：颜色全部走 MaterialTheme.colorScheme（深色模式自动适配）；不要每帧重解析；不要用已废弃的 ClickableText。</string>
+    <string name="tk_u04_name">自适应导航（NavigationRail）</string>
+    <string name="tk_u04_summary">同一套路由：窗口 &lt;600dp 用底部 NavigationBar，≥600dp 用侧边 NavigationRail，展开态带文字标签。</string>
+    <string name="tk_u04_why">折叠屏展开、平板、ChromeOS 窗口、桌面模式分屏下，底部导航条会占掉一大块纵向空间，而且五个图标摊在 1200dp 宽上点起来很怪。Material 3 的答案是宽屏改用 NavigationRail。不做适配的 App 在大屏上「能用但很业余」。</string>
+    <string name="tk_u04_key_impl">① 分级枚举 `AppWindowClass`：COMPACT(&lt;600dp) / MEDIUM(600–839) / EXPANDED(≥840)，断点沿用 Material 3 官方数值；② 宽度取 `LocalConfiguration.current.screenWidthDp`——这是**窗口**宽度，多窗口/分屏/折叠屏展开时 Activity 拿到的就是当前窗口尺寸，旋转与形变会自动触发重组，不用自己监听；③ 不想加依赖就不用 `material3-window-size-class`，想用官方版就把 `rememberAppWindowClass()` 换成 `calculateWindowSizeClass()`，其余代码不动；④ 外壳 `AdaptiveAppShell`：COMPACT 走 `Column(内容 weight(1f) + AdaptiveBottomBar)`，其余走 `Row(AdaptiveSideRail + 内容 weight(1f))`，内容区永远拿整块剩余空间，不需要自己算内边距；⑤ 侧栏文字标签只在 EXPANDED 显示（MEDIUM 宽度宝贵，只留图标），label 参数**始终传 lambda**、内部按开关决定渲不渲染，避免条件式返回 @Composable lambda 造成类型推断问题；⑥ 底部栏 `alwaysShowLabel = items.size &lt;= 4`：五个及以上目的地时只给选中项显示文字，否则标签会挤成两行；⑦ 选中下标由宿主持有并存 `rememberSaveable`，旋转/形变不丢当前页。</string>
+    <string name="tk_u04_pitfalls">× 用 `LocalConfiguration.screenWidthDp` 之外的「屏幕物理宽度」判断（分屏时判错）；× 只在 `onCreate` 判一次宽度，旋转/折叠屏展开后不更新；× 宽屏继续用底部导航（大屏上图标间距过大、纵向空间浪费）；× 侧栏与内容用固定 dp 宽度拼（不同窗口尺寸下溢出或留白）；× NavigationRailItem 的 label 传 `null` 与传空 lambda 混着写，导致类型推断报错；× 忘了给 `contentDescription`，无障碍服务读不出目的地名称；× 切换布局时丢掉选中页（selectedIndex 没存 saveable）。</string>
+    <string name="tk_u04_params">断点 600dp / 840dp；侧栏内边距上下 8dp（放在内层 Column，M3 1.3 的 NavigationRail 无 contentPadding 参数）、条目间距 4dp；侧栏容器色 `surface`；底部栏标签上限 1 行；演示页提供 360–1000dp 的宽度滑杆，手机上也能实时看到两种布局切换。</string>
+    <string name="tk_u04_prompt">用 Jetpack Compose 实现自适应导航外壳：窄屏底部导航、宽屏侧边 NavigationRail，同一套路由数据，不要写两份页面。\n\n需求要点：\n1. 定义分级枚举 AppWindowClass：COMPACT（&lt;600dp）、MEDIUM（600–839dp）、EXPANDED（≥840dp），每个带 label 与 minWidthDp；提供纯函数 windowClassOf(widthDp: Int) 做分级，方便写单元测试。\n2. 宽度来源用 LocalConfiguration.current.screenWidthDp（这是窗口宽度，分屏/折叠屏/桌面窗口都对），封装成 @Composable fun rememberAppWindowClass()。不要引 material3-window-size-class 依赖，但要在注释里写明：宿主想用官方版就把它换成 calculateWindowSizeClass()，其余代码不动。\n3. 导航项数据类 AdaptiveNavItem(id: String, label: String, icon: ImageVector)；id 用于状态保存，label 用于无障碍与宽屏文字。\n4. 外壳 @Composable fun AdaptiveAppShell(items, selectedIndex, onSelect, modifier, windowClass = rememberAppWindowClass(), showLabelsOnRail = windowClass == EXPANDED, content: @Composable () -&gt; Unit)：COMPACT 时用 Column（内容 Box 占 weight(1f)，底部放 AdaptiveBottomBar）；其余用 Row（左侧 AdaptiveSideRail，内容 Box 占 weight(1f) + fillMaxHeight）。内容区必须拿到整块剩余空间，不要让调用方自己算内边距。\n5. AdaptiveBottomBar 用 NavigationBar + NavigationBarItem（icon + label，label 限 1 行），alwaysShowLabel = items.size &lt;= 4（目的地多于 4 个时只给选中项显示文字）。\n6. AdaptiveSideRail 用 NavigationRail + NavigationRailItem，containerColor = MaterialTheme.colorScheme.surface，上下内边距 8dp、条目间距 4dp——注意 Material3 1.3 的 NavigationRail 没有 contentPadding 参数（1.4+ 才有），内边距要放在内层 Column 的 Modifier.padding(vertical = 8.dp) 上，不要写 contentPadding，否则编译报 No parameter with name \'contentPadding\'；showLabels 为 true 时显示文字标签。注意：label 参数要始终传一个 lambda、在 lambda 内部按 showLabels 决定是否渲染 Text，不要写「条件式返回 @Composable lambda 或 null」，那样类型推断容易报错。\n7. 两个子组件都要单独 public 暴露，方便宿主套自己的 Scaffold 或加顶部栏。\n8. selectedIndex 由调用方持有，文档里提醒用 rememberSaveable 存，旋转与形变不丢当前页；形变时布局自动切换，不需要监听器。\n9. 每个图标都要有 contentDescription = label，保证无障碍可用。\n10. 另外给一个演示：用 BoxWithConstraints + 宽度滑杆（360–1000dp）把外壳放进受限宽度的容器里，让手机上也能实时看到「底部栏 ↔ 侧边栏」的切换，并显示当前分级与宽度数值。\n\n约束：不要重复写两份页面内容；不要用固定 dp 宽度拼侧栏与内容；颜色走 MaterialTheme.colorScheme。</string>
+
+    <!-- ===== ui/features/overlayterms/OverlayTermsSpec.kt（阶段 5c） ===== -->
+    <!-- 分类键文案（OverlayCategoryLabels 查表用） -->
+    <string name="ot_category_blocking">阻塞类</string>
+    <string name="ot_category_transient">轻提示类</string>
+    <string name="ot_category_anchored">锚定类</string>
+    <string name="ot_category_panel">面板类</string>
+    <string name="ot_category_status">状态类</string>
+    <!-- 12 条条目的 name / summary / definition / whenToUse / vsNeighbor / androidImpl / badCase / params / prompt -->
+    <string name="ot_p01_name">警告框</string>
+    <string name="ot_p01_summary">系统级阻塞提示：只告知一件事，通常只有一个「知道了」，用户必须确认才能继续。</string>
+    <string name="ot_p01_definition">Alert 是最强的打断：出现在页面之上、带遮罩、抢走焦点，内容通常是「已经发生或即将发生的、用户必须知道的事实」，动作只有一个确认。它不征求选择，只要求知晓。</string>
+    <string name="ot_p01_when_to_use">权限被拒后需要解释、存储空间不足、会话即将过期、不可逆操作已经发生（不是即将发生）。判据：如果用户不点掉这条提示就可能造成损失，才用 Alert。</string>
+    <string name="ot_p01_vs_neighbor">与 Modal 的区别：Modal 里通常有表单/多个动作，是「让你在这做完一件事」；Alert 是「让你知道一件事」。与 Toast/Snackbar 的区别：那两者不打断、会自动消失，Alert 不会自己走。</string>
+    <string name="ot_p01_android_impl">AlertDialog 只给 confirmButton、不给 dismissButton；语义上不可绕过时把 dismissOnBackPress / dismissOnClickOutside 设为 false，文案用陈述句 + 单一动作（「知道了」而不是「确定/取消」）。</string>
+    <string name="ot_p01_bad_case">把「保存成功」做成 Alert——用户每次保存都要多点一下，这是最常见的滥用；也不要用 Alert 问「你要 A 还是 B」（那是 Modal 或 ActionSheet 的活）。</string>
+    <string name="ot_p01_params">单按钮 · 遮罩不可点穿 · 标题 ≤12 字 · 正文 ≤2 行 · 按钮文案「知道了」</string>
+    <string name="ot_p01_prompt">实现一个 Alert（警告框），并把它和 Modal、Toast 区分开。\n【语义】Alert = 阻塞式告知，只有一个确认动作，不征求选择；用户不处理就不能继续。\n【Web】用 &lt;div role=\"alertdialog\" aria-modal=\"true\"&gt; + 遮罩层；焦点进弹窗后 trapped（Tab 只在弹窗内循环），Esc 是否可关由「是否可绕过」决定；关闭后焦点回到触发元素。\n【Android/Compose】用 Material3 AlertDialog，只传 confirmButton（文案「知道了」），不传 dismissButton；不可绕过时 DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)。\n【内容】标题是事实陈述（如「存储即将写满」），正文一句话说清后果与建议动作，不要写成疑问句。\n【禁用场景】成功提示、可选操作、需要输入的内容——分别应改用 Toast/Snackbar、ActionSheet、Modal。\n【自检】弹窗出现时背景不可交互；关闭后焦点/滚动位置回到原处；同一流程里 Alert 出现次数 ≤1（多了说明设计有问题）。</string>
+    <string name="ot_p02_name">轻提示</string>
+    <string name="ot_p02_summary">最弱的一档反馈：短暂浮出、自动消失、不可交互、不打断当前操作。</string>
+    <string name="ot_p02_definition">Toast 只是「回个话」，告诉用户刚才那一下生效了。它没有按钮、没有遮罩，几秒后自己消失，用户不看也不影响继续操作。</string>
+    <string name="ot_p02_when_to_use">复制成功、已保存草稿、已加入收藏、表单某一项已生效。判据：这条信息错过了也没关系，不需要用户做任何事。</string>
+    <string name="ot_p02_vs_neighbor">与 Snackbar 的区别：Snackbar 可以带一个操作（撤销）且在你的界面内，Toast 是系统级、无操作。与 Alert 的区别：Alert 阻塞、必须点掉，Toast 完全不阻塞。</string>
+    <string name="ot_p02_android_impl">系统 Toast.makeText(context, text, LENGTH_SHORT).show()：零成本但样式受限——Android 12+ 后台不显示、文本长度有限、不能加图标/按钮。要品牌样式或多条堆叠时用 Compose 自绘轻提示（状态驱动 + LaunchedEffect 定时清空），语义保持不变：不打断、自动消失、无操作。</string>
+    <string name="ot_p02_bad_case">用 Toast 报错误（用户还没读完就没了，且无法重试）；把 Toast 当确认框用（「已删除」却没有撤销入口）；一次操作连弹三条 Toast。</string>
+    <string name="ot_p02_params">停留 2.0–2.2s · 自动消失 · 无按钮 · 同时最多 1 条（新的顶掉旧的）</string>
+    <string name="ot_p02_prompt">实现 Toast（轻提示），并提供「系统 Toast」与「自绘轻提示」两种做法。\n【语义】非阻塞、无操作、自动消失；错过的信息不应造成损失。\n【Web】一个 fixed 定位的浮层，进入 260ms 弹簧曲线、停留 2.2s、退出 200ms；role=\"status\" + aria-live=\"polite\"；多条时竖直堆叠最多 3 条，超出挤掉最老的。\n【Android/Compose】做法一：Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()（注意 Android 12+ 后台不显示、样式不可定制）。做法二：自绘——用状态 var msg: String? 驱动，LaunchedEffect(msg) { delay(2200); msg = null }，浮层用 Surface + 圆角 + 半透明底，放在 Box 的 BottomCenter/TopCenter。\n【禁用场景】错误与失败（改用可重试的 Snackbar 或内联错误）、需要确认的操作（改用 Modal/Popconfirm）。\n【自检】连续触发 5 次不叠加成一堆；自动消失后不残留状态；轻提示出现期间页面仍可正常滚动与点击。</string>
+    <string name="ot_p03_name">模态框</string>
+    <string name="ot_p03_summary">带遮罩的对话框：打断主流程，让用户在里面完成一件事（确认、输入、选择）再继续。</string>
+    <string name="ot_p03_definition">Modal 是「临时的小房间」：背景被遮罩挡住、焦点被关在里面，用户必须在里面完成或明确放弃，才能回到主流程。它可以有标题、正文、表单、两个以上动作。</string>
+    <string name="ot_p03_when_to_use">重命名/新建、删除确认（重要且不可逆）、填写少量必填信息、选择一项后立刻生效。判据：这件事必须在当前上下文里立刻做完，且做完要回到原页面原位置。</string>
+    <string name="ot_p03_vs_neighbor">与 Alert 的区别：Alert 只告知、单按钮；Modal 要你做事、可含输入与多按钮。与 Drawer/BottomSheet 的区别：那两者从边缘滑出、通常承载更多内容与导航，Modal 居中、内容更聚焦。与 Popconfirm 的区别：Popconfirm 是锚在触发元素旁的小气泡，不改整页焦点。</string>
+    <string name="ot_p03_android_impl">androidx.compose.ui.window.Dialog（自定义内容）或 Material3 AlertDialog（标题+正文+双按钮）。涉及数据丢失时把 dismissOnClickOutside 设为 false 并保留「取消」按钮；含输入框时记得 IME 遮挡处理（imePadding）。</string>
+    <string name="ot_p03_bad_case">用 Modal 装长列表或设置页（该用 Drawer/BottomSheet/独立页）；Modal 里再弹 Modal；只有「确定」没有「取消」却要求用户输入内容。</string>
+    <string name="ot_p03_params" formatted="false">遮罩 40–60% 黑 · 宽度 ≤ 页面 90% · 动作按钮 ≤3 个 · 主按钮在右/在上 · 焦点陷入 + 关闭后归还</string>
+    <string name="ot_p03_prompt">实现一个 Modal（模态框），含输入内容与双动作。\n【语义】打断主流程，用户在框内完成一件事；背景不可交互；必须提供明确的放弃路径（取消/关闭）。\n【Web】role=\"dialog\" + aria-modal=\"true\" + aria-labelledby 指向标题；打开时焦点移入第一个可聚焦元素并 trap，Esc 关闭，关闭后焦点回到触发元素；遮罩点击是否关闭取决于「会不会丢数据」。\n【Android/Compose】用 Dialog(onDismissRequest, properties = DialogProperties(dismissOnBackPress, dismissOnClickOutside)) 包 Surface + Column；或用 AlertDialog(title/text/confirmButton/dismissButton)。含 TextField 时外层加 Modifier.imePadding()，确定按钮在内容为空时禁用。\n【内容】标题一句话说清要做什么；正文说明后果；按钮文案写动作本身（「删除」「保存」）而不是「确定」。\n【自检】背景滚动被锁；键盘弹出不遮按钮；空输入时主按钮禁用；关闭后回到原页面且滚动位置不变；不允许 Modal 内再开 Modal。</string>
+    <string name="ot_p04_name">抽屉</string>
+    <string name="ot_p04_summary">从屏幕边缘滑出的面板，承载导航或一批内容；可覆盖（带遮罩）也可推挤主内容。</string>
+    <string name="ot_p04_definition">Drawer 是「从边上拉出来的一块面板」，尺寸接近半屏到全屏，通常放导航菜单、筛选器、详情。它比 Modal 承载更多内容，比整页跳转更轻，关掉就回到原处。</string>
+    <string name="ot_p04_when_to_use">侧边导航（大屏/后台）、筛选条件面板、查看某条记录的详情但不想离开列表、多步表单的分步承载。</string>
+    <string name="ot_p04_vs_neighbor">与 Modal 的区别：Modal 居中、内容聚焦、通常一件事；Drawer 从边缘来、内容更多、可以边看主页面边操作。与 BottomSheet 的区别：只是滑出方向不同（侧 vs 底），移动端更常用 BottomSheet，桌面/后台更常用 Drawer。</string>
+    <string name="ot_p04_android_impl">Material3 ModalNavigationDrawer（覆盖式，带遮罩与手势滑动）或 DismissibleNavigationDrawer（推挤式）；也可用 Box + animateFloatAsState 自绘（scrim 透明度与面板位移共用同一进度值，保证视觉一致）。返回键与点遮罩都要能关。</string>
+    <string name="ot_p04_bad_case">在手机竖屏上用左侧 Drawer 装长表单（该用 BottomSheet 或独立页）；Drawer 打开后遮罩点了不关；面板宽度写死像素导致大屏/小屏都别扭。</string>
+    <string name="ot_p04_params" formatted="false">宽度 240–320dp（或页面 80%）· 滑入 240–280ms · 遮罩 0→40% 同步 · 支持手势滑开/滑关 · 返回键可关</string>
+    <string name="ot_p04_prompt" formatted="false">实现一个 Drawer（抽屉面板），覆盖式，带遮罩与动画。\n【语义】从屏幕边缘滑出的面板，承载导航或一批内容；关闭后回到原上下文。\n【Web】固定定位面板 + transform: translateX(-100%)→0（240ms 缓动），遮罩 opacity 0→0.4 与面板共用同一进度；打开时 body 滚动锁定，Esc 与点遮罩关闭；role=\"dialog\" 或 role=\"navigation\"（导航用途时）。\n【Android/Compose】做法一：Material3 ModalNavigationDrawer(drawerContent = {...}) { 主内容 }。做法二：自绘——Box 内先放主内容，再放 scrim（background(Color.Black.copy(alpha = 0.4f * progress)) + clickable 关闭）与面板（Modifier.offset { IntOffset((progress - 1) * 面板宽度px, 0) }），progress 由 animateFloatAsState 驱动；BackHandler(enabled = open) 关闭。\n【内容】面板内是导航项或筛选器；宽度用 dp（240–320）不用百分比像素写死。\n【自检】动画中连点不出现两个面板；点遮罩/返回键都能关；关闭后主页面滚动位置不变；面板宽度在大小屏都合理。</string>
+    <string name="ot_p05_name">气泡确认框</string>
+    <string name="ot_p05_summary">锚在触发元素旁边的小确认气泡：就地二次确认轻量操作，不打断整页。</string>
+    <string name="ot_p05_definition">Popconfirm 是「贴着按钮冒出来的小气泡」，里面就一句问话 + 取消/确认两个小按钮。它不像 Modal 那样把整页遮住，用户视线不用离开原来的位置。</string>
+    <string name="ot_p05_when_to_use">删除一条列表项、取消关注、移除一个标签、清空筛选——这类「可逆或影响范围小、但需要防误触」的操作。</string>
+    <string name="ot_p05_vs_neighbor">与 Modal 的区别：Modal 遮全屏、抢焦点，Popconfirm 只锚在触发元素旁，上下文仍在视野里。与 Tooltip 的区别：Tooltip 是纯文字说明、无按钮、不可交互；Popconfirm 必须能点。与 Snackbar 撤销的区别：Popconfirm 是「事前拦一下」，Snackbar 撤销是「事后给一次反悔」。</string>
+    <string name="ot_p05_android_impl">Material3 DropdownMenu（自动锚定在触发元素下方、空间不足时翻到上方，点外部自动关）承载「问话 + 取消/删除」；需要自定义位置/箭头时用底层 Popup(alignment, offset) + PopupProperties(focusable = true)。确认按钮用 destructive 色。</string>
+    <string name="ot_p05_bad_case">用 Popconfirm 确认「清空整个数据库」这类重操作（该用 Modal 打明确后果）；一个页面里每个按钮都挂 Popconfirm（防误触变成三次点击）；气泡超出屏幕边缘被裁掉。</string>
+    <string name="ot_p05_params">气泡宽 200–260dp · 一句问话 ≤20 字 · 取消在左确认在右 · 确认色用 error · 点外部/返回键关闭</string>
+    <string name="ot_p05_prompt">实现 Popconfirm（气泡确认框），锚定在触发按钮旁。\n【语义】就地二次确认轻量、影响范围小的操作；不遮整页、用户视线不离开触发位置。\n【Web】触发元素外包一层 relative 容器，气泡 absolute 定位并带小箭头；出现 120–160ms 缩放 0.96→1 + 淡入；点外部/Esc 关闭；role=\"dialog\" 且焦点移入气泡，关闭后回到触发按钮；靠近视口边缘时自动翻转方向不被裁切。\n【Android/Compose】做法一（推荐）：Box { 触发按钮; DropdownMenu(expanded = pending == item, onDismissRequest = { pending = null }) { Column { Text(\"确定删除「$item」？\"); Row { TextButton(取消); TextButton(删除, color = error) } } } }。做法二：Popup(alignment, offset, PopupProperties(focusable = true)) 自定义位置与箭头。\n【内容】问话一句话点名对象（「删除『报表A』？」），确认按钮写动作（「删除」）不写「确定」。\n【自检】列表滚动时气泡跟随或自动关闭（不要留在原地错位）；边缘项不被裁切；连点不叠加多个气泡；确认后该项立即从列表消失并给 Snackbar 撤销。</string>
+    <string name="ot_p06_name">文字提示</string>
+    <string name="ot_p06_summary">悬停/长按出现的纯文字说明，解释一个图标或术语；不可交互、不承载操作。</string>
+    <string name="ot_p06_definition">Tooltip 是「贴在元素旁的一句话注解」，只在用户表示疑问时出现（桌面端 hover、移动端长按），移开就消失。里面只有文字，没有按钮，也不该放关键信息。</string>
+    <string name="ot_p06_when_to_use">图标按钮没有文字标签、缩写与专业术语（如「ARPU」）、被禁用按钮的原因说明、数值单位的补充解释。</string>
+    <string name="ot_p06_vs_neighbor">与 Popover 的区别：Popover 是富内容气泡（可含列表、按钮、图片），Tooltip 只有纯文字。与 Popconfirm 的区别：Popconfirm 要用户做决定，Tooltip 只是解释。与 Alert/Toast 的区别：那两者是系统主动说话，Tooltip 是用户主动问。</string>
+    <string name="ot_p06_android_impl">移动端没有 hover，等价触发是长按：用 Modifier.combinedClickable(onLongClick = ...) 或 pointerInput + detectTapGestures(onLongPress) 触发，气泡用 DropdownMenu/Popup 锚定；Material3 也有 TooltipBox（实验 API）。禁用按钮的原因不要只放在 Tooltip 里，要能被读屏拿到。</string>
+    <string name="ot_p06_bad_case">把必要说明只放在 Tooltip 里（触屏用户可能永远发现不了）；Tooltip 里塞按钮和链接；多个 Tooltip 同时出现；出现后不自动消失。</string>
+    <string name="ot_p06_params">触发 长按 400ms / 桌面 hover 300ms 延迟 · 停留 ≤2s 或松手即消失 · 文字 ≤2 行 · 无按钮</string>
+    <string name="ot_p06_prompt">实现 Tooltip（文字提示），移动端长按触发、桌面端 hover 触发。\n【语义】纯文字注解，解释图标或术语；不可交互、不承载关键信息、会自动消失。\n【Web】触发元素加 aria-describedby 指向 tooltip 节点；hover 300ms 延迟出现、离开 100ms 后消失，focus 也触发；出现动画 120ms 淡入 + 轻微位移；靠近边缘自动翻转；role=\"tooltip\"，绝不能包含可聚焦元素。\n【Android/Compose】用 Modifier.combinedClickable(onClick = {}, onLongClick = { show = true })（需 @OptIn(ExperimentalFoundationApi::class)）或 pointerInput { detectTapGestures(onLongPress = { show = true }) }；气泡用 DropdownMenu(expanded = show) 或 Popup 锚定；LaunchedEffect(show) { delay(1800); show = false } 自动消失；同时给触发元素设置 contentDescription 供读屏使用。\n【内容】一句话解释，不写操作指引；禁用按钮的原因同时写进 contentDescription。\n【自检】长按出现、松手或 1.8s 后消失；连续长按不同元素不出现两个气泡；气泡不遮挡触发元素本身；读屏能拿到同样信息。</string>
+    <string name="ot_p07_name">条幅提示</string>
+    <string name="ot_p07_summary">底部条幅反馈，可带一个操作（最常见是「撤销」）；比 Toast 强、比 Modal 弱。</string>
+    <string name="ot_p07_definition">Snackbar 是应用内的底部横条：说明刚发生了什么，并且可以给一个补救动作。它不遮内容、几秒后自动消失，但因为能带按钮，所以适合「可逆操作」的善后。</string>
+    <string name="ot_p07_when_to_use">删除后给撤销、发送失败给重试、切换设置后给「打开设置」入口、批量操作后给结果与回退。判据：操作已发生，但用户可能想反悔。</string>
+    <string name="ot_p07_vs_neighbor">与 Toast 的区别：Snackbar 在应用内、可带一个操作、可被程序控制时长；Toast 是系统级、无操作。与 Modal/Alert 的区别：Snackbar 不阻塞，用户不理它也能继续干活。</string>
+    <string name="ot_p07_android_impl">Material3 SnackbarHost + SnackbarHostState：scope.launch { val r = hostState.showSnackbar(msg, actionLabel = \"撤销\", duration = SnackbarDuration.Short); if (r == SnackbarResult.ActionPerformed) 恢复数据 }。宿主放在 Scaffold 的 snackbarHost 或 Box 底部对齐；同时只显示一条，新的顶掉旧的。</string>
+    <string name="ot_p07_bad_case">Snackbar 里放两个以上操作（变成工具栏）；用它报致命错误（用户没时间读）；撤销窗口太短（&lt;3s）或撤销后数据回不到原位置。</string>
+    <string name="ot_p07_params">停留 4s（Short）/ 10s（Long）· 单行文案 + 1 个操作 · 同时只 1 条 · 底部避让导航栏 ≥16dp</string>
+    <string name="ot_p07_prompt">实现 Snackbar（条幅提示），带一个「撤销」操作并真的能撤销。\n【语义】非阻塞的操作性反馈：告知结果 + 给一次补救机会。\n【Web】底部 fixed 条幅，进入 240ms 上滑 + 淡入，停留 4–10s，退出 200ms；role=\"status\" + aria-live=\"polite\"；动作按钮是唯一可聚焦元素；同时只显示一条，新的替换旧的。\n【Android/Compose】SnackbarHostState + SnackbarHost(hostState, Modifier.align(Alignment.BottomCenter).navigationBarsPadding())；调用方 scope.launch { val r = hostState.showSnackbar(\"已删除「X」\", actionLabel = \"撤销\"); if (r == SnackbarResult.ActionPerformed) { 把 X 插回原下标 } }；注意 showSnackbar 是挂起函数，撤销逻辑要在它返回后判断结果。\n【数据】删除前先记住对象与原下标，撤销要恢复到位（不是追加到末尾）。\n【自检】点撤销后条目回到原位置；不点则 4s 后自动消失且数据保持删除；连续删除两条时 Snackbar 不叠加；底部不被导航栏遮挡。</string>
+    <string name="ot_p08_name">系统通知</string>
+    <string name="ot_p08_summary">应用之外的系统级提示：能在锁屏和通知栏出现，可持久、可带操作、可分组。</string>
+    <string name="ot_p08_definition">Notification 不属于你的界面，它属于系统。应用没在前台也能送达，用户可以从锁屏直接处理。因为打扰面最大，所以门槛也最高：要有渠道、要能被用户单独关掉、Android 13+ 要运行时授权。</string>
+    <string name="ot_p08_when_to_use">消息与评论到达、下载/上传进度、日程与提醒、长时间任务的进行中状态、需要用户回到应用处理的异常。判据：用户此刻不在你的应用里，也值得知道这件事。</string>
+    <string name="ot_p08_vs_neighbor">与 Toast/Snackbar 的区别：那两者只在应用内、应用退到后台就没了；通知在系统层，应用被杀也能送达。与 Alert 的区别：Alert 只在应用内阻塞当前页面，通知不阻塞任何页面。</string>
+    <string name="ot_p08_android_impl">先建 NotificationChannel（API 26+，重要性决定是否有声音/横幅），再用 Notification.Builder(context, channelId) 构造，NotificationManager.notify(id, n) 发出；Android 13+ 必须先取得 POST_NOTIFICATIONS 运行时授权（未授权时 notify 静默失败）。进度类用 setProgress + setOngoing，操作按钮用 addAction，同组用 setGroup。</string>
+    <string name="ot_p08_bad_case">把应用内就能说完的事推成通知（打扰换不来留存）；不建渠道直接发（API 26+ 会抛异常或静默失败）；用同一个 id 覆盖导致列表类通知只剩一条；未申请 POST_NOTIFICATIONS 就以为发出去了。</string>
+    <string name="ot_p08_params">渠道必建（API 26+）· Android 13+ 需 POST_NOTIFICATIONS · 小图标必须纯色透明底 · 标题 ≤30 字 · 进度类 setOngoing</string>
+    <string name="ot_p08_prompt">实现系统通知（Notification），含渠道创建、权限门控与真实发送。\n【语义】应用之外的系统级提示，可在锁屏/通知栏处理；打扰面最大，因此必须可被用户单独关闭。\n【Android/Compose】① 建渠道：if (SDK_INT &gt;= 26) manager.createNotificationChannel(NotificationChannel(id, 名称, IMPORTANCE_DEFAULT).apply { description = ... })；② 权限：Android 13+ 用 rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) 申请 POST_NOTIFICATIONS，未授权时不要静默失败，要在界面上说明并给「去开启」入口；③ 发送：Notification.Builder(context, channelId).setContentTitle(..).setContentText(..).setSmallIcon(纯色图标).setAutoCancel(true)，进度类加 setProgress(max, cur, false) + setOngoing(true)；④ id 语义化：同类可覆盖用固定 id，列表类用条目 id。\n【Web 对照】Notification API + Push：先 Notification.requestPermission()，granted 后 new Notification(title, { body, icon, tag })；tag 相当于 Android 的 id。\n【自检】拒绝权限后界面有明确解释而不是无声失败；渠道在系统设置里可见可关；进度通知结束后 setOngoing(false) 并能被划掉；小图标在深色状态栏不糊成白块。</string>
+    <string name="ot_p09_name">气泡卡片</string>
+    <string name="ot_p09_summary">锚定弹出的富内容气泡：可放列表、按钮、小表单；Tooltip 的「能干活」版本。</string>
+    <string name="ot_p09_definition">Popover 是贴着触发元素弹出的一张小卡片，里面可以有菜单项、开关、输入框、图片。它比 Tooltip 重（可交互）、比 Modal 轻（不遮整页），点外部就关。</string>
+    <string name="ot_p09_when_to_use">更多操作菜单、筛选器快捷面板、账号切换、颜色/字号选择、带说明的图标详情。</string>
+    <string name="ot_p09_vs_neighbor">与 Tooltip 的区别：Tooltip 只有文字且不可交互，Popover 有内容且可点。与 Popconfirm 的区别：Popconfirm 只问一个是/否，Popover 承载一组操作或控件。与 Dropdown（下拉菜单）的区别：下拉菜单是选中后收起的选择器，Popover 更像临时小面板，可以含非选项内容。</string>
+    <string name="ot_p09_android_impl">Material3 DropdownMenu（自动锚定 + 边缘翻转 + 点外关闭，内容可自定义为 Column 而非 MenuItem）；需要富布局/箭头/自定义动画时用 Popup + PopupProperties(focusable = true)； Material3 的 ExposedDropdownMenuBox 用于「选择器」语义，别拿来做 Popover。</string>
+    <string name="ot_p09_bad_case">Popover 里再弹 Popover；内容超过半屏还硬用气泡（该上 BottomSheet/独立页）；点击外部不关闭；位置不跟随触发元素导致滚动后错位。</string>
+    <string name="ot_p09_params">卡片宽 200–300dp · 圆角 12–16dp · 阴影 elevation 4–8 · 项高 ≥44dp · 点外部/返回键关闭</string>
+    <string name="ot_p09_prompt">实现 Popover（气泡卡片），锚定触发元素、可交互、点外部关闭。\n【语义】临时的小面板：承载一组操作或控件，不遮整页，用完即走。\n【Web】触发元素 relative，卡片 absolute + 小箭头；出现 140ms 缩放 0.97→1 + 淡入；点击外部、Esc、滚动容器时关闭；卡片内可聚焦元素参与 Tab 循环；role=\"dialog\"（含操作时）或 role=\"menu\"（纯菜单时）；靠边自动翻转。\n【Android/Compose】Box { 触发按钮; DropdownMenu(expanded = open, onDismissRequest = { open = false }) { Column { 若干行（图标 + 标题 + 副标题）+ HorizontalDivider + 开关行 } } }；DropdownMenu 自带锚定与边缘翻转；需要自定义位置/箭头时改用 Popup(alignment, offset, PopupProperties(focusable = true))。\n【内容】每行热区 ≥44dp；不要嵌套第二层气泡；超过 6 项或需要滚动时改用 BottomSheet。\n【自检】点外部与返回键都能关；列表滚动后不错位（跟随或自动关闭）；深浅色下阴影与描边都看得清；行点击后立即关闭并执行动作。</string>
+    <string name="ot_p10_name">底部面板 / 动作面板</string>
+    <string name="ot_p10_summary">从底部升起的面板：ActionSheet 是一组互斥动作，BottomSheet 可承载内容与半展开/全展开两档。</string>
+    <string name="ot_p10_definition">两者都是从屏幕底部滑出的面板。ActionSheet 特指「列出一组动作让你挑一个」（含取消），BottomSheet 是更通用的容器，可以半展开露出一部分、上拉全展开，里面能放列表、表单、详情。</string>
+    <string name="ot_p10_when_to_use">分享/更多操作菜单（ActionSheet）；移动端筛选器、评论列表、图片预览、长表单分步、地图上的详情卡（BottomSheet）。移动端优先于 Drawer，因为拇指够得到底部。</string>
+    <string name="ot_p10_vs_neighbor">与 Drawer 的区别：方向不同（底 vs 侧），移动端底部更顺手、桌面/后台侧边更合适。与 Modal 的区别：Modal 居中且内容聚焦，BottomSheet 可以承载长内容并与主页面共存（半展开时还看得见背景）。与 Popover 的区别：Popover 锚在触发元素旁，BottomSheet 贴屏幕底边、宽度占满。</string>
+    <string name="ot_p10_android_impl">Material3 ModalBottomSheet（模态、带遮罩、可拖拽关闭，需 @OptIn(ExperimentalMaterial3Api::class)）+ rememberModalBottomSheetState(skipPartiallyExpanded = false) 控制两档；非模态常驻用 BottomSheetScaffold。ActionSheet 用 ModalBottomSheet 内放动作列表 + 「取消」项。</string>
+    <string name="ot_p10_bad_case">把整页内容塞进 BottomSheet 造成滚动嵌套打架；ActionSheet 不给「取消」；面板高度写死导致键盘弹出遮挡输入；拖拽关闭与内部列表滚动冲突未处理。</string>
+    <string name="ot_p10_params" formatted="false">半展开 ≈ 页面 50% · 全展开留顶部 ≥56dp · 顶部抓手 32×4dp · 动作项高 ≥52dp · 取消项在最下并分隔</string>
+    <string name="ot_p10_prompt" formatted="false">实现 BottomSheet / ActionSheet（底部面板），支持半展开与全展开两档。\n【语义】移动端优先的底部容器：ActionSheet 是一组互斥动作 + 取消；BottomSheet 是可承载长内容的两档面板。\n【Web】fixed 底部容器 + transform: translateY(100%)→0（280ms 缓动），遮罩 0→0.4；支持两档高度（50% / calc(100% - 56px)），拖拽把手可切换；打开时 body 滚动锁定，内部滚动到顶再下拉才关闭面板（避免滚动打架）；Esc 与点遮罩关闭。\n【Android/Compose】@OptIn(ExperimentalMaterial3Api::class) + val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)；ModalBottomSheet(onDismissRequest = { open = false }, sheetState = sheetState) { 顶部抓手 + 动作列表（每项高 ≥52dp）+ HorizontalDivider + 「取消」 }；关闭用 scope.launch { sheetState.hide() } 再置 open = false 以获得下滑动画。\n【内容】ActionSheet 每项写动作本身（「分享到微信」「删除」），破坏性动作用 error 色并放在取消之上。\n【自检】半展开上拉能到全展开、下拉能关；内部列表滚动与面板拖拽不冲突；键盘弹出时输入框不被遮；关闭后主页面状态不变。</string>
+    <string name="ot_p11_name">加载与进度</string>
+    <string name="ot_p11_summary">等待的三种表达：非阻塞进度条、按钮内加载、整页阻塞遮罩；能不用遮罩就不用。</string>
+    <string name="ot_p11_definition">这一族不是「弹出来的东西」，而是「告诉用户系统在忙」。分三档强度：① 非阻塞（顶部细进度条/骨架屏，用户还能继续操作）② 局部阻塞（按钮变加载态，只锁这个动作）③ 全局阻塞（遮罩 + 转圈，什么都不让点）。强度越高，越要给进度与取消。</string>
+    <string name="ot_p11_when_to_use">① 后台刷新、分页加载、上传中的全局进度 → 非阻塞；② 提交表单、点赞、发送 → 按钮内加载（防重复提交）；③ 初始化必须完成才能继续、支付/写入等不可中断的关键操作 → 全局遮罩，且必须给取消或超时兜底。</string>
+    <string name="ot_p11_vs_neighbor">与 Toast/Snackbar 的区别：那两者是「结果反馈」，Loading 是「过程反馈」，完成后应接一个结果反馈。与 Alert 的区别：Alert 阻塞是因为要告知事实，Loading 阻塞是因为不能被打断，后者必须可取消或有超时。</string>
+    <string name="ot_p11_android_impl">非阻塞：LinearProgressIndicator(progress = { p }) 放顶部，或骨架屏；按钮内：按钮禁用 + CircularProgressIndicator(Modifier.size(16.dp), strokeWidth = 2.dp) + 文案换成「提交中…」且宽度不变（防跳动）；全局：Box 遮罩 + CircularProgressIndicator + 「取消」按钮。不确定时长用 indeterminate，确定时长必须传真实进度。</string>
+    <string name="ot_p11_bad_case">点一下按钮就整页转圈（该用按钮内加载）；加载态没有超时/取消，网络断了永远转；进度条从 0 直接跳 100；按钮加载时宽度变化导致布局跳动；加载完成后不给结果反馈。</string>
+    <string name="ot_p11_params" formatted="false">按钮内圆环 16dp/描边 2dp · 全局遮罩 40% 黑 + 必须可取消 · 顶部进度条高 2–3dp · &gt;10s 必须有取消或错误兜底</string>
+    <string name="ot_p11_prompt">实现三档加载反馈（非阻塞进度 / 按钮内加载 / 全局遮罩），并可切换对比。\n【语义】强度从低到高：非阻塞（用户仍可操作）→ 局部阻塞（只锁该动作）→ 全局阻塞（必须给取消或超时）。\n【Web】非阻塞：顶部 2–3px 进度条 + 骨架屏；按钮内：按钮 disabled + 16px 旋转圆环 + 文案变「提交中…」但按钮宽度用 min-width 锁住不跳；全局：遮罩 rgba(0,0,0,.4) + 居中 spinner + 「取消」按钮，aria-busy=\"true\"。\n【Android/Compose】非阻塞：LinearProgressIndicator(progress = { p }, Modifier.fillMaxWidth())；按钮内：clickable(enabled = !loading) + Row { CircularProgressIndicator(Modifier.size(16.dp), strokeWidth = 2.dp, color = onPrimary); Text(\"提交中…\") }；全局：Box(matchParentSize) 遮罩 + CircularProgressIndicator() + TextButton(取消)；进度用 LaunchedEffect(running) 推进，取消把 running 置 false。\n【规则】确定时长必须传真实进度，不确定时长用 indeterminate；超过 10s 必须有取消或错误兜底；加载结束接一个结果反馈（Toast/Snackbar）。\n【自检】按钮加载态宽度不跳；全局遮罩期间背景不可点；取消后状态复位不留半截进度；连点提交只发一次请求。</string>
+    <string name="ot_p12_name">角标与红点</string>
+    <string name="ot_p12_summary">附着在图标上的计数或红点：不弹出、不打断，只表示「这里有新东西」。</string>
+    <string name="ot_p12_definition">Badge 是挂在图标右上角的小胶囊，写数字（未读数）或什么都不写（红点，只表示有更新）。它属于提示族里最弱的一档：不抢焦点、不需要用户处理，但会一直在那儿直到被消费。</string>
+    <string name="ot_p12_when_to_use">未读消息数、待处理任务数、有新版本、筛选项内有生效条件、购物车件数。红点用于「有更新但不值得计数」，数字用于「用户需要知道具体有多少」。</string>
+    <string name="ot_p12_vs_neighbor">与 Toast/Notification 的区别：那两个是「主动说一次就走」，Badge 是「持续状态」，直到用户看过才消失。与 Tooltip 的区别：Tooltip 解释含义，Badge 表达数量/状态。</string>
+    <string name="ot_p12_android_impl">自绘最稳：Box 里放图标 + 右上角 Surface(RoundedCornerShape(percent = 50)) 写数字；Material3 也有 Badge/BadgeBox（BadgedBox）可直接用。规则：count &gt; 99 显示「99+」，count == 0 时整个角标不渲染（不是显示 0），红点尺寸 8–10dp 且不含文字。</string>
+    <string name="ot_p12_bad_case">数字为 0 还显示「0」角标；红点永远消不掉（没有消费逻辑）；角标遮挡图标主体超过 1/3；用红点承载必须处理的事项（该用 Notification 或页内提示）。</string>
+    <string name="ot_p12_params">数字胶囊高 18dp · 超 99 显示 99+ · 为 0 不渲染 · 红点 8–10dp · 2px 背景色描边把图标「挖」出来</string>
+    <string name="ot_p12_prompt" formatted="false">实现 Badge / Dot（角标与红点），含 99+ 与清零规则。\n【语义】持续状态提示：表示「这里有新东西/有多少未处理」，不打断、不抢焦点，被消费后才消失。\n【Web】图标外包 relative 容器，角标 absolute 右上角 + translate(30%, -30%)；min-width 18px + padding 0 4px，超过 99 显示「99+」，count === 0 时不渲染节点；红点是 8–10px 圆点无文字；用 2px 与背景同色的 border 把角标从图标里「挖」出来。\n【Android/Compose】Box { Icon(...); if (count &gt; 0) Surface(Modifier.align(Alignment.TopEnd).offset(x = 6.dp, y = (-6).dp), shape = RoundedCornerShape(percent = 50), color = error) { Text(if (count &gt; 99) \"99+\" else \"$count\", fontSize = 10.sp, modifier = Modifier.padding(horizontal = 5.dp, vertical = 1.dp)) } }；红点则用 Box(Modifier.size(9.dp).background(error, CircleShape))；也可用 Material3 的 Badge/BadgeBox。\n【数据】提供 +1 / −1 / 设为 100 / 清零 操作验证边界；清零后角标必须完全消失（含占位）。\n【自检】0 不显示、99 显示 99、100 显示 99+；角标不遮挡图标关键部分；红点与数字不同时出现在同一图标；深色模式下描边仍能把角标分离出来。</string>
+
+    <!-- ===== ui/features/adminquery/AdminQuerySpec.kt（阶段 5c） ===== -->
+    <!-- 分类键文案（AdminQueryCategoryLabels 查表用） -->
+    <string name="aq_category_filter">筛选</string>
+    <string name="aq_category_time_range">时间</string>
+    <string name="aq_category_tags">标签</string>
+    <string name="aq_category_dashboard">看板</string>
+    <string name="aq_category_combined">组合</string>
+    <!-- 5 条条目的 name / summary / rule / badCase / params / prompt -->
+    <string name="aq_q01_name">筛选分层与批量提交</string>
+    <string name="aq_q01_summary">常用条件常显、不常用收进「更多筛选」；查询慢时改成选完一起查，用一颗按钮提交，而不是每改一个条件就打一次接口。</string>
+    <string name="aq_q01_rule">1. 条件按使用频率分层：高频（时间、状态、部门）常显，低频（渠道、金额区间、仅看异常）收进「更多筛选」，折叠时若有已选值必须在入口上显示计数徽标（更多筛选 ·2）。\n2. 单次查询耗时 &gt; 300ms 或条件互相牵制时，启用批量提交：改条件只更新「待生效草稿」，不请求；出现「查询（n 项待生效）」按钮，点了才发一次请求。\n3. 结果区必须回显本次生效的条件与耗时，草稿与已生效条件视觉可区分（草稿态加「待生效」标记），避免用户以为已经查过了。\n4. 请求期间按钮进入 loading 且不可重复点击，回来前不允许再发第二次；连续改 10 个条件只应产生 1 次请求。</string>
+    <string name="aq_q01_bad_case">20 个筛选条件全摊在页面上占三屏；每勾一个复选框就发一次请求，页面转圈十几次，接口被打爆，用户还不知道哪次是最后的结果。</string>
+    <string name="aq_q01_params">分层阈值：常显 ≤4 组 · 折叠入口带计数徽标 · 批量提交触发线 300ms · 模拟耗时 450ms · 请求计数实时可见</string>
+    <string name="aq_q01_prompt">做一个后台查询条件区，实现「常用外置 + 不常用收起 + 慢查询批量提交」。\n【分层】高频条件（时间快捷、状态、部门）常显；低频条件（渠道多选、金额区间、仅看异常开关）收进「更多筛选」折叠区，折叠时入口显示已选计数徽标（如「更多筛选 ·2」），展开后可逐项修改。\n【批量提交】提供「即时查询 / 选完一起查」模式开关。即时模式：任一条件变化立刻执行查询并累加请求计数；批量模式：条件变化只写入草稿，不动结果，底部出现「查询（n 项待生效）」按钮，点击才执行一次查询；草稿与已生效条件在视觉上可区分（草稿项加「待生效」小标）。\n【执行】查询为异步：进入 loading（450ms 模拟耗时），期间按钮禁用防重复提交；完成后回显「命中 n 条 · 耗时 450ms · 累计请求 m 次」与前 5 行明细。\n【反馈】结果区顶部用一行标签回显本次生效的全部条件；无命中时给可操作的空态（提示放宽哪个条件），不要只写「暂无数据」。\n【自检】批量模式下连改 10 个条件，请求计数只 +1；折叠区有已选值时入口徽标数字正确；loading 中连点按钮不产生并发请求；切回即时模式后每次改动请求计数 +1。</string>
+    <string name="aq_q02_name">时间区间写明起止</string>
+    <string name="aq_q02_summary">快捷区间必须写出明确起止日期、说清含不含当天；超出数据保留期的选项直接置灰并给出原因，不要让用户自己算「近7天算不算今天」。</string>
+    <string name="aq_q02_rule">1. 快捷区间（今日 / 昨日 / 近7日 / 近30日 / 本季度 / 近一年）每个都要写明实际起止日期，例如「近7日 10-26 ~ 11-01」，并标注口径「含首尾，共 7 天」。\n2. 超出数据保留期（示例设 90 天）的选项置灰不可点，就地给出原因与最早可查日期，而不是点了之后报错。\n3. 自定义起止必须做校验：起 &gt; 止 时禁止查询并说明原因；止 &gt; 今天时钳制到今天。\n4. 禁止只写「近7天」这类模糊文案——同一条文案在不同人嘴里含不含当天不一样，是后台最常见的扯皮来源。</string>
+    <string name="aq_q02_bad_case">按钮只写「近7天」，用户 A 以为含今天、用户 B 以为不含，两人对同一份报表数出两个数；选「近一年」点了才弹「超出查询范围」，白等一次 loading。</string>
+    <string name="aq_q02_params">保留期 90 天 · 快捷区间 6 档 · 口径「含首尾」 · 自定义步进 ±1 天 · 起止倒置即禁用查询</string>
+    <string name="aq_q02_prompt">做后台时间范围选择器，实现「写明起止 + 超限置灰 + 倒置校验」。\n【快捷区间】今日 / 昨日 / 近7日 / 近30日 / 本季度 / 近一年六档；每档按钮内两行：第一行档位名，第二行实际起止日期（MM-dd ~ MM-dd），选中项额外显示口径「含首尾，共 n 天」。\n【保留期】数据保留期 90 天：起止早于「今天 - 89 天」的档位禁用（灰底、不可点、降低不透明度），并在下方一行说明「超出数据保留期 90 天，最早可查 MM-dd」。\n【自定义】起止各一组 -/+ 天按钮与日期文本；起 &gt; 止 时标红并禁用查询按钮，文案说明「开始日期晚于结束日期」；止 &gt; 今天时钳制回今天。\n【对照】提供「模糊文案（反例）」开关：开启后按钮只显示「近7天」这类字样，用于对比歧义；关闭时恢复明确起止。\n【执行】点查询后按 [起, 止] 闭区间过滤数据，回显「MM-dd ~ MM-dd · 共 n 天 · 命中 m 条」。\n【自检】今天为任意日期时六档的起止与天数都自洽；禁用档点击无反应且原因可见；起止倒置时查询按钮不可用；含首尾天数 = 止 - 起 + 1。</string>
+    <string name="aq_q03_name">已选条件标签聚合</string>
+    <string name="aq_q03_summary">部门全选就收成一个「全部部门 · 20」标签，选超过阈值收成一个「部门 · n」，不要把二十个小组全摊在条件栏里把结果挤出屏幕。</string>
+    <string name="aq_q03_rule">1. 同维度全选时聚合为一个标签：「全部部门 · 20」，并保留可点开的入口查看/编辑具体项。\n2. 同维度已选数量超过阈值（示例 3）时聚合为「部门 · n」，点开展开明细；≤ 阈值时逐个显示，每个标签带独立删除（×）。\n3. 标签区必须限高（示例最多 2 行），超出用「+n」或聚合标签承接，条件栏不许把结果区挤出首屏。\n4. 删除标签即回退对应筛选并重新计算命中数；提供「清空全部条件」且清空后回到默认状态。\n5. 反例：把 20 个小组逐个摊成标签，条件区占五行，用户滚动才能看到数据——这是最常见的一刀。</string>
+    <string name="aq_q03_bad_case">勾了「全部部门」，条件栏哗啦摊出 20 个小组标签占满五行，结果表格被挤到屏幕外；删条件要一个个点 ×，点 20 次。</string>
+    <string name="aq_q03_params">维度 20 个部门 · 聚合阈值 &gt;3 · 全选聚合「全部部门 · 20」 · 标签区限高 2 行 · 单标签可删 + 一键清空</string>
+    <string name="aq_q03_prompt">做后台「已选条件」标签区，实现聚合规则。\n【数据】部门维度共 20 个小组，另含状态、渠道两个维度；标签区显示当前所有已选条件。\n【聚合】同维度全选 → 一个标签「全部部门 · 20」；同维度已选 &gt; 3 → 一个标签「部门 · n」，点按展开逐项列出（展开态可再收起）；≤ 3 → 逐个标签显示。非多选维度（如状态=已退款）直接一个标签。\n【编辑】每个标签右侧 × 可单独删除并立即重算命中数；聚合标签点按可打开部门选择器（20 项多选 + 全选/清空）；提供「清空全部条件」回到默认。\n【限高】标签区最多 2 行，超出以聚合标签或「+n」承接；提供「摊开所有标签（反例）」开关，开启后逐个平铺 20 个标签并显示占了几行，用于对比。\n【反馈】标签变化时同步显示「命中 n 条」，全清空时显示默认全量条数。\n【自检】全选 20 个部门时标签区只有 1 个标签；选 4 个时收成「部门 · 4」；选 3 个时是 3 个独立标签；删任一标签命中数立刻变化；反例开关打开后标签区行数明显增加。</string>
+    <string name="aq_q04_name">看板下钻与明细转交</string>
+    <string name="aq_q04_summary">点一根柱子，旁边就只看这块：维度标题、聚合数、明细一起联动；找到问题直接导出明细 CSV，再一键生成转交话术发给负责人。</string>
+    <string name="aq_q04_rule">1. 图表每根柱子/扇区都可点，点选后详情区只呈现该维度切片：标题写明「渠道 · 直播」，聚合数（金额、笔数、占比）与明细同步过滤。\n2. 未选中时给可操作的引导空态（「点任意一根柱子，这里只看这块」），不要只写「暂无数据」。\n3. 切换聚合维度时清空已选切片并说明原因，避免旧切片名与新维度不匹配。\n4. 明细必须可导出：生成带表头的 CSV，回显行数与体积，并展示前几行预览供核对；导出动作给触感/提示反馈。\n5. 发现问题要能就地转交：一键生成含维度、时间范围、金额、笔数、占比、负责人的交接文本，复制即可粘贴给对应负责人，不用回聊天窗口手打。</string>
+    <string name="aq_q04_bad_case">柱子只能看不能点，想知道「直播渠道到底哪几笔异常」只能回去改筛选条件重查；查到了还得自己抄数字到聊天框，负责人问「哪天的」又要再查一遍。</string>
+    <string name="aq_q04_params">维度 3 组（渠道 / 部门前 8 / 状态）· 柱高按金额归一 · 下钻联动明细 · CSV 含表头 · 转交文本含 6 要素</string>
+    <string name="aq_q04_prompt">做可下钻的后台看板，实现「点柱只看这块 + 导出明细 + 转负责人」。\n【图表】按维度（渠道 / 部门前 8 / 状态）聚合金额，横向并排柱子，柱高按最大值归一；每根柱子可点，选中项用主色高亮、其余降不透明度，柱下显示维度名与金额。\n【下钻】未选中时详情区显示引导空态「点任意一根柱子，这里只看这块」；选中后标题变为「维度 · 值」，显示金额合计、笔数、占全量比例、负责人，并列出该切片前 6 行明细（日期 / 部门 / 渠道 / 状态 / 金额）。\n【维度切换】切换维度时清空选中切片，并提示「已切换维度，切片选择已重置」。\n【导出】「导出明细（CSV）」把当前切片全部行生成 CSV（表头 date,dept,channel,status,amount,owner），复制到剪贴板 + 触感反馈，回显「已导出 n 行 · x.x KB」并预览前 3 行。\n【转交】「转给负责人」生成交接文本（维度=值｜时间范围｜金额｜笔数｜占比｜负责人｜已导出行数），点按复制并提示可粘贴给负责人。\n【自检】点任一柱子详情与明细同步变化；导出行数 = 明细笔数；切维度后选中态清空；未选中时无 misleading 的旧数据残留。</string>
+    <string name="aq_q05_name">四刀合体样板页</string>
+    <string name="aq_q05_summary">把筛选分层、时间起止、标签聚合、看板下钻装进同一个查询页，作为可直接照抄的后台样板：一次查询、条件回显、下钻导出转交全链路闭环。</string>
+    <string name="aq_q05_rule">1. 页面顺序固定：条件区（常用外置 + 更多收起）→ 时间快捷（写明起止、超限置灰）→ 已选条件标签（聚合）→ 查询按钮（批量提交）→ 结果概览 → 看板 → 下钻明细 → 导出/转交。\n2. 四刀的状态必须互相一致：标签区反映全部生效条件（含时间与部门聚合）、看板与明细只受生效条件影响、导出内容等于当前下钻切片。\n3. 草稿条件与生效条件严格分离，未按查询前看板与明细保持上一次结果并标注「结果为上次查询」。\n4. 全链路都要有回显：命中条数、耗时、累计请求次数、时间口径、切片占比，用户任何时刻都能回答「我现在看的是什么」。</string>
+    <string name="aq_q05_bad_case">四条规范各做各的：筛选改了时间没跟着变，标签区漏掉时间条件，导出的明细还是全量而不是当前切片——用户拿到的表和屏幕上的数对不上。</string>
+    <string name="aq_q05_params">条件区 4 组常显 + 3 组折叠 · 时间 6 档 · 标签聚合阈值 &gt;3 · 看板 3 维度 · 单次查询 450ms</string>
+    <string name="aq_q05_prompt">做一个完整的后台数据查询页，把四条规范装进同一页面并保持状态一致。\n【结构】自上而下：① 条件区（常显：时间快捷、状态、部门聚合入口；折叠：渠道多选、金额区间、仅看异常）② 已选条件标签区（聚合规则：全选→「全部部门 · 20」，&gt;3→「部门 · n」，每个可删，附「清空全部条件」）③ 查询按钮（批量提交，显示待生效项数与累计请求次数）④ 结果概览（命中条数、金额合计、耗时、时间口径）⑤ 看板（3 维度柱状，可点柱下钻）⑥ 明细（当前切片前 8 行）⑦ 导出 CSV 与转负责人。\n【时间】快捷档位写明起止日期与「含首尾，共 n 天」；超出 90 天保留期的档位置灰并给原因；自定义起止倒置时禁用查询。\n【一致性】未按查询前，看板与明细保持上次结果并标注「结果为上次查询（条件有 n 项待生效）」；查询后标签区、概览、看板、明细同时更新；导出内容 = 当前下钻切片的全部行；切维度清空切片。\n【反馈】查询期间按钮 loading 禁用；导出与转交均复制到剪贴板并给触感反馈与文字回执。\n【自检】改 3 个条件只发 1 次请求；全选部门时标签区仅 1 个聚合标签；超限时间档不可点；点柱后导出行数 = 明细笔数；清空条件后回到全量默认态。</string>
+
+    <!-- ===== 阶段 5d-1：ui2/previews 的顶层演示数据 + ToolkitDemo 的 Markdown 演示常量 ===== -->
+    <!-- W01 动效配方 20 条（Recipes） -->
+    <string name="pv_motion_tool_recipe_01">淡入上浮</string>
+    <string name="pv_motion_tool_recipe_02">缩放弹入</string>
+    <string name="pv_motion_tool_recipe_03">错峰列表</string>
+    <string name="pv_motion_tool_recipe_04">抖动纠错</string>
+    <string name="pv_motion_tool_recipe_05">呼吸脉冲</string>
+    <string name="pv_motion_tool_recipe_06">旋转入场</string>
+    <string name="pv_motion_tool_recipe_07">翻转卡片</string>
+    <string name="pv_motion_tool_recipe_08">模糊渐清</string>
+    <string name="pv_motion_tool_recipe_09">数字滚动</string>
+    <string name="pv_motion_tool_recipe_10">打字机</string>
+    <string name="pv_motion_tool_recipe_11">跑马灯</string>
+    <string name="pv_motion_tool_recipe_12">弹跳落下</string>
+    <string name="pv_motion_tool_recipe_13">钟摆摇晃</string>
+    <string name="pv_motion_tool_recipe_14">进度填充</string>
+    <string name="pv_motion_tool_recipe_15">骨架微光</string>
+    <string name="pv_motion_tool_recipe_16">涟漪扩散</string>
+    <string name="pv_motion_tool_recipe_17">视差倾斜</string>
+    <string name="pv_motion_tool_recipe_18">磁吸吸附</string>
+    <string name="pv_motion_tool_recipe_19">弹性回弹</string>
+    <string name="pv_motion_tool_recipe_20">逐字幕布</string>
+    <!-- W03 动效规范索引 25 条（Specs：标题 + 导读） -->
+    <string name="pv_motion_tool_spec_01_title">时长分档</string>
+    <string name="pv_motion_tool_spec_01_guide">50–700ms 七档，微交互≤200，页面转场≤450</string>
+    <string name="pv_motion_tool_spec_02_title">曲线选择</string>
+    <string name="pv_motion_tool_spec_02_guide">进入用减速、退出用加速，同一手势全程一曲线</string>
+    <string name="pv_motion_tool_spec_03_title">弹簧优先</string>
+    <string name="pv_motion_tool_spec_03_guide">可打断的动画用弹簧：它天然继承当前速度</string>
+    <string name="pv_motion_tool_spec_04_title">速度继承</string>
+    <string name="pv_motion_tool_spec_04_guide">拖拽松手把手速注入动画，忌清零重来</string>
+    <string name="pv_motion_tool_spec_05_title">错峰上限</string>
+    <string name="pv_motion_tool_spec_05_guide">列表错峰总量不超 300ms，单项间隔 30–90ms</string>
+    <string name="pv_motion_tool_spec_06_title">可打断</string>
+    <string name="pv_motion_tool_spec_06_guide">任何长动画必须能被新手势接管</string>
+    <string name="pv_motion_tool_spec_07_title">减少动效</string>
+    <string name="pv_motion_tool_spec_07_guide">系统开启减少动效时：位移改淡入、时长归零也要到终点位</string>
+    <string name="pv_motion_tool_spec_08_title">退出更快</string>
+    <string name="pv_motion_tool_spec_08_guide" formatted="false">退出时长约为进入的 60–70%</string>
+    <string name="pv_motion_tool_spec_09_title">共享元素</string>
+    <string name="pv_motion_tool_spec_09_guide">跨页同一元素用共享转场，别两边各演一遍</string>
+    <string name="pv_motion_tool_spec_10_title">遮罩联动</string>
+    <string name="pv_motion_tool_spec_10_guide">遮罩透明度与内容位移同进度，不各走各的</string>
+    <string name="pv_motion_tool_spec_11_title">拖拽跟手</string>
+    <string name="pv_motion_tool_spec_11_guide">拖拽期间 1:1 跟随，动画只在松手后接管</string>
+    <string name="pv_motion_tool_spec_12_title">吸附阈值</string>
+    <string name="pv_motion_tool_spec_12_guide">过半或速度过阈才翻页/开合，两条判据取或</string>
+    <string name="pv_motion_tool_spec_13_title">回弹边界</string>
+    <string name="pv_motion_tool_spec_13_guide">过冲只许出现在松手动画，不许拖拽中越界太多</string>
+    <string name="pv_motion_tool_spec_14_title">列表入场</string>
+    <string name="pv_motion_tool_spec_14_guide">仅首屏入场做错峰，滚动中出现的不再逐个演</string>
+    <string name="pv_motion_tool_spec_15_title">状态同步</string>
+    <string name="pv_motion_tool_spec_15_guide">动画结束位必须等于逻辑状态位，防视觉与状态分家</string>
+    <string name="pv_motion_tool_spec_16_title">帧率底线</string>
+    <string name="pv_motion_tool_spec_16_guide">动画只动 transform/alpha 类属性，避免逐帧改布局</string>
+    <string name="pv_motion_tool_spec_17_title">图表动画</string>
+    <string name="pv_motion_tool_spec_17_guide">数据图首次描边生长，后续更新只补间数值</string>
+    <string name="pv_motion_tool_spec_18_title">加载反馈</string>
+    <string name="pv_motion_tool_spec_18_guide">100ms 内无反馈必闪烁；先骨架再内容的顺序不可反</string>
+    <string name="pv_motion_tool_spec_19_title">手势冲突</string>
+    <string name="pv_motion_tool_spec_19_guide">横滑与竖滚在斜向 30° 内按主方向锁定</string>
+    <string name="pv_motion_tool_spec_20_title">焦点与动效</string>
+    <string name="pv_motion_tool_spec_20_guide">键盘焦点移动不带动效，防晕</string>
+    <string name="pv_motion_tool_spec_21_title">深色适配</string>
+    <string name="pv_motion_tool_spec_21_guide">辉光/阴影类动效在深色下单独调强度</string>
+    <string name="pv_motion_tool_spec_22_title">大屏适配</string>
+    <string name="pv_motion_tool_spec_22_guide">位移距离按容器比例而非写死 px</string>
+    <string name="pv_motion_tool_spec_23_title">文案动效</string>
+    <string name="pv_motion_tool_spec_23_guide">数字滚动只滚变化位，长文本用淡入不用逐字</string>
+    <string name="pv_motion_tool_spec_24_title">中断恢复</string>
+    <string name="pv_motion_tool_spec_24_guide">页面切后台回来，动画落终点不续播一半</string>
+    <string name="pv_motion_tool_spec_25_title">一致性</string>
+    <string name="pv_motion_tool_spec_25_guide">同类组件全 App 用同一组 token，一处改全改</string>
+    <!-- X01 弹窗 20 型的入口文案（PopupTypes，键在代码里） -->
+    <string name="pv_video_popup_confirm">确认</string>
+    <string name="pv_video_popup_input">输入</string>
+    <string name="pv_video_popup_loading">加载</string>
+    <string name="pv_video_popup_list_center">中间列表</string>
+    <string name="pv_video_popup_list_bottom">底部列表</string>
+    <string name="pv_video_popup_check_sheet">底部勾选</string>
+    <string name="pv_video_popup_drawer">抽屉</string>
+    <string name="pv_video_popup_image">图片</string>
+    <string name="pv_video_popup_attached">依附</string>
+    <string name="pv_video_popup_popup">气泡</string>
+    <string name="pv_video_bottom_form_title">%1$s（底部形态）</string>
+    <!-- U03 Markdown 渲染演示用的三段示例文档 -->
+    <string name="tk_demo_md_changelog"># v2.8.0 更新日志\n\n新增 **F17 弹窗与提示术语**（P01–P12），把「加个弹窗」这种模糊需求拆成 12 个术语。\n\n## 新增\n\n- 素材库第四分区：*弹窗提示术语 · 12*\n- 每条含定义、何时用、`与邻居的区别`、反例与提示词\n- 详见 [实现方案](https://github.com/yz8023/ui)\n\n## 修复\n\n1. 列表返回不再回到顶部\n2. 提示词长按复制补上触感反馈\n\n&gt; 术语 P01–P06 出自视频简介点名，P07–P12 为本仓库补足。\n\n---\n\n```kotlin\nSnackbarHostState().showSnackbar(\n    message = \"已删除\",\n    actionLabel = \"撤销\"\n)\n```</string>
+    <string name="tk_demo_md_syntax">### 支持清单\n\n- 标题 `#`~`######`\n- **粗体** 与 *斜体*、_斜体_\n- `行内代码` 与围栏代码块\n- [链接](https://github.com/yz8023/ui)\n- 有序列表：\n\n1. 第一项\n2. 第二项\n\n&gt; 引用：连续多行会合并成一段。\n\n***\n\n不支持：表格、图片、嵌套列表、任务列表、HTML 内联。\n需要时改引 `org.commonmark:commonmark`（约 200KB 依赖）。</string>
+    <string name="tk_demo_md_privacy">## 隐私说明（示例）\n\n本模板**不联网上传任何用户数据**。唯一的网络行为有两处：\n\n1. 更新检查：请求 `api.github.com`（U01）\n2. 壁纸缓存：请求你配置的壁纸地址\n\n日志只存内存，*不写文件*，分享由用户手动触发。\n\n- 不申请通讯录、位置、麦克风\n- 存储权限仅用于「所有文件访问」读取系统壁纸</string>
+
+    <!-- ===== 阶段 5d-2：页面级顶层数据（开源致谢 / 首页素材与原则 / 权限卡默认提示） ===== -->
+    <!-- 协议与开源许可页：致谢 13 条（url 不是文案，留在代码里） -->
+    <string name="info_credit_01_name">StudyTrack（学迹）</string>
+    <string name="info_credit_01_author">L1angK1NG 与项目贡献者</string>
+    <string name="info_credit_01_purpose">液态玻璃参数体系、浅色视觉、卡片/按钮/指标组件及自定义壁纸体验参考；底部导航仍使用本项目原实现</string>
+    <string name="info_credit_01_license">上游仓库未提供 LICENSE；本项目采用独立实现，不直接复制其源码</string>
+    <string name="info_credit_02_name">dyparse</string>
+    <string name="info_credit_02_author">kd64i</string>
+    <string name="info_credit_02_purpose">液态玻璃与 Miuix 风格的视觉语言、配色、圆角及设置页结构参考</string>
+    <string name="info_credit_02_license">以原仓库许可证为准</string>
+    <string name="info_credit_03_name">Miuix</string>
+    <string name="info_credit_03_author">chibatching 及贡献者</string>
+    <string name="info_credit_03_purpose">MIUI 风格 Compose 组件语义与布局参考</string>
+    <string name="info_credit_03_license">Apache-2.0</string>
+    <string name="info_credit_04_name">backdrop-android</string>
+    <string name="info_credit_04_author">kyant0 及贡献者</string>
+    <string name="info_credit_04_purpose">玻璃背景采样、模糊、折射和高光渲染</string>
+    <string name="info_credit_04_license">Apache-2.0</string>
+    <string name="info_credit_05_name">shapes</string>
+    <string name="info_credit_05_author">kyant0 及贡献者</string>
+    <string name="info_credit_05_purpose">Capsule 等自定义 Shape 支持</string>
+    <string name="info_credit_05_license">Apache-2.0</string>
+    <string name="info_credit_06_name">motion-web</string>
+    <string name="info_credit_06_author">feitangyuan</string>
+    <string name="info_credit_06_purpose">动效时长、缓动与弹簧 token 的设计参考</string>
+    <string name="info_credit_06_license">以原仓库许可证为准</string>
+    <string name="info_credit_07_name">Framer Motion</string>
+    <string name="info_credit_07_author">Motion 团队及贡献者</string>
+    <string name="info_credit_07_purpose">弹簧 stiffness / damping 参数体系参考</string>
+    <string name="info_credit_07_license">MIT</string>
+    <string name="info_credit_08_name">YunX（云析）</string>
+    <string name="info_credit_08_author">CYQawa 及贡献者</string>
+    <string name="info_credit_08_purpose">欢迎引导、主题配置、动态桌面图标等交互结构参考</string>
+    <string name="info_credit_08_license">AGPL-3.0</string>
+    <string name="info_credit_09_name">Material Color Utilities</string>
+    <string name="info_credit_09_author">Google Material Foundation</string>
+    <string name="info_credit_09_purpose">HCT / TonalSpot 配色算法参考</string>
+    <string name="info_credit_09_license">Apache-2.0</string>
+    <string name="info_credit_10_name">Jetpack Compose / Material 3</string>
+    <string name="info_credit_10_author">Android Open Source Project / Google</string>
+    <string name="info_credit_10_purpose">界面、主题、动画及 Android 平台能力</string>
+    <string name="info_credit_10_license">Apache-2.0</string>
+    <string name="info_credit_11_name">Material Icons</string>
+    <string name="info_credit_11_author">Android Open Source Project</string>
+    <string name="info_credit_11_purpose">应用内矢量图标路径</string>
+    <string name="info_credit_11_license">Apache-2.0</string>
+    <string name="info_credit_12_name">Android activity-alias / PackageManager</string>
+    <string name="info_credit_12_author">Android Open Source Project / Google</string>
+    <string name="info_credit_12_purpose">运行时切换桌面应用图标</string>
+    <string name="info_credit_12_license">官方文档</string>
+    <string name="info_credit_13_name">Changing an Android App Icon</string>
+    <string name="info_credit_13_author">SitePoint 社区作者</string>
+    <string name="info_credit_13_purpose">activity-alias 图标切换实现思路参考</string>
+    <string name="info_credit_13_license">文章</string>
+    <!-- 权限请求卡：deniedHint 的默认值 -->
+    <string name="permission_denied_hint">拒绝后仍可在系统设置中重新开启。</string>
+    <!-- 首页：特色素材 5 条（status 三种取值共用一条资源） -->
+    <string name="home_material_01_name">液态玻璃主题</string>
+    <string name="home_material_01_description">真 backdrop 玻璃、7 套配色、普通 / MD3 降级。</string>
+    <string name="home_material_status_integrated">已接入</string>
+    <string name="home_material_02_name">应用欢迎引导</string>
+    <string name="home_material_02_description">首次启动说明、免费声明、开源入口，可从设置重新查看。</string>
+    <string name="home_material_status_new">新增</string>
+    <string name="home_material_03_name">状态反馈组件</string>
+    <string name="home_material_03_description">加载、空态、错误、成功、离线提示与重试骨架。</string>
+    <string name="home_material_04_name">主题导入导出</string>
+    <string name="home_material_04_description">外观和动效偏好一键复制为 JSON，可跨设备恢复。</string>
+    <string name="home_material_05_name">权限请求组件</string>
+    <string name="home_material_05_description">通知、媒体、相机、位置权限的解释卡与设置跳转素材。</string>
+    <string name="home_material_status_asset">素材</string>
+    <!-- 首页：四条设计原则 -->
+    <string name="home_principle_01_title">动效即材质</string>
+    <string name="home_principle_01_body">动效是界面材料本身，不是事后装饰。每个位移都有阻尼、动量和过冲回弹。</string>
+    <string name="home_principle_02_title">反 AI 塑料感</string>
+    <string name="home_principle_02_body">禁用无意义的 0→1 淡入与线性匀速。统一使用二阶弹簧阻尼与各向异性形变。</string>
+    <string name="home_principle_03_title">可验证的手感</string>
+    <string name="home_principle_03_body">时序、缓动、错峰全部以 token 固化，可被量化核对，避免同一产品出现两套节奏。</string>
+    <string name="home_principle_04_title">降级即设计</string>
+    <string name="home_principle_04_body">减少动效模式是一套完整设计，而不是坏掉的页面：默认终态始终可用。</string>
+
+    <!-- ===== 阶段 5e：后台数据查询的模拟数据集（值改稳定英文键，文案进这张表） ===== -->
+    <!-- 20 个部门小组 -->
+    <string name="aq_dept_01">第01组</string>
+    <string name="aq_dept_02">第02组</string>
+    <string name="aq_dept_03">第03组</string>
+    <string name="aq_dept_04">第04组</string>
+    <string name="aq_dept_05">第05组</string>
+    <string name="aq_dept_06">第06组</string>
+    <string name="aq_dept_07">第07组</string>
+    <string name="aq_dept_08">第08组</string>
+    <string name="aq_dept_09">第09组</string>
+    <string name="aq_dept_10">第10组</string>
+    <string name="aq_dept_11">第11组</string>
+    <string name="aq_dept_12">第12组</string>
+    <string name="aq_dept_13">第13组</string>
+    <string name="aq_dept_14">第14组</string>
+    <string name="aq_dept_15">第15组</string>
+    <string name="aq_dept_16">第16组</string>
+    <string name="aq_dept_17">第17组</string>
+    <string name="aq_dept_18">第18组</string>
+    <string name="aq_dept_19">第19组</string>
+    <string name="aq_dept_20">第20组</string>
+    <!-- 渠道 / 状态 / 金额档 -->
+    <string name="aq_channel_app">App</string>
+    <string name="aq_channel_mini_program">小程序</string>
+    <string name="aq_channel_live">直播</string>
+    <string name="aq_channel_offline">线下</string>
+    <string name="aq_channel_agent">代理商</string>
+    <string name="aq_status_done">已完成</string>
+    <string name="aq_status_processing">处理中</string>
+    <string name="aq_status_refunded">已退款</string>
+    <string name="aq_status_abnormal">异常</string>
+    <string name="aq_amount_lt_1k">&lt; 1k</string>
+    <string name="aq_amount_1k_5k">1k–5k</string>
+    <string name="aq_amount_gt_5k">&gt; 5k</string>
+    <!-- 负责人（own_duty 复用 aq_demo_text_11，amt_all 复用 common_all） -->
+    <string name="aq_owner_xi">陈曦 · 增长组</string>
+    <string name="aq_owner_lin">林涛 · 平台组</string>
+    <string name="aq_owner_zhao">赵敏 · 内容电商组</string>
+    <string name="aq_owner_sun">孙浩 · 渠道组</string>
+    <string name="aq_owner_zhou">周颖 · 商务组</string>
+    <string name="aq_owner_duty_of">值班组长 · %1$s</string>
+    <string name="aq_demo_owner_of_status">数据值班 · 王磊（%1$s）</string>
+    <!-- 时间快捷档位六档 -->
+    <string name="aq_range_today">今日</string>
+    <string name="aq_range_yesterday">昨日</string>
+    <string name="aq_range_last7">近7日</string>
+    <string name="aq_range_last30">近30日</string>
+    <string name="aq_range_quarter">本季度</string>
+    <string name="aq_range_last365">近一年</string>
+
+    <!-- ===== 阶段 6a：素材库目录 12 条（MaterialBrowser.FeatureItem） ===== -->
+    <!-- 难度只有「入门/进阶」两种，重复值共用一条资源 -->
+    <string name="mb_difficulty_beginner">入门</string>
+    <string name="mb_difficulty_advanced">进阶</string>
+    <!-- 12 条素材：名字 + 简介 -->
+    <string name="mb_feature_12_name">协议与开源许可页面</string>
+    <string name="mb_feature_12_description">完整页面展示隐私说明、全部参考项目、作者、链接和许可证。</string>
+    <string name="mb_feature_11_name">主题配置导入导出</string>
+    <string name="mb_feature_11_description">把当前主题完整导出为 JSON，并从剪贴板校验、导入和恢复。</string>
+    <string name="mb_feature_10_name">权限请求组件</string>
+    <string name="mb_feature_10_description">真实请求运行时权限、显示授权状态，并支持拒绝后跳转系统设置。</string>
+    <string name="mb_feature_09_name">状态反馈组件</string>
+    <string name="mb_feature_09_description">加载、骨架屏、空态、错误、成功与离线状态，可在组件页直接操作。</string>
+    <string name="mb_feature_08_name">应用欢迎引导界面</string>
+    <string name="mb_feature_08_description">首次启动展示功能介绍、免费声明、开源仓库入口，点击开始使用后进入主页。</string>
+    <string name="mb_feature_07_name">桌面图标动态切换</string>
+    <string name="mb_feature_07_description">支持动态 Activity Alias 切换，含 ShortcutManager 快捷方式适配。</string>
+    <string name="mb_feature_06_name">应用图标切换</string>
+    <string name="mb_feature_06_description">在应用内切换桌面图标，选择后立即生效，无需重新安装。</string>
+    <string name="mb_feature_05_name">主题色配置与切换</string>
+    <string name="mb_feature_05_description">8 套配色方案 + 自由取色盘，实时切换不重启。</string>
+    <string name="mb_feature_04_name">底部导航栏</string>
+    <string name="mb_feature_04_description">可拖拽、带弹簧阻尼的液态玻璃底部导航栏；玻璃模式自动降级 Material3。</string>
+    <string name="mb_feature_03_name">动效系统</string>
+    <string name="mb_feature_03_description">全局弹簧阻尼 token、按压回弹、常态呼吸、错峰入场——一处改全应用。</string>
+    <string name="mb_feature_02_name">玻璃常用组件</string>
+    <string name="mb_feature_02_description">按钮、滑块、输入框、弹窗、反馈、行布局——全部自带玻璃风格。</string>
+    <string name="mb_feature_01_name">液态玻璃主题</string>
+    <string name="mb_feature_01_description">一套基于 Blur + backdrop 的玻璃拟态主题，支持多套配色和动态取色。</string>
+
+    <!-- ===== 阶段 6a 补：素材库页的四个分区芯片（条数由代码实算，不写死） ===== -->
+    <string name="mb_section_ui2">UI2 体验馆 · %1$s</string>
+    <string name="mb_section_admin_query">数据查询规范 · %1$s</string>
+    <string name="mb_section_overlay_terms">弹窗提示术语 · %1$s</string>
+    <string name="mb_section_toolkit">工具与基建 · %1$s</string>
+
+    <!-- ===== 阶段 6b：视觉模式 enum 的显示名（Theme.VisualMode，照 5a 的 PaletteId 范式） ===== -->
+    <string name="visual_mode_glass">玻璃</string>
+    <string name="visual_mode_normal">普通</string>
+    <string name="visual_mode_md3">MD3</string>
+    <string name="visual_mode_oshin">O神</string>
+
+    <!-- ===== ui/features/adminquery/AdminQueryDemo.kt（阶段 2a） ===== -->
+    <string name="aq_demo_hint_4">单次查询模拟 450ms。即时模式下连改 10 个条件会打 10 次请求。</string>
+    <string name="aq_demo_text_70">选完一起查（推荐）</string>
+    <string name="aq_demo_text_71">即时查询（反例：每改一次查一次）</string>
+    <string name="aq_demo_text_72">状态（多选）</string>
+    <string name="aq_demo_text_73">部门（20 个小组收成一个入口，不摊开）</string>
+    <string name="aq_demo_text_74">更多筛选（不常用，收起）</string>
+    <string name="aq_demo_text_75">渠道（多选）</string>
+    <string name="aq_demo_text_76">金额区间（单选）</string>
+    <string name="aq_demo_text_77">查询</string>
+    <string name="aq_demo_text_78">无命中。建议先关掉「仅看异常」或把时间放宽到近30日——空态要给下一步动作，不只写「暂无数据」。</string>
+
+    <!-- ===== ui/features/overlayterms/OverlayTermsDemo.kt（阶段 2a） ===== -->
+    <string name="ot_demo_text_100">导出完成</string>
+    <string name="ot_demo_text_101">报表 A.csv 已生成，点击查看</string>
+    <string name="ot_demo_text_102">现在</string>
+    <string name="ot_demo_text_103">上面是通知在通知栏里的样子（应用内预览，方便没授权时也能核对文案与图标）。</string>
+    <string name="ot_demo_text_104">反例对照：应用内就能说完的事推成通知 = 白送打扰；不建渠道直接发在 API 26+ 会失败。</string>
+    <string name="ot_demo_text_97">Notification = 系统层提示，应用不在前台也能送达；因此门槛最高：要建渠道、要授权、要能被单独关掉。</string>
+    <string name="ot_demo_text_98">申请通知权限</string>
+    <string name="ot_demo_text_99">发送真实通知（走 NotificationManager）</string>
+
+    <!-- ===== ui/features/adminquery/AdminQueryDemo.kt（阶段 4） ===== -->
+    <string name="aq_demo_text_79">状态 · %1$s</string>
+    <string name="aq_demo_text_80">渠道 · %1$s</string>
+    <string name="aq_demo_text_81">命中 %1$s 条 / %2$s 条 · 上次耗时 450ms · 累计请求 %3$s 次</string>
+    <string name="aq_demo_text_82">结果为上次查询：还有 %1$s 项条件待生效，点「查询」才提交。</string>
+    <string name="aq_demo_text_83">… 其余 %1$s 条见导出（Q04）</string>
+
+    <!-- ===== 阶段 6c-2：弹窗术语演示页剩余文案（OverlayTermsDemo P01–P12） ===== -->
+    <string name="ot_demo_text_105">（不渲染角标）</string>
+    <string name="ot_demo_text_106">99+</string>
+    <string name="ot_demo_text_107">当前 count = %1$s → 显示 %2$s</string>
+    <string name="ot_demo_text_108">进行中：%1$s%%</string>
+    <string name="ot_demo_text_109">已完成 %1$s 次任务。</string>
+    <string name="ot_demo_text_110">面板可半展开（露一半）与全展开两档，拖把手可切换；下拉关闭与内部滚动不打架。</string>
+    <string name="ot_demo_text_111">反例对照：ActionSheet 不给「取消」项，或把整页内容塞进面板造成滚动嵌套。</string>
+    <string name="ot_demo_text_112">已选择：%1$s</string>
+    <string name="ot_demo_text_113">归档</string>
+    <string name="ot_demo_text_114">导出</string>
+    <string name="ot_demo_text_115">分享</string>
+    <string name="ot_demo_text_116">本机已发送 %1$s 次。未授权时点按钮是禁用态，不会静默失败——这是规范要求。</string>
+    <string name="ot_demo_text_117">已调用 notify(2001)，去通知栏看</string>
+    <string name="ot_demo_text_118">已授权</string>
+    <string name="ot_demo_text_119">未授权（Android 13+ 必须先申请 POST_NOTIFICATIONS）</string>
+    <string name="ot_demo_text_120">当前系统版本 SDK %1$s；授权状态：%2$s</string>
+    <string name="ot_demo_text_121">弹窗与提示术语 P08 的演示通知渠道</string>
+    <string name="ot_demo_text_122">术语演示</string>
+    <string name="ot_demo_text_123">已授权，现在点「发送真实通知」能收到</string>
+    <string name="ot_demo_text_124">被拒绝：Android 13+ 通知发不出去，需到系统设置手动开启</string>
+    <string name="ot_demo_text_125">已删除「%1$s」</string>
+    <string name="ot_demo_text_126">撤销</string>
+    <string name="ot_demo_text_127">锁定</string>
+    <string name="ot_demo_text_128">同步</string>
+    <string name="ot_demo_text_129">通知</string>
+    <string name="ot_demo_text_130">撤销上一次（%1$s 回到第 %2$s 位）</string>
+    <string name="ot_demo_text_131">确定删除「%1$s」？</string>
+    <string name="ot_demo_text_132">当前名称：%1$s</string>
+    <string name="ot_demo_text_133">未命名项目</string>
+    <string name="ot_demo_text_134">已触发 %1$s 次。系统 Toast 的限制：Android 12+ 应用在后台时不显示、样式不可定制、不能带按钮。</string>
+    <string name="ot_demo_text_135">已复制到剪贴板</string>
+    <string name="ot_demo_text_136">已确认 %1$s 次。</string>
+
+    <!-- ===== ui/features/ui2/previews/PreviewMotionTools.kt（阶段 2b） ===== -->
+    <string name="pv_motion_tool_text_23">同屏对比两条预览（左侧选单含 F01–F24，右侧含 F23–F46），找参数差异最快。</string>
 </resources>

@@ -39,17 +39,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
+import com.monkeycode.liquidui.R
 import com.monkeycode.liquidui.ui.components.GlassCard
 import com.monkeycode.liquidui.ui.components.SectionTitle
 import com.monkeycode.liquidui.ui.features.ui2.Ui2Categories
-import com.monkeycode.liquidui.ui.features.ui2.Ui2Feature
+import com.monkeycode.liquidui.ui.features.ui2.Ui2CategoryLabels
+import com.monkeycode.liquidui.ui.features.ui2.Ui2ExtraCategories
 import com.monkeycode.liquidui.ui.features.ui2.Ui2ExtraFeatures
+import com.monkeycode.liquidui.ui.features.ui2.Ui2Feature
 import com.monkeycode.liquidui.ui.features.ui2.Ui2Features
 import com.monkeycode.liquidui.ui.features.ui2.Ui2Preview
 
@@ -59,14 +64,17 @@ import com.monkeycode.liquidui.ui.features.ui2.Ui2Preview
  */
 @Composable
 fun Ui2CatalogSection(onOpen: (Ui2Feature) -> Unit) {
+    val context = LocalContext.current
     var query by rememberSaveable { mutableStateOf("") }
+    // category 存的是分类键（String）而不是资源 id：换文案不影响已保存的筛选状态
     var category by rememberSaveable { mutableStateOf<String?>(null) }
     val chipRowState1 = rememberSaveable(saver = ScrollState.Saver) { ScrollState(0) }
     val chipRowState2 = rememberSaveable(saver = ScrollState.Saver) { ScrollState(0) }
     val filtered = remember(query, category) {
         (Ui2Features + Ui2ExtraFeatures).filter { f ->
             (category == null || f.category == category) &&
-                (query.isBlank() || f.name.contains(query) || f.summary.contains(query) || f.id.contains(query, true))
+                (query.isBlank() || context.getString(f.nameRes).contains(query) ||
+                    context.getString(f.summaryRes).contains(query) || f.id.contains(query, true))
         }
     }
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -75,19 +83,23 @@ fun Ui2CatalogSection(onOpen: (Ui2Feature) -> Unit) {
             modifier = Modifier.fillMaxWidth().padding(horizontal = 22.dp),
             placeholder = { Text("搜索 UI2 素材…（如 壁纸 / F08）") }, singleLine = true,
         )
-        SectionTitle(text = "分类")
+        SectionTitle(text = stringResource(R.string.common_category))
         Row(
             Modifier.fillMaxWidth().horizontalScroll(chipRowState1).padding(horizontal = 22.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            Ui2Chip("全部", category == null) { category = null }
-            (Ui2Categories + listOf("玻璃拆解", "动效案例")).forEach { c -> Ui2Chip(c, category == c) { category = if (category == c) null else c } }
+            Ui2Chip(stringResource(R.string.common_all), category == null) { category = null }
+            (Ui2Categories + Ui2ExtraCategories).forEach { key ->
+                Ui2Chip(stringResource(Ui2CategoryLabels.getValue(key)), category == key) {
+                    category = if (category == key) null else key
+                }
+            }
         }
         Row(
             Modifier.fillMaxWidth().horizontalScroll(chipRowState2).padding(horizontal = 22.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            listOf("视频专题", "弹层馆", "动效馆", "工具").forEach { c -> Ui2Chip(c, category == c) { category = if (category == c) null else c } }
+            listOf(stringResource(R.string.ui2_gallery_text_1), stringResource(R.string.ui2_gallery_text_2), stringResource(R.string.ui2_gallery_text_3), stringResource(R.string.ui2_gallery_text_4)).forEach { c -> Ui2Chip(c, category == c) { category = if (category == c) null else c } }
         }
         Text(
             "共 ${filtered.size} 条 · 点卡片进入真实预览，长按详情页按钮复制提示词",
@@ -124,8 +136,8 @@ private fun Ui2FeatureCard(feature: Ui2Feature, onClick: () -> Unit) {
             ) { Text(feature.id, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onPrimaryContainer, style = MaterialTheme.typography.labelMedium) }
             Spacer(Modifier.padding(horizontal = 6.dp))
             Column(Modifier.weight(1f)) {
-                Text(feature.name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
-                Text(feature.summary, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 2)
+                Text(stringResource(feature.nameRes), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                Text(stringResource(feature.summaryRes), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 2)
             }
             Text(feature.difficulty, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
@@ -137,6 +149,7 @@ private fun Ui2FeatureCard(feature: Ui2Feature, onClick: () -> Unit) {
 fun Ui2DetailScreen(feature: Ui2Feature, onBack: () -> Unit) {
     BackHandler(onBack = onBack)
     val clipboard = LocalClipboardManager.current
+    val context = LocalContext.current
     val haptics = LocalHapticFeedback.current
     var copied by remember { mutableStateOf(false) }
     var showPrompt by remember { mutableStateOf(false) }
@@ -147,27 +160,31 @@ fun Ui2DetailScreen(feature: Ui2Feature, onBack: () -> Unit) {
     ) {
         item {
             Row(Modifier.padding(horizontal = 10.dp), verticalAlignment = Alignment.CenterVertically) {
-                TextButton(onClick = onBack) { Text("‹ 返回素材库") }
-                Text("${feature.id} · ${feature.category} · ${feature.difficulty}", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                TextButton(onClick = onBack) { Text(stringResource(R.string.common_back_to_library)) }
+                Text(
+                    "${feature.id} · ${stringResource(Ui2CategoryLabels.getValue(feature.category))} · ${feature.difficulty}",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
-            Text(feature.name, Modifier.padding(horizontal = 22.dp), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
+            Text(stringResource(feature.nameRes), Modifier.padding(horizontal = 22.dp), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
             Spacer(Modifier.height(6.dp))
-            Text(feature.summary, Modifier.padding(horizontal = 22.dp), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(stringResource(feature.summaryRes), Modifier.padding(horizontal = 22.dp), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
             Spacer(Modifier.height(4.dp))
-            Text(feature.params, Modifier.padding(horizontal = 22.dp), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
+            Text(stringResource(feature.paramsRes), Modifier.padding(horizontal = 22.dp), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
         }
         item {
-            SectionTitle(text = "功能体验（真实实现，可直接操作）")
+            SectionTitle(text = stringResource(R.string.common_demo_section_hint))
             GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
                 Box(Modifier.padding(16.dp)) { Ui2Preview(feature) }
             }
         }
         item {
-            SectionTitle(text = "提示词")
+            SectionTitle(text = stringResource(R.string.common_prompt))
             GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
                 Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                     Text(
-                        "点按查看全文，长按按钮把整段提示词复制到剪贴板，可直接粘贴给 AI 复现此功能。",
+                        stringResource(R.string.ui2_gallery_text_5),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -177,7 +194,7 @@ fun Ui2DetailScreen(feature: Ui2Feature, onBack: () -> Unit) {
                             .combinedClickable(
                                 onClick = { showPrompt = !showPrompt },
                                 onLongClick = {
-                                    clipboard.setText(AnnotatedString(feature.prompt))
+                                    clipboard.setText(AnnotatedString(context.getString(feature.promptRes)))
                                     haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                                     copied = true
                                 },
@@ -186,20 +203,20 @@ fun Ui2DetailScreen(feature: Ui2Feature, onBack: () -> Unit) {
                         contentAlignment = Alignment.Center,
                     ) {
                         Text(
-                            if (copied) "✓ 已复制，去粘贴给 AI 吧" else "长按复制提示词",
+                            if (copied) stringResource(R.string.common_copied_hint) else stringResource(R.string.common_long_press_to_copy),
                             color = MaterialTheme.colorScheme.onPrimary,
                             fontWeight = FontWeight.SemiBold,
                         )
                     }
                     if (showPrompt) {
                         Text(
-                            feature.prompt,
+                            stringResource(feature.promptRes),
                             style = MaterialTheme.typography.bodySmall.copy(fontFamily = FontFamily.Monospace, fontSize = 12.sp),
                             modifier = Modifier.background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f), RoundedCornerShape(10.dp)).padding(12.dp),
                         )
                     }
                     Text(
-                        "来源：yz8023/UI2 素材库同条目提示词；实现方案与出处见仓库 素材库/UI2体验馆/${feature.id}-*/。",
+                        stringResource(R.string.ui2_gallery_text_6, feature.id),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )

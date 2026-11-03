@@ -34,15 +34,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
+import com.monkeycode.liquidui.R
 import com.monkeycode.liquidui.ui.components.GlassCard
 import com.monkeycode.liquidui.ui.components.SectionTitle
 import com.monkeycode.liquidui.ui.features.toolkit.ToolkitCategories
+import com.monkeycode.liquidui.ui.features.toolkit.ToolkitCategoryLabels
 import com.monkeycode.liquidui.ui.features.toolkit.ToolkitEntries
 import com.monkeycode.liquidui.ui.features.toolkit.ToolkitEntry
 import com.monkeycode.liquidui.ui.features.toolkit.ToolkitPreview
@@ -56,14 +60,15 @@ import com.monkeycode.liquidui.ui.features.toolkit.ToolkitPreview
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ToolkitCatalogSection(onOpen: (ToolkitEntry) -> Unit) {
+    val context = LocalContext.current
     var query by rememberSaveable { mutableStateOf("") }
     var category by rememberSaveable { mutableStateOf<String?>(null) }
     val chipRowState = rememberSaveable(saver = ScrollState.Saver) { ScrollState(0) }
     val filtered = remember(query, category) {
         ToolkitEntries.filter { e ->
             (category == null || e.category == category) &&
-                (query.isBlank() || e.name.contains(query) || e.en.contains(query, true) ||
-                    e.summary.contains(query) || e.id.contains(query, true))
+                (query.isBlank() || context.getString(e.nameRes).contains(query) || e.en.contains(query, true) ||
+                    context.getString(e.summaryRes).contains(query) || e.id.contains(query, true))
         }
     }
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -72,34 +77,38 @@ fun ToolkitCatalogSection(onOpen: (ToolkitEntry) -> Unit) {
             modifier = Modifier.fillMaxWidth().padding(horizontal = 22.dp),
             placeholder = { Text("搜索工具…（如 更新 / 日志 / U03）") }, singleLine = true,
         )
-        SectionTitle(text = "分类")
+        SectionTitle(text = stringResource(R.string.common_category))
         Row(
             Modifier.fillMaxWidth().horizontalScroll(chipRowState).padding(horizontal = 22.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            TkChip("全部", category == null) { category = null }
-            ToolkitCategories.forEach { c -> TkChip(c, category == c) { category = if (category == c) null else c } }
+            TkChip(stringResource(R.string.common_all), category == null) { category = null }
+            ToolkitCategories.forEach { key ->
+                TkChip(stringResource(ToolkitCategoryLabels.getValue(key)), category == key) {
+                    category = if (category == key) null else key
+                }
+            }
         }
         GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                Text("这四条是「基建」，不是样式", style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.SemiBold)
+                Text(stringResource(R.string.toolkit_text_1), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.SemiBold)
                 Text(
-                    "更新检查、日志分享、Markdown 渲染、大屏适配——做完一个 App 迟早都要写，" +
-                        "而且写法一旦错了就是线上事故（拿不到日志、装不上更新、大屏布局塌）。" +
-                        "四条都是真实可运行代码：真的发请求、真的下载、真的分享、真的切布局，不是示意图。",
+                    stringResource(R.string.toolkit_text_2) +
+                        stringResource(R.string.toolkit_text_3) +
+                        stringResource(R.string.toolkit_text_4),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 Text(
-                    "示例 App 自己也用上了：设置页有真实的「检查更新」与「运行日志」，" +
-                        "更新检查打的就是本模板仓库的 GitHub Releases。",
+                    stringResource(R.string.toolkit_text_5) +
+                        stringResource(R.string.toolkit_text_6),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.primary,
                 )
             }
         }
         Text(
-            "共 ${filtered.size} 条 · 点卡片进入可操作演示，长按详情页按钮复制提示词",
+            stringResource(R.string.common_shared_12, filtered.size),
             Modifier.padding(horizontal = 22.dp),
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -136,8 +145,8 @@ private fun ToolkitCard(entry: ToolkitEntry, onClick: () -> Unit) {
             }
             Spacer(Modifier.padding(horizontal = 6.dp))
             Column(Modifier.weight(1f)) {
-                Text(entry.name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
-                Text(entry.summary, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 2)
+                Text(stringResource(entry.nameRes), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                Text(stringResource(entry.summaryRes), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 2)
             }
             Text(entry.difficulty, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
@@ -149,6 +158,7 @@ private fun ToolkitCard(entry: ToolkitEntry, onClick: () -> Unit) {
 fun ToolkitDetailScreen(entry: ToolkitEntry, onBack: () -> Unit) {
     BackHandler(onBack = onBack)
     val clipboard = LocalClipboardManager.current
+    val context = LocalContext.current
     val haptics = LocalHapticFeedback.current
     var copied by remember { mutableStateOf(false) }
     var showPrompt by remember { mutableStateOf(false) }
@@ -161,49 +171,49 @@ fun ToolkitDetailScreen(entry: ToolkitEntry, onBack: () -> Unit) {
     ) {
         item {
             Row(Modifier.padding(horizontal = 10.dp), verticalAlignment = Alignment.CenterVertically) {
-                TextButton(onClick = onBack) { Text("‹ 返回素材库") }
+                TextButton(onClick = onBack) { Text(stringResource(R.string.common_back_to_library)) }
                 Text(
-                    "${entry.id} · ${entry.category} · ${entry.difficulty}",
+                    "${entry.id} · ${stringResource(ToolkitCategoryLabels.getValue(entry.category))} · ${entry.difficulty}",
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
-            Text(entry.name, Modifier.padding(horizontal = 22.dp), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
+            Text(stringResource(entry.nameRes), Modifier.padding(horizontal = 22.dp), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
             Text(entry.en, Modifier.padding(horizontal = 22.dp), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
             Spacer(Modifier.height(6.dp))
-            Text(entry.summary, Modifier.padding(horizontal = 22.dp), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(stringResource(entry.summaryRes), Modifier.padding(horizontal = 22.dp), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
         item {
-            SectionTitle(text = "为什么需要")
-            GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) { Text(entry.why, style = MaterialTheme.typography.bodySmall) }
+            SectionTitle(text = stringResource(R.string.toolkit_text_7))
+            GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) { Text(stringResource(entry.whyRes), style = MaterialTheme.typography.bodySmall) }
         }
         item {
-            SectionTitle(text = "关键实现（照抄要点）")
-            GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) { Text(entry.keyImpl, style = MaterialTheme.typography.bodySmall) }
+            SectionTitle(text = stringResource(R.string.toolkit_text_8))
+            GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) { Text(stringResource(entry.keyImplRes), style = MaterialTheme.typography.bodySmall) }
         }
         item {
-            SectionTitle(text = "坑与反例")
+            SectionTitle(text = stringResource(R.string.toolkit_text_9))
             GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
-                Text(entry.pitfalls, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.error)
+                Text(stringResource(entry.pitfallsRes), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.error)
             }
         }
         item {
-            SectionTitle(text = "参数与默认值")
-            GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) { Text(entry.params, style = MaterialTheme.typography.bodySmall) }
+            SectionTitle(text = stringResource(R.string.toolkit_text_10))
+            GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) { Text(stringResource(entry.paramsRes), style = MaterialTheme.typography.bodySmall) }
         }
         item {
-            SectionTitle(text = "功能体验（真实实现，可直接操作）")
+            SectionTitle(text = stringResource(R.string.common_demo_section_hint))
             GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
                 Column(Modifier.padding(vertical = 4.dp)) { ToolkitPreview(entry) }
             }
         }
         item {
-            SectionTitle(text = "提示词")
+            SectionTitle(text = stringResource(R.string.common_prompt))
             GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
                 Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                     Text(
-                        "点按查看全文，长按按钮把整段提示词复制到剪贴板。整段可以直接发给 AI，" +
-                            "里面的接口名、超时值、权限项、失败分支都已写死，不用你再补细节。",
+                        stringResource(R.string.toolkit_text_11) +
+                            stringResource(R.string.toolkit_text_12),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -213,7 +223,7 @@ fun ToolkitDetailScreen(entry: ToolkitEntry, onBack: () -> Unit) {
                             .combinedClickable(
                                 onClick = { showPrompt = !showPrompt },
                                 onLongClick = {
-                                    clipboard.setText(AnnotatedString(entry.prompt))
+                                    clipboard.setText(AnnotatedString(context.getString(entry.promptRes)))
                                     haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                                     copied = true
                                 },
@@ -222,14 +232,14 @@ fun ToolkitDetailScreen(entry: ToolkitEntry, onBack: () -> Unit) {
                         contentAlignment = Alignment.Center,
                     ) {
                         Text(
-                            if (copied) "✓ 已复制，去粘贴给 AI 吧" else "长按复制提示词",
+                            if (copied) stringResource(R.string.common_copied_hint) else stringResource(R.string.common_long_press_to_copy),
                             color = MaterialTheme.colorScheme.onPrimary,
                             fontWeight = FontWeight.SemiBold,
                         )
                     }
                     if (showPrompt) {
                         Text(
-                            entry.prompt,
+                            stringResource(entry.promptRes),
                             style = MaterialTheme.typography.bodySmall.copy(fontFamily = FontFamily.Monospace, fontSize = 12.sp),
                             modifier = Modifier
                                 .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f), RoundedCornerShape(10.dp))
@@ -237,8 +247,8 @@ fun ToolkitDetailScreen(entry: ToolkitEntry, onBack: () -> Unit) {
                         )
                     }
                     Text(
-                        "实现全部在本仓库 `ui/features/toolkit/` 内（AppUpdateChecker / AppLog / MarkdownText / AdaptiveNav），" +
-                            "零第三方依赖；接入与替换说明见 素材库/工具与基建/实现方案.md。",
+                        stringResource(R.string.toolkit_text_13) +
+                            stringResource(R.string.toolkit_text_14),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )

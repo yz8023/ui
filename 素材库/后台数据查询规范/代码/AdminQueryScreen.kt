@@ -35,15 +35,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
+import com.monkeycode.liquidui.R
 import com.monkeycode.liquidui.ui.components.GlassCard
 import com.monkeycode.liquidui.ui.components.SectionTitle
 import com.monkeycode.liquidui.ui.features.adminquery.AdminQueryCategories
+import com.monkeycode.liquidui.ui.features.adminquery.AdminQueryCategoryLabels
 import com.monkeycode.liquidui.ui.features.adminquery.AdminQueryNorm
 import com.monkeycode.liquidui.ui.features.adminquery.AdminQueryNorms
 import com.monkeycode.liquidui.ui.features.adminquery.AdminQueryPreview
@@ -56,13 +60,14 @@ import com.monkeycode.liquidui.ui.features.adminquery.AdminQueryPreview
  */
 @Composable
 fun AdminQueryCatalogSection(onOpen: (AdminQueryNorm) -> Unit) {
+    val context = LocalContext.current
     var query by rememberSaveable { mutableStateOf("") }
     var category by rememberSaveable { mutableStateOf<String?>(null) }
     val chipRowState = rememberSaveable(saver = androidx.compose.foundation.ScrollState.Saver) { androidx.compose.foundation.ScrollState(0) }
     val filtered = remember(query, category) {
         AdminQueryNorms.filter { n ->
             (category == null || n.category == category) &&
-                (query.isBlank() || n.name.contains(query) || n.summary.contains(query) || n.id.contains(query, true))
+                (query.isBlank() || context.getString(n.nameRes).contains(query) || context.getString(n.summaryRes).contains(query) || n.id.contains(query, true))
         }
     }
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -71,18 +76,20 @@ fun AdminQueryCatalogSection(onOpen: (AdminQueryNorm) -> Unit) {
             modifier = Modifier.fillMaxWidth().padding(horizontal = 22.dp),
             placeholder = { Text("搜索规范…（如 时间 / Q02）") }, singleLine = true,
         )
-        SectionTitle(text = "分类")
+        SectionTitle(text = stringResource(R.string.common_category))
         Row(
             Modifier.fillMaxWidth().horizontalScroll(chipRowState).padding(horizontal = 22.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            AdminQueryChip("全部", category == null) { category = null }
-            AdminQueryCategories.forEach { c ->
-                AdminQueryChip(c, category == c) { category = if (category == c) null else c }
+            AdminQueryChip(stringResource(R.string.common_all), category == null) { category = null }
+            AdminQueryCategories.forEach { key ->
+                AdminQueryChip(stringResource(AdminQueryCategoryLabels.getValue(key)), category == key) {
+                    category = if (category == key) null else key
+                }
             }
         }
         Text(
-            "共 ${filtered.size} 条 · 点卡片进入可操作演示，长按详情页按钮复制提示词",
+            stringResource(R.string.common_shared_12, filtered.size),
             Modifier.padding(horizontal = 22.dp),
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -119,8 +126,8 @@ private fun AdminQueryCard(norm: AdminQueryNorm, onClick: () -> Unit) {
             }
             Spacer(Modifier.padding(horizontal = 6.dp))
             Column(Modifier.weight(1f)) {
-                Text(norm.name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
-                Text(norm.summary, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 2)
+                Text(stringResource(norm.nameRes), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                Text(stringResource(norm.summaryRes), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 2)
             }
             Text(norm.difficulty, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
@@ -132,6 +139,7 @@ private fun AdminQueryCard(norm: AdminQueryNorm, onClick: () -> Unit) {
 fun AdminQueryDetailScreen(norm: AdminQueryNorm, onBack: () -> Unit) {
     BackHandler(onBack = onBack)
     val clipboard = LocalClipboardManager.current
+    val context = LocalContext.current
     val haptics = LocalHapticFeedback.current
     var copied by remember { mutableStateOf(false) }
     var showPrompt by remember { mutableStateOf(false) }
@@ -144,43 +152,43 @@ fun AdminQueryDetailScreen(norm: AdminQueryNorm, onBack: () -> Unit) {
     ) {
         item {
             Row(Modifier.padding(horizontal = 10.dp), verticalAlignment = Alignment.CenterVertically) {
-                TextButton(onClick = onBack) { Text("‹ 返回素材库") }
+                TextButton(onClick = onBack) { Text(stringResource(R.string.common_back_to_library)) }
                 Text(
-                    "${norm.id} · ${norm.category} · ${norm.difficulty}",
+                    "${norm.id} · ${stringResource(AdminQueryCategoryLabels.getValue(norm.category))} · ${norm.difficulty}",
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
-            Text(norm.name, Modifier.padding(horizontal = 22.dp), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
+            Text(stringResource(norm.nameRes), Modifier.padding(horizontal = 22.dp), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
             Spacer(Modifier.height(6.dp))
-            Text(norm.summary, Modifier.padding(horizontal = 22.dp), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(stringResource(norm.summaryRes), Modifier.padding(horizontal = 22.dp), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
             Spacer(Modifier.height(4.dp))
-            Text(norm.params, Modifier.padding(horizontal = 22.dp), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
+            Text(stringResource(norm.paramsRes), Modifier.padding(horizontal = 22.dp), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
         }
         item {
-            SectionTitle(text = "规范条文（照着做）")
+            SectionTitle(text = stringResource(R.string.admin_query_text_1))
             GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
-                Text(norm.rule, style = MaterialTheme.typography.bodySmall)
+                Text(stringResource(norm.ruleRes), style = MaterialTheme.typography.bodySmall)
             }
         }
         item {
-            SectionTitle(text = "反例（别这么做）")
+            SectionTitle(text = stringResource(R.string.common_anti_pattern))
             GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
-                Text(norm.badCase, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.error)
+                Text(stringResource(norm.badCaseRes), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.error)
             }
         }
         item {
-            SectionTitle(text = "功能体验（真实实现，可直接操作）")
+            SectionTitle(text = stringResource(R.string.common_demo_section_hint))
             GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
                 Column(Modifier.padding(vertical = 4.dp)) { AdminQueryPreview(norm) }
             }
         }
         item {
-            SectionTitle(text = "提示词")
+            SectionTitle(text = stringResource(R.string.common_prompt))
             GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
                 Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                     Text(
-                        "点按查看全文，长按按钮把整段提示词复制到剪贴板，可直接粘贴给 AI 复现这条规范。",
+                        stringResource(R.string.admin_query_text_2),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -190,7 +198,7 @@ fun AdminQueryDetailScreen(norm: AdminQueryNorm, onBack: () -> Unit) {
                             .combinedClickable(
                                 onClick = { showPrompt = !showPrompt },
                                 onLongClick = {
-                                    clipboard.setText(AnnotatedString(norm.prompt))
+                                    clipboard.setText(AnnotatedString(context.getString(norm.promptRes)))
                                     haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                                     copied = true
                                 },
@@ -199,14 +207,14 @@ fun AdminQueryDetailScreen(norm: AdminQueryNorm, onBack: () -> Unit) {
                         contentAlignment = Alignment.Center,
                     ) {
                         Text(
-                            if (copied) "✓ 已复制，去粘贴给 AI 吧" else "长按复制提示词",
+                            if (copied) stringResource(R.string.common_copied_hint) else stringResource(R.string.common_long_press_to_copy),
                             color = MaterialTheme.colorScheme.onPrimary,
                             fontWeight = FontWeight.SemiBold,
                         )
                     }
                     if (showPrompt) {
                         Text(
-                            norm.prompt,
+                            stringResource(norm.promptRes),
                             style = MaterialTheme.typography.bodySmall.copy(fontFamily = FontFamily.Monospace, fontSize = 12.sp),
                             modifier = Modifier
                                 .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f), RoundedCornerShape(10.dp))
@@ -214,7 +222,7 @@ fun AdminQueryDetailScreen(norm: AdminQueryNorm, onBack: () -> Unit) {
                         )
                     }
                     Text(
-                        "来源：B 站 KD一对A《查数据查到崩溃？这套烂后台连改了四刀》（BV1Vuxr6BEDp）公开表述提炼；条文与提示词为本仓库独立撰写，实现方案见 素材库/后台数据查询规范/。",
+                        stringResource(R.string.admin_query_text_3),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )

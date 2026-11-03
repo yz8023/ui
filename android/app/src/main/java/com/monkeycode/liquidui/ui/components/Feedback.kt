@@ -31,7 +31,9 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.monkeycode.liquidui.ui.motion.闲置呼吸
+import androidx.compose.ui.res.stringResource
+import com.monkeycode.liquidui.R
+import com.monkeycode.liquidui.ui.motion.idleBreathing
 
 /**
  * Empty state — the default content for the "blank feature" screens.
@@ -64,7 +66,7 @@ fun EmptyState(
             Canvas(
                 modifier = Modifier
                     .size(132.dp)
-                    .闲置呼吸(
+                    .idleBreathing(
                         periodMs = 6400,
                         amplitudeX = 0.018f,
                         amplitudeY = 0.026f
@@ -224,8 +226,8 @@ fun SkeletonLine(
 /** Standard loading state: title copy + three skeleton lines. */
 @Composable
 fun LoadingState(
-    title: String = "加载中",
-    message: String = "正在准备内容，请稍候。",
+    title: String = stringResource(R.string.feedback_title_1),
+    message: String = stringResource(R.string.feedback_message_1),
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -284,7 +286,7 @@ fun SuccessBanner(
 @Composable
 fun OfflineBanner(
     modifier: Modifier = Modifier,
-    text: String = "当前网络不可用，内容会在恢复连接后自动刷新。"
+    text: String = stringResource(R.string.feedback_text_1)
 ) {
     InfoBanner(
         text = text,

@@ -58,9 +58,9 @@ import com.kyant.backdrop.highlight.Highlight
 import com.kyant.backdrop.shadow.InnerShadow
 import com.kyant.backdrop.shadow.Shadow
 import com.kyant.shapes.Capsule
-import com.monkeycode.liquidui.ui.motion.阻尼拖拽动画
-import com.monkeycode.liquidui.ui.motion.交互高亮
-import com.monkeycode.liquidui.ui.motion.运动
+import com.monkeycode.liquidui.ui.motion.DampedDragAnimation
+import com.monkeycode.liquidui.ui.motion.InteractiveHighlight
+import com.monkeycode.liquidui.ui.motion.Motion
 import com.monkeycode.liquidui.ui.theme.LocalAppChrome
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.drop
@@ -79,9 +79,9 @@ import kotlin.math.sign
  *  - the active capsule is a second glass layer with a lens of its own; while
  *    pressed it samples the labels through `tabsBackdrop` so the accent colour
  *    shows through the glass
- *  - the active capsule springs between tabs (`阻尼拖拽动画`), presses
+ *  - the active capsule springs between tabs (`DampedDragAnimation`), presses
  *    scale it up, and drag velocity stretches it along travel (volume-preserving)
- *  - the specular highlight follows the finger (`交互高亮`)
+ *  - the specular highlight follows the finger (`InteractiveHighlight`)
  */
 @Composable
 fun LiquidBottomTabs(
@@ -123,13 +123,13 @@ fun LiquidBottomTabs(
     var currentIndex by remember(selectedTabIndex) {
         mutableIntStateOf(selectedTabIndex())
     }
-    class 阻尼拖拽动画Holder {
-        var instance: 阻尼拖拽动画? = null
+    class DampedDragHolder {
+        var instance: DampedDragAnimation? = null
     }
-    val animationHolder = remember { 阻尼拖拽动画Holder() }
-    val damping = 运动.motionDamping.floatValue
+    val animationHolder = remember { DampedDragHolder() }
+    val damping = Motion.motionDamping.floatValue
     val dampedDragAnimation = remember(animationScope, tabsCount, density, isLtr, damping) {
-        阻尼拖拽动画(
+        DampedDragAnimation(
             animationScope = animationScope,
             initialValue = selectedTabIndex().toFloat(),
             valueRange = 0f..(tabsCount - 1).toFloat(),
@@ -138,8 +138,8 @@ fun LiquidBottomTabs(
             pressedScale = 78f / 56f,
             canDrag = { offset ->
                 val animation = animationHolder.instance
-                    ?: return@阻尼拖拽动画 true
-                if (tabWidthPx == 0f) return@阻尼拖拽动画 false
+                    ?: return@DampedDragAnimation true
+                if (tabWidthPx == 0f) return@DampedDragAnimation false
 
                 val indicatorX = animation.value * tabWidthPx
                 val padding = with(density) { 4.dp.toPx() }
@@ -156,7 +156,7 @@ fun LiquidBottomTabs(
                 currentIndex = targetIndex
                 animateToValue(targetIndex.toFloat())
                 animationScope.launch {
-                    offsetAnimation.animateTo(0f, spring(运动.DampedRatio(1f), 300f, 0.5f))
+                    offsetAnimation.animateTo(0f, spring(Motion.DampedRatio(1f), 300f, 0.5f))
                 }
             },
             onDrag = { _, dragAmount ->
@@ -189,7 +189,7 @@ fun LiquidBottomTabs(
     }
 
     val interactiveHighlight = remember(animationScope, tabWidthPx, damping) {
-        交互高亮(
+        InteractiveHighlight(
             animationScope = animationScope,
             position = { size, _ ->
                 Offset(

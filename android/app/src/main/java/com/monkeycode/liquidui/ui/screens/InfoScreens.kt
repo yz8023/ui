@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
+import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,6 +25,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
+import com.monkeycode.liquidui.R
 import com.monkeycode.liquidui.BuildConfig
 import com.monkeycode.liquidui.ui.components.GlassCard
 import com.monkeycode.liquidui.ui.components.PrimaryButton
@@ -32,27 +35,31 @@ import com.monkeycode.liquidui.ui.features.PermissionRequestCard
 import com.monkeycode.liquidui.ui.features.PermissionSpec
 
 private data class OpenSourceCredit(
-    val name: String,
-    val author: String,
-    val purpose: String,
-    val license: String,
+    @StringRes val nameRes: Int,
+    @StringRes val authorRes: Int,
+    @StringRes val purposeRes: Int,
+    @StringRes val licenseRes: Int,
     val url: String,
 )
 
+/**
+ * 开源致谢 13 条。显示字段（名字/作者/用途/许可证）都是 @StringRes，
+ * **url 留在代码里**：它不是文案，既是 LazyColumn item 的 key，也是 Intent 的目标。
+ */
 private val allCredits = listOf(
-    OpenSourceCredit("StudyTrack（学迹）", "L1angK1NG 与项目贡献者", "液态玻璃参数体系、浅色视觉、卡片/按钮/指标组件及自定义壁纸体验参考；底部导航仍使用本项目原实现", "上游仓库未提供 LICENSE；本项目采用独立实现，不直接复制其源码", "https://github.com/L1angK1NG/StudyTrack"),
-    OpenSourceCredit("dyparse", "kd64i", "液态玻璃与 Miuix 风格的视觉语言、配色、圆角及设置页结构参考", "以原仓库许可证为准", "https://github.com/kd64i/dyparse"),
-    OpenSourceCredit("Miuix", "chibatching 及贡献者", "MIUI 风格 Compose 组件语义与布局参考", "Apache-2.0", "https://github.com/chibatching/Miuix"),
-    OpenSourceCredit("backdrop-android", "kyant0 及贡献者", "玻璃背景采样、模糊、折射和高光渲染", "Apache-2.0", "https://github.com/kyant0/backdrop-android"),
-    OpenSourceCredit("shapes", "kyant0 及贡献者", "Capsule 等自定义 Shape 支持", "Apache-2.0", "https://github.com/kyant0/shapes"),
-    OpenSourceCredit("motion-web", "feitangyuan", "动效时长、缓动与弹簧 token 的设计参考", "以原仓库许可证为准", "https://github.com/feitangyuan/motion-web"),
-    OpenSourceCredit("Framer Motion", "Motion 团队及贡献者", "弹簧 stiffness / damping 参数体系参考", "MIT", "https://www.framer.com/motion/"),
-    OpenSourceCredit("YunX（云析）", "CYQawa 及贡献者", "欢迎引导、主题配置、动态桌面图标等交互结构参考", "AGPL-3.0", "https://github.com/CYQawa/YunX"),
-    OpenSourceCredit("Material Color Utilities", "Google Material Foundation", "HCT / TonalSpot 配色算法参考", "Apache-2.0", "https://github.com/material-foundation/material-color-utilities"),
-    OpenSourceCredit("Jetpack Compose / Material 3", "Android Open Source Project / Google", "界面、主题、动画及 Android 平台能力", "Apache-2.0", "https://developer.android.com/compose"),
-    OpenSourceCredit("Material Icons", "Android Open Source Project", "应用内矢量图标路径", "Apache-2.0", "https://fonts.google.com/icons"),
-    OpenSourceCredit("Android activity-alias / PackageManager", "Android Open Source Project / Google", "运行时切换桌面应用图标", "官方文档", "https://developer.android.com/guide/topics/manifest/activity-alias-element"),
-    OpenSourceCredit("Changing an Android App Icon", "SitePoint 社区作者", "activity-alias 图标切换实现思路参考", "文章", "https://www.sitepoint.com/changing-your-android-apps-icon-dynamically/"),
+    OpenSourceCredit(R.string.info_credit_01_name, R.string.info_credit_01_author, R.string.info_credit_01_purpose, R.string.info_credit_01_license, "https://github.com/L1angK1NG/StudyTrack"),
+    OpenSourceCredit(R.string.info_credit_02_name, R.string.info_credit_02_author, R.string.info_credit_02_purpose, R.string.info_credit_02_license, "https://github.com/kd64i/dyparse"),
+    OpenSourceCredit(R.string.info_credit_03_name, R.string.info_credit_03_author, R.string.info_credit_03_purpose, R.string.info_credit_03_license, "https://github.com/chibatching/Miuix"),
+    OpenSourceCredit(R.string.info_credit_04_name, R.string.info_credit_04_author, R.string.info_credit_04_purpose, R.string.info_credit_04_license, "https://github.com/kyant0/backdrop-android"),
+    OpenSourceCredit(R.string.info_credit_05_name, R.string.info_credit_05_author, R.string.info_credit_05_purpose, R.string.info_credit_05_license, "https://github.com/kyant0/shapes"),
+    OpenSourceCredit(R.string.info_credit_06_name, R.string.info_credit_06_author, R.string.info_credit_06_purpose, R.string.info_credit_06_license, "https://github.com/feitangyuan/motion-web"),
+    OpenSourceCredit(R.string.info_credit_07_name, R.string.info_credit_07_author, R.string.info_credit_07_purpose, R.string.info_credit_07_license, "https://www.framer.com/motion/"),
+    OpenSourceCredit(R.string.info_credit_08_name, R.string.info_credit_08_author, R.string.info_credit_08_purpose, R.string.info_credit_08_license, "https://github.com/CYQawa/YunX"),
+    OpenSourceCredit(R.string.info_credit_09_name, R.string.info_credit_09_author, R.string.info_credit_09_purpose, R.string.info_credit_09_license, "https://github.com/material-foundation/material-color-utilities"),
+    OpenSourceCredit(R.string.info_credit_10_name, R.string.info_credit_10_author, R.string.info_credit_10_purpose, R.string.info_credit_10_license, "https://developer.android.com/compose"),
+    OpenSourceCredit(R.string.info_credit_11_name, R.string.info_credit_11_author, R.string.info_credit_11_purpose, R.string.info_credit_11_license, "https://fonts.google.com/icons"),
+    OpenSourceCredit(R.string.info_credit_12_name, R.string.info_credit_12_author, R.string.info_credit_12_purpose, R.string.info_credit_12_license, "https://developer.android.com/guide/topics/manifest/activity-alias-element"),
+    OpenSourceCredit(R.string.info_credit_13_name, R.string.info_credit_13_author, R.string.info_credit_13_purpose, R.string.info_credit_13_license, "https://www.sitepoint.com/changing-your-android-apps-icon-dynamically/"),
 )
 
 @Composable
@@ -73,7 +80,7 @@ private fun InfoPage(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 Text(
-                    text = "‹ 返回",
+                    text = stringResource(R.string.info_text_5),
                     color = MaterialTheme.colorScheme.primary,
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.clickable(onClick = onBack).padding(vertical = 6.dp),
@@ -90,24 +97,24 @@ private fun InfoPage(
 fun AboutScreen(onBack: () -> Unit) {
     val context = LocalContext.current
     InfoPage(
-        title = "关于",
-        subtitle = "完整列出直接参考的项目、作者、用途与许可证，尊重每一位开源作者。",
+        title = context.getString(R.string.info_title_1),
+        subtitle = context.getString(R.string.info_subtitle_1),
         onBack = onBack,
     ) {
         item {
             GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Column(Modifier.weight(1f)) {
-                        Text("Android 功能素材库", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
-                        Text("Liquid Motion UI 示例应用", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(context.getString(R.string.common_library_subtitle), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
+                        Text(context.getString(R.string.info_text_1), color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                     Text("v${BuildConfig.VERSION_NAME}", color = MaterialTheme.colorScheme.primary)
                 }
                 Spacer(Modifier.height(10.dp))
-                Text("本项目自身代码采用 MIT 许可证。若复制或分发上游代码，请同时遵守对应上游许可证并保留署名。", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(context.getString(R.string.info_text_2), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
-        item { SectionTitle("参考项目与作者") }
+        item { SectionTitle(context.getString(R.string.info_section_title_1)) }
         allCredits.forEach { credit ->
             item(key = credit.url) {
                 GlassCard(
@@ -118,12 +125,13 @@ fun AboutScreen(onBack: () -> Unit) {
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                            Text(credit.name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
-                            Text("作者：${credit.author}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary)
-                            Text(credit.purpose, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                            Text("许可证：${credit.license}", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text(stringResource(credit.nameRes), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                            // 「作者：%1$s」的实参本身也是文案资源，这里嵌一层 stringResource
+                            Text(stringResource(R.string.info_text_20, stringResource(credit.authorRes)), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary)
+                            Text(stringResource(credit.purposeRes), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text(stringResource(R.string.info_text_21, stringResource(credit.licenseRes)), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
-                        Text("打开 ↗", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
+                        Text(context.getString(R.string.info_text_3), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
                     }
                 }
             }
@@ -135,32 +143,36 @@ fun AboutScreen(onBack: () -> Unit) {
                     runCatching { context.startActivity(intent) }
                 },
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-            ) { Text("查看本项目源码与 CREDITS.md") }
+            ) { Text(context.getString(R.string.info_text_4)) }
         }
     }
 }
 
 @Composable
 fun PrivacyScreen(onBack: () -> Unit) {
+    val tkDemoText31 = stringResource(R.string.tk_demo_text_31)
+    val infoSubtitle2 = stringResource(R.string.info_subtitle_2)
     InfoPage(
-        title = "隐私说明",
-        subtitle = "逐项说明数据保存位置、权限用途和网络行为。",
+        title = tkDemoText31,
+        subtitle = infoSubtitle2,
         onBack = onBack,
     ) {
-        item { SectionTitle("数据处理") }
-        item { InfoCard("本地偏好", "主题、动效、桌面图标与引导完成状态仅保存在设备本地 SharedPreferences，不会上传。") }
-        item { InfoCard("壁纸读取", "系统壁纸仅通过 WallpaperManager 在本机读取并绘制，不保存、不上传。Android 12 及以下读取真实壁纸需要存储读取权限；Android 14 起系统只允许持有「所有文件访问」的 app 读取桌面壁纸，应用会在系统壁纸设置处引导你在系统设置中开启（可随时关闭），未开启前自动回退内置背景，本地图片与网络壁纸不受影响。") }
-        item { InfoCard("通知", "仅在你点击“发送测试通知”时申请通知权限并创建本地通知，不向服务器发送数据。") }
-        item { InfoCard("网络与账号", "应用没有账号、分析、广告、遥测或后台上传功能。点击项目链接时会交给系统浏览器打开。") }
-        item { InfoCard("权限撤回", "可随时在 Android 系统设置的“应用信息 → 权限”中撤回授权；撤回不影响其他离线功能。") }
+        item { SectionTitle(stringResource(R.string.info_section_title_1_2)) }
+        item { InfoCard(stringResource(R.string.info_text_6), stringResource(R.string.info_text_7)) }
+        item { InfoCard(stringResource(R.string.info_text_8), stringResource(R.string.info_text_9)) }
+        item { InfoCard(stringResource(R.string.components_content_desc_1), stringResource(R.string.info_text_10)) }
+        item { InfoCard(stringResource(R.string.info_text_11), stringResource(R.string.info_text_12)) }
+        item { InfoCard(stringResource(R.string.info_text_13), stringResource(R.string.info_text_14)) }
     }
 }
 
 @Composable
 fun PermissionCenterScreen(onBack: () -> Unit) {
+    val pvNavText25 = stringResource(R.string.pv_nav_text_25)
+    val infoSubtitle3 = stringResource(R.string.info_subtitle_3)
     InfoPage(
-        title = "权限管理",
-        subtitle = "权限不是介绍弹窗：可在这里真实请求、检查授权状态，并在拒绝后进入系统设置恢复。",
+        title = pvNavText25,
+        subtitle = infoSubtitle3,
         onBack = onBack,
     ) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -168,16 +180,16 @@ fun PermissionCenterScreen(onBack: () -> Unit) {
                 PermissionRequestCard(
                     PermissionSpec(
                         permission = Manifest.permission.POST_NOTIFICATIONS,
-                        title = "通知权限",
-                        description = "用于你主动触发的主题预览通知。",
+                        titleRes = R.string.info_title_2,
+                        descriptionRes = R.string.info_desc_1,
                     ),
                     modifier = Modifier.padding(horizontal = 16.dp),
                 )
             }
             item {
                 InfoCard(
-                    "系统壁纸权限",
-                    "读取系统壁纸不使用媒体图片权限（该权限对 WallpaperManager 无效，旧版曾误用）。Android 14 起系统只允许持有「所有文件访问」的 app 读取桌面壁纸——请在设置页「壁纸与背景 → 系统壁纸」处点按钮，跳到系统设置里为本 app 开启；开启后返回即生效，不需要时可随时关闭。",
+                    stringResource(R.string.info_text_15),
+                    stringResource(R.string.info_text_16),
                 )
             }
         } else {
@@ -185,15 +197,15 @@ fun PermissionCenterScreen(onBack: () -> Unit) {
                 PermissionRequestCard(
                     PermissionSpec(
                         permission = Manifest.permission.READ_EXTERNAL_STORAGE,
-                        title = "存储读取权限",
-                        description = "仅在启用桌面壁纸背景时读取系统返回的壁纸图像。",
+                        titleRes = R.string.info_title_3,
+                        descriptionRes = R.string.info_desc_2,
                     ),
                     modifier = Modifier.padding(horizontal = 16.dp),
                 )
             }
-            item { InfoCard("通知权限", "Android 12 及以下无需单独申请通知运行时权限。") }
+            item { InfoCard(stringResource(R.string.info_title_2), stringResource(R.string.info_text_17)) }
         }
-        item { InfoCard("最小权限原则", "应用不申请位置、相机、麦克风、通讯录或电话权限。所有权限均由明确的用户操作触发。") }
+        item { InfoCard(stringResource(R.string.info_text_18), stringResource(R.string.info_text_19)) }
     }
 }
 

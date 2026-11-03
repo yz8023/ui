@@ -39,17 +39,11 @@ fun Modifier.pressScale(
     interactionSource: InteractionSource,
     pressedScale: Float = 0.94f,
     enabled: Boolean = true
-): Modifier = 按压缩放(interactionSource, pressedScale, enabled)
-
-fun Modifier.按压缩放(
-    interactionSource: InteractionSource,
-    pressedScale: Float = 0.94f,
-    enabled: Boolean = true
 ): Modifier = composed {
     val pressed by interactionSource.collectIsPressedAsState()
     val scale by animateFloatAsState(
         targetValue = if (pressed && enabled) pressedScale else 1f,
-        animationSpec = 运动.snappy(0.001f),
+        animationSpec = Motion.snappy(0.001f),
         label = "pressScale"
     )
     graphicsLayer {
@@ -68,12 +62,6 @@ fun Modifier.按压缩放(
  * @param trigger change this value to fire the shake; `null` never fires.
  */
 fun Modifier.impactShake(
-    trigger: Any?,
-    amplitude: Float = 10f,
-    durationMs: Int = 300
-): Modifier = 冲击抖动(trigger, amplitude, durationMs)
-
-fun Modifier.冲击抖动(
     trigger: Any?,
     amplitude: Float = 10f,
     durationMs: Int = 300
@@ -102,13 +90,6 @@ fun Modifier.idleBreathing(
     periodMs: Int = 5600,
     amplitudeX: Float = 0.012f,
     amplitudeY: Float = 0.020f
-): Modifier = 闲置呼吸(periodMs, amplitudeX, amplitudeY)
-
-@Composable
-fun Modifier.闲置呼吸(
-    periodMs: Int = 5600,
-    amplitudeX: Float = 0.012f,
-    amplitudeY: Float = 0.020f
 ): Modifier {
     val transition = rememberInfiniteTransition(label = "idle")
     val phase by transition.animateFloat(
@@ -133,18 +114,7 @@ fun StaggeredReveal(
     index: Int,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    staggerMs: Int = 运动.Stagger.StandardList,
-    startDelayMs: Int = 60,
-    translateYDp: Int = 18,
-    content: @Composable () -> Unit
-) = 交错展示(index, modifier, enabled, staggerMs, startDelayMs, translateYDp, content)
-
-@Composable
-fun 交错展示(
-    index: Int,
-    modifier: Modifier = Modifier,
-    enabled: Boolean = true,
-    staggerMs: Int = 运动.Stagger.StandardList,
+    staggerMs: Int = Motion.Stagger.StandardList,
     startDelayMs: Int = 60,
     translateYDp: Int = 18,
     content: @Composable () -> Unit
@@ -158,7 +128,7 @@ fun 交错展示(
     }
     val progress by animateFloatAsState(
         targetValue = if (visible) 1f else 0f,
-        animationSpec = 运动.gentle(0.01f),
+        animationSpec = Motion.gentle(0.01f),
         label = "staggerReveal"
     )
     val offsetPx = with(androidx.compose.ui.platform.LocalDensity.current) { translateYDp.dp.toPx() }

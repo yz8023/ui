@@ -2,7 +2,7 @@
 """模板一致性检查（提交前运行：python3 scripts/check-template.py）
 
 检查三类曾导致使用者翻车的问题：
-1. 素材库镜像与 android/ 权威源码的已知对应文件是否漂移（逐行相似度）；
+1. 素材库镜像与 android/ 权威源码的已知对应文件是否漂移（要求逐行相同）；
 2. 素材代码里引用了、但素材集合内从未声明的名字（抄了就编译不过）；
 3. 示例 AndroidManifest 的桌面图标互斥：有且仅有 1 个 enabled=true 的 LAUNCHER 别名。
 退出码 0=通过，1=发现问题。无第三方依赖。
@@ -40,19 +40,42 @@ MIRRORS = [
     ("素材库/工具与基建/代码/ToolkitSpec.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/features/toolkit/ToolkitSpec.kt"),
     ("素材库/工具与基建/代码/ToolkitDemo.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/features/toolkit/ToolkitDemo.kt"),
     ("素材库/工具与基建/代码/ToolkitScreen.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/screens/ToolkitScreen.kt"),
+    ("素材库/动效系统/代码/Motion.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/motion/Motion.kt"),
+    ("素材库/动效系统/代码/MotionModifiers.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/motion/MotionModifiers.kt"),
+    ("素材库/动效系统/代码/InteractiveHighlight.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/motion/InteractiveHighlight.kt"),
+    ("素材库/动效系统/代码/DampedDragAnimation.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/motion/DampedDragAnimation.kt"),
+    ("素材库/动效系统/代码/DragGestureDetector.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/motion/DragGestureDetector.kt"),
+    ("素材库/底部导航栏/代码/LiquidBottomTabs.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/components/LiquidBottomTabs.kt"),
+    ("素材库/权限请求组件/代码/PermissionToolkit.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/features/PermissionToolkit.kt"),
+    ("素材库/状态反馈组件/代码/Feedback.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/components/Feedback.kt"),
+    ("素材库/玻璃常用组件/代码/Feedback.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/components/Feedback.kt"),
+    ("素材库/玻璃常用组件/代码/Dialogs.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/components/Dialogs.kt"),
+    ("素材库/玻璃常用组件/代码/StudyStyleComponents.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/components/StudyStyleComponents.kt"),
+    ("素材库/玻璃常用组件/代码/TextFields.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/components/TextFields.kt"),
+    ("素材库/玻璃常用组件/代码/Controls.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/components/Controls.kt"),
+    ("素材库/玻璃常用组件/代码/Rows.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/components/Rows.kt"),
+    ("素材库/应用图标切换/代码/AppIconSwitcher.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/features/AppIconSwitcher.kt"),
+    ("素材库/应用欢迎引导界面/代码/WelcomeGuideScreen.kt", "android/app/src/main/java/com/monkeycode/liquidui/ui/screens/WelcomeGuideScreen.kt"),
 ]
 for mirror, authoritative in MIRRORS:
     a, b = ROOT / mirror, ROOT / authoritative
     if not a.exists() or not b.exists():
         problems.append(f"[缺失] {mirror} 或 {authoritative} 不存在")
         continue
-    ratio = difflib.SequenceMatcher(
-        None, a.read_text(errors="ignore").splitlines(), b.read_text(errors="ignore").splitlines()
-    ).ratio()
-    status = "OK " if ratio > 0.98 else "漂移"
-    print(f"镜像相似度 {ratio:.2f} [{status}] {mirror}")
-    if ratio <= 0.98:
-        problems.append(f"[漂移] {mirror} 与权威源码 {authoritative} 相似度 {ratio:.2f}，请同步或确认是有意差异")
+    la = a.read_text(errors="ignore").splitlines()
+    lb = b.read_text(errors="ignore").splitlines()
+    if la == lb:
+        print(f"镜像一致  [OK ] {mirror}")
+        continue
+    # 这 39 组的不变量是**逐行相同**（refresh-mirrors.py 就是把权威源码整份复制过去）。
+    # 原先按相似度 > 0.98 判定：1000 行的文件差 4 行会算出 0.998、打印时四舍五入成 1.00
+    # 直接放行——真发生过（改完 android/ 忘了重刷镜像，闸门没拦住）。所以这里不看比例。
+    ratio = difflib.SequenceMatcher(None, la, lb).ratio()
+    ndiff = len([x for x in difflib.unified_diff(la, lb, lineterm="", n=0)
+                 if x[:1] in "+-" and x[:3] not in ("+++", "---")])
+    print(f"镜像漂移  [漂移] {mirror}（相似度 {ratio:.4f}，相差 {ndiff} 行）")
+    problems.append(f"[漂移] {mirror} 与权威源码 {authoritative} 不一致（相差 {ndiff} 行）："
+                    f"跑 python3 scripts/refresh-mirrors.py 重刷，或确认是有意差异并在这里放行")
 
 # ---- 2. 引用未声明 -----------------------------------------------------------
 material_files = list((ROOT / "素材库").rglob("*.kt"))

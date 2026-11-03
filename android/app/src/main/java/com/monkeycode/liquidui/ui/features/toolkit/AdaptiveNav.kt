@@ -20,6 +20,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
+import androidx.annotation.StringRes
+import com.monkeycode.liquidui.R
 
 /**
  * 自适应导航（手册 F21 / 条目 U04）：同一套路由，窄屏走底部 `NavigationBar`，
@@ -33,15 +35,15 @@ import androidx.compose.ui.unit.dp
  * 断点判断用**窗口宽度**而不是屏幕宽度：多窗口/分屏/桌面模式下 Activity 拿到的
  * configuration 就是窗口尺寸，这正是我们要的。
  */
-enum class AppWindowClass(val label: String, val minWidthDp: Int) {
+enum class AppWindowClass(@StringRes val labelRes: Int, val minWidthDp: Int) {
     /** < 600dp：手机竖屏。底部导航。 */
-    COMPACT("紧凑", 0),
+    COMPACT(R.string.window_class_compact, 0),
 
     /** 600–839dp：折叠屏展开、小平板、手机横屏。侧边栏更省纵向空间。 */
-    MEDIUM("中等", 600),
+    MEDIUM(R.string.window_class_medium, 600),
 
     /** ≥ 840dp：平板、桌面窗口。侧边栏可带文字标签。 */
-    EXPANDED("展开", 840)
+    EXPANDED(R.string.window_class_expanded, 840)
 }
 
 /** 按窗口宽度分级。 */

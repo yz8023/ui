@@ -12,14 +12,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.annotation.StringRes
+import com.monkeycode.liquidui.R
 import com.monkeycode.liquidui.ui.theme.PaletteId
 import com.monkeycode.liquidui.ui.theme.ThemeMode
 import com.monkeycode.liquidui.ui.theme.VisualMode
 import androidx.compose.runtime.snapshotFlow
 import org.json.JSONObject
 
-enum class WallpaperMode(val label: String) {
-    Aurora("极光"), System("系统壁纸"), Cached("本地缓存")
+enum class WallpaperMode(@StringRes val labelRes: Int) {
+    Aurora(R.string.wallpaper_mode_aurora),
+    System(R.string.wallpaper_mode_system),
+    Cached(R.string.wallpaper_mode_cached)
 }
 
 /**

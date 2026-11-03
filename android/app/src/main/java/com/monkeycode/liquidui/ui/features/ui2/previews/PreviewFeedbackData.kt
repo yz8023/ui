@@ -1,5 +1,7 @@
 package com.monkeycode.liquidui.ui.features.ui2.previews
 
+import com.monkeycode.liquidui.R
+
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -49,6 +51,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 import kotlinx.coroutines.delay
 
 /* 05 反馈 F25–F31 与 06 数据展示 F32–F37。 */
@@ -58,12 +61,12 @@ fun PreviewF25() {
     var show by remember { mutableStateOf(false) }
     LaunchedEffect(show) { if (show) { delay(2200); show = false } }
     Column {
-        Button(onClick = { show = true }) { Text("弹出 Toast") }
+        Button(onClick = { show = true }) { Text(stringResource(R.string.pv_feedback_text_1)) }
         Spacer(Modifier.height(10.dp))
         AnimatedVisibility(visible = show) {
             Box(
                 Modifier.clip(RoundedCornerShape(50)).background(MaterialTheme.colorScheme.inverseSurface).padding(horizontal = 16.dp, vertical = 10.dp),
-            ) { Text("✓ 已复制到剪贴板", color = MaterialTheme.colorScheme.inverseOnSurface) }
+            ) { Text(stringResource(R.string.pv_feedback_text_2), color = MaterialTheme.colorScheme.inverseOnSurface) }
         }
     }
 }
@@ -73,16 +76,16 @@ fun PreviewF26() {
     var open by remember { mutableStateOf(false) }
     var result by remember { mutableStateOf("未操作") }
     Column {
-        Button(onClick = { open = true }) { Text("打开对话框") }
+        Button(onClick = { open = true }) { Text(stringResource(R.string.components_text_27)) }
         Text("结果：$result", style = MaterialTheme.typography.bodySmall)
     }
     if (open) {
         AlertDialog(
             onDismissRequest = { open = false; result = "点外部关闭" },
-            title = { Text("清除缓存壁纸？") },
-            text = { Text("清除后将回退到极光背景，网络原图不会受影响。") },
-            confirmButton = { TextButton(onClick = { open = false; result = "确认清除" }) { Text("清除") } },
-            dismissButton = { TextButton(onClick = { open = false; result = "取消" }) { Text("取消") } },
+            title = { Text(stringResource(R.string.pv_feedback_text_3)) },
+            text = { Text(stringResource(R.string.pv_feedback_text_4)) },
+            confirmButton = { TextButton(onClick = { open = false; result = "确认清除" }) { Text(stringResource(R.string.pv_feedback_text_5)) } },
+            dismissButton = { TextButton(onClick = { open = false; result = "取消" }) { Text(stringResource(R.string.common_cancel)) } },
         )
     }
 }
@@ -93,14 +96,14 @@ fun PreviewF27() {
     var open by remember { mutableStateOf(false) }
     var picked by remember { mutableStateOf("未选择") }
     Column {
-        Button(onClick = { open = true }) { Text("打开底部弹层") }
+        Button(onClick = { open = true }) { Text(stringResource(R.string.pv_feedback_text_6)) }
         Text("已选：$picked", style = MaterialTheme.typography.bodySmall)
     }
     if (open) {
         ModalBottomSheet(onDismissRequest = { open = false }) {
             Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                Text("壁纸来源", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
-                listOf("系统壁纸", "本地图片", "网络链接").forEach {
+                Text(stringResource(R.string.pv_feedback_text_7), fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
+                listOf(stringResource(R.string.common_system_wallpaper), stringResource(R.string.pv_feedback_text_8), stringResource(R.string.pv_feedback_text_9)).forEach {
                     TextButton(onClick = { picked = it; open = false }) { Text(it) }
                 }
                 Spacer(Modifier.height(16.dp))
@@ -111,6 +114,7 @@ fun PreviewF27() {
 
 @Composable
 fun PreviewF28() {
+    val pvFeedbackText35 = stringResource(R.string.pv_feedback_text_35)
     var loaded by remember { mutableStateOf(false) }
     val transition = rememberInfiniteTransition(label = "shimmer")
     val alpha by transition.animateFloat(0.35f, 0.85f, infiniteRepeatable(tween(800), RepeatMode.Reverse), label = "a")
@@ -125,7 +129,7 @@ fun PreviewF28() {
                 }
             }
         } else {
-            Text("内容已加载：真实数据替换骨架（同一布局位置）。", fontWeight = FontWeight.SemiBold)
+            Text(pvFeedbackText35, fontWeight = FontWeight.SemiBold)
         }
         OutlinedButton(onClick = { loaded = !loaded }) { Text(if (loaded) "回到骨架屏" else "模拟加载完成") }
     }
@@ -136,13 +140,13 @@ fun PreviewF29() {
     var hasData by remember { mutableStateOf(false) }
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
         if (!hasData) {
-            Text("暂无收藏", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-            Text("点过的素材会在这里聚合，方便下次直接体验。", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(stringResource(R.string.pv_feedback_text_10), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+            Text(stringResource(R.string.pv_feedback_text_11), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             Spacer(Modifier.height(8.dp))
-            Button(onClick = { hasData = true }) { Text("添加一条演示数据") }
+            Button(onClick = { hasData = true }) { Text(stringResource(R.string.pv_feedback_text_12)) }
         } else {
-            Text("已有一条演示收藏（点下方可清空回空态）")
-            TextButton(onClick = { hasData = false }) { Text("清空") }
+            Text(stringResource(R.string.pv_feedback_text_13))
+            TextButton(onClick = { hasData = false }) { Text(stringResource(R.string.common_clear)) }
         }
     }
 }
@@ -154,8 +158,8 @@ fun PreviewF30() {
         LinearProgressIndicator(progress = { step / 3f }, modifier = Modifier.fillMaxWidth())
         Text("步骤 $step / 3：${listOf("填资料", "选壁纸", "完成")[step - 1]}")
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            OutlinedButton(onClick = { step = (step - 1).coerceAtLeast(1) }) { Text("上一步") }
-            Button(onClick = { step = (step + 1).coerceAtMost(3) }) { Text("下一步") }
+            OutlinedButton(onClick = { step = (step - 1).coerceAtLeast(1) }) { Text(stringResource(R.string.pv_feedback_text_14)) }
+            Button(onClick = { step = (step + 1).coerceAtMost(3) }) { Text(stringResource(R.string.pv_feedback_text_15)) }
             CircularProgressIndicator(progress = { step / 3f }, modifier = Modifier.size(28.dp))
         }
     }
@@ -170,9 +174,9 @@ fun PreviewF31() {
     }
     Button(onClick = { if (state == 0) state = 1 }, enabled = state == 0, modifier = Modifier.fillMaxWidth()) {
         when (state) {
-            0 -> Text("提交")
-            1 -> { CircularProgressIndicator(Modifier.size(16.dp), strokeWidth = 2.dp, color = MaterialTheme.colorScheme.onPrimary); Spacer(Modifier.width(8.dp)); Text("提交中…") }
-            else -> Text("✓ 成功")
+            0 -> Text(stringResource(R.string.common_shared_8))
+            1 -> { CircularProgressIndicator(Modifier.size(16.dp), strokeWidth = 2.dp, color = MaterialTheme.colorScheme.onPrimary); Spacer(Modifier.width(8.dp)); Text(stringResource(R.string.common_shared_1)) }
+            else -> Text(stringResource(R.string.pv_feedback_text_16))
         }
     }
 }
@@ -192,7 +196,7 @@ fun PreviewF32() {
                 drawCircle(primary, 6f, p); prev = p
             }
         }
-        TextButton(onClick = { alt = !alt }) { Text("切换数据集（真实重绘）") }
+        TextButton(onClick = { alt = !alt }) { Text(stringResource(R.string.pv_feedback_text_17)) }
     }
 }
 
@@ -216,7 +220,7 @@ fun PreviewF33() {
         Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             data.indices.forEach { i -> TextButton(onClick = { selected = i }) { Text("柱${i + 1}") } }
         }
-        Text(if (selected >= 0) "已选中柱 ${selected + 1}：${(data[selected] * 100).toInt()}%" else "点按钮高亮对应柱", style = MaterialTheme.typography.labelSmall)
+        Text(if (selected >= 0) "已选中柱 ${selected + 1}：${(data[selected] * 100).toInt()}%" else stringResource(R.string.pv_feedback_text_18), style = MaterialTheme.typography.labelSmall)
     }
 }
 
@@ -233,7 +237,7 @@ fun PreviewF34() {
         }
         Spacer(Modifier.width(16.dp))
         Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            listOf("玻璃 45%", "动效 30%", "导航 25%").forEachIndexed { i, label ->
+            listOf(stringResource(R.string.pv_feedback_text_19), stringResource(R.string.pv_feedback_text_20), stringResource(R.string.pv_feedback_text_21)).forEachIndexed { i, label ->
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Box(Modifier.size(10.dp).clip(RoundedCornerShape(3.dp)).background(parts[i].second)); Spacer(Modifier.width(6.dp)); Text(label, style = MaterialTheme.typography.bodySmall)
                 }
@@ -245,7 +249,7 @@ fun PreviewF34() {
 @Composable
 fun PreviewF35() {
     Row(horizontalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.fillMaxWidth()) {
-        listOf(Triple("今日步数", "8,432", "+12%"), Triple("专注时长", "3.2h", "+5%")).forEach { (label, value, delta) ->
+        listOf(Triple(stringResource(R.string.pv_feedback_text_22), "8,432", "+12%"), Triple(stringResource(R.string.pv_feedback_text_23), "3.2h", "+5%")).forEach { (label, value, delta) ->
             Card(Modifier.weight(1f)) {
                 Column(Modifier.padding(14.dp)) {
                     Text(label, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -260,10 +264,10 @@ fun PreviewF35() {
 @Composable
 fun PreviewF36() {
     val rows = listOf(
-        listOf("功能", "状态", "版本"),
-        listOf("液态玻璃", "已接入", "2.4"),
-        listOf("系统壁纸", "已修复", "2.4.2"),
-        listOf("UI2体验馆", "新增", "2.5"),
+        listOf(stringResource(R.string.pv_feedback_text_24), stringResource(R.string.aq_demo_text_15), stringResource(R.string.pv_feedback_text_25)),
+        listOf(stringResource(R.string.common_liquid_glass), stringResource(R.string.pv_feedback_text_26), "2.4"),
+        listOf(stringResource(R.string.common_system_wallpaper), stringResource(R.string.pv_feedback_text_27), "2.4.2"),
+        listOf(stringResource(R.string.pv_feedback_text_28), stringResource(R.string.pv_feedback_text_29), "2.5"),
     )
     Column {
         rows.forEachIndexed { ri, row ->
@@ -283,7 +287,7 @@ fun PreviewF36() {
 
 @Composable
 fun PreviewF37() {
-    val events = listOf("09:00" to "提交需求", "10:30" to "CI 构建通过", "11:15" to "真机验收", "14:00" to "发布 v2.5")
+    val events = listOf("09:00" to stringResource(R.string.pv_feedback_text_30), "10:30" to stringResource(R.string.pv_feedback_text_31), "11:15" to stringResource(R.string.pv_feedback_text_32), "14:00" to stringResource(R.string.pv_feedback_text_33))
     var done by remember { mutableIntStateOf(2) }
     Column {
         events.forEachIndexed { i, (time, label) ->
@@ -302,6 +306,6 @@ fun PreviewF37() {
                 }
             }
         }
-        TextButton(onClick = { done = (done + 1) % 5 }) { Text("推进时间线") }
+        TextButton(onClick = { done = (done + 1) % 5 }) { Text(stringResource(R.string.pv_feedback_text_34)) }
     }
 }

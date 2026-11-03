@@ -35,15 +35,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
+import com.monkeycode.liquidui.R
 import com.monkeycode.liquidui.ui.components.GlassCard
 import com.monkeycode.liquidui.ui.components.SectionTitle
 import com.monkeycode.liquidui.ui.features.overlayterms.OverlayCategories
+import com.monkeycode.liquidui.ui.features.overlayterms.OverlayCategoryLabels
 import com.monkeycode.liquidui.ui.features.overlayterms.OverlayTerm
 import com.monkeycode.liquidui.ui.features.overlayterms.OverlayTerms
 import com.monkeycode.liquidui.ui.features.overlayterms.OverlayTermsPreview
@@ -56,13 +60,14 @@ import com.monkeycode.liquidui.ui.features.overlayterms.OverlayTermsPreview
  */
 @Composable
 fun OverlayTermsCatalogSection(onOpen: (OverlayTerm) -> Unit) {
+    val context = LocalContext.current
     var query by rememberSaveable { mutableStateOf("") }
     var category by rememberSaveable { mutableStateOf<String?>(null) }
     val chipRowState = rememberSaveable(saver = androidx.compose.foundation.ScrollState.Saver) { androidx.compose.foundation.ScrollState(0) }
     val filtered = remember(query, category) {
         OverlayTerms.filter { t ->
             (category == null || t.category == category) &&
-                (query.isBlank() || t.name.contains(query) || t.en.contains(query, true) || t.summary.contains(query) || t.id.contains(query, true))
+                (query.isBlank() || context.getString(t.nameRes).contains(query) || t.en.contains(query, true) || context.getString(t.summaryRes).contains(query) || t.id.contains(query, true))
         }
     }
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -71,33 +76,37 @@ fun OverlayTermsCatalogSection(onOpen: (OverlayTerm) -> Unit) {
             modifier = Modifier.fillMaxWidth().padding(horizontal = 22.dp),
             placeholder = { Text("搜索术语…（如 Toast / 抽屉 / P05）") }, singleLine = true,
         )
-        SectionTitle(text = "分类")
+        SectionTitle(text = stringResource(R.string.common_category))
         Row(
             Modifier.fillMaxWidth().horizontalScroll(chipRowState).padding(horizontal = 22.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            OverlayChip("全部", category == null) { category = null }
-            OverlayCategories.forEach { c -> OverlayChip(c, category == c) { category = if (category == c) null else c } }
+            OverlayChip(stringResource(R.string.common_all), category == null) { category = null }
+            OverlayCategories.forEach { key ->
+                OverlayChip(stringResource(OverlayCategoryLabels.getValue(key)), category == key) {
+                    category = if (category == key) null else key
+                }
+            }
         }
         GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                Text("强度速查（从最强打断到最弱）", style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.SemiBold)
+                Text(stringResource(R.string.overlaytermsscreen_text_1), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.SemiBold)
                 Text(
-                    "Alert（必须点掉）> Modal（要你在里面做完）> Drawer / BottomSheet（边缘面板）> " +
-                        "Popconfirm / Popover（锚定气泡）> Snackbar（可撤销条幅）> Toast（自动消失）；" +
-                        "Loading 是过程反馈、Badge 是持续状态，两者不弹但同属提示族。",
+                    stringResource(R.string.overlaytermsscreen_text_2) +
+                        stringResource(R.string.overlaytermsscreen_text_3) +
+                        stringResource(R.string.overlaytermsscreen_text_4),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 Text(
-                    "选型口诀：要不要打断？打断完要不要用户做事？事情发生在哪个元素旁边？错过这条信息会不会有损失？",
+                    stringResource(R.string.overlaytermsscreen_text_5),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.primary,
                 )
             }
         }
         Text(
-            "共 ${filtered.size} 条 · 点卡片进入可操作演示，长按详情页按钮复制提示词",
+            stringResource(R.string.common_shared_12, filtered.size),
             Modifier.padding(horizontal = 22.dp),
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -134,8 +143,8 @@ private fun OverlayCard(term: OverlayTerm, onClick: () -> Unit) {
             }
             Spacer(Modifier.padding(horizontal = 6.dp))
             Column(Modifier.weight(1f)) {
-                Text("${term.name}（${term.en}）", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
-                Text(term.summary, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 2)
+                Text("${stringResource(term.nameRes)}（${term.en}）", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                Text(stringResource(term.summaryRes), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 2)
             }
             Text(term.difficulty, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
@@ -147,6 +156,7 @@ private fun OverlayCard(term: OverlayTerm, onClick: () -> Unit) {
 fun OverlayTermsDetailScreen(term: OverlayTerm, onBack: () -> Unit) {
     BackHandler(onBack = onBack)
     val clipboard = LocalClipboardManager.current
+    val context = LocalContext.current
     val haptics = LocalHapticFeedback.current
     var copied by remember { mutableStateOf(false) }
     var showPrompt by remember { mutableStateOf(false) }
@@ -159,54 +169,54 @@ fun OverlayTermsDetailScreen(term: OverlayTerm, onBack: () -> Unit) {
     ) {
         item {
             Row(Modifier.padding(horizontal = 10.dp), verticalAlignment = Alignment.CenterVertically) {
-                TextButton(onClick = onBack) { Text("‹ 返回素材库") }
+                TextButton(onClick = onBack) { Text(stringResource(R.string.common_back_to_library)) }
                 Text(
-                    "${term.id} · ${term.category} · ${term.difficulty}",
+                    "${term.id} · ${stringResource(OverlayCategoryLabels.getValue(term.category))} · ${term.difficulty}",
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
-            Text(term.name, Modifier.padding(horizontal = 22.dp), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
+            Text(stringResource(term.nameRes), Modifier.padding(horizontal = 22.dp), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
             Text(term.en, Modifier.padding(horizontal = 22.dp), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
             Spacer(Modifier.height(6.dp))
-            Text(term.summary, Modifier.padding(horizontal = 22.dp), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(stringResource(term.summaryRes), Modifier.padding(horizontal = 22.dp), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
             Spacer(Modifier.height(4.dp))
-            Text(term.params, Modifier.padding(horizontal = 22.dp), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
+            Text(stringResource(term.paramsRes), Modifier.padding(horizontal = 22.dp), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
         }
         item {
-            SectionTitle(text = "定义")
-            GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) { Text(term.definition, style = MaterialTheme.typography.bodySmall) }
+            SectionTitle(text = stringResource(R.string.overlaytermsscreen_text_6))
+            GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) { Text(stringResource(term.definitionRes), style = MaterialTheme.typography.bodySmall) }
         }
         item {
-            SectionTitle(text = "什么时候用")
-            GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) { Text(term.whenToUse, style = MaterialTheme.typography.bodySmall) }
+            SectionTitle(text = stringResource(R.string.overlaytermsscreen_text_7))
+            GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) { Text(stringResource(term.whenToUseRes), style = MaterialTheme.typography.bodySmall) }
         }
         item {
-            SectionTitle(text = "和邻居的区别（术语课的重点）")
-            GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) { Text(term.vsNeighbor, style = MaterialTheme.typography.bodySmall) }
+            SectionTitle(text = stringResource(R.string.overlaytermsscreen_text_8))
+            GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) { Text(stringResource(term.vsNeighborRes), style = MaterialTheme.typography.bodySmall) }
         }
         item {
-            SectionTitle(text = "Android / Compose 对应")
-            GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) { Text(term.androidImpl, style = MaterialTheme.typography.bodySmall) }
+            SectionTitle(text = stringResource(R.string.overlaytermsscreen_text_9))
+            GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) { Text(stringResource(term.androidImplRes), style = MaterialTheme.typography.bodySmall) }
         }
         item {
-            SectionTitle(text = "反例（别这么做）")
+            SectionTitle(text = stringResource(R.string.common_anti_pattern))
             GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
-                Text(term.badCase, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.error)
+                Text(stringResource(term.badCaseRes), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.error)
             }
         }
         item {
-            SectionTitle(text = "功能体验（真实实现，可直接操作）")
+            SectionTitle(text = stringResource(R.string.common_demo_section_hint))
             GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
                 Column(Modifier.padding(vertical = 4.dp)) { OverlayTermsPreview(term) }
             }
         }
         item {
-            SectionTitle(text = "提示词")
+            SectionTitle(text = stringResource(R.string.common_prompt))
             GlassCard(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
                 Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                     Text(
-                        "点按查看全文，长按按钮把整段提示词复制到剪贴板。提示词同时给了 Web 与 Android/Compose 两套写法，跟 AI 说的时候用对术语，它就不会给你做成四不像。",
+                        stringResource(R.string.overlaytermsscreen_text_10),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -216,7 +226,7 @@ fun OverlayTermsDetailScreen(term: OverlayTerm, onBack: () -> Unit) {
                             .combinedClickable(
                                 onClick = { showPrompt = !showPrompt },
                                 onLongClick = {
-                                    clipboard.setText(AnnotatedString(term.prompt))
+                                    clipboard.setText(AnnotatedString(context.getString(term.promptRes)))
                                     haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                                     copied = true
                                 },
@@ -225,14 +235,14 @@ fun OverlayTermsDetailScreen(term: OverlayTerm, onBack: () -> Unit) {
                         contentAlignment = Alignment.Center,
                     ) {
                         Text(
-                            if (copied) "✓ 已复制，去粘贴给 AI 吧" else "长按复制提示词",
+                            if (copied) stringResource(R.string.common_copied_hint) else stringResource(R.string.common_long_press_to_copy),
                             color = MaterialTheme.colorScheme.onPrimary,
                             fontWeight = FontWeight.SemiBold,
                         )
                     }
                     if (showPrompt) {
                         Text(
-                            term.prompt,
+                            stringResource(term.promptRes),
                             style = MaterialTheme.typography.bodySmall.copy(fontFamily = FontFamily.Monospace, fontSize = 12.sp),
                             modifier = Modifier
                                 .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f), RoundedCornerShape(10.dp))
@@ -240,7 +250,7 @@ fun OverlayTermsDetailScreen(term: OverlayTerm, onBack: () -> Unit) {
                         )
                     }
                     Text(
-                        "来源：P01–P06 术语出自 B 站 ZTough《Vibe Coding 术语课：别再管所有弹窗都叫「弹窗」了》(BV14Utf6QEnB) 页面公开简介；P07–P12 为本仓库补足的同族术语。定义/区别/反例/提示词均为本仓库独立撰写，详见 素材库/弹窗与提示术语/参考来源.md。",
+                        stringResource(R.string.overlaytermsscreen_text_11),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )

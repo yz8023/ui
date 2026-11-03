@@ -1,5 +1,7 @@
 package com.monkeycode.liquidui.ui.features.ui2.previews
 
+import com.monkeycode.liquidui.R
+
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
@@ -51,6 +53,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.PI
@@ -70,7 +73,7 @@ fun PreviewG01() {
                 .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)),
         ) {
             Text(
-                "液态玻璃不是贴图：透镜边缘把背后的字掰弯，中心保持清晰，边缘带一点 RGB 色散。拖动透镜看放大与色散边。",
+                stringResource(R.string.pv_glass_text_26),
                 Modifier.padding(14.dp), style = MaterialTheme.typography.bodySmall,
             )
             Box(
@@ -88,7 +91,7 @@ fun PreviewG01() {
                 contentAlignment = Alignment.Center,
             ) { Text("×1.4", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary) }
         }
-        Text("透镜可拖（色散红边为近似示意，真实折射需 backdrop 采样）。", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(stringResource(R.string.pv_glass_text_27), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
 
@@ -103,10 +106,10 @@ fun PreviewG02() {
                 .border((1 + (glare * 2).roundToInt()).dp, Color.White.copy(alpha = 0.25f + glare * 0.6f), RoundedCornerShape(20.dp)),
             contentAlignment = Alignment.Center,
         ) {
-            Text("视角 ${angle.toInt()}° · 眩光 ${(glare * 100).toInt()}%", fontWeight = FontWeight.Bold)
+            Text(stringResource(R.string.pv_glass_text_28, angle.toInt(), (glare * 100).toInt()), fontWeight = FontWeight.Bold)
         }
         Slider(value = angle, onValueChange = { angle = it }, valueRange = 0f..90f)
-        Text("菲涅尔：越斜着看，边缘反光越强——玻璃与塑料的分界线。", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(stringResource(R.string.pv_glass_text_1), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
 
@@ -145,7 +148,7 @@ fun PreviewG03() {
 @Composable
 fun PreviewG04() {
     var stage by remember { mutableIntStateOf(0) }
-    val stages = listOf("0 原图", "1 横向模糊", "2 纵向模糊", "3 合成 + 高光")
+    val stages = listOf(stringResource(R.string.pv_glass_text_2), stringResource(R.string.pv_glass_text_3), stringResource(R.string.pv_glass_text_4), stringResource(R.string.pv_glass_text_5))
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Box(
             Modifier.fillMaxWidth().height(90.dp).clip(RoundedCornerShape(16.dp))
@@ -154,8 +157,8 @@ fun PreviewG04() {
             contentAlignment = Alignment.Center,
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("第 ${stage} 步：${stages[stage].substringAfter(' ')}", fontWeight = FontWeight.Bold)
-                Text("模糊必须分横/纵两趟（可分离卷积），一次二维卷积贵 4 倍。", style = MaterialTheme.typography.labelSmall)
+                Text(stringResource(R.string.pv_glass_text_29, stage, stages[stage].substringAfter(' ')), fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.pv_glass_text_6), style = MaterialTheme.typography.labelSmall)
             }
         }
         Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -187,14 +190,14 @@ fun PreviewG05() {
             Modifier.offset { IntOffset(x.value.roundToInt(), y.value.roundToInt()) }.size(56.dp).clip(CircleShape)
                 .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.75f)),
             contentAlignment = Alignment.Center,
-        ) { Text("玻璃", color = Color.White, style = MaterialTheme.typography.labelSmall) }
-        Text("在区域内拖动：玻璃用弹簧追你，永远慢半拍", Modifier.padding(10.dp), style = MaterialTheme.typography.labelSmall)
+        ) { Text(stringResource(R.string.common_shared_7), color = Color.White, style = MaterialTheme.typography.labelSmall) }
+        Text(stringResource(R.string.pv_glass_text_7), Modifier.padding(10.dp), style = MaterialTheme.typography.labelSmall)
     }
 }
 
 @Composable
 fun PreviewG06() {
-    val passes = listOf("采样 backdrop", "双向模糊", "折射位移", "染色+高光描边")
+    val passes = listOf(stringResource(R.string.pv_glass_text_8), stringResource(R.string.pv_glass_text_9), stringResource(R.string.pv_glass_text_10), stringResource(R.string.pv_glass_text_11))
     val on = remember { mutableStateOf(listOf(true, true, true, true)) }
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
         passes.forEachIndexed { i, label ->
@@ -206,12 +209,12 @@ fun PreviewG06() {
             }
         }
         Text(
-            "当前效果：" + when {
-                !on.value[0] -> "无采样 → 只能退化成半透明蒙层"
-                !on.value[1] -> "边缘锯齿、无磨砂"
-                !on.value[2] -> "是磨砂玻璃，但没有液态感"
-                !on.value[3] -> "发灰发闷，像塑料片"
-                else -> "完整液态玻璃"
+            stringResource(R.string.pv_glass_text_12) + when {
+                !on.value[0] -> stringResource(R.string.pv_glass_text_13)
+                !on.value[1] -> stringResource(R.string.pv_glass_text_14)
+                !on.value[2] -> stringResource(R.string.pv_glass_text_15)
+                !on.value[3] -> stringResource(R.string.pv_glass_text_16)
+                else -> stringResource(R.string.pv_glass_text_17)
             },
             color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.bodySmall,
         )
@@ -235,7 +238,7 @@ fun PreviewM01() {
                 )
             }
         }
-        Button(onClick = { play++ }) { Text("拉开幕布（重播）") }
+        Button(onClick = { play++ }) { Text(stringResource(R.string.pv_glass_text_18)) }
     }
 }
 
@@ -261,10 +264,10 @@ fun PreviewM02() {
                 TextButton(onClick = {
                     plucks++
                     scope.launch { vibes[i - 1].snapTo(1f); vibes[i - 1].animateTo(0f, tween(700)) }
-                }) { Text("弦$i") }
+                }) { Text(stringResource(R.string.pv_glass_text_30, i)) }
             }
         }
-        Text("已拨弦 $plucks 次（点弦看振动衰减）", style = MaterialTheme.typography.labelSmall)
+        Text(stringResource(R.string.pv_glass_text_31, plucks), style = MaterialTheme.typography.labelSmall)
     }
 }
 
@@ -296,20 +299,27 @@ fun PreviewM03() {
             drawLine(primary, center, Offset(center.x + cos(a) * 48f, center.y + sin(a) * 48f), 5f)
             drawCircle(primary, 6f, center)
         }
-        Text("秒针每秒弹跳带过冲：已走 $seconds 秒", style = MaterialTheme.typography.labelSmall)
+        Text(stringResource(R.string.pv_glass_text_32, seconds), style = MaterialTheme.typography.labelSmall)
     }
 }
 
 @Composable
 fun PreviewM04() {
+    // LazyColumn 的作用域 lambda 是 LazyListScope.() -> Unit，不是 @Composable，
+    // stringResource 必须上提到 LazyColumn 之前（item/stickyHeader 的 content 才可组合）。
+    val glassSectionTitles = listOf(
+        stringResource(R.string.pv_glass_text_19),
+        stringResource(R.string.pv_glass_text_20),
+        stringResource(R.string.pv_glass_text_21),
+    )
     LazyColumn(Modifier.fillMaxWidth().height(190.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        listOf("第一屏", "第二屏", "第三屏").forEach { title ->
+        glassSectionTitles.forEach { title ->
             stickyHeader {
                 Box(Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.primaryContainer).padding(10.dp)) {
                     Text(title, fontWeight = FontWeight.Bold)
                 }
             }
-            items(3) { i -> Text("· $title 内容 ${i + 1}（滚到顶会被下一屏压住）", Modifier.padding(8.dp)) }
+            items(3) { i -> Text(stringResource(R.string.pv_glass_text_33, title, i + 1), Modifier.padding(8.dp)) }
         }
     }
 }
@@ -329,7 +339,7 @@ fun PreviewM05() {
                 }
             }
         }
-        Text("当前刻度 ${sel + 1}（点刻度吸附选中）", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
+        Text(stringResource(R.string.pv_glass_text_34, sel + 1), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
     }
 }
 
@@ -342,10 +352,10 @@ fun PreviewM06() {
                 .graphicsLayer { rotationY = (frame * 180f); cameraDistance = 12f * density },
             contentAlignment = Alignment.Center,
         ) {
-            Text(if ((frame * 2).toInt() % 2 == 0) "第 ${(frame * 10).toInt() + 1} 帧 · 正面" else "背面", fontWeight = FontWeight.Bold)
+            Text(if ((frame * 2).toInt() % 2 == 0) stringResource(R.string.pv_glass_text_35, (frame * 10).toInt() + 1) else stringResource(R.string.pv_glass_text_22), fontWeight = FontWeight.Bold)
         }
         Slider(value = frame, onValueChange = { frame = it }, valueRange = 0f..1f)
-        Text("拖动翻页：角度驱动帧，过了 90° 看到背面。", style = MaterialTheme.typography.labelSmall)
+        Text(stringResource(R.string.pv_glass_text_23), style = MaterialTheme.typography.labelSmall)
     }
 }
 
@@ -377,6 +387,6 @@ fun PreviewM07() {
         TextButton(onClick = {
             rotating = !rotating
             if (!rotating) { /* pause at current angle */ }
-        }) { Text(if (rotating) "暂停自转" else "继续自转（从当前角度重新转一圈）") }
+        }) { Text(if (rotating) stringResource(R.string.pv_glass_text_24) else stringResource(R.string.pv_glass_text_25)) }
     }
 }

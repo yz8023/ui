@@ -43,6 +43,8 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
+import com.monkeycode.liquidui.R
 import com.monkeycode.liquidui.ui.components.GlassCard
 import com.monkeycode.liquidui.ui.components.InfoBanner
 import com.monkeycode.liquidui.ui.components.Meter
@@ -51,9 +53,9 @@ import com.monkeycode.liquidui.ui.components.SecondaryButton
 import com.monkeycode.liquidui.ui.components.SectionTitle
 import com.monkeycode.liquidui.ui.components.SegmentedTabs
 import com.monkeycode.liquidui.ui.components.liquidGlass
-import com.monkeycode.liquidui.ui.motion.运动
-import com.monkeycode.liquidui.ui.motion.冲击抖动
-import com.monkeycode.liquidui.ui.motion.闲置呼吸
+import com.monkeycode.liquidui.ui.motion.Motion
+import com.monkeycode.liquidui.ui.motion.impactShake
+import com.monkeycode.liquidui.ui.motion.idleBreathing
 import com.monkeycode.liquidui.ui.theme.AuroraAmber
 import com.monkeycode.liquidui.ui.theme.AuroraMint
 import com.monkeycode.liquidui.ui.theme.AuroraRose
@@ -65,15 +67,15 @@ import kotlin.math.roundToInt
 private val springPresetLabels = listOf("gentle", "standard", "snappy", "bouncy", "heavy")
 
 private fun springPreset(index: Int): FiniteAnimationSpec<Float> = when (index) {
-    0 -> 运动.gentle(0.001f)
-    1 -> 运动.standard(0.001f)
-    2 -> 运动.snappy(0.001f)
-    3 -> 运动.bouncy(0.001f)
-    else -> 运动.heavy(0.001f)
+    0 -> Motion.gentle(0.001f)
+    1 -> Motion.standard(0.001f)
+    2 -> Motion.snappy(0.001f)
+    3 -> Motion.bouncy(0.001f)
+    else -> Motion.heavy(0.001f)
 }
 
 @Composable
-fun 运动屏幕(settings: AppSettingsState) {
+fun MotionScreen(settings: AppSettingsState) {
     val reduced = settings.reducedMotion
 
     LazyColumn(
@@ -89,36 +91,36 @@ fun 运动屏幕(settings: AppSettingsState) {
                 verticalArrangement = Arrangement.spacedBy(6.dp)
             ) {
                 Text(
-                    text = "动效实验室",
+                    text = stringResource(R.string.motion_text_1),
                     style = MaterialTheme.typography.displayMedium,
                     color = MaterialTheme.colorScheme.onBackground
                 )
                 Text(
-                    text = "拖动、点击、重播——每段动画都对应一个可复用的 token。",
+                    text = stringResource(R.string.motion_text_2),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }
 
-        item { SectionTitle("弹簧阻尼 · 拖动后释放", Modifier.padding(top = 8.dp)) }
+        item { SectionTitle(stringResource(R.string.motion_section_title_1), Modifier.padding(top = 8.dp)) }
         item { SpringPlayground(reduced) }
 
-        item { SectionTitle("错峰入场 · 列表编排") }
+        item { SectionTitle(stringResource(R.string.motion_section_title_2)) }
         item { StaggerDemo(reduced) }
 
-        item { SectionTitle("冲击反馈 · 屏幕轻微抖动") }
+        item { SectionTitle(stringResource(R.string.motion_section_title_3)) }
         item { ShakeDemo(reduced) }
 
-        item { SectionTitle("常态呼吸 · 画面永不静止") }
+        item { SectionTitle(stringResource(R.string.motion_section_title_4)) }
         item { BreathingDemo(reduced) }
 
         item {
             InfoBanner(
                 text = if (reduced) {
-                    "当前为「减少动效」模式：物理动画已替换为无过冲的临界阻尼，内容默认处于终态。"
+                    stringResource(R.string.motion_text_3)
                 } else {
-                    "在「设置」中开启「减少动效」可查看降级方案：内容保持可读，交互动效被收敛。"
+                    stringResource(R.string.motion_text_4)
                 },
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
@@ -136,7 +138,7 @@ private fun SpringPlayground(reduced: Boolean) {
     var demoRun by remember { mutableIntStateOf(0) }
     var demoDir by remember { mutableFloatStateOf(1f) }
     val trackWidthState = androidx.compose.runtime.rememberUpdatedState(trackWidth)
-    val damping = 运动.motionDamping.floatValue
+    val damping = Motion.motionDamping.floatValue
     val density = androidx.compose.ui.platform.LocalDensity.current
 
     fun runDemo() {
@@ -215,7 +217,7 @@ private fun SpringPlayground(reduced: Boolean) {
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "拖",
+                    text = stringResource(R.string.motion_text_5),
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.primary
                 )
@@ -224,8 +226,8 @@ private fun SpringPlayground(reduced: Boolean) {
         Spacer(Modifier.height(10.dp))
         Text(
             text = "token: spring-${springPresetLabels[presetIndex]} · " +
-                "阻尼 ${(damping * 100).toInt()}% · " +
-                "位移 ${readout.roundToInt()}px · 选择预设立即回弹",
+                stringResource(R.string.motion_text_14, (damping * 100).toInt()) +
+                stringResource(R.string.motion_text_15, readout.roundToInt()),
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -242,7 +244,7 @@ private fun StaggerDemo(reduced: Boolean) {
         ) {
             Column(Modifier.weight(1f)) {
                 Text(
-                    text = "70ms / 项",
+                    text = stringResource(R.string.motion_text_6),
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurface
                 )
@@ -252,7 +254,7 @@ private fun StaggerDemo(reduced: Boolean) {
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
-            SecondaryButton(onClick = { runId++ }) { Text("重播") }
+            SecondaryButton(onClick = { runId++ }) { Text(stringResource(R.string.motion_text_7)) }
         }
         Spacer(Modifier.height(12.dp))
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -272,8 +274,8 @@ private fun RevealRow(runId: Int, index: Int, enabled: Boolean) {
             return@LaunchedEffect
         }
         progress.snapTo(0f)
-        delay((index * 运动.Stagger.StandardList).toLong())
-        progress.animateTo(1f, 运动.standard(0.01f))
+        delay((index * Motion.Stagger.StandardList).toLong())
+        progress.animateTo(1f, Motion.standard(0.01f))
     }
     Row(
         modifier = Modifier
@@ -301,13 +303,13 @@ private fun RevealRow(runId: Int, index: Int, enabled: Boolean) {
                 )
         )
         Text(
-            text = "列表项 ${index + 1}",
+            text = stringResource(R.string.motion_text_16, index + 1),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurface
         )
         Spacer(Modifier.weight(1f))
         Text(
-            text = "${index * 运动.Stagger.StandardList}ms",
+            text = "${index * Motion.Stagger.StandardList}ms",
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -324,7 +326,7 @@ private fun ShakeDemo(reduced: Boolean) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
-            .冲击抖动(
+            .impactShake(
                 trigger = if (reduced) null else trigger,
                 amplitude = amplitude
             )
@@ -335,7 +337,7 @@ private fun ShakeDemo(reduced: Boolean) {
             color = MaterialTheme.colorScheme.onSurface
         )
         Text(
-            text = "token: shake.max-not-sum · 双频率 47/31Hz",
+            text = stringResource(R.string.motion_text_8),
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -345,21 +347,21 @@ private fun ShakeDemo(reduced: Boolean) {
                 amplitude = 4f
                 label = "拾取 · 0.10/0.22s"
                 trigger++
-            }) { Text("拾取") }
+            }) { Text(stringResource(R.string.motion_text_9)) }
             PrimaryButton(onClick = {
                 amplitude = 16f
                 label = "碰撞 · 0.35/0.35s"
                 trigger++
-            }) { Text("碰撞") }
+            }) { Text(stringResource(R.string.motion_text_10)) }
             SecondaryButton(onClick = {
                 amplitude = 2.5f
                 label = "落地 · 0.07/0.14s"
                 trigger++
-            }) { Text("落地") }
+            }) { Text(stringResource(R.string.motion_text_11)) }
         }
         Spacer(Modifier.height(10.dp))
         Text(
-            text = "多个事件同帧触发时取最大值，绝不叠加——否则「有冲击力」会变成「抖成一团糊」。",
+            text = stringResource(R.string.motion_text_12),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -371,7 +373,7 @@ private fun BreathingDemo(reduced: Boolean) {
     val colors = listOf(AuroraMint, AuroraViolet, AuroraAmber)
     GlassCard(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
         Text(
-            text = "不同频率、不同相位，避免同频脉冲。",
+            text = stringResource(R.string.motion_text_13),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -387,7 +389,7 @@ private fun BreathingDemo(reduced: Boolean) {
                         .weight(1f)
                         .height(72.dp)
                         .then(
-                            if (reduced) Modifier else Modifier.闲置呼吸(
+                            if (reduced) Modifier else Modifier.idleBreathing(
                                 periodMs = 5200 + index * 900,
                                 amplitudeX = 0.02f + index * 0.01f,
                                 amplitudeY = 0.03f + index * 0.01f

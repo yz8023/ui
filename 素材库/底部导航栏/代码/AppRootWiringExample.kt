@@ -38,6 +38,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
 import com.kyant.backdrop.backdrops.layerBackdrop
 import com.kyant.backdrop.backdrops.rememberCombinedBackdrop
 import com.kyant.backdrop.backdrops.rememberLayerBackdrop
@@ -182,11 +183,11 @@ fun 应用根组件(settings: AppSettingsState) {
                         ) {
                             Icon(
                                 imageVector = screen.icon,
-                                contentDescription = screen.title,
+                                contentDescription = stringResource(screen.titleRes),
                                 modifier = Modifier.size(22.dp)
                             )
                             Text(
-                                text = screen.title,
+                                text = stringResource(screen.titleRes),
                                 fontSize = 11.sp,
                                 lineHeight = 14.sp,
                                 maxLines = 1,
@@ -222,8 +223,8 @@ private fun BoxScope.SolidBottomTabs(
             NavigationBarItem(
                 selected = index == selectedIndex,
                 onClick = { onTabSelected(index) },
-                icon = { Icon(screen.icon, contentDescription = screen.title) },
-                label = { Text(screen.title) }
+                icon = { Icon(screen.icon, contentDescription = stringResource(screen.titleRes)) },
+                label = { Text(stringResource(screen.titleRes)) }
             )
         }
     }

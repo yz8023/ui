@@ -50,12 +50,15 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
+import com.monkeycode.liquidui.R
 import com.monkeycode.liquidui.ui.features.ui2.Ui2Features
 import com.monkeycode.liquidui.ui.features.ui2.Ui2Preview
 import kotlinx.coroutines.delay
@@ -64,9 +67,11 @@ import kotlin.math.roundToInt
 /* 动效馆 W01–W03 与工具 T01–T02。 */
 
 private val Recipes = listOf(
-    "淡入上浮", "缩放弹入", "错峰列表", "抖动纠错", "呼吸脉冲", "旋转入场", "翻转卡片", "模糊渐清",
-    "数字滚动", "打字机", "跑马灯", "弹跳落下", "钟摆摇晃", "进度填充", "骨架微光", "涟漪扩散",
-    "视差倾斜", "磁吸吸附", "弹性回弹", "逐字幕布",
+    R.string.pv_motion_tool_recipe_01, R.string.pv_motion_tool_recipe_02, R.string.pv_motion_tool_recipe_03, R.string.pv_motion_tool_recipe_04,
+    R.string.pv_motion_tool_recipe_05, R.string.pv_motion_tool_recipe_06, R.string.pv_motion_tool_recipe_07, R.string.pv_motion_tool_recipe_08,
+    R.string.pv_motion_tool_recipe_09, R.string.pv_motion_tool_recipe_10, R.string.pv_motion_tool_recipe_11, R.string.pv_motion_tool_recipe_12,
+    R.string.pv_motion_tool_recipe_13, R.string.pv_motion_tool_recipe_14, R.string.pv_motion_tool_recipe_15, R.string.pv_motion_tool_recipe_16,
+    R.string.pv_motion_tool_recipe_17, R.string.pv_motion_tool_recipe_18, R.string.pv_motion_tool_recipe_19, R.string.pv_motion_tool_recipe_20,
 )
 
 @Composable
@@ -79,16 +84,16 @@ fun PreviewW01() {
     }
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp), modifier = Modifier.fillMaxWidth()) {
-            Recipes.take(5).forEachIndexed { i, r -> TextButton(onClick = { sel = i; playKey++ }) { Text(r, fontWeight = if (sel == i) FontWeight.Bold else FontWeight.Normal) } }
+            Recipes.take(5).forEachIndexed { i, r -> TextButton(onClick = { sel = i; playKey++ }) { Text(stringResource(r), fontWeight = if (sel == i) FontWeight.Bold else FontWeight.Normal) } }
         }
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp), modifier = Modifier.fillMaxWidth()) {
-            Recipes.slice(5..9).forEachIndexed { i, r -> TextButton(onClick = { sel = i + 5; playKey++ }) { Text(r, fontWeight = if (sel == i + 5) FontWeight.Bold else FontWeight.Normal) } }
+            Recipes.slice(5..9).forEachIndexed { i, r -> TextButton(onClick = { sel = i + 5; playKey++ }) { Text(stringResource(r), fontWeight = if (sel == i + 5) FontWeight.Bold else FontWeight.Normal) } }
         }
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp), modifier = Modifier.fillMaxWidth()) {
-            Recipes.slice(10..14).forEachIndexed { i, r -> TextButton(onClick = { sel = i + 10; playKey++ }) { Text(r, fontWeight = if (sel == i + 10) FontWeight.Bold else FontWeight.Normal) } }
+            Recipes.slice(10..14).forEachIndexed { i, r -> TextButton(onClick = { sel = i + 10; playKey++ }) { Text(stringResource(r), fontWeight = if (sel == i + 10) FontWeight.Bold else FontWeight.Normal) } }
         }
         Row(horizontalArrangement = Arrangement.spacedBy(4.dp), modifier = Modifier.fillMaxWidth()) {
-            Recipes.drop(15).forEachIndexed { i, r -> TextButton(onClick = { sel = i + 15; playKey++ }) { Text(r, fontWeight = if (sel == i + 15) FontWeight.Bold else FontWeight.Normal) } }
+            Recipes.drop(15).forEachIndexed { i, r -> TextButton(onClick = { sel = i + 15; playKey++ }) { Text(stringResource(r), fontWeight = if (sel == i + 15) FontWeight.Bold else FontWeight.Normal) } }
         }
         Box(
             Modifier.fillMaxWidth().height(96.dp).clip(RoundedCornerShape(12.dp)).background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.45f)),
@@ -96,14 +101,14 @@ fun PreviewW01() {
         ) {
             val v = anim.value
             when (sel % 5) {
-                0 -> Text(Recipes[sel], fontWeight = FontWeight.Bold, modifier = Modifier.offset { IntOffset(0, ((1 - v) * 30).roundToInt()) })
-                1 -> Text(Recipes[sel], fontWeight = FontWeight.Bold, modifier = Modifier.offset { IntOffset(0, 0) })
-                2 -> Text("${Recipes[sel]} · ${(v * 100).toInt()}%", fontWeight = FontWeight.Bold)
-                3 -> Text(Recipes[sel], fontWeight = FontWeight.Bold, modifier = Modifier.offset { IntOffset(((v - 0.5f) * 24).roundToInt(), 0) })
-                else -> Text(Recipes[sel], fontWeight = FontWeight.Bold)
+                0 -> Text(stringResource(Recipes[sel]), fontWeight = FontWeight.Bold, modifier = Modifier.offset { IntOffset(0, ((1 - v) * 30).roundToInt()) })
+                1 -> Text(stringResource(Recipes[sel]), fontWeight = FontWeight.Bold, modifier = Modifier.offset { IntOffset(0, 0) })
+                2 -> Text("${stringResource(Recipes[sel])} · ${(v * 100).toInt()}%", fontWeight = FontWeight.Bold)
+                3 -> Text(stringResource(Recipes[sel]), fontWeight = FontWeight.Bold, modifier = Modifier.offset { IntOffset(((v - 0.5f) * 24).roundToInt(), 0) })
+                else -> Text(stringResource(Recipes[sel]), fontWeight = FontWeight.Bold)
             }
         }
-        Text("20 条配方共用一个舞台骨架（选配方即以 700ms 重播其主动画通道）。", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(stringResource(R.string.pv_motion_tool_text_1), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
 
@@ -120,7 +125,7 @@ fun PreviewW02() {
     val primary = MaterialTheme.colorScheme.primary
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {
-            listOf("时长", "曲线", "弹簧", "错峰").forEachIndexed { i, label ->
+            listOf(stringResource(R.string.pv_motion_tool_text_2), stringResource(R.string.pv_motion_tool_text_3), stringResource(R.string.pv_motion_tool_text_4), stringResource(R.string.pv_motion_tool_text_5)).forEachIndexed { i, label ->
                 SegmentedButton(selected = group == i, onClick = { group = i }, shape = SegmentedButtonDefaults.itemShape(i, 4)) { Text(label) }
             }
         }
@@ -132,7 +137,7 @@ fun PreviewW02() {
                 Box(Modifier.fillMaxWidth().height(46.dp).clip(RoundedCornerShape(8.dp)).background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f))) {
                     Box(Modifier.offset { IntOffset((anim.value * 230).roundToInt(), 12) }.size(22.dp).clip(CircleShape).background(primary))
                 }
-                Text("当前档 ${durations[durSel]}ms（点数字即以该时长重播小球位移）", style = MaterialTheme.typography.labelSmall)
+                Text(stringResource(R.string.pv_motion_tool_text_21, durations[durSel]), style = MaterialTheme.typography.labelSmall)
             }
             1 -> {
                 Canvas(Modifier.fillMaxWidth().height(90.dp)) {
@@ -147,8 +152,8 @@ fun PreviewW02() {
                     val t = anim.value; val e = FastOutSlowInEasing.transform(t)
                     drawCircle(primary, 8f, Offset(size.width * t, size.height * (1 - e)))
                 }
-                Button(onClick = { playKey++ }) { Text("沿曲线重播") }
-                Text("展示 FastOutSlowIn；9 条曲线同理可换 Easing 重播。", style = MaterialTheme.typography.labelSmall)
+                Button(onClick = { playKey++ }) { Text(stringResource(R.string.pv_motion_tool_text_6)) }
+                Text(stringResource(R.string.pv_motion_tool_text_7), style = MaterialTheme.typography.labelSmall)
             }
             2 -> {
                 var springSel by remember { mutableIntStateOf(0) }
@@ -173,77 +178,83 @@ fun PreviewW02() {
                         }
                         Box(Modifier.size(30.dp).offset { IntOffset(0, ((1 - a.value) * 18).roundToInt()) }.clip(RoundedCornerShape(8.dp)).background(primary.copy(alpha = 0.35f + a.value * 0.65f)))
                     }
-                    TextButton(onClick = { playKey++ }) { Text("重播错峰") }
+                    TextButton(onClick = { playKey++ }) { Text(stringResource(R.string.pv_motion_tool_text_8)) }
                 }
-                Text("5 个方块以 80ms 间隔依次入场——错峰就是给每个元素排队。", style = MaterialTheme.typography.labelSmall)
+                Text(stringResource(R.string.pv_motion_tool_text_9), style = MaterialTheme.typography.labelSmall)
             }
         }
     }
 }
 
+/** 动效规范索引 25 条：标题与导读都是文案 → 资源 id（键是列表顺序，不是文案）。 */
 private val Specs = listOf(
-    "时长分档" to "50–700ms 七档，微交互≤200，页面转场≤450",
-    "曲线选择" to "进入用减速、退出用加速，同一手势全程一曲线",
-    "弹簧优先" to "可打断的动画用弹簧：它天然继承当前速度",
-    "速度继承" to "拖拽松手把手速注入动画，忌清零重来",
-    "错峰上限" to "列表错峰总量不超 300ms，单项间隔 30–90ms",
-    "可打断" to "任何长动画必须能被新手势接管",
-    "减少动效" to "系统开启减少动效时：位移改淡入、时长归零也要到终点位",
-    "退出更快" to "退出时长约为进入的 60–70%",
-    "共享元素" to "跨页同一元素用共享转场，别两边各演一遍",
-    "遮罩联动" to "遮罩透明度与内容位移同进度，不各走各的",
-    "拖拽跟手" to "拖拽期间 1:1 跟随，动画只在松手后接管",
-    "吸附阈值" to "过半或速度过阈才翻页/开合，两条判据取或",
-    "回弹边界" to "过冲只许出现在松手动画，不许拖拽中越界太多",
-    "列表入场" to "仅首屏入场做错峰，滚动中出现的不再逐个演",
-    "状态同步" to "动画结束位必须等于逻辑状态位，防视觉与状态分家",
-    "帧率底线" to "动画只动 transform/alpha 类属性，避免逐帧改布局",
-    "图表动画" to "数据图首次描边生长，后续更新只补间数值",
-    "加载反馈" to "100ms 内无反馈必闪烁；先骨架再内容的顺序不可反",
-    "手势冲突" to "横滑与竖滚在斜向 30° 内按主方向锁定",
-    "焦点与动效" to "键盘焦点移动不带动效，防晕",
-    "深色适配" to "辉光/阴影类动效在深色下单独调强度",
-    "大屏适配" to "位移距离按容器比例而非写死 px",
-    "文案动效" to "数字滚动只滚变化位，长文本用淡入不用逐字",
-    "中断恢复" to "页面切后台回来，动画落终点不续播一半",
-    "一致性" to "同类组件全 App 用同一组 token，一处改全改",
+    R.string.pv_motion_tool_spec_01_title to R.string.pv_motion_tool_spec_01_guide,
+    R.string.pv_motion_tool_spec_02_title to R.string.pv_motion_tool_spec_02_guide,
+    R.string.pv_motion_tool_spec_03_title to R.string.pv_motion_tool_spec_03_guide,
+    R.string.pv_motion_tool_spec_04_title to R.string.pv_motion_tool_spec_04_guide,
+    R.string.pv_motion_tool_spec_05_title to R.string.pv_motion_tool_spec_05_guide,
+    R.string.pv_motion_tool_spec_06_title to R.string.pv_motion_tool_spec_06_guide,
+    R.string.pv_motion_tool_spec_07_title to R.string.pv_motion_tool_spec_07_guide,
+    R.string.pv_motion_tool_spec_08_title to R.string.pv_motion_tool_spec_08_guide,
+    R.string.pv_motion_tool_spec_09_title to R.string.pv_motion_tool_spec_09_guide,
+    R.string.pv_motion_tool_spec_10_title to R.string.pv_motion_tool_spec_10_guide,
+    R.string.pv_motion_tool_spec_11_title to R.string.pv_motion_tool_spec_11_guide,
+    R.string.pv_motion_tool_spec_12_title to R.string.pv_motion_tool_spec_12_guide,
+    R.string.pv_motion_tool_spec_13_title to R.string.pv_motion_tool_spec_13_guide,
+    R.string.pv_motion_tool_spec_14_title to R.string.pv_motion_tool_spec_14_guide,
+    R.string.pv_motion_tool_spec_15_title to R.string.pv_motion_tool_spec_15_guide,
+    R.string.pv_motion_tool_spec_16_title to R.string.pv_motion_tool_spec_16_guide,
+    R.string.pv_motion_tool_spec_17_title to R.string.pv_motion_tool_spec_17_guide,
+    R.string.pv_motion_tool_spec_18_title to R.string.pv_motion_tool_spec_18_guide,
+    R.string.pv_motion_tool_spec_19_title to R.string.pv_motion_tool_spec_19_guide,
+    R.string.pv_motion_tool_spec_20_title to R.string.pv_motion_tool_spec_20_guide,
+    R.string.pv_motion_tool_spec_21_title to R.string.pv_motion_tool_spec_21_guide,
+    R.string.pv_motion_tool_spec_22_title to R.string.pv_motion_tool_spec_22_guide,
+    R.string.pv_motion_tool_spec_23_title to R.string.pv_motion_tool_spec_23_guide,
+    R.string.pv_motion_tool_spec_24_title to R.string.pv_motion_tool_spec_24_guide,
+    R.string.pv_motion_tool_spec_25_title to R.string.pv_motion_tool_spec_25_guide,
 )
 
 @Composable
 fun PreviewW03() {
+    val context = LocalContext.current
+    val pvMotionToolText18 = stringResource(R.string.pv_motion_tool_text_18)
     var q by remember { mutableStateOf("") }
-    val hits = Specs.filter { it.first.contains(q) || it.second.contains(q) }
+    // filter 的谓词里不能放 stringResource（这里按索引命中，用 context 取文案来搜）
+    val hits = Specs.filter { context.getString(it.first).contains(q) || context.getString(it.second).contains(q) }
     Column {
-        OutlinedTextField(q, { q = it }, placeholder = { Text("搜索规范…（如 弹簧 / 错峰）") }, modifier = Modifier.fillMaxWidth(), singleLine = true)
+        OutlinedTextField(q, { q = it }, placeholder = { Text(stringResource(R.string.pv_motion_tool_text_10)) }, modifier = Modifier.fillMaxWidth(), singleLine = true)
         Spacer(Modifier.height(8.dp))
         Column(Modifier.height(230.dp).verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             hits.forEachIndexed { i, (title, guide) ->
                 Card(Modifier.fillMaxWidth()) {
                     Column(Modifier.padding(12.dp)) {
-                        Text("${i + 1}. $title", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodyMedium)
-                        Text(guide, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text("${i + 1}. ${stringResource(title)}", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodyMedium)
+                        Text(stringResource(guide), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 }
             }
-            if (hits.isEmpty()) Text("无匹配规范")
+            if (hits.isEmpty()) Text(pvMotionToolText18)
         }
-        Text("共 ${hits.size} / 25 篇（标题+导读索引，深读回仓库 motion 令牌文档）。", style = MaterialTheme.typography.labelSmall)
+        Text(stringResource(R.string.pv_motion_tool_text_22, hits.size), style = MaterialTheme.typography.labelSmall)
     }
 }
 
 @Composable
 fun PreviewT01() {
+    val pvMotionToolText19 = stringResource(R.string.pv_motion_tool_text_19)
+    val pvMotionToolText20 = stringResource(R.string.pv_motion_tool_text_20)
     var platform by remember { mutableIntStateOf(0) }
-    val features = listOf("液态玻璃", "图标切换", "壁纸背景", "底栏导航", "动效系统", "主题配色", "权限中心", "引导页", "主题导入导出", "网络壁纸", "O神主题")
+    val features = listOf(stringResource(R.string.common_liquid_glass), stringResource(R.string.common_shared_2), stringResource(R.string.common_wallpaper_bg), stringResource(R.string.pv_motion_tool_text_11), stringResource(R.string.common_shared_3), stringResource(R.string.common_theme_palette), stringResource(R.string.common_shared_6), stringResource(R.string.pv_motion_tool_text_12), stringResource(R.string.pv_motion_tool_text_13), stringResource(R.string.common_shared_5), stringResource(R.string.common_shared_4))
     val checked = remember { mutableStateListOf(true, true, false, true, true, false, false, true, false, false, false) }
     val clipboard = LocalClipboardManager.current
     var copied by remember { mutableStateOf(false) }
-    val platformNames = listOf("Android Compose", "Web App", "纯静态页")
+    val platformNames = listOf("Android Compose", "Web App", stringResource(R.string.pv_motion_tool_text_14))
     val tree = buildString {
         appendLine(platformNames[platform] + "/")
-        appendLine("├─ src/  入口与导航")
+        appendLine(pvMotionToolText19)
         features.forEachIndexed { i, f -> if (checked[i]) appendLine("├─ features/$f/") }
-        appendLine("└─ docs/  实现方案 · 参考来源 · 环境要求")
+        appendLine(pvMotionToolText20)
     }
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {
@@ -268,8 +279,8 @@ fun PreviewT01() {
         OutlinedButton(onClick = {
             clipboard.setText(AnnotatedString("平台：${platformNames[platform]}\n功能：${features.filterIndexed { i, _ -> checked[i] }.joinToString("、")}\n目录树：\n$tree"))
             copied = true
-        }) { Text(if (copied) "✓ 已复制结构" else "复制结构到剪贴板") }
-        Text("勾选实时重算目录树；映射到模板功能编号请对照手册 F01–F15。", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }) { Text(if (copied) stringResource(R.string.pv_motion_tool_text_15) else stringResource(R.string.pv_motion_tool_text_16)) }
+        Text(stringResource(R.string.pv_motion_tool_text_17), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
 
@@ -286,13 +297,13 @@ fun PreviewT02() {
             Box {
                 OutlinedButton(onClick = { menuA = true }) { Text("左侧：$aId") }
                 androidx.compose.material3.DropdownMenu(expanded = menuA, onDismissRequest = { menuA = false }) {
-                    all.take(24).forEach { f -> androidx.compose.material3.DropdownMenuItem(text = { Text("${f.id} ${f.name}") }, onClick = { aId = f.id; menuA = false }) }
+                    all.take(24).forEach { f -> androidx.compose.material3.DropdownMenuItem(text = { Text("${f.id} ${stringResource(f.nameRes)}") }, onClick = { aId = f.id; menuA = false }) }
                 }
             }
             Box {
                 OutlinedButton(onClick = { menuB = true }) { Text("右侧：$bId") }
                 androidx.compose.material3.DropdownMenu(expanded = menuB, onDismissRequest = { menuB = false }) {
-                    all.drop(22).forEach { f -> androidx.compose.material3.DropdownMenuItem(text = { Text("${f.id} ${f.name}") }, onClick = { bId = f.id; menuB = false }) }
+                    all.drop(22).forEach { f -> androidx.compose.material3.DropdownMenuItem(text = { Text("${f.id} ${stringResource(f.nameRes)}") }, onClick = { bId = f.id; menuB = false }) }
                 }
             }
         }
@@ -300,12 +311,12 @@ fun PreviewT02() {
             val f = all.firstOrNull { it.id == id } ?: all.first()
             Card(Modifier.fillMaxWidth()) {
                 Column(Modifier.padding(12.dp)) {
-                    Text("${f.id} · ${f.name}", fontWeight = FontWeight.Bold)
+                    Text("${f.id} · ${stringResource(f.nameRes)}", fontWeight = FontWeight.Bold)
                     Spacer(Modifier.height(8.dp))
                     Ui2Preview(f)
                 }
             }
         }
-        Text("同屏对比两条预览（左侧选单含 F01–F24，右侧含 F23–F46），找参数差异最快。", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(stringResource(R.string.pv_motion_tool_text_23), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }

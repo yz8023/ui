@@ -15,8 +15,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -31,8 +29,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
 import android.content.Intent
 import android.net.Uri
+import com.monkeycode.liquidui.R
+import com.monkeycode.liquidui.ui.theme.AppIcons
 
 // ============================================================
 // 主页面
@@ -43,7 +44,7 @@ import android.net.Uri
  * @param onFinish 点击"开始使用"后的回调（由上层负责写状态 + 跳转主页）
  */
 @Composable
-fun 欢迎引导屏幕(
+fun WelcomeGuideScreen(
     onFinish: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -75,24 +76,25 @@ fun 欢迎引导屏幕(
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_launcher), // 替换为你的 app icon
-                    contentDescription = "应用图标",
+                Icon(
+                    imageVector = AppIcons.WaterDrop,
+                    contentDescription = context.getString(R.string.common_app_icon),
+                    tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier
                         .size(96.dp)
-                        .clip(RoundedCornerShape(26.dp)),
-                    contentScale = ContentScale.Crop
+                        .clip(RoundedCornerShape(26.dp))
+                        .padding(20.dp)
                 )
             }
             Spacer(modifier = Modifier.height(18.dp))
             Text(
-                text = "应用名称",
+                text = context.getString(R.string.welcome_text_7),
                 style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.SemiBold
             )
             Spacer(modifier = Modifier.height(6.dp))
             Text(
-                text = "一句话介绍你的应用",
+                text = context.getString(R.string.welcome_text_8),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -100,39 +102,39 @@ fun 欢迎引导屏幕(
             Spacer(modifier = Modifier.height(36.dp))
 
             // ── 功能列表 ───────────────────────────────────────
-            欢迎引导功能(
-                icon = Icons.Outlined.Link,
-                title = "核心功能一",
-                description = "一句话描述这个功能的亮点和价值"
+            WelcomeGuideFeature(
+                icon = AppIcons.Widgets,
+                title = context.getString(R.string.welcome_title_1),
+                description = context.getString(R.string.welcome_desc_1)
             )
-            欢迎引导功能(
-                icon = Icons.Outlined.Speed,
-                title = "核心功能二",
-                description = "一句话描述这个功能的亮点和价值"
+            WelcomeGuideFeature(
+                icon = AppIcons.Speed,
+                title = context.getString(R.string.welcome_title_2),
+                description = context.getString(R.string.welcome_desc_1)
             )
-            欢迎引导功能(
-                icon = Icons.Outlined.Storage,
-                title = "核心功能三",
-                description = "一句话描述这个功能的亮点和价值"
+            WelcomeGuideFeature(
+                icon = AppIcons.Widgets,
+                title = context.getString(R.string.welcome_title_3),
+                description = context.getString(R.string.welcome_desc_1)
             )
-            欢迎引导功能(
-                icon = Icons.Outlined.Lock,
-                title = "隐私安全",
-                description = "数据仅存本地，不上传任何服务器"
+            WelcomeGuideFeature(
+                icon = AppIcons.Shield,
+                title = context.getString(R.string.welcome_title_4),
+                description = context.getString(R.string.welcome_desc_2)
             )
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // ── 免费声明卡 ─────────────────────────────────────
-            免费声明卡()
+            // ── FreeNoticeCard ─────────────────────────────────────
+            FreeNoticeCard()
             Spacer(modifier = Modifier.height(16.dp))
 
-            // ── 免责声明卡 ─────────────────────────────────────
-            免责声明卡()
+            // ── DisclaimerCard ─────────────────────────────────────
+            DisclaimerCard()
             Spacer(modifier = Modifier.height(16.dp))
 
-            // ── 开源仓库卡 ─────────────────────────────────────
-            开源仓库卡(
+            // ── OpenSourceRepoCard ─────────────────────────────────────
+            OpenSourceRepoCard(
                 repoUrl = "https://github.com/your-org/your-repo",
                 context = context
             )
@@ -154,7 +156,7 @@ fun 欢迎引导屏幕(
                     .padding(horizontal = 24.dp, vertical = 16.dp)
                     .height(52.dp)
             ) {
-                Text("开始使用", style = MaterialTheme.typography.titleMedium)
+                Text(context.getString(R.string.common_get_started), style = MaterialTheme.typography.titleMedium)
             }
         }
     }
@@ -166,7 +168,7 @@ fun 欢迎引导屏幕(
 
 /** 功能条目：圆形图标底 + 标题 + 描述 */
 @Composable
-private fun 欢迎引导功能(
+private fun WelcomeGuideFeature(
     icon: ImageVector,
     title: String,
     description: String
@@ -209,9 +211,9 @@ private fun 欢迎引导功能(
     }
 }
 
-/** 免费声明卡 */
+/** FreeNoticeCard（免费声明卡） */
 @Composable
-private fun 免费声明卡() {
+private fun FreeNoticeCard() {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.large,
@@ -230,7 +232,7 @@ private fun 免费声明卡() {
             ) {
                 Box(contentAlignment = Alignment.Center) {
                     Icon(
-                        imageVector = Icons.Outlined.Favorite,
+                        imageVector = AppIcons.WaterDrop,
                         contentDescription = null,
                         modifier = Modifier.size(20.dp),
                         tint = MaterialTheme.colorScheme.onTertiaryContainer
@@ -240,13 +242,13 @@ private fun 免费声明卡() {
             Spacer(modifier = Modifier.width(14.dp))
             Column {
                 Text(
-                    text = "完全免费",
+                    text = stringResource(R.string.welcome_text_1),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onTertiaryContainer
                 )
                 Text(
-                    text = "无广告、无内购，所有功能永久免费",
+                    text = stringResource(R.string.welcome_text_2),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onTertiaryContainer
                 )
@@ -255,9 +257,9 @@ private fun 免费声明卡() {
     }
 }
 
-/** 免责声明卡 */
+/** DisclaimerCard（免责声明卡） */
 @Composable
-private fun 免责声明卡() {
+private fun DisclaimerCard() {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.large,
@@ -270,16 +272,16 @@ private fun 免责声明卡() {
             verticalAlignment = Alignment.Top
         ) {
             Icon(
-                imageVector = Icons.Outlined.Shield,
+                imageVector = AppIcons.Shield,
                 contentDescription = null,
                 modifier = Modifier.size(20.dp),
                 tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Spacer(modifier = Modifier.width(10.dp))
             Text(
-                text = "免责声明：本应用仅供个人学习与技术交流，请勿用于商业用途。" +
-                    "下载内容版权归原作者所有，请于下载后 24 小时内删除。" +
-                    "使用本应用产生的任何后果由使用者自行承担。",
+                text = stringResource(R.string.welcome_text_3) +
+                    stringResource(R.string.welcome_text_4) +
+                    stringResource(R.string.welcome_text_5),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 lineHeight = 20.sp
@@ -290,7 +292,7 @@ private fun 免责声明卡() {
 
 /** 开源仓库入口卡 */
 @Composable
-private fun 开源仓库卡(
+private fun OpenSourceRepoCard(
     repoUrl: String,
     context: android.content.Context
 ) {
@@ -316,7 +318,7 @@ private fun 开源仓库卡(
             ) {
                 Box(contentAlignment = Alignment.Center) {
                     Icon(
-                        imageVector = Icons.Outlined.Code,
+                        imageVector = AppIcons.Settings,
                         contentDescription = null,
                         modifier = Modifier.size(20.dp),
                         tint = MaterialTheme.colorScheme.onPrimaryContainer
@@ -326,7 +328,7 @@ private fun 开源仓库卡(
             Spacer(modifier = Modifier.width(14.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = "开源仓库",
+                    text = stringResource(R.string.welcome_text_6),
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Medium
                 )
@@ -337,7 +339,7 @@ private fun 开源仓库卡(
                 )
             }
             Icon(
-                imageVector = Icons.Outlined.OpenInNew,
+                imageVector = AppIcons.Widgets,
                 contentDescription = null,
                 modifier = Modifier.size(18.dp),
                 tint = MaterialTheme.colorScheme.outline

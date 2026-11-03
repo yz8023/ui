@@ -1,8 +1,11 @@
 package com.monkeycode.liquidui.ui.features.toolkit
 
+import com.monkeycode.liquidui.R
+
 import android.content.Context
 import android.content.Intent
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.ui.res.stringResource
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -122,7 +125,7 @@ object AppLog {
         val text = dump(level, keyword)
         return Intent(Intent.ACTION_SEND).apply {
             type = "text/plain"
-            putExtra(Intent.EXTRA_SUBJECT, "应用日志 ${entries.size} 条")
+            putExtra(Intent.EXTRA_SUBJECT, context.getString(R.string.app_log_text_1, entries.size))
             putExtra(Intent.EXTRA_TEXT, text)
         }.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
     }

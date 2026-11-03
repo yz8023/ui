@@ -9,6 +9,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
+import com.monkeycode.liquidui.R
 import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewF01
 import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewF02
 import com.monkeycode.liquidui.ui.features.ui2.previews.PreviewF03
@@ -170,7 +172,7 @@ fun Ui2Preview(feature: Ui2Feature, modifier: Modifier = Modifier) {
             "T01" -> PreviewT01()
             "T02" -> PreviewT02()
             else -> Text(
-                "预览建设中",
+                stringResource(R.string.ui2_host_text_1),
                 modifier = Modifier.align(Alignment.Center).padding(24.dp),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )

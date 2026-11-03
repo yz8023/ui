@@ -1,5 +1,9 @@
 package com.monkeycode.liquidui.ui.features
 
+import com.monkeycode.liquidui.R
+
+import androidx.compose.ui.res.stringResource
+
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -45,7 +49,7 @@ object WallpaperStore {
                 }
                 try {
                     connection.connect()
-                    require(connection.responseCode in 200..299) { "下载失败：HTTP ${connection.responseCode}" }
+                    require(connection.responseCode in 200..299) { context.getString(R.string.wallpaperstore_text_1, connection.responseCode) }
                     val length = connection.contentLengthLong
                     require(length <= 0 || length <= MAX_DOWNLOAD_BYTES) { "图片超过 20MB 限制" }
                     val bytes = connection.inputStream.use(::readLimited)
