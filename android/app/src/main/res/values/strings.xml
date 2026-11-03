@@ -1811,4 +1811,38 @@
     <string name="aq_demo_text_81">命中 %1$s 条 / %2$s 条 · 上次耗时 450ms · 累计请求 %3$s 次</string>
     <string name="aq_demo_text_82">结果为上次查询：还有 %1$s 项条件待生效，点「查询」才提交。</string>
     <string name="aq_demo_text_83">… 其余 %1$s 条见导出（Q04）</string>
+
+    <!-- ===== 阶段 6c-2：弹窗术语演示页剩余文案（OverlayTermsDemo P01–P12） ===== -->
+    <string name="ot_demo_text_105">（不渲染角标）</string>
+    <string name="ot_demo_text_106">99+</string>
+    <string name="ot_demo_text_107">当前 count = %1$s → 显示 %2$s</string>
+    <string name="ot_demo_text_108">进行中：%1$s%%</string>
+    <string name="ot_demo_text_109">已完成 %1$s 次任务。</string>
+    <string name="ot_demo_text_110">面板可半展开（露一半）与全展开两档，拖把手可切换；下拉关闭与内部滚动不打架。</string>
+    <string name="ot_demo_text_111">反例对照：ActionSheet 不给「取消」项，或把整页内容塞进面板造成滚动嵌套。</string>
+    <string name="ot_demo_text_112">已选择：%1$s</string>
+    <string name="ot_demo_text_113">归档</string>
+    <string name="ot_demo_text_114">导出</string>
+    <string name="ot_demo_text_115">分享</string>
+    <string name="ot_demo_text_116">本机已发送 %1$s 次。未授权时点按钮是禁用态，不会静默失败——这是规范要求。</string>
+    <string name="ot_demo_text_117">已调用 notify(2001)，去通知栏看</string>
+    <string name="ot_demo_text_118">已授权</string>
+    <string name="ot_demo_text_119">未授权（Android 13+ 必须先申请 POST_NOTIFICATIONS）</string>
+    <string name="ot_demo_text_120">当前系统版本 SDK %1$s；授权状态：%2$s</string>
+    <string name="ot_demo_text_121">弹窗与提示术语 P08 的演示通知渠道</string>
+    <string name="ot_demo_text_122">术语演示</string>
+    <string name="ot_demo_text_123">已授权，现在点「发送真实通知」能收到</string>
+    <string name="ot_demo_text_124">被拒绝：Android 13+ 通知发不出去，需到系统设置手动开启</string>
+    <string name="ot_demo_text_125">已删除「%1$s」</string>
+    <string name="ot_demo_text_126">撤销</string>
+    <string name="ot_demo_text_127">锁定</string>
+    <string name="ot_demo_text_128">同步</string>
+    <string name="ot_demo_text_129">通知</string>
+    <string name="ot_demo_text_130">撤销上一次（%1$s 回到第 %2$s 位）</string>
+    <string name="ot_demo_text_131">确定删除「%1$s」？</string>
+    <string name="ot_demo_text_132">当前名称：%1$s</string>
+    <string name="ot_demo_text_133">未命名项目</string>
+    <string name="ot_demo_text_134">已触发 %1$s 次。系统 Toast 的限制：Android 12+ 应用在后台时不显示、样式不可定制、不能带按钮。</string>
+    <string name="ot_demo_text_135">已复制到剪贴板</string>
+    <string name="ot_demo_text_136">已确认 %1$s 次。</string>
 </resources>
