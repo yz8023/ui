@@ -88,18 +88,33 @@
 
 **不需要动**：`MIRRORS`（`Ui2*`/`InfoScreens`/`previews/PreviewOss*` 均不在表内）；`build.gradle.kts` 依赖块；`AndroidManifest.xml`。
 
-## 四、落地结果（施工完成后回填）
+## 四、落地结果（施工完成，2026-11-04）
 
 | 项 | 结果 |
 |---|---|
-| 实现文件 | 待回填 |
-| 目录注册 | 待回填 |
-| 来源申明 | 待回填 |
-| 资源 | 待回填 |
-| 硬编码中文 | 待回填 |
-| 依赖 | 待回填 |
-| 静态闸 | 待回填 |
-| UI2 总数 | 91 → 待回填 |
+| 实现文件 | `PreviewOssImage.kt`（S15/S16，534 行）、`PreviewOssAudit.kt`（S17/S18，521 行），均按 §三 计划落地，未改名 |
+| 目录注册 | `Ui2ExtraCatalog.kt` +4 条（分类键沿用 `oss_kit`，未新增分类）；`Ui2PreviewHost.kt` +4 条路由 **+4 条 import**（host 是逐个 import，批 E 曾因此 CI 红过） |
+| 来源申明 | `InfoScreens.kt` 的 `allCredits` 27 → **31 条**（编号 28–31：glide-transformations／telephoto／material-web／leakcanary，URL 留在代码里）；`素材库/UI2体验馆/参考来源-总表.md` +4 行、+批 F 说明，合计改为「18 条开源取材素材／32 个上游来源」 |
+| 资源 | `strings.xml` 2029 → **2147 条**（+118：预览页文案 86、目录条目 16、致谢 16） |
+| 硬编码中文 | `kt_scan` 分类合计**仍是 193 条**（A108/B29/C3 10/D46），两个新文件贡献 0 条 |
+| 依赖 | `build.gradle.kts` 依赖块**零改动**（未引 Glide／telephoto／LeakCanary） |
+| 静态闸 | `probe-i18n.py` 退 0（启发式警告回到基线 9 条）、`probe-composable-scope.py` 退 0（越界 0）、`check-template.py` 退 0、XML 体检 118 条新资源占位符全合规、kotlinc 语法类 **0** |
+| UI2 总数 | 91 → **95 条**（46 + 49） |
+| 文档同步 | `功能清单.md`（91→95、46+45→46+49）、`功能逐项手册.md`（45→49 条、S01–S14→S01–S18、补两个新预览文件名，并顺手补上批 E 漏改的尾部说明）、`把本仓库当壳用-套壳上手指南.md`（2029→2147 两处） |
+
+**实现过程中改掉的四处自己的错**（记下来防止重犯）：
+
+1. **S18 的两条实测计数原本是错的**——粗 grep 得出「`Handler(|Timer(` 9 处」「自建 `CoroutineScope(` 17 处」，逐条眼看后发现 9/9 全是 Compose 的 `BackHandler(`、17/17 全是 `rememberCoroutineScope()`，真实值都是 **0**，误报率 100%。清单文档在提交前已改准，并把这条升格为 S18 的**主结论**（见 §二 S18 ③）：计数在眼看之前没有意义，检测命令必须带边界（`\bandroid\.os\.Handler`、`grep -v BackHandler`、`grep -v rememberCoroutineScope`）。
+2. **目录文案的 `formatted` 判据被举例写的占位符骗过**——`ui2_s17_prompt` 里既有教学用的 `%1$s`，又有裸 `%.1f`／`50%`／`43%`，原判据「含 `%` 且无 `%N$` 才标 `formatted="false"`」因此漏标，`probe-i18n.py` 报 4 条非法 `%` 序列。目录文案永不带实参，判据改成「只要含 `%` 就一律标 `formatted="false"`」。
+3. **形状阶的 sentinel 值撞车**——`-1` 同时表示「M3 的 full 档」与「本仓库未定义」，导致 `full` 档被判成两边一致（其实是 M3 有、本仓库没有）。改成 refDp 用 `-1` 表 full、repoDp 用 `-2` 表未定义，两个语义分开。
+4. **内联 `if/else` 当 `stringResource` 的实参会被 i18n 探针误判成假属性**——S16 与 S17 共新增 4 条警告（基线 9 条 → 13 条）。一律上提成局部 val（`edgeText`／`definedText`／`refText`／`repoText`）后回到基线 9 条。
+
+**两处如实降级**（页面上都明说了，不假装能力）：
+
+- **S15 的模糊**：真模糊要 `RenderEffect.createBlurEffect`，API 31 起才有，本仓库 minSdk 26 → 用 3×3 共 9 趟、每趟 1/9 透明度、偏移 3.5px 的叠加近似，并写明大图会看出重影。
+- **S18 的自检**：App 运行时扫不了自己的源码（那要引 LeakCanary，违反零依赖口径）→ 是「构建期人工核实快照 + 检测方法教学」，每个数字都标了快照日期 2026-11-04 与可复算命令，改完代码要重测。
+
+**真机未验证**：以上全部是 CI／静态／资源层校验。九宫格各变换的实际观感（尤其双色调的 Modulate+Lighten 配比、9 趟近似模糊在真机分辨率下的重影程度）、S16 缩放的跟手度与双击锚点是否「指哪打哪」、S17 条形图与 15 档表格在小屏上的排版，都要真机才算验收。
 
 ## 五、批 G 队列（已核实许可证，下一批不用重查）
 

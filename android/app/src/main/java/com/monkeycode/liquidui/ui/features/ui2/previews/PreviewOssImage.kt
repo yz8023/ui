@@ -59,7 +59,6 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.monkeycode.liquidui.R
-import kotlin.math.abs
 
 /**
  * 批 F 开源取材 S15–S16：图片变换九宫格 / 可缩放看图与占位。
@@ -337,6 +336,9 @@ fun PreviewS16() {
     var phase by rememberSaveable { mutableStateOf("success") }
     var scale by remember { mutableFloatStateOf(1f) }
     var offset by remember { mutableStateOf(Offset.Zero) }
+    // 上一次手势有没有被边界钳住。放进状态而不是从像素宽高反推：容器宽高只有
+    // BoxWithConstraints 内部拿得到，而读数在外部（这就是 CI 报 touchEdge 未解析的原因）
+    var atEdge by remember { mutableStateOf(false) }
     var loadProgress by remember { mutableFloatStateOf(0f) }
 
     val photoTop = scheme.primary
@@ -377,6 +379,7 @@ fun PreviewS16() {
                             phase = key
                             scale = 1f
                             offset = Offset.Zero
+                            atEdge = false
                             haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                         }
                         .padding(horizontal = 14.dp, vertical = 8.dp),
@@ -393,9 +396,6 @@ fun PreviewS16() {
             val hPx = with(density) { maxHeight.toPx() }
             val centerX = wPx / 2f
             val centerY = hPx / 2f
-            val maxX = (scale - 1f) * wPx / 2f
-            val maxY = (scale - 1f) * hPx / 2f
-            val touchEdge = maxX > 0f && (abs(offset.x) >= maxX - 0.5f || abs(offset.y) >= maxY - 0.5f)
 
             Canvas(
                 Modifier
@@ -417,8 +417,11 @@ fun PreviewS16() {
                             val ny = (centroid.y - centerY) * (1f - z) + offset.y * z + pan.y
                             val mx = (target - 1f) * wPx / 2f
                             val my = (target - 1f) * hPx / 2f
+                            val cx = nx.coerceIn(-mx, mx)
+                            val cy = ny.coerceIn(-my, my)
                             scale = target
-                            offset = Offset(nx.coerceIn(-mx, mx), ny.coerceIn(-my, my))
+                            offset = Offset(cx, cy)
+                            atEdge = target > ZOOM_MIN + 0.01f && (cx != nx || cy != ny)
                         }
                     }
                     .pointerInput(phase, wPx, hPx) {
@@ -428,14 +431,18 @@ fun PreviewS16() {
                                 if (scale > ZOOM_MIN + 0.01f) {
                                     scale = ZOOM_MIN
                                     offset = Offset.Zero
+                                    atEdge = false
                                 } else {
                                     val z = ZOOM_DOUBLE_TAP
                                     val nx = (pos.x - centerX) * (1f - z)
                                     val ny = (pos.y - centerY) * (1f - z)
                                     val mx = (z - 1f) * wPx / 2f
                                     val my = (z - 1f) * hPx / 2f
+                                    val cx = nx.coerceIn(-mx, mx)
+                                    val cy = ny.coerceIn(-my, my)
                                     scale = z
-                                    offset = Offset(nx.coerceIn(-mx, mx), ny.coerceIn(-my, my))
+                                    offset = Offset(cx, cy)
+                                    atEdge = cx != nx || cy != ny
                                 }
                                 haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                             },
@@ -474,7 +481,7 @@ fun PreviewS16() {
         }
 
         // 分支先上提成局部 val：内联 if/else 当实参会被 i18n 探针误判成假属性
-        val edgeText = if (touchEdge) {
+        val edgeText = if (atEdge) {
             stringResource(R.string.pv_oss_zoom_edge_yes)
         } else {
             stringResource(R.string.pv_oss_zoom_edge_no)
@@ -499,6 +506,7 @@ fun PreviewS16() {
                     .clickable {
                         scale = ZOOM_MIN
                         offset = Offset.Zero
+                        atEdge = false
                         haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                     }
                     .padding(horizontal = 14.dp, vertical = 8.dp),
@@ -514,6 +522,7 @@ fun PreviewS16() {
                         phase = "loading"
                         scale = ZOOM_MIN
                         offset = Offset.Zero
+                        atEdge = false
                     }
                     .padding(horizontal = 14.dp, vertical = 8.dp),
                 style = MaterialTheme.typography.labelMedium,
