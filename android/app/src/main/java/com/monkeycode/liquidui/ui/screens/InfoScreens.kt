@@ -43,7 +43,7 @@ private data class OpenSourceCredit(
 )
 
 /**
- * 开源致谢 27 条（14–21 为批 D 开源取材八件套、22–27 为批 E 开源取材 S09–S14 的来源申明）。显示字段（名字/作者/用途/许可证）都是 @StringRes，
+ * 开源致谢 31 条（14–21 为批 D 开源取材八件套、22–27 为批 E 开源取材 S09–S14、28–31 为批 F 开源取材 S15–S18 的来源申明）。显示字段（名字/作者/用途/许可证）都是 @StringRes，
  * **url 留在代码里**：它不是文案，既是 LazyColumn item 的 key，也是 Intent 的目标。
  */
 private val allCredits = listOf(
@@ -74,7 +74,10 @@ private val allCredits = listOf(
     OpenSourceCredit(R.string.info_credit_25_name, R.string.info_credit_25_author, R.string.info_credit_25_purpose, R.string.info_credit_25_license, "https://github.com/MohamedRejeb/compose-rich-editor"),
     OpenSourceCredit(R.string.info_credit_26_name, R.string.info_credit_26_author, R.string.info_credit_26_purpose, R.string.info_credit_26_license, "https://github.com/androidx/androidx"),
     OpenSourceCredit(R.string.info_credit_27_name, R.string.info_credit_27_author, R.string.info_credit_27_purpose, R.string.info_credit_27_license, "https://github.com/mikepenz/AboutLibraries"),
-)
+    OpenSourceCredit(R.string.info_credit_28_name, R.string.info_credit_28_author, R.string.info_credit_28_purpose, R.string.info_credit_28_license, "https://github.com/wasabeef/glide-transformations"),
+    OpenSourceCredit(R.string.info_credit_29_name, R.string.info_credit_29_author, R.string.info_credit_29_purpose, R.string.info_credit_29_license, "https://github.com/saket/telephoto"),
+    OpenSourceCredit(R.string.info_credit_30_name, R.string.info_credit_30_author, R.string.info_credit_30_purpose, R.string.info_credit_30_license, "https://github.com/material-components/material-web"),
+    OpenSourceCredit(R.string.info_credit_31_name, R.string.info_credit_31_author, R.string.info_credit_31_purpose, R.string.info_credit_31_license, "https://github.com/square/leakcanary"),)
 
 @Composable
 private fun InfoPage(
