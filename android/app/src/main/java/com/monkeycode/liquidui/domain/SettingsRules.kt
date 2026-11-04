@@ -5,24 +5,33 @@ import java.util.Locale
 /**
  * 设置项的取值规则（纯 Kotlin，零 Android/Compose 依赖 → 可在 JVM 上被单元测试覆盖）。
  *
- * 批 D-架构的动机：这些 `coerceIn` 原先只写在 `AppSettingsState.importThemeJson` 里，
- * 也就是**只有「导入主题 JSON」会夹取，用户在设置页手动拖滑杆不会**——同一个值两条路径两套规则。
- * 抽到领域层之后，导入与手动修改走同一套夹取；规则本身可以被测试（批 A 的 `SettingsRulesTest`）。
+ * 批 D-架构的动机是两处真实的规则不一致：
+ * ① `motionDamping`／`glassOpacity`／`glassRefraction`／`cornerScale`／`customShade` 这五个值
+ *    **只有导入主题 JSON 时才夹取**，用户在设置页拖滑杆走的是 `updateXxx`，直接赋值不夹取；
+ * ② `glassBlurRadiusDp`／`glassRefractionHeightDp`／`glassRefractionAmountDp`／`glassTintAlpha`／
+ *    `glassBorderAlpha` 这五个值反过来：夹取写在 `updateXxx` 里（区间各不相同：40／40／60／0.35／0.45），
+ *    导入时靠调用 `updateXxx` 间接生效。
+ * 十条区间集中到这里之后，导入与手动修改走同一套规则，且规则本身可以被测试。
  *
  * 依赖方向约束：本文件不许 import 任何 `android.*`／`androidx.*`／Compose 类型，
  * 枚举也不许进来——UI 层负责「稳定英文键 ↔ 枚举」的映射（沿用批 C 定的惯例）。
  */
 object SettingsRules {
 
-    // ---------- 取值区间 ----------
+    // ---------- 取值区间（字面值照抄重构前的行为，不改既有手感） ----------
 
     const val UNIT_MIN = 0f
     const val UNIT_MAX = 1f
     const val CORNER_MIN = 0.8f
     const val CORNER_MAX = 1.5f
+    const val BLUR_MAX_DP = 40f
+    const val REFRACTION_HEIGHT_MAX_DP = 40f
+    const val REFRACTION_AMOUNT_MAX_DP = 60f
+    const val TINT_ALPHA_MAX = 0.35f
+    const val BORDER_ALPHA_MAX = 0.45f
 
     /**
-     * 0..1 的比值类参数（透明度、折射强度、深浅、动效阻尼…）共用这一条。
+     * 0..1 的比值类参数（透明度、折射强度、深浅）共用这一条。
      * NaN 归 0：NaN 一旦渗进 `graphicsLayer` 的 alpha/scale，整层会直接不绘制，
      * 而这种 bug 在真机上表现为「东西凭空消失」，极难定位，所以在规则层就掐掉。
      */
@@ -35,24 +44,49 @@ object SettingsRules {
     fun clampCornerScale(value: Float): Float =
         if (value.isNaN()) DEFAULT_CORNER_SCALE else value.coerceIn(CORNER_MIN, CORNER_MAX)
 
-    /** 各参数用哪条夹取规则：键就是 prefs 里的键，也是导出 JSON 的字段名。 */
-    val CLAMP_RULES: Map<String, String> = mapOf(
-        KEY_DAMPING to RULE_UNIT,
-        KEY_OPACITY to RULE_UNIT,
-        KEY_REFRACTION to RULE_UNIT,
-        KEY_CUSTOM_SHADE to RULE_UNIT,
-        KEY_CORNER to RULE_CORNER,
+    /** 0..上限 且不允许负值的一类（dp 尺寸、alpha 上限各不相同）。NaN 归各自的默认值。 */
+    fun clampBlurRadiusDp(value: Float): Float =
+        if (value.isNaN()) DEFAULT_BLUR_RADIUS_DP else value.coerceIn(0f, BLUR_MAX_DP)
+
+    fun clampRefractionHeightDp(value: Float): Float =
+        if (value.isNaN()) DEFAULT_REFRACTION_HEIGHT_DP else value.coerceIn(0f, REFRACTION_HEIGHT_MAX_DP)
+
+    fun clampRefractionAmountDp(value: Float): Float =
+        if (value.isNaN()) DEFAULT_REFRACTION_AMOUNT_DP else value.coerceIn(0f, REFRACTION_AMOUNT_MAX_DP)
+
+    fun clampTintAlpha(value: Float): Float =
+        if (value.isNaN()) DEFAULT_TINT_ALPHA else value.coerceIn(0f, TINT_ALPHA_MAX)
+
+    fun clampBorderAlpha(value: Float): Float =
+        if (value.isNaN()) DEFAULT_BORDER_ALPHA else value.coerceIn(0f, BORDER_ALPHA_MAX)
+
+    /** 键 → 夹取规则。没有出现在这里的键就是**故意不设区间**，`clampByKey` 原样返回，不擅自发明。 */
+    val CLAMP_RULES: Map<String, (Float) -> Float> = mapOf(
+        KEY_DAMPING to { clampDamping(it) },
+        KEY_OPACITY to { clampUnit(it) },
+        KEY_REFRACTION to { clampUnit(it) },
+        KEY_CUSTOM_SHADE to { clampUnit(it) },
+        KEY_CORNER to { clampCornerScale(it) },
+        KEY_GLASS_BLUR to { clampBlurRadiusDp(it) },
+        KEY_REFRACTION_HEIGHT to { clampRefractionHeightDp(it) },
+        KEY_REFRACTION_AMOUNT to { clampRefractionAmountDp(it) },
+        KEY_TINT_ALPHA to { clampTintAlpha(it) },
+        KEY_BORDER_ALPHA to { clampBorderAlpha(it) },
     )
 
-    const val RULE_UNIT = "unit"
-    const val RULE_CORNER = "corner"
+    fun hasRule(key: String): Boolean = CLAMP_RULES.containsKey(key)
 
-    /** 按键查夹取规则；没有规则的键（如模糊半径、折射高度）原样返回，不擅自发明区间。 */
-    fun clampByKey(key: String, value: Float): Float = when (CLAMP_RULES[key]) {
-        RULE_UNIT -> clampUnit(value)
-        RULE_CORNER -> clampCornerScale(value)
-        else -> value
-    }
+    fun clampByKey(key: String, value: Float): Float = CLAMP_RULES[key]?.invoke(value) ?: value
+
+    /**
+     * 反查某个键的实际区间：拿 ±∞ 去问规则本身，而不是手抄一份区间表。
+     * 这样 UI 上显示的滑杆范围与真正生效的夹取**不可能不一致**（手抄的表迟早会漂）。
+     * @return `[min, max]`；没有规则的键返回 `[-∞, +∞]`。
+     */
+    fun rangeOf(key: String): FloatArray = floatArrayOf(
+        clampByKey(key, Float.NEGATIVE_INFINITY),
+        clampByKey(key, Float.POSITIVE_INFINITY),
+    )
 
     // ---------- 旧版视觉模式的兼容映射 ----------
 
@@ -60,15 +94,16 @@ object SettingsRules {
     const val VISUAL_NORMAL = "normal"
     const val VISUAL_MD3 = "md3"
 
-    /** 稳定英文键集合，UI 层用它做「键 → VisualMode 枚举」的映射并校验。 */
+    /** 稳定英文键集合（老版本两个开关能推出的值域）。UI 层用它做「键 → VisualMode 枚举」的映射。 */
     val VISUAL_KEYS: List<String> = listOf(VISUAL_GLASS, VISUAL_NORMAL, VISUAL_MD3)
 
     fun isVisualKey(key: String): Boolean = key in VISUAL_KEYS
 
     /**
      * 老版本是两个独立开关（`glassEnabled`／`dynamicColor`），现在是一个 `VisualMode` 枚举。
-     * 优先级：动态色 > 玻璃 > 普通。这条映射原先是 `AppSettingsState.legacyVisualMode()` 里的私有逻辑，
-     * 抽出来之后它可以被测试，而且 UI 层不再需要知道历史键名。
+     * 优先级：动态色 > 玻璃 > 普通。这条映射原先是 `AppSettingsState.legacyVisualMode()` 的私有逻辑，
+     * 抽出来之后它能被测试，而且 UI 层不再需要知道历史键名。
+     * 注意 `oshin` 不在这个值域里：它是后来加的第四种视觉模式，老开关推不出来。
      */
     fun legacyVisualModeKey(glassEnabled: Boolean, dynamicColor: Boolean): String = when {
         dynamicColor -> VISUAL_MD3
@@ -87,7 +122,7 @@ object SettingsRules {
 
     /**
      * `#AARRGGBB`／`#RRGGBB` → ARGB Int；解析不出来返回 null（调用方保留当前值，不猜）。
-     * 导出 JSON 里一直带着 `customSeedHex`，但导入只认整数字段——补上这条后，
+     * 导出 JSON 里一直带着 `customSeedHex`，但导入过去只认整数字段——补上这条后，
      * 只给了十六进制的主题文件也能正确导入。
      */
     fun parseCustomSeedHex(text: String): Int? {
@@ -113,7 +148,7 @@ object SettingsRules {
 
     /**
      * 浮点默认值表：键就是 prefs 键。
-     * 批 A 用它断言「每个默认值都落在自己的夹取区间内」——默认值违反自己的规则是一类真实 bug
+     * 批 A 用它断言「每个默认值都是自身夹取规则的不动点」——默认值违反自己的规则是一类真实 bug
      * （表现为刚装好就显示异常，而用户改一下又好了，很难复现）。
      */
     val DEFAULT_FLOATS: Map<String, Float> = mapOf(
@@ -129,7 +164,7 @@ object SettingsRules {
         KEY_BORDER_ALPHA to DEFAULT_BORDER_ALPHA,
     )
 
-    // ---------- 存储键（与 AppSettingsState 的 companion 同源，保持字面值不变以兼容老用户） ----------
+    // ---------- 存储键（字面值是跨版本契约，批 A 有测试锁住） ----------
 
     const val PREFS_FILE = "liquidui.settings"
     const val SCHEMA_VERSION = 1
