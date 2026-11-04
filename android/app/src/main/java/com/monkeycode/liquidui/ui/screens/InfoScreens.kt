@@ -77,7 +77,11 @@ private val allCredits = listOf(
     OpenSourceCredit(R.string.info_credit_28_name, R.string.info_credit_28_author, R.string.info_credit_28_purpose, R.string.info_credit_28_license, "https://github.com/wasabeef/glide-transformations"),
     OpenSourceCredit(R.string.info_credit_29_name, R.string.info_credit_29_author, R.string.info_credit_29_purpose, R.string.info_credit_29_license, "https://github.com/saket/telephoto"),
     OpenSourceCredit(R.string.info_credit_30_name, R.string.info_credit_30_author, R.string.info_credit_30_purpose, R.string.info_credit_30_license, "https://github.com/material-components/material-web"),
-    OpenSourceCredit(R.string.info_credit_31_name, R.string.info_credit_31_author, R.string.info_credit_31_purpose, R.string.info_credit_31_license, "https://github.com/square/leakcanary"),)
+    OpenSourceCredit(R.string.info_credit_31_name, R.string.info_credit_31_author, R.string.info_credit_31_purpose, R.string.info_credit_31_license, "https://github.com/square/leakcanary"),
+    OpenSourceCredit(R.string.info_credit_32_name, R.string.info_credit_32_author, R.string.info_credit_32_purpose, R.string.info_credit_32_license, "https://github.com/woltapp/blurhash"),
+    OpenSourceCredit(R.string.info_credit_33_name, R.string.info_credit_33_author, R.string.info_credit_33_purpose, R.string.info_credit_33_license, "https://github.com/airbnb/lottie-android"),
+    OpenSourceCredit(R.string.info_credit_34_name, R.string.info_credit_34_author, R.string.info_credit_34_purpose, R.string.info_credit_34_license, "https://github.com/adrielcafe/voyager"),
+    OpenSourceCredit(R.string.info_credit_35_name, R.string.info_credit_35_author, R.string.info_credit_35_purpose, R.string.info_credit_35_license, "https://github.com/android/nowinandroid"))
 
 @Composable
 private fun InfoPage(

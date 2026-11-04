@@ -2,6 +2,10 @@
  * ⚠️ 已知问题（照抄前必修，见 docs/功能逐项手册.md F04）：
  * 1. 本文件声明的是 `object 主题控制器` / `class 设置仓库`，文件内调用处仍写
  *    ThemeController / SettingsRepository，整文件复制会编译失败，需先统一为一侧名字；
+ *    另：自 v2.14.0（批 D-架构）起本仓库已有一个 `com.monkeycode.liquidui.data.SettingsRepository`，
+ *    但它的构造参数是 SharedPreferences、API 是 readX/writeX，与本文件里 `SettingsRepository(context)`
+ *    加 darkMode/themeColorMode 属性的写法**同名不同物**——照抄会撞上「构造签名不符」而不是
+ *    「找不到符号」，报错更难读懂，接手时先把这一侧改名（例如 ThemeSettingsStore）；
  * 2. 文末 seedColorScheme 是 TODO 占位（直接返回默认深/浅色），不是文档所说的 HCT 生成，
  *    自定义种子色不会真正生效，接手时必须补真实实现或明确标注未实现；
  * 3. 与示例工程现行 LiquidUITheme/PaletteId 体系不是同一套，不要混接。

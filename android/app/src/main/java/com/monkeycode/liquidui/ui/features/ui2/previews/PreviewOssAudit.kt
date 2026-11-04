@@ -58,6 +58,9 @@ private val AUDIT_TAB_LABEL = mapOf(
 
 private const val AUDIT_DATE = "2026-11-04"
 
+/** 批 D 落地后对「长生命周期对象持 Context」这一行的复测日期。 */
+private const val AUDIT_DATE_D = "2026-11-05"
+
 // ==================== S17 字阶·形状阶·间距对照表 ====================
 
 /** M3 参考值按 material-web 公开规范抄录；live 取 MaterialTheme.typography 的实际生效值。 */
@@ -368,19 +371,38 @@ private fun slotOffSpec(slot: TypeSlot): Boolean =
 
 // ==================== S18 内存泄漏与引用链自检 ====================
 
-private class LeakRow(val labelRes: Int, val crude: Int, val real: Int, val verdictRes: Int)
+private class LeakRow(
+    val labelRes: Int,
+    val crude: Int,
+    val real: Int,
+    val verdictRes: Int,
+    /** 0 = 无批注。只有被后续批次改动过、需要说明两次实测差异的行才填。 */
+    val noteRes: Int = 0,
+)
 
-/** 2026-11-04 构建期人工核实；数字取自 grep -rn + 逐条眼看，命令见页面底部。 */
+/**
+ * 2026-11-04 构建期人工核实；数字取自 grep -rn + 逐条眼看，命令见页面底部。
+ * 「长生命周期对象持 Context」这一行在 2026-11-05（批 D 收窄构造参数之后）复测过；
+ * Handler／Timer 那一行的粗命中数也因本批新增文件从 9 变 10（第 10 处是 RouteStack.kt 的 KDoc
+ * 提到 BackHandler，仍被 grep -v BackHandler 滤掉，真实数还是 0）。两次数字都保留、差异写在批注里——
+ * 这一页的论点本来就是「数字随代码变动，别照抄」。
+ */
 private val LEAK_ROWS = listOf(
     LeakRow(R.string.pv_oss_leak_row_globalscope, 0, 0, R.string.pv_oss_leak_clean),
     LeakRow(R.string.pv_oss_leak_row_staticctx, 0, 0, R.string.pv_oss_leak_clean),
-    LeakRow(R.string.pv_oss_leak_row_holdctx, 1, 1, R.string.pv_oss_leak_one_risk),
+    LeakRow(
+        R.string.pv_oss_leak_row_holdctx,
+        1,
+        0,
+        R.string.pv_oss_leak_fixed_in_d,
+        R.string.pv_oss_leak_row_holdctx_note,
+    ),
     LeakRow(R.string.pv_oss_leak_row_register, 0, 0, R.string.pv_oss_leak_clean),
     LeakRow(R.string.pv_oss_leak_row_whiletrue, 7, 0, R.string.pv_oss_leak_cancellable),
     LeakRow(R.string.pv_oss_leak_row_bitmap, 0, 0, R.string.pv_oss_leak_clean),
     LeakRow(R.string.pv_oss_leak_row_webview, 0, 0, R.string.pv_oss_leak_clean),
     LeakRow(R.string.pv_oss_leak_row_scope, 17, 0, R.string.pv_oss_leak_false_alarm),
-    LeakRow(R.string.pv_oss_leak_row_handler, 9, 0, R.string.pv_oss_leak_false_alarm),
+    LeakRow(R.string.pv_oss_leak_row_handler, 10, 0, R.string.pv_oss_leak_false_alarm),
     LeakRow(R.string.pv_oss_leak_row_service, 3, 3, R.string.pv_oss_leak_normal),
 )
 
@@ -403,13 +425,15 @@ fun PreviewS18() {
     val pill = RoundedCornerShape(percent = 50)
     val nodeColor = scheme.primaryContainer
     val riskColor = scheme.errorContainer
+    // 第 2 环在批 D 已经改完，所以它不再用 errorContainer 报警，改用 tertiaryContainer 标「已修」
+    val fixedColor = scheme.tertiaryContainer
 
     Column(
         Modifier.fillMaxWidth().padding(16.dp).verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         Text(
-            stringResource(R.string.pv_oss_leak_intro, AUDIT_DATE),
+            stringResource(R.string.pv_oss_leak_intro, AUDIT_DATE, AUDIT_DATE_D),
             style = MaterialTheme.typography.labelSmall,
             color = scheme.onSurfaceVariant,
         )
@@ -419,18 +443,20 @@ fun PreviewS18() {
         CHAIN_NODES.forEachIndexed { i, res ->
             Column(
                 Modifier.fillMaxWidth().clip(card)
-                    .background(if (i == 1) riskColor else nodeColor)
+                    .background(if (i == 1) fixedColor else nodeColor)
                     .padding(horizontal = 12.dp, vertical = 9.dp),
             ) {
+                val ringFixed = i == 1
                 Text(
-                    stringResource(R.string.pv_oss_leak_chain_step, i + 1),
+                    if (ringFixed) stringResource(R.string.pv_oss_leak_chain_step_fixed, i + 1, AUDIT_DATE_D)
+                    else stringResource(R.string.pv_oss_leak_chain_step, i + 1),
                     style = MaterialTheme.typography.labelSmall,
-                    color = if (i == 1) scheme.onErrorContainer else scheme.onPrimaryContainer,
+                    color = if (ringFixed) scheme.onTertiaryContainer else scheme.onPrimaryContainer,
                 )
                 Text(
                     stringResource(res),
                     style = MaterialTheme.typography.labelMedium,
-                    color = if (i == 1) scheme.onErrorContainer else scheme.onPrimaryContainer,
+                    color = if (ringFixed) scheme.onTertiaryContainer else scheme.onPrimaryContainer,
                 )
             }
             if (i < CHAIN_NODES.lastIndex) {
@@ -474,9 +500,23 @@ fun PreviewS18() {
                     style = MaterialTheme.typography.labelSmall,
                     color = if (alarm) scheme.onErrorContainer else scheme.onSurfaceVariant,
                 )
+                if (row.noteRes != 0) {
+                    Spacer(Modifier.height(3.dp))
+                    Text(
+                        context.getString(row.noteRes),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = scheme.onSurfaceVariant,
+                    )
+                }
             }
         }
 
+        Text(
+            stringResource(R.string.pv_oss_leak_selfref, AUDIT_DATE_D),
+            Modifier.fillMaxWidth().clip(card).background(scheme.errorContainer).padding(12.dp),
+            style = MaterialTheme.typography.labelSmall,
+            color = scheme.onErrorContainer,
+        )
         Text(
             stringResource(R.string.pv_oss_leak_verdict),
             Modifier.fillMaxWidth().clip(card).background(scheme.errorContainer).padding(12.dp),
@@ -505,11 +545,14 @@ fun PreviewS18() {
         if (showCmd) {
             // 命令全 ASCII，直接写在代码里；有边界的写法才是能复算的写法
             listOf(
-                "grep -rn 'GlobalScope' android/app/src/main/java",
+                // 每条都带 --exclude：本页把检测命令以字符串形式写在被检测的源码树里，
+                // 不排除自己就会命中自己（2026-11-05 复测时四条命令各多出 1 处，全是这种自指命中）
+                "grep -rn --exclude=PreviewOssAudit.kt 'GlobalScope' android/app/src/main/java",
                 "grep -rn '\\bandroid\\.os\\.Handler\\|\\bjava\\.util\\.Timer' android/app/src/main/java",
-                "grep -rn 'CoroutineScope(' android/app/src/main/java | grep -v rememberCoroutineScope",
-                "grep -rn 'while (true)' android/app/src/main/java",
-                "grep -rn 'remember.*Bitmap\\|WebView' android/app/src/main/java",
+                "grep -rn --exclude=PreviewOssAudit.kt 'CoroutineScope(' android/app/src/main/java | grep -v rememberCoroutineScope",
+                "grep -rn --exclude=PreviewOssAudit.kt 'while (true)' android/app/src/main/java",
+                "grep -rn --exclude=PreviewOssAudit.kt 'remember.*Bitmap\\|WebView' android/app/src/main/java",
+                "grep -rn 'private val [a-zA-Z]*: Context' android/app/src/main/java",
             ).forEach { cmd ->
                 Text(
                     cmd,
