@@ -87,7 +87,10 @@ for f in material_files:
 # 已知问题（已在 docs/功能逐项手册.md 与相关文件横幅中标注，修复前只警告不拦截；
 # 新增的未声明引用不在此表里，会直接判失败，防止再引入新的"抄了编不过"）
 KNOWN_UNDECLARED = {
-    "ThemeController", "SettingsRepository",  # F04 镜像主题文件的历史引用，见该文件头横幅
+    # F04 镜像主题文件的历史引用，见该文件头横幅。注意 SettingsRepository 自批 D 起在
+    # data/ 下已有同名类，但构造参数是 SharedPreferences、API 是 readX/writeX，与镜像里
+    # SettingsRepository(context) 的用法同名不同物，所以这条仍然留在表里（只警告不拦截）。
+    "ThemeController", "SettingsRepository",
     "PrimaryButton", "SecondaryButton", "GlassTextField", "SegmentedTabs",
     "PreferenceRow", "PreferenceCard", "CompactSwitch",  # 同上：镜像改中文名（紧凑开关等），权威以 android 英文名为准
     "IconSwitcher", "IconSwitchHelper",  # F02 已合并变体内的残留引用，不要单独选

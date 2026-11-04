@@ -2304,15 +2304,16 @@
     <string name="pv_oss_spec_space_verdict" formatted="false">结论：TOP12 合计 1135 次里 646 次在 4dp 栅格上、489 次不在（43%）。不在栅格的里面，10/14/22dp 共 320 次属于"本该取邻近栅格值却写了奇数"（10 该取 8 或 12、14 该取 12 或 16、22 该取 20 或 24）；6/2/1dp 是细分档，可以接受但最好也定成令牌。修法不是全局替换，而是先在主题里定义 spacing 令牌，再让新代码只用令牌，旧代码按页面逐步收敛。</string>
     <string name="pv_oss_spec_sp_intro">绕过字阶的硬编码字号（sp）：这些值不跟主题走，改字阶时它们不会变，是深色模式与无障碍字号缩放最先出问题的地方。</string>
     <string name="pv_oss_spec_space_cmd">取数命令：grep -roh "[0-9]\+\.dp" android/app/src/main/java | sort | uniq -c | sort -rn | head -12；sp 同理换成 "\.sp"。数字会随代码变动，换基线后必须重测，别照抄本页。</string>
-    <string name="pv_oss_leak_intro">按 LeakCanary 的读法看引用链，再对八类常见泄漏模式做构建期人工核实（快照日期 %1$s）。这一页的重点不是"本仓库有几个泄漏"，而是"文本扫描的误报率有多高"。</string>
+    <string name="pv_oss_leak_intro">按 LeakCanary 的读法看引用链，再对八类常见泄漏模式做构建期人工核实（首次快照 %1$s；批 D 收窄构造参数后于 %2$s 复测了受影响的那一行）。这一页的重点不是"本仓库有几个泄漏"，而是"文本扫描的误报率有多高"。</string>
     <string name="pv_oss_leak_chain_title">引用链：从 GC Root 往下读，谁被谁拽着不放</string>
+    <string name="pv_oss_leak_chain_step_fixed">第 %1$d 环｜批 D 已修（%2$s 复测）</string>
     <string name="pv_oss_leak_chain_step">第 %1$d 环</string>
     <string name="pv_oss_leak_chain_node1">GC Root：主线程（或组合根）——它永远活着，是链条的起点。</string>
-    <string name="pv_oss_leak_chain_node2">AppSettingsState（ui/screens/AppSettingsState.kt:36）——构造参数写作 private val prefs: Context：名字叫 prefs，类型却是 Context，于是这个状态对象把 Context 一路带着走。</string>
-    <string name="pv_oss_leak_chain_node3">MainActivity——Context 的实际持有者，它背后是整棵视图树、窗口与已加载的资源。</string>
-    <string name="pv_oss_leak_chain_node4">结果：只要 AppSettingsState 的实例活得比 Activity 久（被单例、静态字段、未取消的协程或回调引用着），Activity 就回收不掉。链上任一环断开即可，最省事的断点是第 2 环。</string>
+    <string name="pv_oss_leak_chain_node2">曾经的形状：AppSettingsState（ui/screens/AppSettingsState.kt）的构造参数写作 private val prefs: Context——名叫 prefs、类型却是 Context，比实际需要的宽，于是这个状态对象理论上能把 Context 一路带着走。批 D 已收窄为 private val repo: SettingsRepository（data/SettingsRepository.kt），状态持有者从此不持有任何 Context。</string>
+    <string name="pv_oss_leak_chain_node3">MainActivity——Context 的实际持有者，它背后是整棵视图树、窗口与已加载的资源。但要如实说：本仓库这一环从来没有被拽住，因为 rememberAppSettingsState() 传进去的是 applicationContext，不是 Activity。</string>
+    <string name="pv_oss_leak_chain_node4">结果：只有当状态对象真的持有 Activity、并且活得比它久（被单例、静态字段、未取消的协程或回调引用着）时，Activity 才回收不掉；链上任一环断开即可，最省事的断点是第 2 环。本仓库的链条止于第 2 环的"类型比需要的宽"——那是坏味道，不是既成泄漏；批 D 改完之后连坏味道也没了。</string>
     <string name="pv_oss_leak_chain_arrow">↓ 持有</string>
-    <string name="pv_oss_leak_chain_fix">修法（按代价从低到高）：① 把形参类型改成真正需要的 SharedPreferences，名字与类型对上，Context 根本不留存；② 需要 Context 的地方在组合内取 LocalContext.current，用完即弃；③ 必须长存就用 applicationContext，别传 Activity；④ 状态对象放进 ViewModel 时用 AndroidViewModel 并只存 applicationContext。第 2 环是这条链唯一的真疑点，也是唯一需要改的地方。</string>
+    <string name="pv_oss_leak_chain_fix">修法（按代价从低到高）：① 把形参类型改成真正需要的东西——本仓库按这条落地了，但没有直接传 SharedPreferences，而是包了一层 data/SettingsRepository，多一层换来的是依赖方向可检查（ui → data → domain）与取值规则可单测；② 需要 Context 的地方在组合内取 LocalContext.current，用完即弃（rememberAppSettingsState() 就是这么写的）；③ 必须长存就用 applicationContext，别传 Activity；④ 状态对象放进 ViewModel 时用 AndroidViewModel 并只存 applicationContext。第 2 环曾是这条链唯一的真疑点，批 D 已改完，本页保留它作为案例。</string>
     <string name="pv_oss_leak_table_title">八类模式：粗 grep 命中 vs 逐条眼看后的真实数</string>
     <string name="pv_oss_leak_row_globalscope">GlobalScope（脱离生命周期的作用域）</string>
     <string name="pv_oss_leak_row_staticctx">object／companion object 里持 Context、View、Activity、Bitmap</string>
@@ -2326,14 +2327,146 @@
     <string name="pv_oss_leak_row_service">getSystemService 拿到的系统服务被静态缓存</string>
     <string name="pv_oss_leak_table_counts">粗 grep 命中 %1$d 处｜眼看后真实 %2$d 处</string>
     <string name="pv_oss_leak_clean">干净：全仓 0 处，这类模式本仓库没用。</string>
-    <string name="pv_oss_leak_one_risk">唯一真疑点：AppSettingsState.kt:36，形参名 prefs 与实际类型 Context 不符。改类型即可断链。</string>
+    <string name="pv_oss_leak_fixed_in_d">批 D 已修：构造参数从 Context 收窄为 SettingsRepository，状态持有者不再持有任何 Context；prefs 只在 rememberAppSettingsState() 构造仓库那一刻用到，用完即弃。</string>
+    <string name="pv_oss_leak_row_holdctx_note">两次实测：2026-11-04 粗 1／真实 1（AppSettingsState 的 private val prefs: Context）；批 D 收窄构造参数后于 2026-11-05 复测，粗 1／真实 0——粗命中仍在，但那一处是 data/SettingsRepository.kt 的 KDoc 在引用旧签名做说明，不是代码。所以这一行现在既是"已修"，又是一个由文档制造的误报样本。</string>
     <string name="pv_oss_leak_cancellable">0 风险：7 处全在 LaunchedEffect 或挂起手势检测器（DragGestureDetector.kt）里，随组合离开自动取消，不是裸线程死循环。</string>
     <string name="pv_oss_leak_false_alarm">误报：命中数全是同名但语义完全不同的 Compose API，真实自建／真实使用都是 0。这条计数在眼看之前毫无意义。</string>
     <string name="pv_oss_leak_normal">正常用法：3 处都是就地取用，没有静态缓存，不构成泄漏。</string>
-    <string name="pv_oss_leak_verdict" formatted="false">本页最重要的结论：两条最像风险的计数——自建 CoroutineScope 17 处、Handler／Timer 9 处——逐条眼看后误报率是 100%（17/17 全是 rememberCoroutineScope()，它随组合自动取消；9/9 全是 Compose 的 BackHandler(，跟 android.os.Handler 无关，两个 import 全仓 0 次）。所以"扫出 N 处"在没有眼看之前不能当结论，检测命令必须带边界（\bandroid\.os\.Handler、grep -v BackHandler、grep -v rememberCoroutineScope）才有一点可信度。这也正是 LeakCanary 存在的理由：它靠运行时对象图与 GC 触发定位，不靠文本匹配。</string>
+    <string name="pv_oss_leak_selfref">复测（%1$s）时撞上一类更隐蔽的误报：四条命令的粗命中数各多出 1 处——GlobalScope 0→1、自建 CoroutineScope 17→18、while (true) 7→8、remember 缓存 Bitmap／WebView 0→1。逐条眼看后，多出来的四处全部来自本页自己：检测命令是以字符串形式写在被检测的源码树里的，于是命令命中了自己。修法是底部命令统一加 --exclude=PreviewOssAudit.kt。这类误报比同名 API 那种更难防——它不稳定复现，只在这一页自己进了源码树之后才出现，而且每加一条命令就多一处命中。</string>
+    <string name="pv_oss_leak_verdict" formatted="false">本页最重要的结论：两条最像风险的计数——自建 CoroutineScope 17 处、Handler／Timer 10 处——逐条眼看后误报率是 100%（17/17 全是 rememberCoroutineScope()，它随组合自动取消；10/10 里 9 处是 Compose 的 BackHandler(、第 10 处是 domain/RouteStack.kt 的 KDoc 提到 BackHandler，跟 android.os.Handler 无关，两个 import 全仓 0 次）。所以"扫出 N 处"在没有眼看之前不能当结论，检测命令必须带边界（\bandroid\.os\.Handler、grep -v BackHandler、grep -v rememberCoroutineScope、--exclude 掉页面自己）才有一点可信度。这也正是 LeakCanary 存在的理由：它靠运行时对象图与 GC 触发定位，不靠文本匹配。</string>
     <string name="pv_oss_leak_downgrade">如实降级：App 运行时扫不了自己的源码，那需要引入 LeakCanary 依赖，与本素材库"零新依赖"的口径冲突。所以这一页是构建期人工核实快照＋检测方法教学，不是运行时自检；上面每个数字都随代码变动，改完代码要按底部命令重测，不要照抄。</string>
     <string name="pv_oss_leak_cmd_show">展开可复算的检测命令</string>
     <string name="pv_oss_leak_cmd_hide">收起检测命令</string>
+    <string name="pv_oss_hash_intro">这一页在真编真解：中间那串字符是 domain/BlurHash.kt 现场算出来的 hash，右边那张图是只凭这串字符解码回来的（解码尺寸 48×36，比编码取样的 16×12 大 9 倍——这正是 BlurHash 当占位图的用法）。算法按 woltapp/blurhash 的规范与参考编码器逐项对齐：base83 字符集、归一化因子 1/2、基函数 cos(πix/w)、量化 floor(max×166−0.5)、signPow、交流分量先 X 后 Y。不引任何依赖。</string>
+    <string name="pv_oss_hash_pattern_title">取样图案（程序化生成，不读文件、不解码 Bitmap）</string>
+    <string name="pv_oss_hash_pat_gradient">对角渐变</string>
+    <string name="pv_oss_hash_pat_solid">纯色（种子色）</string>
+    <string name="pv_oss_hash_pat_stripes">竖条纹</string>
+    <string name="pv_oss_hash_pat_radial">径向渐变</string>
+    <string name="pv_oss_hash_comp_title">分量数（横向 × 纵向，规范允许 1–9）</string>
+    <string name="pv_oss_hash_comp_value">当前 %1$d × %2$d</string>
+    <string name="pv_oss_hash_original">原图 %1$d×%2$d（编码取样尺寸）</string>
+    <string name="pv_oss_hash_decoded">解码图 %1$d×%2$d（仅凭 %3$d 个字符）</string>
+    <string name="pv_oss_hash_seg_size">① 尺寸标志 1 字符</string>
+    <string name="pv_oss_hash_seg_max">② 最大值量化 1 字符</string>
+    <string name="pv_oss_hash_seg_dc">③ 直流分量 4 字符</string>
+    <string name="pv_oss_hash_seg_ac">④ 交流分量 %1$d 个 × 2 字符</string>
+    <string name="pv_oss_hash_readout">hash 长度 %1$d｜公式 4 + 2 × %2$d × %3$d = %4$d｜直流色 %5$s｜MAE %6$s</string>
+    <string name="pv_oss_hash_mae_title">同一张图、不同分量数的实测 MAE（本页现场计算，越小越接近原图）</string>
+    <string name="pv_oss_hash_mae_row">%1$d×%2$d → MAE %3$s</string>
+    <string name="pv_oss_hash_mae_best">本图最优</string>
+    <string name="pv_oss_hash_mae_verdict">结论（反直觉）：分量数越多并不总是越清晰。切到「纯色」图案看这张表——1×1 的 MAE 是 0.00，默认的 4×3 明显更差：纯色本来就只有一个直流分量，多出来的交流分量只会把量化误差引进来。渐变图正相反，4×3 通常优于 2×2 与 6×5。所以「4×3 是默认值」只对自然图像成立，选分量数要看图的内容。</string>
+    <string name="pv_oss_hash_why">为什么纯色也会投出交流分量：规范的基函数是 cos(πix/w)，在 x = 0..w−1 这段采样上并不正交（w=8 时 cos(πx/8) 求和等于 1 而不是 0），所以常量图在 i≥1 的分量上也会留下非零投影。这不是实现 bug——批 A 拿 woltapp 的参考编码器逐行比对过，并把这条性质写成断言，防止后人「顺手修正」基函数而偏离规范。</string>
+    <string name="pv_oss_hash_mae_note">首次实测（%1$s，本机 kotlinc 2.0.21 + JUnit 4.13.2）：纯色 8×8 在 1×1／2×2／4×3／6×5／9×9 下的 MAE 分别是 0.00／11.64／13.53／15.10／7.93；对角渐变 16×12 是 63.52／15.80／14.60／17.22／17.74。上面那张表是本页按当前图案现场算的，图案尺寸不同，数字会与这组不一样，别把两组混着引用。</string>
+    <string name="pv_oss_hash_api">本页调用的领域层 API：BlurHash.encode(pixels, w, h, x, y)、decode(hash, w, h)、segmentsOf(hash)、dcColor(hash)、meanAbsoluteError(src, decoded)；十六进制显示复用 SettingsRules.customSeedHex(argb)。全部在 domain/ 里，纯 Kotlin、零 Android 依赖，批 A 有单元测试覆盖。</string>
+    <string name="pv_oss_hash_downgrade">如实降级：这一页不解码真实照片（那要引入 Bitmap、文件读取与相应权限，和本页的论点无关），图案是程序化取样的。编解码是真的、误差是真的，只有「图」是合成的。要接真实图片，把采样器换成 (x, y) -&gt; bitmap.getPixel(x, y) 即可——encode 提供采样器入口就是为这个准备的。</string>
+    <string name="pv_oss_hash_cmd">复算：kotlinc domain/*.kt test/*.kt -cp junit.jar:hamcrest.jar -d out &amp;&amp; java -cp out:junit.jar:hamcrest.jar:kotlin-stdlib.jar org.junit.runner.JUnitCore com.monkeycode.liquidui.domain.BlurHashTest</string>
+    <string name="pv_oss_kf_intro">一条真的时间轴：三条轨道（位移／透明度／缩放）共用一个游标，取值与插值都在 domain/KeyframeTrack.kt 里算，下面那个方块的位置、透明度、缩放全部由采样值驱动。模型取自 airbnb/lottie-android 的多轨关键帧结构（时间点＋取值＋到下一帧的插值方式），只取时间轴、不取缓动曲线库——曲线是 W02 的地盘，本页内建三种插值就够说明问题。不引依赖。</string>
+    <string name="pv_oss_kf_track_translate">位移</string>
+    <string name="pv_oss_kf_track_alpha">透明度</string>
+    <string name="pv_oss_kf_track_scale">缩放</string>
+    <string name="pv_oss_kf_mode_linear">LINEAR 线性</string>
+    <string name="pv_oss_kf_mode_step">STEP 阶梯</string>
+    <string name="pv_oss_kf_mode_smooth">SMOOTH smoothstep</string>
+    <string name="pv_oss_kf_play">播放</string>
+    <string name="pv_oss_kf_pause">暂停</string>
+    <string name="pv_oss_kf_reset">游标回起点</string>
+    <string name="pv_oss_kf_overflow">游标越过末尾</string>
+    <string name="pv_oss_kf_cursor">游标 %1$d ms｜%2$s</string>
+    <string name="pv_oss_kf_cursor_in">在时间轴范围内</string>
+    <string name="pv_oss_kf_cursor_over">已越过末尾（看下面各读数怎么表现）</string>
+    <string name="pv_oss_kf_row">%1$s：值 %2$s｜第 %3$d/%4$d 段｜%5$s｜段内 %6$s</string>
+    <string name="pv_oss_kf_timeline">时间轴 %1$d ms｜总进度 %2$s｜已过关键帧 %3$d/%4$d｜正在动的轨道 %5$d/%6$d</string>
+    <string name="pv_oss_kf_live">这个方块不是动画控件，是把采样值直接喂给 graphicsLayer：translationX 来自位移轨、alpha 来自透明度轨、scaleX 与 scaleY 同值来自缩放轨（两个缩放必须同值，否则非等比拉伸）。</string>
+    <string name="pv_oss_kf_smooth_note">SMOOTH 用的是 smoothstep（t²(3−2t)）：两端导数为 0、在 0.5 处正好等于 0.5，这两条性质批 A 写成了断言。它是本页唯一的内建缓动，不是曲线库；要做可编辑的贝塞尔缓动请看 W02。</string>
+    <string name="pv_oss_kf_boundary">边界行为（批 A 当场抓到两个 bug 之后定下的口径）：游标在首帧之前 → 段序号 −1、取首值；越过末帧 → 段序号夹到最后一段（不返回越界序号）、取末值不外推、总进度 1.0、正在动的轨道数 0。第二个 bug 原先是「越过末尾仍算在动」，修法是在 movingTrackCountAt 里先判游标是否落在该轨道自己的时间范围内。</string>
+    <string name="pv_oss_kf_drag_hint">点按时间轴定位游标，横向拖动 scrub。「正在动的轨道」只统计三件事同时成立的轨道：游标落在该轨道时间范围内、所在段两端取值不同、插值方式不是 STEP（阶梯整段静止，只在跳变瞬间变化）。</string>
+    <string name="pv_oss_kf_api">本页调用的领域层 API：Track(key, keys)、Timeline(tracks)、sampleAt(t)、progressAt(t)、passedKeyframesAt(t)、movingTrackCountAt(t)、clampTime(t)、trackOf(key) 再取 valueAt / segmentIndexOf / segmentProgressAt / segmentCount。全部纯 Kotlin，批 A 有单元测试覆盖。</string>
+    <string name="pv_oss_route_intro">一个真的返回栈状态机（domain/RouteStack.kt），不是画几个方块：每次点按都在改同一个栈实例，栈可视化、读数、操作日志全部从它身上取。语义参照 adrielcafe/voyager 的 Navigator（push／pop／replace／replaceAll／popUntil 加 singleTop 去重），不引依赖。路由用稳定英文键，显示文案由 UI 层查资源——这是批 C 定下的口径。</string>
+    <string name="pv_oss_route_target_title">目标路由（push／replace／popUntil 用它）</string>
+    <string name="pv_oss_route_r_home">首页</string>
+    <string name="pv_oss_route_r_list">列表</string>
+    <string name="pv_oss_route_r_detail">详情</string>
+    <string name="pv_oss_route_r_comment">评论</string>
+    <string name="pv_oss_route_r_editor">编辑</string>
+    <string name="pv_oss_route_stack_title">返回栈（最上面＝栈顶＝当前屏）｜已执行 %1$d 次操作</string>
+    <string name="pv_oss_route_current_badge">当前</string>
+    <string name="pv_oss_route_op_push">push</string>
+    <string name="pv_oss_route_op_pop">pop</string>
+    <string name="pv_oss_route_op_replace">replace</string>
+    <string name="pv_oss_route_op_replaceall">replaceAll</string>
+    <string name="pv_oss_route_op_poptoroot">popToRoot</string>
+    <string name="pv_oss_route_op_popuntil">popUntil</string>
+    <string name="pv_oss_route_op_back">按返回键</string>
+    <string name="pv_oss_route_op_clearlog">清空日志</string>
+    <string name="pv_oss_route_singletop_on">singleTop：开</string>
+    <string name="pv_oss_route_singletop_off">singleTop：关</string>
+    <string name="pv_oss_route_readout">深度 %1$d｜栈顶 %2$s｜根 %3$s｜可返回 %4$s｜返回键应退出 %5$s</string>
+    <string name="pv_oss_route_yes">是</string>
+    <string name="pv_oss_route_no">否</string>
+    <string name="pv_oss_route_log_title">操作日志（共 %1$d 条，显示最近 6 条）</string>
+    <string name="pv_oss_route_log_empty">还没有操作。</string>
+    <string name="pv_oss_route_log_row">%1$s → %2$s｜深度 %3$d｜%4$s</string>
+    <string name="pv_oss_route_changed">状态已改变</string>
+    <string name="pv_oss_route_unchanged">状态未变（操作被调用 ≠ 状态被改变）</string>
+    <string name="pv_oss_route_hint">试三件事：① singleTop 开着时连按两次 push 到同一路由，第二次日志标「状态未变」，这就是去重；② 深度为 1 时按 pop，栈不动、日志仍记一条（单元素栈 pop 是 no-op，但调用确实发生了）；③ popUntil 到一个栈里没有的路由，返回 0、状态未变。三件事的共同点是「返回值」与「状态是否变化」必须分开看，否则埋点、动画与返回键判定会各说各话。</string>
+    <string name="pv_oss_route_back_note">返回键判定就是 canGoBack：宿主用 BackHandler(enabled = canGoBack) 接管，栈深大于 1 时消费事件并 pop，等于 1 时 enabled 为 false、事件交还系统去退出应用。enabled 必须跟着栈深走——写成 BackHandler(enabled = true) 会让应用永远退不出去。domain/RouteStack.kt 的 onBackPressed() 与 shouldExitOnBack() 就是这两条判定的出处。</string>
+    <string name="pv_oss_route_api">domain/RouteStack.kt：push(route, singleTop) / pop() / replace(route) / replaceAll(routes) / popToRoot() / popUntil(route) / onBackPressed() / shouldExitOnBack() / entries / depth / current / root / canGoBack / contains / indexOf / log / clearLog()</string>
+    <string name="pv_oss_layer_intro">本仓库批 D 改造之后的真实分层（快照 %1$s）。这一页不是示意图：下面那个「当前真实值」是从真的 SharedPreferences 经 data → state 读上来的，点「写入真实设置」也是真的写回去，走的就是图里这条链路。分层口径参照 android/nowinandroid 的 screen／state-holder／repository，不引依赖、不引 Hilt。</string>
+    <string name="pv_oss_layer_title">五层（点一层看职责与禁区）</string>
+    <string name="pv_oss_layer_l_ui">UI 层｜画控件、收手势</string>
+    <string name="pv_oss_layer_l_state">状态持有者｜持可变状态、通知重组</string>
+    <string name="pv_oss_layer_l_data">数据层｜唯一持有 SharedPreferences</string>
+    <string name="pv_oss_layer_l_domain">领域层｜取值规则与稳定英文键</string>
+    <string name="pv_oss_layer_l_storage">存储｜25 个键 + schema</string>
+    <string name="pv_oss_layer_file_ui">ui/screens/SettingsScreen.kt（全仓 14 处使用点之一）</string>
+    <string name="pv_oss_layer_file_state">ui/screens/AppSettingsState.kt</string>
+    <string name="pv_oss_layer_file_data">data/SettingsRepository.kt</string>
+    <string name="pv_oss_layer_file_domain">domain/SettingsRules.kt（同层另有 BlurHash / KeyframeTrack / RouteStack）</string>
+    <string name="pv_oss_layer_file_storage">SharedPreferences 文件 liquidui.settings</string>
+    <string name="pv_oss_layer_duty_ui">职责：把用户意图交给状态持有者（settings.updateMotionDamping(v)），把状态画出来。</string>
+    <string name="pv_oss_layer_duty_state">职责：持有 mutableStateOf 状态、暴露 updateXxx、决定什么时候通知重组；导入、导出与重置三条写路径都在这一层收口。</string>
+    <string name="pv_oss_layer_duty_data">职责：读写 SharedPreferences，多键原子写（writeStrings），以及一次性快照（snapshot）。</string>
+    <string name="pv_oss_layer_duty_domain">职责：十条取值区间、NaN 兜底、旧版视觉模式映射、种子色十六进制互转、25 个键与出厂默认值。纯 Kotlin，可在 JVM 上直接测。</string>
+    <string name="pv_oss_layer_duty_storage">职责：持久化。键的字面值与 prefs 文件名是跨版本契约。</string>
+    <string name="pv_oss_layer_ban_ui">禁区：不许直接碰 SharedPreferences；不许自己写 coerceIn 夹取，那会与导入路径的规则分家。</string>
+    <string name="pv_oss_layer_ban_state">禁区：不许出现 prefs.edit()（重构前这里有 24 处，现在 0 处）；不许再持有 Context——构造参数已从 Context 收窄为 SettingsRepository。</string>
+    <string name="pv_oss_layer_ban_data">禁区：不许 import ui.*；不许持有 Context（只认 SharedPreferences）；不许把枚举当参数，枚举属于 UI 层，跨层传稳定英文键。</string>
+    <string name="pv_oss_layer_ban_domain">禁区：不许 import android.* / androidx.* / Compose 类型。实测 4 个文件里非 kotlin.* 的 import 只有 1 处（java.util.Locale）。</string>
+    <string name="pv_oss_layer_ban_storage">禁区：改键名或 prefs 文件名等于老用户设置全部丢失。批 A 的 storageIdentityIsLocked 与 preferenceKeysAreUnique 锁住这件事。</string>
+    <string name="pv_oss_layer_arrow">↓ 依赖</string>
+    <string name="pv_oss_layer_edge_title">依赖边（点一条看为什么只能这个方向）</string>
+    <string name="pv_oss_layer_e_ui_state">ui → state</string>
+    <string name="pv_oss_layer_e_state_data">state → data</string>
+    <string name="pv_oss_layer_e_state_domain">state → domain</string>
+    <string name="pv_oss_layer_e_data_domain">data → domain</string>
+    <string name="pv_oss_layer_e_data_storage">data → storage</string>
+    <string name="pv_oss_layer_w_ui_state">为什么：UI 只表达意图，不决定规则。反过来讲不通——状态持有者不该知道哪个控件在用它，否则复用与预览都做不了。</string>
+    <string name="pv_oss_layer_w_state_data">为什么：状态持有者要的是「读一个值／写一个值」，不是「打开 editor、put、apply」。批 F 的 S18 那条疑点正是这一层缺失造成的：没有仓库可拿，构造参数就只能写 Context。</string>
+    <string name="pv_oss_layer_w_state_domain">为什么：夹取规则被两条写路径（手动滑杆、导入 JSON）共用。重构前只有导入路径夹取、手动路径直接赋值，同一个键两种口径。</string>
+    <string name="pv_oss_layer_w_data_domain">为什么：数据层要用领域层的键名与默认值（FILE_NAME = SettingsRules.PREFS_FILE），但不能反过来——领域层一旦认识 SharedPreferences，就没法在 JVM 上测了。</string>
+    <string name="pv_oss_layer_w_data_storage">为什么：这是唯一允许知道「数据存在哪」的一层。换存储（DataStore、文件、网络）时只改这一层，上面三层不动。</string>
+    <string name="pv_oss_layer_flow_title">一次改值的完整旅程（点一步看真实函数）</string>
+    <string name="pv_oss_layer_flow_step">%1$d. %2$s</string>
+    <string name="pv_oss_layer_f_gesture">手势：滑杆把原始值交出去</string>
+    <string name="pv_oss_layer_f_clamp">规则：夹到区间内，NaN 有兜底</string>
+    <string name="pv_oss_layer_f_write">落盘：写夹取后的值，不是入参</string>
+    <string name="pv_oss_layer_f_notify">通知：mutableStateOf 被赋值</string>
+    <string name="pv_oss_layer_f_recompose">重组：读过它的组合函数重画</string>
+    <string name="pv_oss_layer_c_gesture">SettingsScreen.kt: Slider(onValueChange = { settings.updateMotionDamping(it) })</string>
+    <string name="pv_oss_layer_c_clamp">AppSettingsState.updateMotionDamping(v) → SettingsRules.clampDamping(v)（区间 0..1，NaN 回落到 0.5）</string>
+    <string name="pv_oss_layer_c_write">repo.writeFloat(KEY_DAMPING, motionDamping)　← 写的是夹取后的属性；改造过程中这里一度写成入参 value（内存夹了、磁盘没夹），被一致性审计当场抓到</string>
+    <string name="pv_oss_layer_c_notify">motionDamping by mutableStateOf(...) 的 private set 赋值 → 快照系统记下这次写入</string>
+    <string name="pv_oss_layer_c_recompose">所有读过 settings.motionDamping 的组合函数失效重画，没读过的不重画</string>
+    <string name="pv_oss_layer_probe_title">活体演示：%1$s 的夹取规则</string>
+    <string name="pv_oss_layer_probe">滑杆给 %1$s → 规则层夹成 %2$s（区间 %3$s..%4$s）</string>
+    <string name="pv_oss_layer_live">当前真实值（经 storage → data → state 读上来）：motionDamping = %1$s｜customSeed = %2$s</string>
+    <string name="pv_oss_layer_write">写入真实设置</string>
+    <string name="pv_oss_layer_restore">恢复出厂值 0.50</string>
+    <string name="pv_oss_layer_purity">领域层纯净度实测（%1$s）：domain/ 下 4 个文件，非 kotlin.* 的 import 共 1 处（java.util.Locale），android.* / androidx.* / Compose 违规 0 处。这条约束不是口号——它是本地能跑 71 个单元测试的唯一原因：沙箱里没有 Android SDK，也没有 Gradle 分发缓存。</string>
+    <string name="pv_oss_layer_purity_cmd">grep -h \'^import\' domain/*.kt | grep -v \'kotlin\\.\'　；　grep -rnE \'^import (android|androidx)\' domain/*.kt</string>
+    <string name="pv_oss_layer_contract">跨版本契约：prefs 文件名 liquidui.settings、25 个键的字面值、exportThemeJson 的字段集合、schema = 1。批 A 用 storageIdentityIsLocked／preferenceKeysAreUnique／exportFieldsCoverEveryRuleAndDefault 三条测试锁住；要改任何一条就得同时改测试，这是故意的。</string>
+    <string name="pv_oss_layer_scope">如实说明范围：这是一条竖切，不是全仓库分层。只有设置项这条链走完了 ui → state → data → domain → storage；其它特性（素材库、UI2 预览、数据查询）仍是组合函数直接持状态，因为它们的状态就是 remember 里的 UI 状态，没有跨进程持久化，加层只会增加间接性。也没有加 ViewModel 与 Hilt：本仓库的设置状态是应用级的，由 rememberAppSettingsState() 配 applicationContext 提供、进程重建后从 prefs 恢复，ViewModel 不解决任何现存问题；引入 DI 框架则与「零新依赖」的口径直接冲突。要不要加，取决于你的壳有没有「配置变更要保活的状态」与「同一接口多个实现」这两个真实需求。</string>
 
     <!-- 批 F：UI2 目录条目 S15–S18（name / summary / params / prompt） -->
     <string name="ui2_s15_name">图片变换九宫格</string>
@@ -2349,9 +2482,25 @@
     <string name="ui2_s17_params">字阶 15 档逐档对照（现值 vs 建议值，含未定义判定）｜形状阶 7 档对照（含 large==medium 的区分度问题、Shape 无法运行时反查圆角的 API 限制）｜dp TOP12 与 sp 6 档实测＋4dp 栅格判定＋条形图｜"只看待修正"开关｜每页附取数命令</string>
     <string name="ui2_s17_prompt" formatted="false">用 Compose 做一页设计规范对照表，零第三方依赖，三个标签页：字阶、形状阶、间距实测，外加一个"只看待修正"开关。① 字阶页：把 Material 3 公开的 15 档（displayLarge 57/64/-0.25/400、displayMedium 45/52/0/400、displaySmall 36/44/0/400、headlineLarge 32/40/0/400、headlineMedium 28/36/0/400、headlineSmall 24/32/0/400、titleLarge 22/28/0/400、titleMedium 16/24/+0.15/500、titleSmall 14/20/+0.1/500、bodyLarge 16/24/+0.5/400、bodyMedium 14/20/+0.25/400、bodySmall 12/16/+0.4/400、labelLarge 14/20/+0.1/500、labelMedium 12/16/+0.5/500、labelSmall 11/16/+0.5/500）与 MaterialTheme.typography 的**实际生效值**逐档对照，现值从 live.fontSize.value／live.lineHeight.value／live.letterSpacing.value／live.fontWeight?.weight 读，每行显示"现值 X sp / 行高 Y sp / 字距 Z sp / 字重 W"和"建议值 …"，不符的行底色换 errorContainer；字距在 Compose 里单位就是 sp，与 M3 的 tracking 同单位可直接比，浮点数在 Kotlin 侧用 String.format(Locale.US, "%.1f", v) 预格式化后再传给资源（资源里只留 %1$s／%1$d，不要写 %.1f 这种带 flags 的占位符）。未定义的档位（本仓库 Type.kt 只定义了 13/15 档，缺 headlineLarge 与 titleSmall，走 Compose 默认值）要单独标出来，并且不要把它们算进"不符"。② 形状阶页：M3 七档 none 0／xs 4／s 8／m 12／l 16／xl 28／full 50% 对照本仓库 OShinShapes 的 xs 8／s 12／m 16／l 16／xl 24（无 none 与 full），每行画一个 40dp 方块显示本仓库档位的真实圆角，未定义的档位方块留空；并写明两条真问题：large 与 medium 都是 16dp 失去区分度、没有 none 与 full 导致需要直角或纯圆时只能临时写；还要写明 API 限制：Compose 的 Shape 无法在运行时反查圆角数值（CornerSize 不暴露 size），所以形状档位只能从源码抄录，不能像字阶那样读 MaterialTheme 现值。③ 间距实测页：给出全仓 dp 用量 TOP12（8dp 195 次、10dp 174、12dp 156、16dp 136、6dp 115、14dp 96、4dp 84、22dp 50、24dp 42、20dp 33、2dp 33、1dp 21）与绕过字阶的硬编码 sp（12sp 30 次、11sp 14、9sp 6、10sp 6、18sp 5、16sp 5），每个值配一条按次数比例的条形图，能被 4 整除的判为在栅格上（绿色）否则脱离栅格（红色），并给出结论：TOP12 合计 1135 次里 646 在栅格、489 不在（43%），其中 10/14/22dp 共 320 次属于本该取邻近栅格值却写了奇数，修法是先在主题里定义 spacing 令牌、新代码只用令牌、旧代码按页面逐步收敛，不要全局替换。④ 三页都必须在底部附**可复算的取数命令**（grep -roh "[0-9]+\.dp" … | sort | uniq -c | sort -rn | head -12 这类），并写明数字随代码变动、换基线后要重测。所有中文走 strings.xml，档位名（displayLarge 等）是代码标识符可直接显示。</string>
     <string name="ui2_s18_name">内存泄漏与引用链自检</string>
-    <string name="ui2_s18_summary" formatted="false">按 LeakCanary 的读法画一条本仓库真实形状的引用链（GC Root → 状态对象 → Activity），配八类常见泄漏模式的检测命令、粗 grep 命中数与逐条眼看后的真实数。重点不是"有几个泄漏"，而是暴露文本扫描的误报率：两条最像风险的计数误报率 100%。取材自 square/leakcanary，不引依赖。</string>
-    <string name="ui2_s18_params" formatted="false">引用链 4 环＋每环"谁持有谁"＋断点建议｜八类模式清单（粗 grep vs 真实两列，共 10 行）｜误报率 100% 的两条实证｜带边界的可复算命令 5 条｜构建期快照如实降级</string>
-    <string name="ui2_s18_prompt" formatted="false">用 Compose 做一页内存泄漏自检教学页，零第三方依赖（不要引 LeakCanary），内容分三块。① 引用链可视化：按 LeakCanary 的读法从上往下画四环，每环一张卡，环与环之间标"↓ 持有"：第一环 GC Root（主线程或组合根，永远活着，是链条起点）；第二环一个长生命周期状态对象，用一个真实的代码坏味道举例——构造参数写作 private val prefs: Context，名字叫 prefs 类型却是 Context，于是这个对象把 Context 一路带着走（第二环用 errorContainer 底色高亮，因为它是唯一需要改的地方）；第三环 Activity，说明它背后是整棵视图树、窗口与已加载资源；第四环结果，说明只要状态对象活得比 Activity 久（被单例、静态字段、未取消的协程或回调引用着）Activity 就回收不掉，链上任一环断开即可，最省事的断点是第二环。链下面给修法四条，按代价从低到高：改形参类型为真正需要的 SharedPreferences／在组合内取 LocalContext.current 用完即弃／必须长存就用 applicationContext／放进 ViewModel 时用 AndroidViewModel 且只存 applicationContext。② 八类模式清单：做成 10 行表格，每行三列信息——模式名、粗 grep 命中数、逐条眼看后的真实数，外加一句结论。数据要如实：GlobalScope 0/0 干净；object 或 companion object 里持 Context／View／Activity／Bitmap 0/0 干净；长生命周期对象持 Context 1/1 是唯一真疑点；注册与注销不成对 0/0 干净；while (true) 粗测 7 处但真实 0 风险（全在 LaunchedEffect 或挂起手势检测器里，随组合离开自动取消）；remember 里缓存 Bitmap 0/0；WebView 0/0；自建 CoroutineScope 粗测 17 处真实 0 处（17 处全是 rememberCoroutineScope()，随组合自动取消）；android.os.Handler 或 java.util.Timer 粗测 9 处真实 0 处（9 处全是 Compose 的 BackHandler(，两个 import 全仓 0 次）；getSystemService 3/3 正常用法未静态缓存。凡是"粗测大于 0 而真实为 0"的行用 errorContainer 底色标成误报。③ 结论区必须把最重要的教训写成一大段：两条最像风险的计数误报率是 100%（17/17 与 9/9），原因是撞上了同名但语义完全不同的 Compose API，所以"扫出 N 处"在逐条眼看之前不能当结论，检测命令必须带边界（\bandroid\.os\.Handler、grep -v BackHandler、grep -v rememberCoroutineScope）才有可信度；这也正是 LeakCanary 存在的理由——它靠运行时对象图与 GC 触发定位，不靠文本匹配。④ 如实降级：页面上明说 App 运行时扫不了自己的源码（那需要引依赖，与零依赖口径冲突），所以这是构建期人工核实快照＋检测方法教学，不是运行时自检，每个数字都随代码变动、改完要重测。⑤ 给一个可展开的"检测命令"区，展开后逐条显示 5 条带边界的 grep 命令（等宽排版、全 ASCII、直接写在代码里不必外置）。所有说明性中文走 strings.xml，命令与代码标识符可留在代码里。</string>
+    <string name="ui2_s18_summary" formatted="false">按 LeakCanary 的读法画一条本仓库真实形状的引用链（GC Root → 状态对象 → Activity），配八类常见泄漏模式的检测命令、粗 grep 命中数与逐条眼看后的真实数。重点不是"有几个泄漏"，而是暴露文本扫描的误报率：两条最像风险的计数误报率 100%，另有一类是页面把检测命令写进被检测的源码树、于是命令命中自己。第 2 环的类型过宽已在批 D 修掉，本页保留为案例。取材自 square/leakcanary，不引依赖。</string>
+    <string name="ui2_s18_params" formatted="false">引用链 4 环＋每环"谁持有谁"＋第 2 环"批 D 已修"标注与复测日期｜八类模式清单（粗 grep vs 真实两列，共 10 行，含两次实测差异的批注）｜误报率 100% 的两条实证＋自指误报一条｜带边界且带 --exclude 的可复算命令 6 条｜构建期快照如实降级</string>
+    <string name="ui2_s18_prompt" formatted="false">用 Compose 做一页内存泄漏自检教学页，零第三方依赖（不要引 LeakCanary），内容分三块。① 引用链可视化：按 LeakCanary 的读法从上往下画四环，每环一张卡，环与环之间标"↓ 持有"：第一环 GC Root（主线程或组合根，永远活着，是链条起点）；第二环一个长生命周期状态对象，用一个真实的代码坏味道举例——构造参数写作 private val prefs: Context，名字叫 prefs 类型却是 Context，于是这个对象把 Context 一路带着走（第二环用 tertiaryContainer 底色高亮、标「批 D 已修」并带复测日期，因为它曾经是唯一需要改的地方、现在已经改完，本页保留它作为案例；同时如实说明它当时也不构成 Activity 泄漏——组合入口传的是 applicationContext）；第三环 Activity，说明它背后是整棵视图树、窗口与已加载资源，并如实说明本仓库这一环从未被拽住；第四环结果，说明只要状态对象活得比 Activity 久（被单例、静态字段、未取消的协程或回调引用着）Activity 就回收不掉，链上任一环断开即可，最省事的断点是第二环；第四环还要如实说明本仓库的链条止于第二环的类型过宽，那是坏味道不是既成泄漏。链下面给修法四条，按代价从低到高：改形参类型为真正需要的东西（本仓库落地为包一层 data/SettingsRepository，换来依赖方向可检查与取值规则可单测）／在组合内取 LocalContext.current 用完即弃／必须长存就用 applicationContext／放进 ViewModel 时用 AndroidViewModel 且只存 applicationContext。② 八类模式清单：做成 10 行表格，每行三列信息——模式名、粗 grep 命中数、逐条眼看后的真实数，外加一句结论。数据要如实：GlobalScope 0/0 干净；object 或 companion object 里持 Context／View／Activity／Bitmap 0/0 干净；长生命周期对象持 Context 首次实测 1/1、批 D 收窄构造参数后复测 1/0 并标注已修（那一处粗命中来自 KDoc 引用旧签名，本身又是一个由文档制造的误报样本）；注册与注销不成对 0/0 干净；while (true) 粗测 7 处但真实 0 风险（全在 LaunchedEffect 或挂起手势检测器里，随组合离开自动取消）；remember 里缓存 Bitmap 0/0；WebView 0/0；自建 CoroutineScope 粗测 17 处真实 0 处（17 处全是 rememberCoroutineScope()，随组合自动取消）；android.os.Handler 或 java.util.Timer 粗测 10 处真实 0 处（9 处是 Compose 的 BackHandler(、第 10 处是 KDoc 里提到 BackHandler，两个 import 全仓 0 次）；getSystemService 3/3 正常用法未静态缓存。凡是"粗测大于 0 而真实为 0"的行用 errorContainer 底色标成误报。③ 结论区必须把最重要的教训写成一大段：两条最像风险的计数误报率是 100%（17/17 与 9/9），原因是撞上了同名但语义完全不同的 Compose API，所以"扫出 N 处"在逐条眼看之前不能当结论，检测命令必须带边界（\bandroid\.os\.Handler、grep -v BackHandler、grep -v rememberCoroutineScope）才有可信度；这也正是 LeakCanary 存在的理由——它靠运行时对象图与 GC 触发定位，不靠文本匹配。结论区还要单独讲一类更隐蔽的误报：页面把检测命令以字符串写进被检测的源码树，于是命令命中自己（复测时 GlobalScope 0→1、CoroutineScope 17→18、while (true) 7→8、Bitmap／WebView 0→1，多出的四处全部来自页面自身），修法是命令统一加 --exclude；它比同名 API 那种误报更难防，因为只在这一页进了源码树之后才出现，每加一条命令就多一处命中。④ 如实降级：页面上明说 App 运行时扫不了自己的源码（那需要引依赖，与零依赖口径冲突），所以这是构建期人工核实快照＋检测方法教学，不是运行时自检，每个数字都随代码变动、改完要重测。⑤ 给一个可展开的"检测命令"区，展开后逐条显示 6 条带边界且带 --exclude 的 grep 命令（等宽排版、全 ASCII、直接写在代码里不必外置）。所有说明性中文走 strings.xml，命令与代码标识符可留在代码里。</string>
+    <string name="ui2_s19_name">BlurHash 真实编解码</string>
+    <string name="ui2_s19_summary">现场把程序化取样的图案编码成 BlurHash、再只凭这串字符解码回来：逐段着色显示 hash 结构（尺寸标志／最大值量化／直流／交流），并当场计算不同分量数下的 MAE。取材自 woltapp/blurhash 的算法规范与参考编码器，不引依赖——算法在 domain/BlurHash.kt 里按规范重写，纯 Kotlin 可单测。</string>
+    <string name="ui2_s19_params">四种程序化图案｜分量数 x／y 各 1–9 可调｜原图与解码图并排（解码尺寸更大）｜hash 逐段着色＋长度公式＋直流色＋MAE｜5 组分量数的现场 MAE 表并标出本图最优｜「纯色图分量越多反而越差」的反直觉结论与基函数非正交的原因｜如实降级说明</string>
+    <string name="ui2_s19_prompt" formatted="false">用 Compose 做一页 BlurHash 教学页，零第三方依赖（不要引 blurhash 库、也不要引 Coil/Glide），核心算法自己写在一个纯 Kotlin 文件里（object，不许 import android/androidx/Compose），页面只做调用与展示。① 算法按 woltapp/blurhash 规范实现：base83 字符集 0-9A-Za-z 再加 #$%*+,-.:;=?@[]^_{|}~ 共 83 个字符；hash 布局是 1 字符尺寸标志（(x−1)+(y−1)×9）＋1 字符量化最大值＋4 字符直流＋每个交流分量 2 字符，总长 4+2×x×y；编码时对每个分量在 sRGB→线性空间做 cos(πix/w)·cos(πjy/h) 投影、归一化因子取 1/2、scale=1/(w·h)，直流按 linear→sRGB 存 4 字符，交流先除最大值再 signPow(0.5) 量化到 −9..9；量化最大值用 floor(max×166−0.5) 夹到 0..82，解码时 realMax=(q+1)/166。提供采样器入口 (x,y)-&gt;ARGB 与像素数组入口两种 encode，两者必须给出同一个 hash（写一条测试锁住）。② 图案用程序化取样，不要读文件也不要 Bitmap：至少给对角渐变、纯色、竖条纹、径向渐变四种，纯色调色板用应用的种子色。③ 交互：图案切换用一排 chip；分量数 x 与 y 各给 −／＋ 步进按钮，范围 1..9，中间显示「当前 x × y」。④ 展示：原图与解码图并排（解码尺寸要明显大于编码取样尺寸，例如 16×12 编码、48×36 解码，用这个尺寸差说明「为什么它能当占位图」），两张图都用 Canvas 逐像素 drawRect 画，相邻像素要加 0.5px 余量盖掉抗锯齿缝；下面把 hash 字符串按段着色（尺寸标志／最大值量化／直流／交流各一色，等宽字体），并给出长度公式 4+2×x×y 的实算对照、直流色的 #AARRGGBB、以及 MAE（解码图与原图在同尺寸下的平均绝对误差，0–255）。⑤ 现场 MAE 表：固定取 1×1、2×2、4×3、6×5、9×9 五组，每组现场编码解码算 MAE，把最小那行标成「本图最优」。表格必须是现场算的，不许抄数字。⑥ 结论区必须写出反直觉的那条：对纯色图，1×1 的 MAE 是 0.00 而 4×3 明显更差，因为纯色只有一个直流分量、多出来的交流分量只会引入量化误差；渐变图则相反，4×3 通常优于 2×2 与 6×5。并解释成因：基函数 cos(πix/w) 在 x=0..w−1 的采样上不正交（w=8 时求和为 1 而非 0），所以常量图也会投出非零交流分量，这是规范行为不是 bug。⑦ 如实降级：页面上明说不解码真实照片，图案是合成的；要接真实图片就把采样器换成 bitmap.getPixel。⑧ 附一条可复算命令（kotlinc 编领域层与测试、JUnitCore 跑测试）。所有说明性中文走 strings.xml，代码标识符与命令可留在代码里；含百分号的串一律加 formatted=\"false\"。</string>
+    <string name="ui2_s20_name">多轨关键帧时间轴</string>
+    <string name="ui2_s20_summary">三条轨道（位移／透明度／缩放）共用一个游标的真时间轴：关键帧与插值全在 domain/KeyframeTrack.kt 里算，页面上那个方块的位置、透明度、缩放由采样值直接驱动，可拖动 scrub、可播放、可逐轨切换插值方式。取材自 airbnb/lottie-android 的多轨关键帧模型，只取时间轴不取缓动曲线库，不引依赖。</string>
+    <string name="ui2_s20_params">三条轨道各 3–4 个关键帧｜逐轨切换 LINEAR／STEP／SMOOTH｜时间轴绘制（曲线＋关键帧菱形＋游标）｜点按定位与横向拖动 scrub｜播放／回起点／游标越过末尾三个控制｜逐轨读数（值、第几段、插值方式、段内进度）与时间轴读数（总进度、已过关键帧、正在动的轨道数）｜越界行为口径｜边界 bug 的修法说明</string>
+    <string name="ui2_s20_prompt">用 Compose 做一页多轨关键帧时间轴教学页，零第三方依赖（不要引 Lottie），时间轴模型自己写在一个纯 Kotlin 文件里（不许 import android/androidx/Compose），页面只做调用、绘制与展示。① 模型：Keyframe(timeMs:Int, value:Float, mode)；Track(key:String, keys:List&lt;Keyframe&gt;)，key 是稳定英文键不是显示文案，构造时校验关键帧按时间升序且至少一帧，暴露 startMs/endMs/durationMs/keyframeCount/segmentCount 与 valueAt/segmentIndexOf/segmentProgressAt/progressAt/passedKeyframesAt/modeOfSegment；Timeline(tracks) 让多条轨道共用一个游标，各轨道起止可以不同（错峰就靠这个），时间轴区间取所有轨道的并集，暴露 sampleAt/progressAt/passedKeyframesAt/segmentsAt/movingTrackCountAt/clampTime/trackOf。② 插值只内建三种：LINEAR 线性、STEP 阶梯（整段保持左端值，到下一帧瞬间跳变，即 Lottie 的 hold）、SMOOTH 用 smoothstep t²(3−2t)。明确说明这不是缓动曲线库，可编辑贝塞尔是另一页（本仓库 W02）的地盘。③ 三条轨道：位移（0→88→18→88，四个关键帧）、透明度（0.15→1→0.4→1）、缩放（0.7→1.25→0.9），总时长 1400ms，每条轨道默认插值方式不同，好让差别一眼可见。④ 时间轴绘制用 Canvas：每条轨道一条基线、一条按取值归一化后的折线（采样 72 点）、关键帧画成小方块、游标画一条贯穿所有轨道的竖线；归一化范围按轨道写死，目的是让三条量纲不同的轨道在同一张图里可比。⑤ 交互：点按时间轴定位游标、横向拖动 scrub（两处共用同一个 x→时间 的换算函数，别各写一遍）；播放按钮用 LaunchedEffect(playing) 每 16ms 推进游标、到末尾回起点，暂停时协程自动取消；再给「游标回起点」与「游标越过末尾」两个按钮，后者故意把游标设到 endMs+500。⑥ 被驱动的实体：一个方块用 graphicsLayer 的 translationX/alpha/scaleX/scaleY 直接吃采样值，scaleX 与 scaleY 必须同值否则非等比拉伸；页面上明说这不是动画控件而是每帧采样。⑦ 读数：逐轨显示值、第几段/共几段、插值方式、段内进度百分比；时间轴级显示总时长、总进度、已过关键帧 n/m、正在动的轨道数 n/m。⑧ 边界口径必须写清并可在页面上验证：游标在首帧之前→段序号 −1、取首值；越过末帧→段序号夹到最后一段（绝不返回越界序号）、取末值不外推、总进度 1.0、正在动的轨道数 0。「正在动的轨道」定义为三件事同时成立：游标落在该轨道自己的时间范围内、所在段两端取值不同、插值方式不是 STEP。⑨ 如实说明：这里没有缓动曲线编辑器、没有缓动库、不解析 Lottie JSON，只取时间轴与插值语义。所有说明性中文走 strings.xml；含百分号的串一律加 formatted=\"false\"；浮点读数在 Kotlin 侧用 String.format(Locale.US) 预格式化再传进 stringResource。</string>
+    <string name="ui2_s21_name">路由与返回栈状态机</string>
+    <string name="ui2_s21_summary">一个真的返回栈状态机（domain/RouteStack.kt）：六个操作加返回键，栈可视化、读数与操作日志全部取自同一个实例，日志专门区分「操作被调用」与「状态被改变」。语义参照 adrielcafe/voyager 的 Navigator，不引依赖；路由用稳定英文键，显示文案由 UI 层查资源。</string>
+    <string name="ui2_s21_params">五个目标路由可选｜push／pop／replace／replaceAll／popToRoot／popUntil 六个操作＋返回键＋清空日志｜singleTop 开关｜栈可视化（栈顶在上、带序号与当前徽标）｜读数（深度、栈顶、根、可返回、返回键应退出）｜操作日志显示 changed 一列｜三类「调用了但状态没变」的实验｜BackHandler(enabled = canGoBack) 的接线口径</string>
+    <string name="ui2_s21_prompt">用 Compose 做一页返回栈状态机教学页，零第三方依赖（不要引 Voyager、也不要引 Navigation Compose），状态机自己写在一个纯 Kotlin 文件里（不许 import android/androidx/Compose），页面只做调用与展示。① 状态机 RouteStack(root:String)：内部一个可变列表加一份操作日志，暴露 entries/depth/current/root/canGoBack/contains/indexOf/log/clearLog，操作有 push(route, singleTop=false):Boolean、pop():String?、replace(route):String、replaceAll(routes):Boolean、popToRoot():Int、popUntil(route):Int、onBackPressed():Boolean、shouldExitOnBack():Boolean；操作键与全部操作列表放在伴生对象里（OP_PUSH 等稳定英文键 + OPERATIONS 列表），UI 按这个列表渲染按钮、按键查资源拿显示名。② 日志条目 StackLogEntry(operation, route, changed, depthAfter)，changed 表示栈有没有真的变化——singleTop 命中去重、单元素栈 pop、popUntil 找不到目标都记 changed=false。这一列是本页的重点：「操作被调用」与「状态被改变」是两件事，埋点、动画与返回键判定必须看后者。③ 语义细节：push 在 singleTop 为真且目标已是栈顶时不重复入栈；replaceAll 用给定列表整个重建栈（模拟登录成功后重建成既定栈）；popUntil 找目标最后一次出现的位置，找不到返回 0 且不改栈；popToRoot 返回弹出了几层；onBackPressed 在 canGoBack 时 pop 并返回 true，否则返回 false。④ 页面：目标路由用一排 chip（五个稳定英文键，显示名走资源）；栈可视化按「最上面＝栈顶＝当前屏」渲染，每行给序号、显示名与英文键，栈顶行高亮并带「当前」徽标；六个操作按钮按 OPERATIONS 顺序渲染，另给「按返回键」「清空日志」与 singleTop 开关。⑤ 读数一行：深度、栈顶、根、可返回、返回键应退出（后两个是布尔，文案走资源，别拿显示文案当分支条件）。⑥ 操作日志显示最近 6 条、最新在上，changed=false 的条目用告警底色，让「调用了但没变」一眼可见；并给出三个可复现实验：singleTop 开着连按两次 push 同一路由、深度 1 时按 pop、popUntil 到栈里没有的路由。⑦ 状态机不是 snapshot 状态，页面要用一个 revision 计数器在每次操作后自增来触发重组，并把这一点写在代码注释里——这正是「状态持有者必须让 UI 知道它变了」的最小例子。⑧ 接线口径写清楚：宿主用 BackHandler(enabled = canGoBack) 接管返回键，栈深大于 1 时消费并 pop，等于 1 时 enabled 为 false、事件交还系统退出应用；enabled 写成常量 true 会让应用永远退不出去。⑨ 如实说明：这不是导航框架，没有目的地声明、没有参数传递、没有转场动画，只取返回栈语义。所有说明性中文走 strings.xml；含百分号的串一律加 formatted=\"false\"。</string>
+    <string name="ui2_s22_name">架构分层与单向数据流</string>
+    <string name="ui2_s22_summary">本仓库批 D 改造之后的真实分层：ui → state → data → domain → storage 五层、五条依赖边、一次改值的五步旅程，全部可点开看真实文件与真实函数。页面不是示意图——当前值从真的 SharedPreferences 读上来，写入也真的走完整条链路。口径参照 android/nowinandroid，不引依赖、不引 Hilt。</string>
+    <string name="ui2_s22_params">五层各配职责与禁区（点开看真实文件路径）｜五条依赖边各配一句「为什么只能这个方向」｜一次改值的五步旅程各配真实函数｜活体演示：滑杆给一个越界值看规则层怎么夹、当前真实值实时显示、可真的写回并恢复出厂｜领域层纯净度实测与复算命令｜跨版本契约与锁住它的三条测试｜如实说明这是一条竖切以及为什么不加 ViewModel/Hilt</string>
+    <string name="ui2_s22_prompt">用 Compose 做一页架构分层教学页，零第三方依赖（不要引 Hilt/Koin，也不要引 Room/DataStore），并且不要画一张假架构图：页面上展示的必须是这个仓库里真实存在的分层，值要真的从存储读上来、写回也真的落盘。① 先做一条竖切而不是全仓库重构：挑最长的那条状态链（本仓库是设置项：25 个键、14 处使用点、导入导出与重置三条写路径），把它拆成 ui（组合函数）→ state（状态持有者）→ data（仓库）→ domain（规则）→ storage（SharedPreferences）五层，其余特性保持原样并在页面上如实说明范围。② data 层是唯一持有 SharedPreferences 的地方，不持 Context，提供 readString/readNullableString/readBoolean/readFloat/readInt/contains 与 writeString/writeBoolean/writeFloat/writeInt，再加一个多键原子写 writeStrings(vararg Pair) 与一次性 snapshot()；prefs 文件名与键的字面值定义在 domain 层，data 层引用它们，保证只有一处定义。③ domain 层放取值规则：把原先散落的 coerceIn 全部收进来，每个键一条规则，NaN 要有兜底；提供 clampByKey(key, value)，以及一个 rangeOf(key) —— 用 ±∞ 去问规则本身得到区间，而不是手抄一份区间表，这样 UI 显示的滑杆范围与真正生效的夹取不可能不一致。domain 层不许 import android/androidx/Compose，这条约束要能被一行 grep 验证，并把它作为「本地能跑单元测试」的前提写在页面上。④ 状态持有者的构造参数从 Context 收窄为仓库类型；组合入口在 remember 里取 applicationContext 构造仓库、用完即弃，状态持有者此后不再见到 Context。⑤ 页面结构：五层列表（点开显示真实文件路径、职责、禁区）→ 五条依赖边（点开显示为什么只能单向，其中至少一条要指出「缺这一层会造成什么真实后果」）→ 一次改值的五步旅程（手势→规则→落盘→通知→重组，每步点开显示真实函数名与一行代码）→ 活体演示区。⑥ 活体演示区必须真的接上那条链路：用应用自己的状态入口读出当前值显示出来；给一个滑杆，范围故意超出规则区间（例如 −0.6..2.4 而规则是 0..1），实时显示「滑杆给 x → 规则层夹成 y（区间 a..b）」；再给「写入真实设置」与「恢复出厂值」两个按钮，写入后当前值要跟着变，证明这条路是通的。写入真实设置这件事要在页面上说明、并给出在哪里改回。⑦ 跨版本契约单独成段：prefs 文件名、键的字面值、导出 JSON 的字段集合、schema 版本，以及锁住它们的单元测试名字；明说改任何一条都要同时改测试，这是故意的。⑧ 如实说明为什么不加 ViewModel 与 DI：应用级状态由组合入口配 applicationContext 提供、进程重建后从 prefs 恢复，ViewModel 不解决现存问题；DI 框架与零依赖口径冲突。要不要加取决于两个真实需求——配置变更要保活的状态、同一接口多个实现。⑨ 附纯净度实测数字与复算命令，并标注实测日期（数字会随代码变动）。所有说明性中文走 strings.xml；含百分号的串一律加 formatted=\"false\"；浮点读数在 Kotlin 侧预格式化。</string>
 
     <!-- 批 F：关于页开源致谢 28–31（S15–S18 的来源申明） -->
     <string name="info_credit_28_name">glide-transformations</string>
@@ -2370,4 +2519,20 @@
     <string name="info_credit_31_author">Square</string>
     <string name="info_credit_31_purpose">S18 内存泄漏与引用链自检：引用链的读法（从 GC Root 往下谁持有谁）与常见泄漏模式的清单口径。本仓库为零依赖，只做构建期人工核实快照与检测方法教学，未引入 LeakCanary。</string>
     <string name="info_credit_31_license">Apache-2.0</string>
+    <string name="info_credit_32_name">blurhash</string>
+    <string name="info_credit_32_author">Wolt Enterprises</string>
+    <string name="info_credit_32_purpose">S19 BlurHash 真实编解码：base83 字符集、hash 布局（尺寸标志／量化最大值／直流／交流）、cos 基函数投影与 signPow 量化的算法规范与参考编码器。本仓库为零依赖，按规范在 domain/BlurHash.kt 独立实现并逐行比对，未复制代码、未引入依赖。</string>
+    <string name="info_credit_32_license">MIT</string>
+    <string name="info_credit_33_name">lottie-android</string>
+    <string name="info_credit_33_author">Airbnb</string>
+    <string name="info_credit_33_purpose">S20 多轨关键帧时间轴：关键帧＝时间点＋取值＋到下一帧的插值方式、多轨共用一个游标、hold（阶梯）关键帧的语义。本仓库为零依赖，只取时间轴模型在 domain/KeyframeTrack.kt 独立实现，未取缓动曲线库、未解析 Lottie JSON、未引入依赖。</string>
+    <string name="info_credit_33_license">Apache-2.0</string>
+    <string name="info_credit_34_name">voyager</string>
+    <string name="info_credit_34_author">Adriel Cafe</string>
+    <string name="info_credit_34_purpose">S21 路由与返回栈状态机：push／pop／replace／replaceAll／popUntil 与 singleTop 去重的语义口径。本仓库为零依赖，在 domain/RouteStack.kt 独立实现，未引入依赖。</string>
+    <string name="info_credit_34_license">MIT</string>
+    <string name="info_credit_35_name">nowinandroid</string>
+    <string name="info_credit_35_author">Android (Google)</string>
+    <string name="info_credit_35_purpose">S22 架构分层与单向数据流：screen／state-holder／repository 的分层口径与依赖方向。批 D 的设置项竖切按此落地（新增 data/SettingsRepository.kt、领域层 domain/），本仓库为零依赖，未引入 Hilt 或任何架构库。</string>
+    <string name="info_credit_35_license">Apache-2.0</string>
 </resources>

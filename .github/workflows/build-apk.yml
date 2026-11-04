@@ -37,6 +37,13 @@ jobs:
         working-directory: android
         run: chmod +x gradlew
 
+      - name: Run unit tests
+        working-directory: android
+        run: |
+          # 批 A：领域层是纯 Kotlin（零 Android/Compose import），单元测试跑在 JVM 上，
+          # 不需要 Robolectric、不需要模拟器。测试不进 CI 就等于没写。
+          ./gradlew :app:testDebugUnitTest --no-daemon --console=plain
+
       - name: Build debug APK
         working-directory: android
         run: ./gradlew :app:assembleDebug --no-daemon --console=plain
