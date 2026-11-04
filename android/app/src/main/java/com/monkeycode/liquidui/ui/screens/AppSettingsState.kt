@@ -79,7 +79,7 @@ class AppSettingsState(private val repo: SettingsRepository) {
     var onboardingCompleted by mutableStateOf(repo.readBoolean(KEY_ONBOARDING, false))
         private set
 
-    var motionDamping by mutableFloatStateOf(repo.readFloat(KEY_DAMPING, 0.5f))
+    var motionDamping by mutableFloatStateOf(repo.readFloat(KEY_DAMPING, SettingsRules.DEFAULT_DAMPING))
         private set
 
     var wallpaperMode by mutableStateOf(
@@ -105,15 +105,15 @@ class AppSettingsState(private val repo: SettingsRepository) {
 
     val wallpaperBackground: Boolean get() = wallpaperMode != WallpaperMode.Aurora
 
-    var glassBlurRadiusDp by mutableFloatStateOf(repo.readFloat(KEY_GLASS_BLUR, 0f))
+    var glassBlurRadiusDp by mutableFloatStateOf(repo.readFloat(KEY_GLASS_BLUR, SettingsRules.DEFAULT_BLUR_RADIUS_DP))
         private set
-    var glassRefractionHeightDp by mutableFloatStateOf(repo.readFloat(KEY_REFRACTION_HEIGHT, 15f))
+    var glassRefractionHeightDp by mutableFloatStateOf(repo.readFloat(KEY_REFRACTION_HEIGHT, SettingsRules.DEFAULT_REFRACTION_HEIGHT_DP))
         private set
-    var glassRefractionAmountDp by mutableFloatStateOf(repo.readFloat(KEY_REFRACTION_AMOUNT, 20f))
+    var glassRefractionAmountDp by mutableFloatStateOf(repo.readFloat(KEY_REFRACTION_AMOUNT, SettingsRules.DEFAULT_REFRACTION_AMOUNT_DP))
         private set
-    var glassTintAlpha by mutableFloatStateOf(repo.readFloat(KEY_TINT_ALPHA, 0.08f))
+    var glassTintAlpha by mutableFloatStateOf(repo.readFloat(KEY_TINT_ALPHA, SettingsRules.DEFAULT_TINT_ALPHA))
         private set
-    var glassBorderAlpha by mutableFloatStateOf(repo.readFloat(KEY_BORDER_ALPHA, 0.20f))
+    var glassBorderAlpha by mutableFloatStateOf(repo.readFloat(KEY_BORDER_ALPHA, SettingsRules.DEFAULT_BORDER_ALPHA))
         private set
     var glassVibrancyEnabled by mutableStateOf(repo.readBoolean(KEY_VIBRANCY, true))
         private set
@@ -121,15 +121,15 @@ class AppSettingsState(private val repo: SettingsRepository) {
         private set
 
     var glassOpacity by mutableFloatStateOf(
-        if (repo.contains(KEY_OPACITY)) repo.readFloat(KEY_OPACITY, 0.55f)
-        else repo.readFloat(KEY_FROST, 0.55f)
+        if (repo.contains(KEY_OPACITY)) repo.readFloat(KEY_OPACITY, SettingsRules.DEFAULT_OPACITY)
+        else repo.readFloat(KEY_FROST, SettingsRules.DEFAULT_OPACITY)
     )
         private set
 
-    var glassRefraction by mutableFloatStateOf(repo.readFloat(KEY_REFRACTION, 1f))
+    var glassRefraction by mutableFloatStateOf(repo.readFloat(KEY_REFRACTION, SettingsRules.DEFAULT_REFRACTION))
         private set
 
-    var cornerScale by mutableFloatStateOf(repo.readFloat(KEY_CORNER, 1f))
+    var cornerScale by mutableFloatStateOf(repo.readFloat(KEY_CORNER, SettingsRules.DEFAULT_CORNER_SCALE))
         private set
 
     /** Free-form accent seed colour used when [PaletteId.Custom] is active. */
@@ -137,7 +137,7 @@ class AppSettingsState(private val repo: SettingsRepository) {
         private set
 
     /** 0f..1f — how deep/light the custom background reads. */
-    var customShade by mutableFloatStateOf(repo.readFloat(KEY_CUSTOM_SHADE, 0.5f))
+    var customShade by mutableFloatStateOf(repo.readFloat(KEY_CUSTOM_SHADE, SettingsRules.DEFAULT_CUSTOM_SHADE))
         private set
 
     fun updateOnboardingCompleted(value: Boolean) {
@@ -387,6 +387,7 @@ class AppSettingsState(private val repo: SettingsRepository) {
         const val KEY_REFRACTION = SettingsRules.KEY_REFRACTION
         const val KEY_CORNER = SettingsRules.KEY_CORNER
         const val KEY_CUSTOM_SEED = SettingsRules.KEY_CUSTOM_SEED
+        const val KEY_SEED_HEX = SettingsRules.KEY_SEED_HEX
         const val KEY_CUSTOM_SHADE = SettingsRules.KEY_CUSTOM_SHADE
         const val KEY_ONBOARDING = SettingsRules.KEY_ONBOARDING
     }
