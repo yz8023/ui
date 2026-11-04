@@ -2246,4 +2246,128 @@
     <string name="info_credit_27_author">Mike Penz</string>
     <string name="info_credit_27_purpose">S14 开源清单与许可证合规：从依赖元数据生成库清单、按许可证归类并提示兼容风险的方法</string>
     <string name="info_credit_27_license">Apache-2.0</string>
+
+    <!-- ===== 批 F 开源取材 S15–S18（PreviewOssImage.kt / PreviewOssAudit.kt） ===== -->
+    <string name="pv_oss_fx_intro">九种最常用的图片变换，全部零依赖现场实现：底图是 Canvas 画的渐变＋斜纹＋同心圆＋一白一黑两块，白块黑块用来一眼看出灰度／反色／对比度有没有真生效。点任意一格看它的实现要点。</string>
+    <string name="pv_oss_fx_circle">圆形裁切</string>
+    <string name="pv_oss_fx_rounded">圆角裁切</string>
+    <string name="pv_oss_fx_grayscale">灰度</string>
+    <string name="pv_oss_fx_invert">反色</string>
+    <string name="pv_oss_fx_duotone">双色调</string>
+    <string name="pv_oss_fx_contrast">对比度</string>
+    <string name="pv_oss_fx_mask">异形遮罩</string>
+    <string name="pv_oss_fx_rotate_flip">旋转与镜像</string>
+    <string name="pv_oss_fx_blur">近似模糊</string>
+    <string name="pv_oss_fx_note_circle">圆形裁切最省事的写法是不动像素：Modifier.clip(CircleShape) 套在内容外层，让绘制被裁掉。真要改位图才用 Canvas 的 clipPath。头像这类固定形状一律用 clip，别去算像素。</string>
+    <string name="pv_oss_fx_note_rounded">圆角同理走 Modifier.clip(RoundedCornerShape(12.dp))。注意 clip 只裁绘制，不裁子视图的触摸区域与阴影；要圆角阴影得让背景自己画成圆角，别指望 clip 帮你裁 elevation。</string>
+    <string name="pv_oss_fx_note_grayscale">灰度 = ColorMatrix().apply { setToSaturation(0f) } 再包成 ColorFilter.colorMatrix(...)。关键坑：graphicsLayer 没有 colorFilter 属性，滤镜只能挂在 DrawScope 的每个绘制调用上（drawRect／drawLine／drawCircle 都收 colorFilter 参数），所以要把 filter 作为参数一路传进底图函数。</string>
+    <string name="pv_oss_fx_note_invert">反色是 4×5 矩阵对角写 -1、平移列写 255，alpha 行保持 1／0 不动。alpha 行一旦被顺手乘 -1，整张图会直接消失——这是 ColorMatrix 最经典的翻车点。</string>
+    <string name="pv_oss_fx_note_duotone">双色调三步：先灰度，再叠一层暗色用 BlendMode.Modulate（把暗部压成品牌色），最后叠一层亮色用 BlendMode.Lighten 并给 0.55 透明度（把亮部提上去）。必须先给这一格加 graphicsLayer { compositingStrategy = CompositingStrategy.Offscreen }，否则混合模式会穿透到页面背景，颜色随背景变。</string>
+    <string name="pv_oss_fx_note_contrast">对比度 = 对角乘 1.45、平移列写 (1-1.45)×127.5。只做乘法画面会整体变亮发灰，只做平移会变成一片死黑，两个动作缺一不可。1.45 是照片类内容的常用起点，UI 截图别超过 1.2。</string>
+    <string name="pv_oss_fx_note_mask">异形遮罩用 DrawScope.clipPath(path) { 画内容 }：先构造 Path（这里五角星是 10 个顶点在内外半径之间交替），再在块里正常绘制。Path 的坐标是像素，要按 size 归一化算，别写死 dp；换尺寸不用重算。</string>
+    <string name="pv_oss_fx_note_rotate_flip">旋转与镜像都是 DrawScope 的变换块：rotate(12f) { scale(-1f, 1f) { 画内容 } }，嵌套即复合，内层先作用。镜像写 scale(-1f, 1f) 就够，不要自己算矩阵；要绕某点旋转用 rotate(degrees, pivot)。</string>
+    <string name="pv_oss_fx_note_blur">真模糊要 RenderEffect.createBlurEffect，而它是 API 31 起才有，本仓库 minSdk 26，所以这里用 3×3 共 9 趟、每趟 1/9 透明度、偏移 3.5px 的叠加做近似：小图够用，大图会看出重影。要跨版本真模糊就引依赖或降到 RenderScript 时代的方案，别在 UI 层假装支持。</string>
+    <string name="pv_oss_fx_pitfall">最容易踩的三条：① 以为 graphicsLayer 能设 colorFilter（不能，只有 renderEffect／shadowElevation／alpha 等）；② 用 BlendMode 却忘了 Offscreen，颜色跟着页面背景漂；③ 把模糊写成"调一下 alpha"就交差，实机上小图看不出、大图一眼假。</string>
+    <string name="pv_oss_zoom_phase_placeholder">低清占位</string>
+    <string name="pv_oss_zoom_phase_loading">加载中</string>
+    <string name="pv_oss_zoom_phase_success">已加载</string>
+    <string name="pv_oss_zoom_phase_error">加载失败</string>
+    <string name="pv_oss_zoom_readout">scale=%1$s  offset=(%2$s, %3$s)  触边：%4$s</string>
+    <string name="pv_oss_zoom_edge_yes">是（已到边界，再拖就该回弹或停住）</string>
+    <string name="pv_oss_zoom_edge_no">否</string>
+    <string name="pv_oss_zoom_reset">回到 1x</string>
+    <string name="pv_oss_zoom_reload">重放加载</string>
+    <string name="pv_oss_zoom_note">双指缩放平移 %1$s–%2$s 倍，双击在 1x 与 %3$sx 之间切换（以点按位置为锚），只有已加载态响应手势。占位态用低清版先顶上，加载态在低清版下面走进度条，1.2 秒后自动落到已加载——这就是 telephoto 的 BlurHash 占位思路的零依赖近似。</string>
+    <string name="pv_oss_zoom_pitfall">四条实测过的坑：① detectTransformGestures 与 detectTapGestures 必须挂在两个独立的 pointerInput 上，写进同一个会互相吃事件，双击或缩放总有一个失灵；② 缩放锚点公式是 o2 = (c - center) × (1 - z) + o1 × z + pan，少写 o1 × z 就会一边缩放一边自己漂走；③ 边界钳制要在改 scale 之前用新 scale 算 maxX/maxY，否则松手瞬间能拖出白边；④ 别用 graphicsLayer 的 scale 去"放大看细节"以外的用途，它不重新采样，文字会糊。</string>
+    <string name="pv_oss_spec_tab_type">字阶</string>
+    <string name="pv_oss_spec_tab_shape">形状阶</string>
+    <string name="pv_oss_spec_tab_spacing">间距实测</string>
+    <string name="pv_oss_spec_filter_todo_on">只看待修正 · 开</string>
+    <string name="pv_oss_spec_filter_todo_off">只看待修正 · 关</string>
+    <string name="pv_oss_spec_diff">与建议值不符</string>
+    <string name="pv_oss_spec_same">一致／未定义</string>
+    <string name="pv_oss_spec_defined">本仓库已定义</string>
+    <string name="pv_oss_spec_undefined">未定义（走 Compose 默认值）</string>
+    <string name="pv_oss_spec_type_intro">逐档对照 Material 3 公开字阶与本仓库 ui/theme/Type.kt 的实际生效值（快照日期 %1$s）：15 档里 %2$d 档与建议值不符、%3$d 档按建议值判为未定义，共比对 %4$d 档。每行第一组是现值，第二组是建议值，顺序都是 字号/行高/字距/字重。</string>
+    <string name="pv_oss_spec_type_now">现值 %1$s sp / 行高 %2$s sp / 字距 %3$s sp / 字重 %4$d · %5$s</string>
+    <string name="pv_oss_spec_type_ref">建议 %1$s sp / 行高 %2$s sp / 字距 %3$s sp / 字重 %4$d（material-web 公开规范）</string>
+    <string name="pv_oss_spec_type_cmd">取数命令：grep -n "fontSize\|lineHeight\|letterSpacing\|fontWeight" android/app/src/main/java/com/monkeycode/liquidui/ui/theme/Type.kt。字距单位在 Compose 里就是 sp，与 M3 的 tracking 同单位可直接比。</string>
+    <string name="pv_oss_spec_shape_intro" formatted="false">M3 形状阶七档（none 0 / xs 4 / s 8 / m 12 / l 16 / xl 28 / full 50%）对照本仓库 OShinShapes（xs 8 / s 12 / m 16 / l 16 / xl 24，无 none 与 full）。方块画的是本仓库档位的真实圆角，虚位（未定义）留空。</string>
+    <string name="pv_oss_spec_shape_vals">M3 建议 %1$s｜本仓库 %2$s</string>
+    <string name="pv_oss_spec_shape_full" formatted="false">full（50%，即圆形）</string>
+    <string name="pv_oss_spec_shape_none">未定义</string>
+    <string name="pv_oss_spec_shape_pitfall">两条真问题：① large 与 medium 都是 16dp，这一档失去区分度，卡片和大按钮看起来一模一样；② 没有 none 与 full，需要直角或纯圆时只能临时写 RoundedCornerShape(0.dp)／CircleShape，规格就散了。另一条是 API 限制：Compose 的 Shape 无法在运行时反查圆角数值（CornerSize 不暴露 size），所以本仓库档位只能从源码抄录，不能像字阶那样读 MaterialTheme 现值。</string>
+    <string name="pv_oss_spec_space_intro">全仓 dp 用量 TOP12 与 sp 用量实测（快照日期 %1$s）。绿色是 4dp 栅格上的值，红色不是。这一页不是为了好看，是为了回答"我们的间距到底有没有规格"。</string>
+    <string name="pv_oss_spec_space_row">%1$d dp · %2$d 次</string>
+    <string name="pv_oss_spec_on_grid">在 4dp 栅格上</string>
+    <string name="pv_oss_spec_off_grid">脱离栅格</string>
+    <string name="pv_oss_spec_space_verdict" formatted="false">结论：TOP12 合计 1135 次里 646 次在 4dp 栅格上、489 次不在（43%）。不在栅格的里面，10/14/22dp 共 320 次属于"本该取邻近栅格值却写了奇数"（10 该取 8 或 12、14 该取 12 或 16、22 该取 20 或 24）；6/2/1dp 是细分档，可以接受但最好也定成令牌。修法不是全局替换，而是先在主题里定义 spacing 令牌，再让新代码只用令牌，旧代码按页面逐步收敛。</string>
+    <string name="pv_oss_spec_sp_intro">绕过字阶的硬编码字号（sp）：这些值不跟主题走，改字阶时它们不会变，是深色模式与无障碍字号缩放最先出问题的地方。</string>
+    <string name="pv_oss_spec_space_cmd">取数命令：grep -roh "[0-9]\+\.dp" android/app/src/main/java | sort | uniq -c | sort -rn | head -12；sp 同理换成 "\.sp"。数字会随代码变动，换基线后必须重测，别照抄本页。</string>
+    <string name="pv_oss_leak_intro">按 LeakCanary 的读法看引用链，再对八类常见泄漏模式做构建期人工核实（快照日期 %1$s）。这一页的重点不是"本仓库有几个泄漏"，而是"文本扫描的误报率有多高"。</string>
+    <string name="pv_oss_leak_chain_title">引用链：从 GC Root 往下读，谁被谁拽着不放</string>
+    <string name="pv_oss_leak_chain_step">第 %1$d 环</string>
+    <string name="pv_oss_leak_chain_node1">GC Root：主线程（或组合根）——它永远活着，是链条的起点。</string>
+    <string name="pv_oss_leak_chain_node2">AppSettingsState（ui/screens/AppSettingsState.kt:36）——构造参数写作 private val prefs: Context：名字叫 prefs，类型却是 Context，于是这个状态对象把 Context 一路带着走。</string>
+    <string name="pv_oss_leak_chain_node3">MainActivity——Context 的实际持有者，它背后是整棵视图树、窗口与已加载的资源。</string>
+    <string name="pv_oss_leak_chain_node4">结果：只要 AppSettingsState 的实例活得比 Activity 久（被单例、静态字段、未取消的协程或回调引用着），Activity 就回收不掉。链上任一环断开即可，最省事的断点是第 2 环。</string>
+    <string name="pv_oss_leak_chain_arrow">↓ 持有</string>
+    <string name="pv_oss_leak_chain_fix">修法（按代价从低到高）：① 把形参类型改成真正需要的 SharedPreferences，名字与类型对上，Context 根本不留存；② 需要 Context 的地方在组合内取 LocalContext.current，用完即弃；③ 必须长存就用 applicationContext，别传 Activity；④ 状态对象放进 ViewModel 时用 AndroidViewModel 并只存 applicationContext。第 2 环是这条链唯一的真疑点，也是唯一需要改的地方。</string>
+    <string name="pv_oss_leak_table_title">八类模式：粗 grep 命中 vs 逐条眼看后的真实数</string>
+    <string name="pv_oss_leak_row_globalscope">GlobalScope（脱离生命周期的作用域）</string>
+    <string name="pv_oss_leak_row_staticctx">object／companion object 里持 Context、View、Activity、Bitmap</string>
+    <string name="pv_oss_leak_row_holdctx">长生命周期对象持 Context（含构造参数、单例字段）</string>
+    <string name="pv_oss_leak_row_register">注册与注销不成对（addListener／registerReceiver／observe）</string>
+    <string name="pv_oss_leak_row_whiletrue">while (true) 无限循环</string>
+    <string name="pv_oss_leak_row_bitmap">remember 里缓存 Bitmap 不回收</string>
+    <string name="pv_oss_leak_row_webview">WebView 未 destroy（本仓库不用 WebView）</string>
+    <string name="pv_oss_leak_row_scope">自建 CoroutineScope（需要自己 cancel）</string>
+    <string name="pv_oss_leak_row_handler">android.os.Handler／java.util.Timer 未移除回调</string>
+    <string name="pv_oss_leak_row_service">getSystemService 拿到的系统服务被静态缓存</string>
+    <string name="pv_oss_leak_table_counts">粗 grep 命中 %1$d 处｜眼看后真实 %2$d 处</string>
+    <string name="pv_oss_leak_clean">干净：全仓 0 处，这类模式本仓库没用。</string>
+    <string name="pv_oss_leak_one_risk">唯一真疑点：AppSettingsState.kt:36，形参名 prefs 与实际类型 Context 不符。改类型即可断链。</string>
+    <string name="pv_oss_leak_cancellable">0 风险：7 处全在 LaunchedEffect 或挂起手势检测器（DragGestureDetector.kt）里，随组合离开自动取消，不是裸线程死循环。</string>
+    <string name="pv_oss_leak_false_alarm">误报：命中数全是同名但语义完全不同的 Compose API，真实自建／真实使用都是 0。这条计数在眼看之前毫无意义。</string>
+    <string name="pv_oss_leak_normal">正常用法：3 处都是就地取用，没有静态缓存，不构成泄漏。</string>
+    <string name="pv_oss_leak_verdict" formatted="false">本页最重要的结论：两条最像风险的计数——自建 CoroutineScope 17 处、Handler／Timer 9 处——逐条眼看后误报率是 100%（17/17 全是 rememberCoroutineScope()，它随组合自动取消；9/9 全是 Compose 的 BackHandler(，跟 android.os.Handler 无关，两个 import 全仓 0 次）。所以"扫出 N 处"在没有眼看之前不能当结论，检测命令必须带边界（\bandroid\.os\.Handler、grep -v BackHandler、grep -v rememberCoroutineScope）才有一点可信度。这也正是 LeakCanary 存在的理由：它靠运行时对象图与 GC 触发定位，不靠文本匹配。</string>
+    <string name="pv_oss_leak_downgrade">如实降级：App 运行时扫不了自己的源码，那需要引入 LeakCanary 依赖，与本素材库"零新依赖"的口径冲突。所以这一页是构建期人工核实快照＋检测方法教学，不是运行时自检；上面每个数字都随代码变动，改完代码要按底部命令重测，不要照抄。</string>
+    <string name="pv_oss_leak_cmd_show">展开可复算的检测命令</string>
+    <string name="pv_oss_leak_cmd_hide">收起检测命令</string>
+
+    <!-- 批 F：UI2 目录条目 S15–S18（name / summary / params / prompt） -->
+    <string name="ui2_s15_name">图片变换九宫格</string>
+    <string name="ui2_s15_summary">九种最常用的图片变换，零依赖现场实现：圆形与圆角裁切、灰度、反色、双色调、对比度、异形遮罩、旋转镜像、近似模糊。底图是 Canvas 画的（渐变＋斜纹＋同心圆＋一白一黑两块），点任意一格看它的实现要点与参数口径。取材自 wasabeef/glide-transformations 的变换清单，不引 Glide。</string>
+    <string name="ui2_s15_params">变换 9 种｜ColorMatrix 4×5 矩阵｜ColorFilter 挂到每个绘制调用｜clipPath 异形遮罩｜rotate＋scale(-1,1) 复合变换｜双色调必须 Offscreen｜近似模糊 9 趟叠加（真模糊要 API 31）</string>
+    <string name="ui2_s15_prompt">用 Compose 做一个图片变换九宫格，零第三方依赖，3×3 共九格，底图不要引图片资源，用 Canvas 现场画（线性渐变＋斜纹＋三个同心圆＋一块纯白一块纯黑，白块黑块是为了让灰度／反色／对比度一眼可辨）。九种变换分别是：圆形裁切、圆角裁切、灰度、反色、双色调、对比度、异形遮罩（五角星）、旋转与镜像、近似模糊。实现口径必须按下面来：① 灰度用 ColorMatrix().apply { setToSaturation(0f) } 包成 ColorFilter.colorMatrix，并且注意 graphicsLayer 没有 colorFilter 属性，滤镜要作为参数传进底图绘制函数、挂在每一个 drawRect／drawLine／drawCircle 调用上；② 反色的 4×5 矩阵对角写 -1、平移列写 255、alpha 行保持 1 和 0 不动；③ 对比度对角乘 1.45、平移列写 (1-1.45)×127.5，两个动作缺一不可；④ 双色调先灰度，再叠暗色用 BlendMode.Modulate、叠亮色用 BlendMode.Lighten 且透明度 0.55，并且这一格必须加 graphicsLayer { compositingStrategy = CompositingStrategy.Offscreen }，否则混合模式会穿透到页面背景；⑤ 圆形与圆角不要动像素，直接 Modifier.clip(CircleShape)／clip(RoundedCornerShape(12.dp))；⑥ 五角星用 Path 在内外半径之间交替 10 个顶点，坐标按 size 归一化算不要写死 dp，再 DrawScope.clipPath(path) { 画内容 }；⑦ 旋转镜像写成 rotate(12f) { scale(-1f, 1f) { 画内容 } }，嵌套即复合；⑧ 模糊如实降级：真模糊要 RenderEffect（API 31 起），minSdk 26 下用 3×3 共 9 趟、每趟 1/9 透明度、偏移 3.5px 的叠加近似，并在页面上说明大图会看出重影。点格子切换选中态（选中格背景换 primaryContainer 并触发一次 LongPress 触感），格子下方展示当前变换的实现要点文案。所有中文走 strings.xml，代码里不许出现中文字面量。</string>
+    <string name="ui2_s16_name">可缩放看图与占位</string>
+    <string name="ui2_s16_summary">可缩放看图区的完整手势与状态实现：双指缩放平移、双击在 1x 与 2.5x 之间切换并以点按位置为锚、边界钳制与触边读数，外加低清占位／加载中／已加载／加载失败四态切换。取材自 saket/telephoto 的缩放与占位思路，不引依赖。</string>
+    <string name="ui2_s16_params">缩放 1–4x｜双击 2.5x｜锚点公式 o2 = (c-center)×(1-z) + o1×z + pan｜两个独立 pointerInput｜四态：低清占位／进度条加载／成功／失败染色｜触边判定与读数</string>
+    <string name="ui2_s16_prompt">用 Compose 做一个可缩放看图区，零第三方依赖，不引图片资源（底图用 Canvas 现场画）。要求：① 容器用 BoxWithConstraints 拿到宽高像素，外层 clip 成 14dp 圆角；② 内容层用 graphicsLayer 的 scaleX／scaleY／translationX／translationY 驱动，不要改布局尺寸；③ 双指手势用 detectTransformGestures，双击用 detectTapGestures，两者必须挂在两个独立的 pointerInput 上（写进同一个会互相吃事件，实机上双击或缩放总有一个失灵）；④ 缩放范围钳在 1–4 倍，缩放锚点必须让质心下那个点缩放后仍停在质心，公式是 o2 = (centroid - center) × (1 - z) + offset × z + pan，其中 z = 新scale/旧scale，少写 offset × z 项画面会一边缩放一边自己漂走；⑤ 边界钳制要用新的 scale 先算 maxX = (scale-1)×w/2、maxY = (scale-1)×h/2，再把 offset 夹进 ±max，顺序错了松手瞬间会拖出白边；⑥ 双击在 1x 与 2.5x 之间切换，放大时以点按位置为锚（同样用上面的公式，把 centroid 换成点按坐标、旧 offset 当作 0），并触发一次 LongPress 触感；⑦ 做四个状态：低清占位（用 3×3 偏移叠加画出模糊版先顶上）、加载中（低清版下面走一条进度条，1.2 秒走完自动落到已加载）、已加载（清晰版，只有这个状态响应手势）、加载失败（清晰版降到 0.25 透明度再叠一层 error 色 0.18 透明度）；⑧ 页面下方给实时读数：scale 保留两位小数、offset 取整、以及是否触边，再给"回到 1x"和"重放加载"两个按钮；⑨ 在页面上写明四条坑（两个 pointerInput、锚点公式、钳制顺序、graphicsLayer 不重新采样所以文字会糊）。所有中文走 strings.xml。</string>
+    <string name="ui2_s17_name">字阶·形状阶·间距对照表</string>
+    <string name="ui2_s17_summary">把 Material 3 公开的 15 档字阶（字号／行高／字距／字重）与七档形状阶，跟本仓库实际生效值逐档对照，标出哪几档没定义、哪几档与建议值不符；第三页是全仓 dp 用量 TOP12 与绕过字阶的硬编码 sp 实测，带栅格判定与条形图。数值取自 material-components/material-web 的公开规范。</string>
+    <string name="ui2_s17_params">字阶 15 档逐档对照（现值 vs 建议值，含未定义判定）｜形状阶 7 档对照（含 large==medium 的区分度问题、Shape 无法运行时反查圆角的 API 限制）｜dp TOP12 与 sp 6 档实测＋4dp 栅格判定＋条形图｜"只看待修正"开关｜每页附取数命令</string>
+    <string name="ui2_s17_prompt" formatted="false">用 Compose 做一页设计规范对照表，零第三方依赖，三个标签页：字阶、形状阶、间距实测，外加一个"只看待修正"开关。① 字阶页：把 Material 3 公开的 15 档（displayLarge 57/64/-0.25/400、displayMedium 45/52/0/400、displaySmall 36/44/0/400、headlineLarge 32/40/0/400、headlineMedium 28/36/0/400、headlineSmall 24/32/0/400、titleLarge 22/28/0/400、titleMedium 16/24/+0.15/500、titleSmall 14/20/+0.1/500、bodyLarge 16/24/+0.5/400、bodyMedium 14/20/+0.25/400、bodySmall 12/16/+0.4/400、labelLarge 14/20/+0.1/500、labelMedium 12/16/+0.5/500、labelSmall 11/16/+0.5/500）与 MaterialTheme.typography 的**实际生效值**逐档对照，现值从 live.fontSize.value／live.lineHeight.value／live.letterSpacing.value／live.fontWeight?.weight 读，每行显示"现值 X sp / 行高 Y sp / 字距 Z sp / 字重 W"和"建议值 …"，不符的行底色换 errorContainer；字距在 Compose 里单位就是 sp，与 M3 的 tracking 同单位可直接比，浮点数在 Kotlin 侧用 String.format(Locale.US, "%.1f", v) 预格式化后再传给资源（资源里只留 %1$s／%1$d，不要写 %.1f 这种带 flags 的占位符）。未定义的档位（本仓库 Type.kt 只定义了 13/15 档，缺 headlineLarge 与 titleSmall，走 Compose 默认值）要单独标出来，并且不要把它们算进"不符"。② 形状阶页：M3 七档 none 0／xs 4／s 8／m 12／l 16／xl 28／full 50% 对照本仓库 OShinShapes 的 xs 8／s 12／m 16／l 16／xl 24（无 none 与 full），每行画一个 40dp 方块显示本仓库档位的真实圆角，未定义的档位方块留空；并写明两条真问题：large 与 medium 都是 16dp 失去区分度、没有 none 与 full 导致需要直角或纯圆时只能临时写；还要写明 API 限制：Compose 的 Shape 无法在运行时反查圆角数值（CornerSize 不暴露 size），所以形状档位只能从源码抄录，不能像字阶那样读 MaterialTheme 现值。③ 间距实测页：给出全仓 dp 用量 TOP12（8dp 195 次、10dp 174、12dp 156、16dp 136、6dp 115、14dp 96、4dp 84、22dp 50、24dp 42、20dp 33、2dp 33、1dp 21）与绕过字阶的硬编码 sp（12sp 30 次、11sp 14、9sp 6、10sp 6、18sp 5、16sp 5），每个值配一条按次数比例的条形图，能被 4 整除的判为在栅格上（绿色）否则脱离栅格（红色），并给出结论：TOP12 合计 1135 次里 646 在栅格、489 不在（43%），其中 10/14/22dp 共 320 次属于本该取邻近栅格值却写了奇数，修法是先在主题里定义 spacing 令牌、新代码只用令牌、旧代码按页面逐步收敛，不要全局替换。④ 三页都必须在底部附**可复算的取数命令**（grep -roh "[0-9]+\.dp" … | sort | uniq -c | sort -rn | head -12 这类），并写明数字随代码变动、换基线后要重测。所有中文走 strings.xml，档位名（displayLarge 等）是代码标识符可直接显示。</string>
+    <string name="ui2_s18_name">内存泄漏与引用链自检</string>
+    <string name="ui2_s18_summary" formatted="false">按 LeakCanary 的读法画一条本仓库真实形状的引用链（GC Root → 状态对象 → Activity），配八类常见泄漏模式的检测命令、粗 grep 命中数与逐条眼看后的真实数。重点不是"有几个泄漏"，而是暴露文本扫描的误报率：两条最像风险的计数误报率 100%。取材自 square/leakcanary，不引依赖。</string>
+    <string name="ui2_s18_params" formatted="false">引用链 4 环＋每环"谁持有谁"＋断点建议｜八类模式清单（粗 grep vs 真实两列，共 10 行）｜误报率 100% 的两条实证｜带边界的可复算命令 5 条｜构建期快照如实降级</string>
+    <string name="ui2_s18_prompt" formatted="false">用 Compose 做一页内存泄漏自检教学页，零第三方依赖（不要引 LeakCanary），内容分三块。① 引用链可视化：按 LeakCanary 的读法从上往下画四环，每环一张卡，环与环之间标"↓ 持有"：第一环 GC Root（主线程或组合根，永远活着，是链条起点）；第二环一个长生命周期状态对象，用一个真实的代码坏味道举例——构造参数写作 private val prefs: Context，名字叫 prefs 类型却是 Context，于是这个对象把 Context 一路带着走（第二环用 errorContainer 底色高亮，因为它是唯一需要改的地方）；第三环 Activity，说明它背后是整棵视图树、窗口与已加载资源；第四环结果，说明只要状态对象活得比 Activity 久（被单例、静态字段、未取消的协程或回调引用着）Activity 就回收不掉，链上任一环断开即可，最省事的断点是第二环。链下面给修法四条，按代价从低到高：改形参类型为真正需要的 SharedPreferences／在组合内取 LocalContext.current 用完即弃／必须长存就用 applicationContext／放进 ViewModel 时用 AndroidViewModel 且只存 applicationContext。② 八类模式清单：做成 10 行表格，每行三列信息——模式名、粗 grep 命中数、逐条眼看后的真实数，外加一句结论。数据要如实：GlobalScope 0/0 干净；object 或 companion object 里持 Context／View／Activity／Bitmap 0/0 干净；长生命周期对象持 Context 1/1 是唯一真疑点；注册与注销不成对 0/0 干净；while (true) 粗测 7 处但真实 0 风险（全在 LaunchedEffect 或挂起手势检测器里，随组合离开自动取消）；remember 里缓存 Bitmap 0/0；WebView 0/0；自建 CoroutineScope 粗测 17 处真实 0 处（17 处全是 rememberCoroutineScope()，随组合自动取消）；android.os.Handler 或 java.util.Timer 粗测 9 处真实 0 处（9 处全是 Compose 的 BackHandler(，两个 import 全仓 0 次）；getSystemService 3/3 正常用法未静态缓存。凡是"粗测大于 0 而真实为 0"的行用 errorContainer 底色标成误报。③ 结论区必须把最重要的教训写成一大段：两条最像风险的计数误报率是 100%（17/17 与 9/9），原因是撞上了同名但语义完全不同的 Compose API，所以"扫出 N 处"在逐条眼看之前不能当结论，检测命令必须带边界（\bandroid\.os\.Handler、grep -v BackHandler、grep -v rememberCoroutineScope）才有可信度；这也正是 LeakCanary 存在的理由——它靠运行时对象图与 GC 触发定位，不靠文本匹配。④ 如实降级：页面上明说 App 运行时扫不了自己的源码（那需要引依赖，与零依赖口径冲突），所以这是构建期人工核实快照＋检测方法教学，不是运行时自检，每个数字都随代码变动、改完要重测。⑤ 给一个可展开的"检测命令"区，展开后逐条显示 5 条带边界的 grep 命令（等宽排版、全 ASCII、直接写在代码里不必外置）。所有说明性中文走 strings.xml，命令与代码标识符可留在代码里。</string>
+
+    <!-- 批 F：关于页开源致谢 28–31（S15–S18 的来源申明） -->
+    <string name="info_credit_28_name">glide-transformations</string>
+    <string name="info_credit_28_author">Wasabeef</string>
+    <string name="info_credit_28_purpose">S15 图片变换九宫格：图片变换的分类清单与参数口径（裁切／灰度／反色／双色调／对比度／遮罩／模糊）。本仓库为零依赖，按其公开口径用 Compose 的 ColorMatrix 与 DrawScope 独立实现，未复制代码，也未引入 Glide。</string>
+    <string name="info_credit_28_license">Apache-2.0</string>
+    <string name="info_credit_29_name">telephoto</string>
+    <string name="info_credit_29_author">Saket Narayan</string>
+    <string name="info_credit_29_purpose">S16 可缩放看图与占位：缩放平移手势、双击锚定，以及低清占位（BlurHash）先顶上再换清图的加载策略。本仓库为零依赖，占位用多趟偏移叠加近似，未复制代码。</string>
+    <string name="info_credit_29_license">Apache-2.0</string>
+    <string name="info_credit_30_name">material-web</string>
+    <string name="info_credit_30_author">Material Components Team（Google）</string>
+    <string name="info_credit_30_purpose">S17 字阶·形状阶·间距对照表：Material 3 的 15 档字号／行高／字距／字重与七档形状阶的公开规范数值，用作与本仓库实际生效值逐档对照的基准。</string>
+    <string name="info_credit_30_license">Apache-2.0</string>
+    <string name="info_credit_31_name">leakcanary</string>
+    <string name="info_credit_31_author">Square</string>
+    <string name="info_credit_31_purpose">S18 内存泄漏与引用链自检：引用链的读法（从 GC Root 往下谁持有谁）与常见泄漏模式的清单口径。本仓库为零依赖，只做构建期人工核实快照与检测方法教学，未引入 LeakCanary。</string>
+    <string name="info_credit_31_license">Apache-2.0</string>
 </resources>
