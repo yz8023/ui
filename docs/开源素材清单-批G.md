@@ -134,6 +134,65 @@ java -cp /tmp/tout:junit-4.13.2.jar:hamcrest-core-1.3.jar:kotlin-stdlib.jar \
 `cashapp/paparazzi`（Apache-2.0 ★2638，截图测试，要引依赖）、`mockk/mockk`（Apache-2.0 ★5766，同上）。
 另有视频来源未取材：同合集的表单 7、控件 7 连、导航 9、动画+鼠标 12、异常处理 14、调试 14、日志 12。
 
-## 九、落地结果（施工完成后回填）
+## 九、落地结果（2026-11-05 实测回填）
 
-（待回填）
+### 提交与发版
+
+| 项 | 值 |
+| --- | --- |
+| PR | [#29](https://github.com/yz8023/ui/pull/29)（26 文件 +3759/−155，已合并） |
+| 合并提交 | `d6634ef` ← `f1eb5fb`（CI 修复）← `de928e5`（版本号）← `e244b6a`（素材）← `c47c7e3`（批 D）← `ad68f24`（批 A+domain） |
+| tag | `v2.14.0`（指向 `d6634ef`，annotated） |
+| versionCode / versionName | 22 → **23** / 2.13.0 → **2.14.0** |
+| Release | id 434346732，`draft=False`，**2 个资产一次成功**（批 F 那次需要 rerun-failed-jobs，本批没有复发） |
+| `liquidui-v2.14.0-release.apk` | **3282140 B**，sha256 `94528685a93e9a9d972a4fb3c1bb87fabbcee1179e37c23a8776171b303cac52` |
+| `liquidui-v2.14.0-source.zip` | **4865129 B**，sha256 `d0b1700d215269dc49d4103fb1d466e83602f50e14c12b83d0d73ef55f72d60f` |
+
+### CI 实测（「CI 绿才合并」在这一批真的挡下了一次事故）
+
+| run | 提交 | 结论 | 说明 |
+| --- | --- | --- | --- |
+| #187 | `ad68f24` | success | 首次跑新增的 `Run unit tests` 步骤 |
+| #188 / #189 / #190 | `c47c7e3` / `e244b6a` / `de928e5` | **failure** | `:app:compileDebugKotlin FAILED` |
+| #191 | `f1eb5fb` | success | `> Task :app:testDebugUnitTest` 执行、BUILD SUCCESSFUL in 2m 54s |
+| #193 | main | — | 合并后的 debug 构建 |
+| Release #21 | `v2.14.0` | success | R8 release APK + `git archive` 源码 zip |
+
+真错只有一条，两处引用：
+
+```
+e: AppSettingsState.kt:297:13 Unresolved reference 'KEY_SEED_HEX'.
+e: AppSettingsState.kt:336:61 Unresolved reference 'KEY_SEED_HEX'.
+```
+
+成因：批 D 把导出/导入 JSON 的种子色十六进制改走规则层时用了 `KEY_SEED_HEX`，但伴生对象的键常量是从原代码逐个委托过来的，而原代码这一处写的是裸字面量 `"customSeedHex"`、**根本没有对应常量**，委托循环覆盖不到它。本地无法自证：`AppSettingsState` 依赖 Compose 与 `SharedPreferences`，沙箱里没有 Android SDK。修法＝补 `const val KEY_SEED_HEX = SettingsRules.KEY_SEED_HEX`，并加了一道自检（文件里用到的 `KEY_*` 与声明的 `KEY_*` 做集合差，现在 26/26 差集为空）。
+
+顺带把 11 处属性初值的浮点字面量改引 `SettingsRules.DEFAULT_*`：上一提交的说明里写了「初值改引 DEFAULT_*」，实际只改了 `customSeed` 一处，这次补齐，让说法与代码一致。
+
+### 素材落地实测
+
+四条全部是真实现，源码 zip 内已核对文件在位（12 个新文件 + 8 个新目录条目 = zip 512 → 532）。
+
+- **S19**（`PreviewOssHash.kt`）：MAE 表在设备上 `remember` 现场编解码算。纯色 8×8 `0xFF3E8FE0`、4×3 → hash `LU7EDUpMfQpMpMkDfQkDfQfQfQfQ`（28 字符）。实测 MAE：纯色 1×1=**0.00**／2×2=11.64／4×3=**13.53**／6×5=15.10／9×9=7.93；渐变 16×12 1×1=63.52／2×2=15.80／4×3=**14.60**／6×5=17.22／9×9=17.74。测量日期常量 `HASH_MEASURE_DATE="2026-11-04"`。
+- **S20**（同文件）：三轨共用游标，插值只有 LINEAR/STEP/SMOOTH，缓动归 W02。批 F 主动剔除的 lottie 在本批以「只取多轨关键帧时间轴」的方式闭环。
+- **S21**（`PreviewOssArch.kt`）：跑 `domain/RouteStack.kt` 真状态机。页面用 `remember` 存 `revision` 计数器（`RouteStack` 不是 snapshot 状态，不自增就不触发重组），且与 `stack` 同生命周期，旋转后读数才与栈一致。
+- **S22**（同文件）：展示批 D 真实分层并活体接真实 prefs。滑杆范围故意给 −0.6..2.4（规则是 0..1）以看见 `clampByKey` 夹取；「写入真实设置」真的调 `updateMotionDamping`；恢复出厂回到 0.50。测量日期常量 `LAYER_MEASURE_DATE="2026-11-05"`。
+
+批 D 重构后的分层实测：`domain/` 4 文件、非 `kotlin.*` 的 import 只有 1 处（`java.util.Locale`）、`android`/`androidx`/`R`/`ui` 的 import **0 处**；`AppSettingsState` 407 行、`store.` 0 处、字面 `coerceIn` 0 处、`repo.` 49 处、`SettingsRules.` 66 处、`Context` 只在 `rememberAppSettingsState()` 出现一次。
+
+### S18 修正（已发布内容的事实错误）
+
+1. 原文「`AppSettingsState` 持 Context → MainActivity → 泄漏」：`rememberAppSettingsState()` 传的是 **applicationContext**，当时就不构成 Activity 泄漏，真实问题只是类型比需要的宽（批 D 已修）。
+2. 复测时四条命令的粗命中数各多 1 处，逐条眼看后全部来自**页面自己**——检测命令以字符串写在被检测的源码树里，于是命令命中自己。修法＝所有命令加 `--exclude=PreviewOssAudit.kt`。
+3. Handler／Timer 松口径 9→10：第 10 处是 `RouteStack.kt` 的 KDoc 提到 `BackHandler`，仍被 `grep -v BackHandler` 滤掉，真实数 0。
+4. 「长生命周期对象持 Context」由 1/1 变 **1/0（已修）**；现在唯一的粗命中是 `SettingsRepository.kt` 的 KDoc 引用旧签名——一个由文档制造的误报样本。
+
+### 闸门与文档
+
+`probe-i18n` 退 0（警告回基线 9；纠正了 23 处 `formatted="false"` 误用——带实参的串不该加，加了 `%%` 不还原）｜`probe-composable-scope` 82 个 .kt 越界 0｜`check-template` 退 0｜`kt_scan` 硬编码中文 **193 未上升**｜领域层+测试编译 0 error 0 warning｜本地 JVM **OK (71 tests)**｜`build.gradle.kts` 依赖块 **18 行逐字未改**（`testImplementation` 未新增，junit 早已在）。
+
+四份文档同步：`功能清单.md`（95→99、46+53）、`功能逐项手册.md`（F15 段 39→53 条增补、验收 85→99、筛选计数 77→99）、`参考来源-总表.md`（+4 来源、telephoto 记 S16 与 S19、合计 18→22 条素材／32→36 上游）、`套壳上手指南.md`（2147→2312，重写 §7「这套壳还缺什么」）。另修一个同名陷阱：素材库 F04 镜像里的 `SettingsRepository(context)` 与新建的 `data.SettingsRepository(prefs)` 同名不同物，照抄会撞「构造签名不符」而非「找不到符号」，镜像横幅与 `check-template.py` 的 `KNOWN_UNDECLARED` 注释都已写明。
+
+### 未验收的部分（不要当成已验收）
+
+**全部改动未在真机上验证过。** 沙箱没有 Android SDK、没有模拟器，本地只能编译领域层与跑 JVM 测试；四条素材的界面表现只经过 CI 的 `assembleDebug`／`assembleRelease` 编译验证与代码审查，没有人在真机上点过。批 D 改的是设置项读写主链，虽然对外契约（prefs 文件名、25 个键的字面值、导出字段集合、14 处使用点签名）由三条测试锁住，仍建议真机过一遍：改主题/玻璃参数 → 杀进程重开看是否保留；导出 JSON → 导入 → 重置；S22 页面点「写入真实设置」后看设置页滑杆是否同步变化；S20 拖动 scrub 与播放是否跟手；S19 换图案后 MAE 表是否重算。
